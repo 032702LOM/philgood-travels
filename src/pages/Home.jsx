@@ -1,24 +1,26 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { regions, tourPackages } from '../data/placesData';
+import { usePreferences } from '../context/PreferencesContext'; // <-- IMPORT CONTEXT
 
 const Home = () => {
+  const navigate = useNavigate();
+  const { t, formatPrice } = usePreferences(); // <-- PULL IN TOOLS
+  
   const initialPositions = ['pos-hidden', 'pos-far-left', 'pos-left', 'pos-center', 'pos-right', 'pos-far-right'];
   const [destPositions, setDestPositions] = useState(initialPositions);
   const [pkgPositions, setPkgPositions] = useState(initialPositions);
 
   const rotateStack = (type, direction) => {
     const setFunction = type === 'dest' ? setDestPositions : setPkgPositions;
-    setFunction((currentPositions) => {
-      const newPositions = [...currentPositions];
+    setFunction((current) => {
+      const next = [...current];
       if (direction === 'next') {
-        const first = newPositions.shift();
-        newPositions.push(first);
+        next.push(next.shift());
       } else {
-        const last = newPositions.pop();
-        newPositions.unshift(last);
+        next.unshift(next.pop());
       }
-      return newPositions;
+      return next;
     });
   };
 
@@ -37,16 +39,16 @@ const Home = () => {
                     <div className="carousel-item active" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1606676366299-fdec90590467?q=80&w=1170&auto=format&fit=crop')" }}>
                         <div className="hero-overlay">
                             <div className="container scroll-reveal visible">
-                                <h1 className="hero-title">ISLAND PARADISE</h1>
+                                <h1 className="hero-title">{t('hero_island', 'ISLAND PARADISE')}</h1>
                                 <p className="hero-subtitle">Relax on pristine white sand beaches</p>
-                                <Link to="/booking" className="hero-btn">BOOK NOW</Link>
+                                <Link to="/booking" className="hero-btn">{t('book_now', 'BOOK NOW')}</Link>
                             </div>
                         </div>
                     </div>
                     <div className="carousel-item" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1707730088436-0e55e78843d8?q=80&w=1310&auto=format&fit=crop')" }}>
                         <div className="hero-overlay">
                             <div className="container">
-                                <h1 className="hero-title">ADVENTURE AWAITS</h1>
+                                <h1 className="hero-title">{t('hero_adv', 'ADVENTURE AWAITS')}</h1>
                                 <p className="hero-subtitle">Experience the Chocolate Hills of Bohol</p>
                                 <Link to="/tours" className="hero-btn">VIEW TOURS</Link>
                             </div>
@@ -55,7 +57,7 @@ const Home = () => {
                     <div className="carousel-item" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1564425230164-1e63b4922d3f?q=80&w=735&auto=format&fit=crop')" }}>
                         <div className="hero-overlay">
                             <div className="container">
-                                <h1 className="hero-title">FIND YOUR TRAIL</h1>
+                                <h1 className="hero-title">{t('hero_trail', 'FIND YOUR TRAIL')}</h1>
                                 <p className="hero-subtitle">Discover nature in the Philippines</p>
                                 <Link to="/destinations" className="hero-btn">EXPLORE DESTINATIONS</Link>
                             </div>
@@ -115,14 +117,25 @@ const Home = () => {
             <div className="container py-5">
                 <div className="section-header scroll-reveal visible">
                     <span className="section-subtitle">Regional</span>
-                    <h2 className="section-title">Most Popular Destinations</h2>
+                    <h2 className="section-title">{t('pop_dest', 'Most Popular Destinations')}</h2>
                     <p className="section-desc">Discover the key regions and landmarks the Philippines has to offer.</p>
                 </div>
                 <div className="fanned-stack-container scroll-reveal visible mt-4">
                     <button className="stack-nav-btn prev-btn" onClick={() => rotateStack('dest', 'prev')}><i className="fa-solid fa-chevron-left"></i></button>
                     <button className="stack-nav-btn next-btn" onClick={() => rotateStack('dest', 'next')}><i className="fa-solid fa-chevron-right"></i></button>
                     {regions.map((region, index) => (
-                        <div key={region.id} className={`fanned-card-wrapper ${destPositions[index]}`} onClick={() => rotateStack('dest', 'next')}>
+                        <div 
+                            key={region.id} 
+                            className={`fanned-card-wrapper ${destPositions[index]}`} 
+                            onClick={() => {
+                                if (destPositions[index] === 'pos-center') {
+                                    navigate(`/destinations?region=${region.id}`);
+                                } else {
+                                    rotateStack('dest', destPositions[index].includes('right') ? 'next' : 'prev');
+                                }
+                            }}
+                            style={{ cursor: 'pointer' }}
+                        >
                             <div className="card h-100">
                                 <div className="card-img-wrapper">
                                     <span className="card-badge">{region.typeBadge || 'View'}</span>
@@ -164,7 +177,7 @@ const Home = () => {
             <div className="container py-5">
                 <div className="section-header scroll-reveal visible">
                     <span className="section-subtitle">Packages</span>
-                    <h2 className="section-title">Top Packages That Fit You</h2>
+                    <h2 className="section-title">{t('top_pkg', 'Top Packages That Fit You')}</h2>
                 </div>
                 <div className="fanned-stack-container scroll-reveal visible mt-4">
                     <button className="stack-nav-btn prev-btn" onClick={() => rotateStack('pkg', 'prev')}><i className="fa-solid fa-chevron-left"></i></button>
@@ -179,8 +192,8 @@ const Home = () => {
                                 <div className="card-body">
                                     <h5 className="card-title">{pkg.name}</h5>
                                     <div className="d-flex justify-content-between align-items-center mt-3">
-                                        <span className="text-primary-custom fw-bold fs-5" style={{color:'#FF8C73'}}>₱{pkg.price.toLocaleString()}</span>
-                                        <Link to="/tours" className="btn btn-view-details" style={{fontSize: '0.8rem'}}>View</Link>
+                                        <span className="text-primary-custom fw-bold fs-5" style={{color:'#FF8C73'}}>{formatPrice(pkg.price)}</span>
+                                        <Link to="/tours" className="btn btn-view-details" style={{fontSize: '0.8rem'}}>{t('view_details', 'View')}</Link>
                                     </div>
                                 </div>
                             </div>
@@ -193,7 +206,7 @@ const Home = () => {
             </div>
         </section>
 
-        {/* --- TESTIMONIALS --- */}
+        {/* --- TESTIMONIALS (Restored!) --- */}
         <section className="py-5">
             <div className="container py-5">
                 <div className="section-header scroll-reveal visible">
@@ -241,7 +254,7 @@ const Home = () => {
             </div>
         </section>
 
-        {/* --- SCENE 3: READY FOR YOUR NEXT DIVE --- */}
+        {/* --- SCENE 3: READY FOR YOUR NEXT DIVE --- (Restored!) */}
         <section className="scene-section dive-bg" style={{ backgroundImage: "url('https://i.postimg.cc/rshH22yZ/dive.png')" }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal visible">
@@ -251,8 +264,6 @@ const Home = () => {
                             <h2 className="scene-title">Ready for Your Next Dive?</h2>
                             <p className="scene-text">Descend into the deep blue. Discover vibrant coral reefs, swim alongside majestic sea turtles, and explore the mysteries of the ocean floor.</p>
                             <p className="scene-text">Beyond the technicolor gardens of coral lies a world frozen in time. Navigate through haunting shipwrecks and silent underwater caverns where history rests beneath the tides.</p>
-                            
-                            {/* THIS IS THE UPDATED LINK */}
                             <Link to="/tours?search=diving" className="btn-text-link">View Diving Packages <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
                     </div>

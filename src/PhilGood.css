@@ -124,14 +124,16 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .hero-title { font-size: 5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-bottom: 20px; }
 
 /* Inner Page Heroes */
-.destinations-hero, .gallery-hero, .tours-hero, .contact-hero {
-    background-size: cover; background-position: center;
+.destinations-hero, .gallery-hero, .tours-hero, .contact-hero, .booking-hero {
+    background-size: cover; background-position: center 30%;
     padding: 130px 0 50px 0; margin-top: 0;
 }
-.destinations-hero { background-image: linear-gradient(to bottom, rgba(2, 26, 46, 0.4), var(--bg-dark)), url('https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?q=80&w=2000&auto=format&fit=crop'); background-position: center 30%; }
-.gallery-hero { background-image: linear-gradient(to bottom, rgba(2, 26, 46, 0.7), var(--bg-dark)), url('https://images.unsplash.com/photo-1590077423771-474b8862cb24?q=80&w=2000&auto=format&fit=crop'); }
-.tours-hero { background-image: linear-gradient(to bottom, rgba(2, 26, 46, 0.6), var(--bg-dark)), url('https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=2000&auto=format&fit=crop'); }
-.contact-hero { background-image: linear-gradient(to bottom, rgba(2, 26, 46, 0.7), var(--bg-dark)), url('https://images.unsplash.com/photo-1518439179707-1b0b7531776b?q=80&w=2000&auto=format&fit=crop'); }
+
+.destinations-hero { background-image: linear-gradient(to bottom, rgba(2, 26, 46, 0.4), var(--bg-dark)), url('https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?q=80&w=2000&auto=format&fit=crop'); }
+.gallery-hero { background-image: linear-gradient(to bottom, rgba(2, 26, 46, 0.4), var(--bg-dark)), url('https://images.unsplash.com/photo-1531168556467-8053153c361c?q=80&w=2000&auto=format&fit=crop'); }
+.contact-hero { background-image: linear-gradient(to bottom, rgba(2, 26, 46, 0.4), var(--bg-dark)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2000&auto=format&fit=crop'); }
+.booking-hero { background-image: linear-gradient(to bottom, rgba(2, 26, 46, 0.4), var(--bg-dark)), url('https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=80&w=2000&auto=format&fit=crop'); }
+.tours-hero { background-image: linear-gradient(to bottom, rgba(2, 26, 46, 0.4), var(--bg-dark)), url('https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=2000&auto=format&fit=crop'); }
 
 /* =========================================
    5. MOST POPULAR DESTINATIONS (BACKGROUND)
@@ -648,4 +650,54 @@ footer input[type="email"]:focus {
     border-color: #2A9D8F !important;
     box-shadow: 0 0 12px rgba(42, 157, 143, 0.4) !important;
     outline: none !important;
+}
+/* =========================================
+   16. REGIONAL PREFERENCES MODAL
+   ========================================= */
+
+/* Modal Tabs */
+.pref-tab {
+    background: transparent;
+    border: none;
+    color: #8b9bb4;
+    padding: 15px 20px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.pref-tab:hover {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.pref-tab.active {
+    color: #2A9D8F;
+    border-bottom-color: #2A9D8F;
+    background-color: rgba(42, 157, 143, 0.05);
+}
+
+/* Grid Items */
+.pref-grid-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    height: 100%;
+}
+
+.pref-grid-item:hover {
+    background-color: rgba(42, 157, 143, 0.1);
+    border-color: rgba(42, 157, 143, 0.3);
+}
+
+.pref-grid-item.active {
+    background-color: rgba(42, 157, 143, 0.2);
+    border-color: #2A9D8F;
 }

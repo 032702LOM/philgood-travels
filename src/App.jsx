@@ -1,40 +1,33 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-
-// Styling
+import { Routes, Route, useLocation } from 'react-router-dom';
 import './PhilGood.css';
 
-// Layout Components
+// Context Provider
+import { PreferencesProvider } from './context/PreferencesContext'; 
+
+// Layout & Pages
 import Navbar from './components/Navbar';
 import Footer from './components/Footer'; 
-
-// Pages
 import Home from './pages/Home';
 import Destinations from './pages/Destinations';
 import Tours from './pages/Tours';
 import Gallery from './pages/Gallery';
 import Connect from './pages/Connect';
 import Booking from './pages/Booking';
-import NotFound from './pages/NotFound'; // <-- Imported the 404 Page
+import NotFound from './pages/NotFound';
 
-// Helper: This makes the page start at the top when you switch pages
 const ScrollToTop = () => {
   const { pathname } = useLocation();
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
   return null;
 };
 
 function App() {
   return (
-    <Router>
+    <PreferencesProvider> 
       <div className="App">
         <ScrollToTop />
-        
-        {/* Navbar stays at the top */}
         <Navbar />
-
         <main>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -43,15 +36,12 @@ function App() {
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/connect" element={<Connect />} />
             <Route path="/booking" element={<Booking />} />
-            
-            {/* Catch-all route for the 404 Not Found page */}
             <Route path="*" element={<NotFound />} /> 
           </Routes>
         </main>
-
         <Footer />
       </div>
-    </Router>
+    </PreferencesProvider>
   );
 }
 
