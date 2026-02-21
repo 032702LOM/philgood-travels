@@ -10,12 +10,20 @@ const Navbar = () => {
   const [activeTab, setActiveTab] = useState('language'); // 'language' or 'currency'
 
   const { 
-      language, setLanguage, currency, setCurrency, t, 
-      availableCurrencies, availableLanguages 
+      language, setLanguage, currency, setCurrency, 
+      theme, setTheme, // PULL IN THEME TOOLS
+      t, availableCurrencies, availableLanguages 
   } = usePreferences();
 
   useEffect(() => {
-    const handleScroll = () => { window.scrollY > 50 ? setScrolled(true) : setScrolled(false); };
+    const handleScroll = () => {
+      // Trigger the enlargement/shrink after 50px of scrolling
+      if (window.scrollY > 50) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -39,16 +47,36 @@ const Navbar = () => {
                 
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav mx-auto align-items-center">
-                        <li className="nav-item"><NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/" end>{t('nav_home')}</NavLink></li>
-                        <li className="nav-item"><NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/destinations">{t('nav_dest')}</NavLink></li>
-                        <li className="nav-item"><NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/tours">{t('nav_tours')}</NavLink></li>
-                        <li className="nav-item"><NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/gallery">{t('nav_gallery')}</NavLink></li>
-                        <li className="nav-item"><NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/connect">{t('nav_connect')}</NavLink></li>
+                        <li className="nav-item">
+                            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/" end>{t('nav_home')}</NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/destinations">{t('nav_dest')}</NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/tours">{t('nav_tours')}</NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/gallery">{t('nav_gallery')}</NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/connect">{t('nav_connect')}</NavLink>
+                        </li>
                     </ul>
 
                     <div className="d-flex align-items-center gap-3">
-                        {/* --- REGIONAL SETTINGS TRIGGERS --- */}
                         <div className="d-flex gap-2">
+                            {/* --- THEME TOGGLE BUTTON --- */}
+                            <button 
+                                className="btn btn-sm btn-outline-secondary text-white border-0 d-flex align-items-center justify-content-center" 
+                                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                                style={{ width: '35px', height: '35px', borderRadius: '50%' }}
+                                title="Toggle Theme"
+                            >
+                                <i className={`fa-solid ${theme === 'dark' ? 'fa-sun text-warning' : 'fa-moon text-dark'}`}></i>
+                            </button>
+
+                            {/* --- CURRENCY & LANGUAGE BUTTONS --- */}
                             <button className="btn btn-sm btn-outline-secondary text-white border-0 d-flex align-items-center gap-2" onClick={() => openModal('currency')}>
                                 <span className="fw-bold">{currency}</span>
                             </button>
