@@ -701,3 +701,53 @@ footer input[type="email"]:focus {
     background-color: rgba(42, 157, 143, 0.2);
     border-color: #2A9D8F;
 }
+/* =========================================
+   17. LIGHT MODE OVERRIDES
+   ========================================= */
+
+[data-theme="light"] body {
+    background-color: #f4f7f6 !important;
+    color: #212529 !important;
+}
+
+/* Invert Dark Cards to White */
+[data-theme="light"] .bg-card-dark,
+[data-theme="light"] .modal-content,
+[data-theme="light"] .chat-popup {
+    background-color: #ffffff !important;
+    border-color: rgba(0,0,0,0.1) !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important;
+}
+
+/* Invert Text Colors */
+[data-theme="light"] .text-white { color: #212529 !important; }
+[data-theme="light"] .text-white-50 { color: #6c757d !important; }
+
+/* Invert Form Inputs */
+[data-theme="light"] .form-control-dark,
+[data-theme="light"] .form-select {
+    background-color: #f8f9fa !important;
+    color: #333 !important;
+    border-color: #dee2e6 !important;
+}
+
+/* Fix Scrolled Navbar in Light Mode */
+[data-theme="light"] .navbar.scrolled {
+    background-color: #ffffff !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+}
+[data-theme="light"] .navbar.scrolled .nav-link,
+[data-theme="light"] .navbar.scrolled .navbar-brand {
+    color: #333 !important;
+}
+[data-theme="light"] .navbar.scrolled .nav-link:hover,
+[data-theme="light"] .navbar.scrolled .nav-link.active {
+    color: #2A9D8F !important;
+}
+
+/* Override Inline Dark Backgrounds (For Filters/Booking panels) */
+[data-theme="light"] [style*="background-color: #021625"],
+[data-theme="light"] [style*="background-color: rgb(2, 22, 37)"],
+[data-theme="light"] [style*="backgroundColor: '#021625'"] {
+    background-color: #f8f9fa !important;
+}
