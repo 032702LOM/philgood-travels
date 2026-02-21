@@ -338,13 +338,22 @@ const Gallery = () => {
     const subcard = region?.subcards.find(s => s.name === selectedSubcard);
     if (!subcard) return null;
     const filteredImages = subcard.images.filter(img => img.title.toLowerCase().includes(searchKeyword.toLowerCase()));
+    
     return (
       <div className="fade-in">
-        <button className="btn btn-link text-white text-decoration-none p-0 mb-4 opacity-75" onClick={handleBackToSubcards}><i className="fa-solid fa-arrow-left me-2"></i> Back to {region.name} Destinations</button>
-        <div className="d-flex justify-content-between align-items-center mb-4"><h4 className="text-white font-montserrat fw-bold mb-0">{subcard.name} Gallery</h4><span className="text-white-50 small">{subcard.images.length} Photos</span></div>
-        <div className="row g-3">
+        <button className="btn btn-link text-white text-decoration-none p-0 mb-4 opacity-75" onClick={handleBackToSubcards}>
+            <i className="fa-solid fa-arrow-left me-2"></i> Back to {region.name} Destinations
+        </button>
+        <div className="d-flex justify-content-between align-items-center mb-4">
+            <h4 className="text-white font-montserrat fw-bold mb-0">{subcard.name} Gallery</h4>
+            <span className="text-white-50 small">{subcard.images.length} Photos</span>
+        </div>
+        
+        {/* --- UPDATED GRID LAYOUT FOR 5 IMAGES --- */}
+        <div className="row g-3 justify-content-center">
           {filteredImages.map((img) => (
-            <div key={img.id} className="col-6 col-md-4 col-lg-3 scroll-reveal visible gallery-item">
+            // Changed from col-lg-3 (25% width) to col-lg (auto width) so 5 items share the row equally
+            <div key={img.id} className="col-6 col-md-4 col-lg scroll-reveal visible gallery-item" style={{ minWidth: '20%' }}>
               <div className="position-relative overflow-hidden rounded-3 shadow-sm h-100">
                 <img src={img.url} alt={img.title} className="w-100 h-100 object-fit-cover gallery-img" style={{ aspectRatio: '1/1', transition: 'transform 0.4s ease' }} />
                 <div className="position-absolute bottom-0 start-0 w-100 p-2" style={{ background: 'linear-gradient(transparent, rgba(0,0,0,0.8))' }}>
