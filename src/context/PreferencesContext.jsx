@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
 const PreferencesContext = createContext();
 
@@ -7,6 +7,15 @@ export const usePreferences = () => useContext(PreferencesContext);
 export const PreferencesProvider = ({ children }) => {
   const [language, setLanguage] = useState('en');
   const [currency, setCurrency] = useState('PHP');
+  
+  // --- THEME STATE ---
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
+
+  // Automatically update the HTML body and save to local storage when theme changes
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
   // ==========================================
   // 1. CURRENCIES BY REGION
@@ -53,7 +62,7 @@ export const PreferencesProvider = ({ children }) => {
     { code: 'en', name: 'English', native: 'English' },
     { code: 'tl', name: 'Tagalog', native: 'Tagalog' },
     
-    // Southeast Asian (NEW)
+    // Southeast Asian
     { code: 'th', name: 'Thai', native: 'ไทย' },
     { code: 'ms', name: 'Malay', native: 'Bahasa Melayu' },
     { code: 'id', name: 'Indonesian', native: 'Bahasa Indonesia' },
@@ -79,15 +88,10 @@ export const PreferencesProvider = ({ children }) => {
   // ==========================================
   const exchangeRates = { 
     PHP: 1, 
-    // Southeast Asian
     THB: 0.60, MYR: 0.076, IDR: 275.0, SGD: 0.024,
-    // East Asian
     JPY: 2.65, CNY: 0.13, KRW: 23.5, 
-    // Western
     USD: 0.018, EUR: 0.016, GBP: 0.014, CAD: 0.024, AUD: 0.027, CHF: 0.016,
-    // Middle East
     AED: 0.065, SAR: 0.066, QAR: 0.064,
-    // South American
     BRL: 0.089, ARS: 15.0, COP: 70.0 
   };
 
@@ -172,7 +176,11 @@ export const PreferencesProvider = ({ children }) => {
   };
 
   return (
-    <PreferencesContext.Provider value={{ language, setLanguage, currency, setCurrency, t, formatPrice, availableCurrencies, availableLanguages }}>
+    <PreferencesContext.Provider value={{ 
+        language, setLanguage, currency, setCurrency, 
+        theme, setTheme, // Exposed Theme API
+        t, formatPrice, availableCurrencies, availableLanguages 
+    }}>
       {children}
     </PreferencesContext.Provider>
   );
