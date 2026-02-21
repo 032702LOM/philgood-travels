@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom'; // 👈 Added useNavigate
-import axios from 'axios'; // 👈 Added axios
+import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { tourPackages, allPlaces } from '../data/placesData';
 import { usePreferences } from '../context/PreferencesContext';
 
 const Booking = () => {
   const location = useLocation();
-  const navigate = useNavigate(); // 👈 Added navigate tool
+  const navigate = useNavigate();
   const allBookableItems = [...tourPackages, ...allPlaces];
   
   const { formatPrice, t } = usePreferences();
@@ -18,6 +18,10 @@ const Booking = () => {
   const [accClass, setAccClass] = useState('Standard'); 
   const [paymentMethod, setPaymentMethod] = useState('Card');
   const [addons, setAddons] = useState({ airportTransfer: false, insurance: false, romanticDinner: false, carbonOffset: false });
+  
+  // ⚡ NEW: Split Payment State ⚡
+  const [splitBetween, setSplitBetween] = useState(1);
+  const [payerEmails, setPayerEmails] = useState(['']); // 👈 NEW: Tracks all emails
 
   const accClassRates = { Standard: 0, Deluxe: 2500, Luxury: 5000 };
   const addonPrices = { airportTransfer: 1500, insurance: 950, romanticDinner: 2500, carbonOffset: 500 };
@@ -59,12 +63,11 @@ const Booking = () => {
   const handleInfoChange = (e) => setPersonalInfo({ ...personalInfo, [e.target.name]: e.target.value });
   const toggleAddon = (addonName) => setAddons({ ...addons, [addonName]: !addons[addonName] });
 
-  // ⚡ THE UPDATED SUBMIT FUNCTION ⚡
+  // ⚡ UPDATED: Sending Split Data to the Backend ⚡
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedPackage || !date) { alert("Please select a destination and a travel date."); return; }
 
-    // 1. Check if the user is logged in!
     const userStr = localStorage.getItem('user');
     if (!userStr) {
         alert("You must be logged in to book a trip!");
@@ -73,22 +76,22 @@ const Booking = () => {
     }
     const user = JSON.parse(userStr);
 
-    // 2. Package the data exactly how our MongoDB model expects it
     const bookingData = {
         userId: user.id,
         packageName: selectedPackage,
         travelDate: date,
         guests: guests,
         totalPrice: grandTotal,
-        paymentMethod: paymentMethod
+        paymentMethod: paymentMethod,
+        splitBetween: parseInt(splitBetween), // Sending the number of splits to Stripe!
+        friendEmails: payerEmails
     };
 
     try {
-        // 3. Send it to the backend!
         await axios.post('http://localhost:5000/api/bookings/create', bookingData);
-        alert(`✅ Payment processed securely via ${paymentMethod}!\n\nYour booking has been saved to your dashboard.`);
-        
-        // 4. Teleport them to their dashboard to see the new booking!
+        alert(splitBetween > 1 
+            ? `✅ Group Booking Created!\n\nYour split payment links have been generated and saved to your dashboard.` 
+            : `✅ Payment processed securely via ${paymentMethod}!\n\nYour booking has been saved to your dashboard.`);
         navigate('/profile');
     } catch (err) {
         console.error(err);
@@ -188,6 +191,59 @@ const Booking = () => {
                 <div className={`p-3 rounded-3 border ${addons.romanticDinner ? 'border-primary' : 'border-secondary border-opacity-25'}`} style={{ backgroundColor: addons.romanticDinner ? 'rgba(42, 157, 143, 0.1)' : '#021625', cursor: 'pointer', transition: 'all 0.3s' }} onClick={() => toggleAddon('romanticDinner')}><div className="form-check d-flex justify-content-between align-items-center m-0 p-0"><div><input className="form-check-input me-3 ms-0 mt-0" type="checkbox" checked={addons.romanticDinner} readOnly style={{ cursor: 'pointer' }} /><label className="form-check-label text-white fw-bold d-inline" style={{ cursor: 'pointer' }}>Romantic Dinner Setup</label><p className="text-white-50 small m-0 ms-4 ps-2">Candlelit dinner by the beach.</p></div><span className="text-accent fw-bold">+{formatPrice(2500)}</span></div></div>
               </div>
 
+              {/* ⚡ UPGRADED SPLIT PAYMENT COMPONENT ⚡ */}
+              <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-secondary border-opacity-25 mb-4 teal-hover-box">
+                <h4 className="fw-bold mb-4 font-montserrat text-white"><i className="fa-solid fa-people-arrows text-accent me-2"></i> Payment Details</h4>
+                <div className="row g-3">
+                  <div className="col-md-12">
+                    <label className="text-white-50 small mb-2">How are we paying?</label>
+                    <div className="input-with-icon position-relative">
+                        <i className="fa-solid fa-users position-absolute" style={{ left: '15px', top: '50%', transform: 'translateY(-50%)', color: '#a0a0a0', zIndex: 1 }}></i>
+                        <select className="form-control-dark w-100" value={splitBetween} onChange={(e) => {
+                            setSplitBetween(e.target.value);
+                            // Adjust the array size based on how many people are paying
+                            setPayerEmails(Array(parseInt(e.target.value)).fill(''));
+                        }} style={{ paddingLeft: '45px' }}>
+                            <option value="1">Just me (Pay in full)</option>
+                            <option value="2">Split 2 ways</option>
+                            <option value="3">Split 3 ways</option>
+                            <option value="4">Split 4 ways</option>
+                            <option value="5">Split 5 ways</option>
+                        </select>
+                    </div>
+                  </div>
+
+                  {/* ⚡ DYNAMIC EMAIL INPUTS ⚡ */}
+                  <div className="col-md-12 mt-3">
+                      <label className="text-white-50 small mb-2">Email Addresses for Invoices:</label>
+                      {Array.from({ length: splitBetween }).map((_, index) => (
+                          <div key={index} className="mb-2 input-with-icon position-relative">
+                              <i className="fa-regular fa-envelope position-absolute" style={{ left: '15px', top: '50%', transform: 'translateY(-50%)', color: '#a0a0a0', zIndex: 1 }}></i>
+                              <input 
+                                  type="email" 
+                                  className="form-control-dark w-100" 
+                                  style={{ paddingLeft: '45px' }}
+                                  placeholder={index === 0 ? "Lead Booker's Email" : `Friend ${index}'s Email`}
+                                  value={payerEmails[index] || ''}
+                                  onChange={(e) => {
+                                      const updatedEmails = [...payerEmails];
+                                      updatedEmails[index] = e.target.value;
+                                      setPayerEmails(updatedEmails);
+                                  }}
+                                  required
+                              />
+                          </div>
+                      ))}
+                  </div>
+
+                  {splitBetween > 1 && (
+                      <div className="col-md-12 mt-2">
+                          <p className="text-accent small mb-0"><i className="fa-solid fa-circle-info me-1"></i> Each person will pay <strong>{formatPrice(grandTotal / splitBetween)}</strong>. Invoices will be tied to the emails above.</p>
+                      </div>
+                  )}
+                </div>
+              </div>
+
               <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-secondary border-opacity-25 teal-hover-box">
                 <h4 className="fw-bold mb-4 font-montserrat text-white"><i className="fa-solid fa-wallet text-accent me-2"></i> Payment Method</h4>
                 <div className="d-flex flex-wrap gap-3">
@@ -224,6 +280,15 @@ const Booking = () => {
                 )}
 
                 <div className="border-top border-secondary border-opacity-25 mt-4 pt-3 d-flex justify-content-between align-items-center mb-4"><span className="text-white fw-bold fs-5">{t('total', 'Total')}</span><span className="fw-bold fs-3" style={{ color: '#FF8C73' }}>{formatPrice(grandTotal)}</span></div>
+                
+                {/* ⚡ NEW: Show the split amount in the summary ⚡ */}
+                {splitBetween > 1 && (
+                    <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary border-opacity-25">
+                        <span className="text-white-50 small">Split {splitBetween} ways</span>
+                        <span className="text-accent fw-bold">{formatPrice(grandTotal / splitBetween)} <small className="text-white-50 fw-normal">/person</small></span>
+                    </div>
+                )}
+
                 <div className="text-white-50 small mb-3 text-center">Payment Method: <strong className="text-white">{paymentMethod}</strong></div>
 
                 <button type="submit" className="btn btn-proceed w-100 py-3 text-uppercase font-montserrat fw-bold shadow">{t('confirm', 'Confirm Booking')} <i className="fa-solid fa-arrow-right ms-2"></i></button>
