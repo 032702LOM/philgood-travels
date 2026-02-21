@@ -157,7 +157,7 @@ const Home = () => {
         </section>
 
         {/* --- SCENE 2: SLEEP UNDER THE STARS --- */}
-        <section className="scene-section sleep-bg" style={{ backgroundImage: "url('https://i.postimg.cc/sXvNpDYs/sleep.png')" }}>
+        <section className="scene-section sleep-bg" style={{ backgroundImage: "url('https://i.postimg.cc/jqyq9xMK/man_on_cliff.png')" }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal visible">
                     <div className="col-lg-6">

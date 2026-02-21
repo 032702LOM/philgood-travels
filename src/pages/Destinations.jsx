@@ -231,7 +231,7 @@ const Destinations = () => {
                     <div className="col-lg-8 col-xl-9">
                         {isDefaultView ? (
                             <div className="fade-in">
-                                <div className="d-flex justify-content-between align-items-center mb-3"><h4 className="text-white font-montserrat fw-bold mb-0">Explore Regions</h4><span className="text-white-50 small">6 Major Regions</span></div>
+                                <div className="d-flex justify-content-between align-items-center mb-3"><h4 className="text-black font-montserrat fw-bold mb-0">Explore Regions</h4><span className="text-white-50 small">6 Major Regions</span></div>
                                 <div className="fanned-stack-container mt-4" style={{ height: '500px', position: 'relative' }}>
                                     <button className="stack-nav-btn prev-btn" onClick={() => rotateRegionStack('prev')}><i className="fa-solid fa-chevron-left"></i></button><button className="stack-nav-btn next-btn" onClick={() => rotateRegionStack('next')}><i className="fa-solid fa-chevron-right"></i></button>
                                     {regions.map((region, index) => (
