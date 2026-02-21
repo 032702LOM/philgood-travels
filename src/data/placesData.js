@@ -36,7 +36,7 @@ export const allPlaces = [
     },
     {
         id: 'Bohol-C', region: 'Bohol', name: 'Loboc River Resort', type: 'Mountains / Resort Hotel / Camping', price: 4500,
-        img: 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=800&auto=format&fit=crop', panorama: 'https://pannellum.org/images/bma-0.jpg', lat: 9.6366, lon: 124.0322, 
+        img: 'https://images.unsplash.com/photo-1579625197446-3b8c000acfac?q=80&w=2062&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', panorama: 'https://pannellum.org/images/bma-0.jpg', lat: 9.6366, lon: 124.0322, 
         payment: ['Pay at the hotel', 'Pay now'], 
         travelStyle: ['Mountains', 'Hiking/Mountaineering', 'Camping', 'Resort Hotel'],
         roomOffers: ['Breakfast included', 'Outside food delivery allowed', 'Bottle of wine', 'Recreation area access with conditions'],
