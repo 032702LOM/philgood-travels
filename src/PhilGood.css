@@ -414,18 +414,28 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     text-align: center; 
     padding: 10px 0; 
     position: fixed; 
-    top: 90px; 
+    /* Default position: 50px logo + 30px nav padding = 80px */
+    top: 80px; 
     left: 0; 
     width: 100%; 
     z-index: 1020; 
     transition: top 0.4s ease-in-out; 
 }
 
-/* Slide up logic when Navbar becomes compact */
+/* Adjust Promo Bar down when Navbar enlarges on scroll */
 .navbar.scrolled ~ .fade-in .top-alert,
 .navbar.scrolled ~ .top-alert,
 body:has(.navbar.scrolled) .top-alert {
-    top: 76px; 
+    /* Scrolled position: 75px logo + 20px nav padding = 95px */
+    top: 95px; 
+}
+
+/* Mobile adjustments to keep it tight on smaller screens */
+@media (max-width: 991px) {
+    body:has(.navbar.scrolled) .top-alert {
+        /* Mobile scrolled logo is 60px + 20px padding = 80px */
+        top: 80px; 
+    }
 }
 
 .close-alert { cursor: pointer; margin-left: 20px; opacity: 0.8; }
