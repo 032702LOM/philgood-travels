@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom'; // 👈 Added useNavigate
+import axios from 'axios'; // 👈 Added axios
 import { tourPackages, allPlaces } from '../data/placesData';
 import { usePreferences } from '../context/PreferencesContext';
 
 const Booking = () => {
   const location = useLocation();
+  const navigate = useNavigate(); // 👈 Added navigate tool
   const allBookableItems = [...tourPackages, ...allPlaces];
   
   const { formatPrice, t } = usePreferences();
@@ -57,28 +59,46 @@ const Booking = () => {
   const handleInfoChange = (e) => setPersonalInfo({ ...personalInfo, [e.target.name]: e.target.value });
   const toggleAddon = (addonName) => setAddons({ ...addons, [addonName]: !addons[addonName] });
 
-  const handleSubmit = (e) => {
+  // ⚡ THE UPDATED SUBMIT FUNCTION ⚡
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedPackage || !date) { alert("Please select a destination and a travel date."); return; }
 
-    alert(`Processing your ${paymentMethod} payment of ${formatPrice(grandTotal)}...\n\nYou will now be redirected to the secure payment gateway.`);
-
-    let paymentGatewayUrl = '';
-    switch(paymentMethod) {
-        case 'GCash': paymentGatewayUrl = 'https://www.gcash.com/'; break;
-        case 'Maya': paymentGatewayUrl = 'https://www.maya.ph/'; break;
-        case 'Paypal': paymentGatewayUrl = 'https://www.paypal.com/'; break;
-        case 'Stripe': paymentGatewayUrl = 'https://stripe.com/payments/checkout'; break;
-        case 'Card': paymentGatewayUrl = 'https://example.com/secure-card-checkout'; break; 
-        default: paymentGatewayUrl = '#';
+    // 1. Check if the user is logged in!
+    const userStr = localStorage.getItem('user');
+    if (!userStr) {
+        alert("You must be logged in to book a trip!");
+        navigate('/login');
+        return;
     }
-    window.open(paymentGatewayUrl, '_blank');
+    const user = JSON.parse(userStr);
+
+    // 2. Package the data exactly how our MongoDB model expects it
+    const bookingData = {
+        userId: user.id,
+        packageName: selectedPackage,
+        travelDate: date,
+        guests: guests,
+        totalPrice: grandTotal,
+        paymentMethod: paymentMethod
+    };
+
+    try {
+        // 3. Send it to the backend!
+        await axios.post('http://localhost:5000/api/bookings/create', bookingData);
+        alert(`✅ Payment processed securely via ${paymentMethod}!\n\nYour booking has been saved to your dashboard.`);
+        
+        // 4. Teleport them to their dashboard to see the new booking!
+        navigate('/profile');
+    } catch (err) {
+        console.error(err);
+        alert("❌ Failed to process booking.");
+    }
   };
 
   return (
     <div className="fade-in" style={{ paddingTop: '76px' }}>
       
-      {/* --- FOOLPROOF HERO SECTION --- */}
       <section className="booking-hero" style={{ 
           backgroundImage: "linear-gradient(to bottom, rgba(2, 26, 46, 0.4), #021A2E), url('https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=80&w=2000&auto=format&fit=crop')",
           padding: '130px 0 50px 0', backgroundSize: 'cover', backgroundPosition: 'center 30%'

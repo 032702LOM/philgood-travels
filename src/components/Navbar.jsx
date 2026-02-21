@@ -10,12 +10,46 @@ const Navbar = () => {
   const [activeTab, setActiveTab] = useState('language'); // 'language' or 'currency'
 
   const { 
-      language, setLanguage, currency, setCurrency, t, 
-      availableCurrencies, availableLanguages 
+      language, setLanguage, currency, setCurrency, 
+      theme, setTheme, 
+      t, availableCurrencies, availableLanguages 
   } = usePreferences();
 
+  // ==========================================
+  // --- AUTHENTICATION STATE ---
+  // ==========================================
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [firstName, setFirstName] = useState('');
+
+  // Check if the user has a VIP Wristband when the Navbar loads
   useEffect(() => {
-    const handleScroll = () => { window.scrollY > 50 ? setScrolled(true) : setScrolled(false); };
+    const token = localStorage.getItem('token');
+    const userStr = localStorage.getItem('user');
+    
+    if (token && userStr) {
+      setIsLoggedIn(true);
+      const userObj = JSON.parse(userStr);
+      setFirstName(userObj.name.split(' ')[0]); // Grab just their first name
+    }
+  }, []);
+
+  // Function to securely log out
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setIsLoggedIn(false);
+    window.location.href = '/'; // Refresh the page to clear everything
+  };
+  // ==========================================
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -39,16 +73,36 @@ const Navbar = () => {
                 
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav mx-auto align-items-center">
-                        <li className="nav-item"><NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/" end>{t('nav_home')}</NavLink></li>
-                        <li className="nav-item"><NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/destinations">{t('nav_dest')}</NavLink></li>
-                        <li className="nav-item"><NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/tours">{t('nav_tours')}</NavLink></li>
-                        <li className="nav-item"><NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/gallery">{t('nav_gallery')}</NavLink></li>
-                        <li className="nav-item"><NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/connect">{t('nav_connect')}</NavLink></li>
+                        <li className="nav-item">
+                            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/" end>{t('nav_home')}</NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/destinations">{t('nav_dest')}</NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/tours">{t('nav_tours')}</NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/gallery">{t('nav_gallery')}</NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/connect">{t('nav_connect')}</NavLink>
+                        </li>
                     </ul>
 
                     <div className="d-flex align-items-center gap-3">
-                        {/* --- REGIONAL SETTINGS TRIGGERS --- */}
                         <div className="d-flex gap-2">
+                            {/* --- THEME TOGGLE BUTTON --- */}
+                            <button 
+                                className="btn btn-sm btn-outline-secondary text-white border-0 d-flex align-items-center justify-content-center" 
+                                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                                style={{ width: '35px', height: '35px', borderRadius: '50%' }}
+                                title="Toggle Theme"
+                            >
+                                <i className={`fa-solid ${theme === 'dark' ? 'fa-sun text-warning' : 'fa-moon text-dark'}`}></i>
+                            </button>
+
+                            {/* --- CURRENCY & LANGUAGE BUTTONS --- */}
                             <button className="btn btn-sm btn-outline-secondary text-white border-0 d-flex align-items-center gap-2" onClick={() => openModal('currency')}>
                                 <span className="fw-bold">{currency}</span>
                             </button>
@@ -57,6 +111,28 @@ const Navbar = () => {
                                 <span className="text-uppercase">{language}</span>
                             </button>
                         </div>
+
+                      {/* 👉 SMART AUTH BUTTONS (LOGIN / SIGN UP / LOGOUT) */}
+{isLoggedIn ? (
+    <div className="d-none d-lg-flex align-items-center me-3 gap-3">
+        {/* 👉 UPDATED: Made the name a clickable link to the Dashboard! */}
+        <Link to="/profile" className="text-white fw-bold font-montserrat text-decoration-none social-hover" style={{ color: '#2A9D8F' }}>
+            Hi, {firstName}!
+        </Link>
+        <button onClick={handleLogout} className="btn text-white fw-bold" style={{ textDecoration: 'none', border: '1px solid rgba(255,255,255,0.3)', padding: '6px 16px', borderRadius: '4px', background: 'transparent' }}>
+            LOGOUT
+        </button>
+    </div>
+) : (
+                            <div className="d-none d-lg-flex align-items-center me-3 gap-2">
+                                <Link to="/login" className="btn text-white fw-bold" style={{ textDecoration: 'none' }}>
+                                    LOGIN
+                                </Link>
+                                <Link to="/register" className="btn text-white fw-bold" style={{ textDecoration: 'none', border: '1px solid rgba(255,255,255,0.3)', padding: '6px 16px', borderRadius: '4px' }}>
+                                    SIGN UP
+                                </Link>
+                            </div>
+                        )}
 
                         <Link to="/booking" className="btn-book-nav d-none d-lg-block">{t('nav_book')}</Link>
                     </div>

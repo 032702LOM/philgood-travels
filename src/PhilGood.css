@@ -44,7 +44,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .section-desc { color: rgba(255, 255, 255, 0.7) !important; font-family: 'Open Sans', sans-serif; font-size: 1.1rem; }
 
 /* =========================================
-   3. NAVIGATION BAR
+   3. NAVIGATION BAR & LOGO ENLARGEMENT
    ========================================= */
 .navbar { 
     background-color: transparent !important; 
@@ -53,7 +53,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     top: 0; 
     width: 100%; 
     z-index: 1030; 
-    transition: all 0.4s ease; 
+    transition: all 0.4s ease-in-out !important; 
 }
 
 .navbar.scrolled, .navbar.bg-navy { 
@@ -63,8 +63,20 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 }
 
 .navbar-brand { padding: 0; margin: 0; display: flex; align-items: center; }
-.navbar-logo-img { height: 50px; width: auto; transition: transform 0.3s ease; }
-.navbar.scrolled .navbar-logo-img { transform: scale(0.9); }
+
+/* Logo Default State */
+.navbar-logo-img { 
+    height: 50px; 
+    width: auto; 
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+/* Logo Enlarged State on Scroll */
+.navbar.scrolled .navbar-logo-img { 
+    height: 75px; 
+    transform: scale(1.05); 
+}
 
 /* Navigation Links */
 #navbarNav .navbar-nav .nav-link { 
@@ -100,6 +112,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .social-nav-link:hover { color: #2A9D8F; transform: translateY(-3px); opacity: 1; }
 
 @media (max-width: 991px) {
+    .navbar.scrolled .navbar-logo-img { height: 60px; }
     .navbar-collapse { background-color: var(--bg-dark); padding: 20px; margin-top: 10px; border-radius: 8px; }
     .navbar-socials { border-left: none; padding-left: 0; margin-left: 0; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); justify-content: center; }
 }
@@ -249,8 +262,6 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .scene-title { font-size: 3rem; margin-bottom: 20px; color: white; }
 .scene-text { color: var(--text-grey); font-size: 1.1rem; line-height: 1.8; margin-bottom: 25px; }
 
-/* UPDATED IMAGE PATHS BELOW */
-/* Note: 'man on the cliff.png' has spaces, and 'speeling_man.png' retains your original spelling */
 .trail-makers-bg { background-image: url('img/man on the cliff.png'); background-repeat: no-repeat; background-position: right center; background-size: contain; }
 .dive-bg { background-image: url('img/dive.png'); background-repeat: no-repeat; background-position: right center; background-size: contain; }
 .sleep-bg { background-image: url('img/speeling_man.png'); background-repeat: no-repeat; background-position: right center; background-size: contain; }
@@ -266,17 +277,17 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 
 /* =========================================
    9. FILTERS & SEARCH
-   ========================================= */.search-filter-bar { 
-    background-color: #03233B; /* Dark Navy Card Background */
+   ========================================= */
+.search-filter-bar { 
+    background-color: #03233B; 
     border: 1px solid rgba(255, 255, 255, 0.1); 
     backdrop-filter: blur(8px); 
     max-width: 900px; 
     margin: 0 auto; 
-    border-radius: 16px; /* Rounded corners */
+    border-radius: 16px; 
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
-/* Label styling */
 .search-filter-bar label {
     color: #8b9bb4;
     font-size: 0.85rem;
@@ -285,30 +296,15 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     display: block;
 }
 
-/* Wrapper for Icon + Input */
-.input-with-icon { 
-    position: relative; 
-    width: 100%;
-}
+.input-with-icon { position: relative; width: 100%; }
+.input-with-icon i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #a0a0a0; pointer-events: none; z-index: 1; }
 
-/* The Icon on the left */
-.input-with-icon i { 
-    position: absolute; 
-    left: 15px; 
-    top: 50%; 
-    transform: translateY(-50%); 
-    color: #a0a0a0; 
-    pointer-events: none; /* Let clicks pass through to the select */
-    z-index: 1;
-}
-
-/* Shared styles for Inputs and Selects */
 .search-filter-bar .form-control-dark,
 .search-filter-bar select { 
-    background-color: #021625 !important; /* Very dark blue input bg */
+    background-color: #021625 !important; 
     border: 1px solid rgba(255, 255, 255, 0.1) !important; 
     color: white !important; 
-    padding: 12px 12px 12px 45px !important; /* Left padding makes room for icon */
+    padding: 12px 12px 12px 45px !important; 
     border-radius: 8px; 
     font-size: 1rem;
     height: 50px;
@@ -317,42 +313,32 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Focus State - Creates the white border effect seen in your screenshot */
 .search-filter-bar .form-control-dark:focus,
 .search-filter-bar select:focus {
     outline: none;
     border-color: white !important;
-    box-shadow: 0 0 0 1px white; /* Adds a glow-like border */
+    box-shadow: 0 0 0 1px white; 
 }
 
-/* FIX: Specific styling for the Dropdown Arrow */
 .search-filter-bar select { 
-    appearance: none;            /* Remove default browser arrow */
+    appearance: none;            
     -webkit-appearance: none;    
     -moz-appearance: none;       
-    
-    /* The single white V-arrow icon */
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
-    
-    /* CRITICAL FIXES */
-    background-repeat: no-repeat !important;      /* Stops repeating */
-    background-position: right 1rem center !important; /* Positions it nicely on the right */
-    background-size: 16px 12px !important;        /* Sets specific size */
-    padding-right: 2.5rem !important;             /* Prevents text overlap with arrow */
+    background-repeat: no-repeat !important;      
+    background-position: right 1rem center !important; 
+    background-size: 16px 12px !important;        
+    padding-right: 2.5rem !important;             
 }
 
-/* Placeholder text color */
-.search-filter-bar input::placeholder { 
-    color: rgba(255, 255, 255, 0.4) !important; 
-}
+.search-filter-bar input::placeholder { color: rgba(255, 255, 255, 0.4) !important; }
 
-/* Region Tabs (keep existing styles) */
+/* Region Tabs & Sidebar */
 .region-tabs-wrapper { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
 .region-tab { background-color: transparent; border: 2px solid rgba(255, 255, 255, 0.2); color: white; padding: 10px 25px; border-radius: 50px; font-family: 'Montserrat', sans-serif; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; transition: all 0.3s ease; cursor: pointer; }
 .region-tab:hover { border-color: #FF8C73; color: #FF8C73; }
 .region-tab.active { background-color: #FF8C73; border-color: #FF8C73; color: black; }
 
-/* Sidebar Filters (keep existing styles) */
 .sidebar-filter-container { background-color: var(--card-bg); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.05); padding: 20px; }
 .filter-section { padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
 .filter-title { color: white; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.9rem; margin-bottom: 15px; text-transform: uppercase; }
@@ -393,11 +379,10 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .form-control-dark:focus { background-color: #021625 !important; border-color: #2A9D8F !important; box-shadow: 0 0 10px rgba(42, 157, 143, 0.3) !important; color: white !important; }
 .bg-card-dark { background-color: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); }
 .input-with-icon { position: relative; }
-.input-with-icon i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #a0a0a0; }
 .input-with-icon input, .input-with-icon select { padding-left: 45px; background-color: #021625; border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 6px; height: 50px; width: 100%; }
 .input-with-icon input:focus { outline: none; border-color: #2A9D8F; box-shadow: 0 0 10px rgba(42, 157, 143, 0.5); }
 
-/* Hotel Selection Cards (Radio Buttons) */
+/* Hotel Selection Cards */
 .hotel-card { display: block; cursor: pointer; position: relative; height: 100%; }
 .hotel-card input { position: absolute; opacity: 0; cursor: pointer; }
 .hotel-content { background-color: #021625; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; text-align: center; transition: all 0.2s ease; height: 100%; }
@@ -418,18 +403,51 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .gallery-img { aspect-ratio: 1 / 1; object-fit: cover; transition: transform 0.4s ease; cursor: pointer; }
 .gallery-item:hover .gallery-img { transform: scale(1.08); }
 
-/* Alerts */
-.top-alert { background-color: var(--accent-color); color: white; font-weight: 700; font-size: 0.9rem; text-align: center; padding: 10px 0; position: fixed; top: 76px; left: 0; width: 100%; z-index: 1020; }
+/* =========================================
+   11. ALERTS & TOASTS (WITH SLIDING LOGIC)
+   ========================================= */
+.top-alert { 
+    background-color: var(--accent-color); 
+    color: white; 
+    font-weight: 700; 
+    font-size: 0.9rem; 
+    text-align: center; 
+    padding: 10px 0; 
+    position: fixed; 
+    /* Default position: 50px logo + 30px nav padding = 80px */
+    top: 80px; 
+    left: 0; 
+    width: 100%; 
+    z-index: 1020; 
+    transition: top 0.4s ease-in-out; 
+}
+
+/* Adjust Promo Bar down when Navbar enlarges on scroll */
+.navbar.scrolled ~ .fade-in .top-alert,
+.navbar.scrolled ~ .top-alert,
+body:has(.navbar.scrolled) .top-alert {
+    /* Scrolled position: 75px logo + 20px nav padding = 95px */
+    top: 95px; 
+}
+
+/* Mobile adjustments to keep it tight on smaller screens */
+@media (max-width: 991px) {
+    body:has(.navbar.scrolled) .top-alert {
+        /* Mobile scrolled logo is 60px + 20px padding = 80px */
+        top: 80px; 
+    }
+}
+
 .close-alert { cursor: pointer; margin-left: 20px; opacity: 0.8; }
 .toast-custom { position: fixed; top: 90px; right: -400px; background-color: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); padding: 18px 24px; border-radius: 8px; display: flex; align-items: center; gap: 15px; z-index: 1050; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: right 0.4s ease; }
 .toast-custom.show { right: 20px; }
 
 /* =========================================
-   11. MODALS & POP-UPS (Updated)
+   12. MODALS & POP-UPS
    ========================================= */
 .modal-backdrop.show {
     opacity: 0.85;
-    background-color: #021625; /* Dark Navy Tint */
+    background-color: #021625; 
     backdrop-filter: blur(5px);
 }
 
@@ -442,72 +460,31 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     color: white !important;
 }
 
-#calculateModalLabel {
-    font-family: 'Anton', sans-serif !important;
-    letter-spacing: 2px;
-}
+#calculateModalLabel { font-family: 'Anton', sans-serif !important; letter-spacing: 2px; }
+#modalPackageName { color: var(--primary-color) !important; font-family: 'Montserrat', sans-serif; font-weight: 800; text-transform: uppercase; }
+#modalTotalPrice { font-family: 'Anton', sans-serif !important; letter-spacing: 1px; color: var(--accent-color) !important; }
 
-#modalPackageName {
-    color: var(--primary-color) !important;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 800;
-    text-transform: uppercase;
-}
-
-#modalTotalPrice {
-    font-family: 'Anton', sans-serif !important;
-    letter-spacing: 1px;
-    color: var(--accent-color) !important;
-}
-
-/* Modal Buttons */
 .btn-cancel {
     background-color: transparent !important;
     border: 1px solid rgba(255,255,255,0.2) !important;
     color: white !important;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
-    text-transform: uppercase;
-    border-radius: 8px;
-    padding: 14px 20px;
-    transition: all 0.3s ease;
+    font-family: 'Montserrat', sans-serif; font-weight: 700; text-transform: uppercase; border-radius: 8px; padding: 14px 20px; transition: all 0.3s ease;
 }
-
-.btn-cancel:hover {
-    background-color: rgba(255, 255, 255, 0.05) !important;
-    border-color: white !important;
-}
+.btn-cancel:hover { background-color: rgba(255, 255, 255, 0.05) !important; border-color: white !important; }
 
 .btn-proceed {
     background-color: var(--accent-color) !important;
     color: black !important;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 800;
-    text-transform: uppercase;
-    border: none !important;
-    border-radius: 8px;
-    padding: 14px 20px;
-    transition: all 0.3s ease;
+    font-family: 'Montserrat', sans-serif; font-weight: 800; text-transform: uppercase; border: none !important; border-radius: 8px; padding: 14px 20px; transition: all 0.3s ease;
 }
+.btn-proceed:hover { background-color: var(--accent-hover) !important; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(231, 111, 81, 0.3); }
 
-.btn-proceed:hover {
-    background-color: var(--accent-hover) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(231, 111, 81, 0.3);
-}
-
-/* Modal Inputs Overrides */
-.calculate-modal-content .form-control-dark {
-    padding-left: 20px !important; /* Reset padding for modal input since no icon */
-    background-color: #021625 !important;
-}
+.calculate-modal-content .form-control-dark { padding-left: 20px !important; background-color: #021625 !important; }
 
 /* =========================================
-   12. FOOTER & CHAT
+   13. FOOTER & CHAT
    ========================================= */
-footer { 
-    position: relative; background-color: #021A2E; color: #a0a0a0; padding: 80px 0 30px 0; margin-top: 100px !important; font-size: 0.95rem; 
-}
+footer { position: relative; background-color: #021A2E; color: #a0a0a0; padding: 80px 0 30px 0; margin-top: 100px !important; font-size: 0.95rem; }
 .waves-container { position: absolute; top: -100px; left: 0; width: 100%; height: 100px; overflow: hidden; line-height: 0; z-index: 1; pointer-events: none; }
 .waves { width: 100%; height: 100%; }
 .parallax > use { animation: move-forever 25s cubic-bezier(.55,.5,.45,.5) infinite; }
@@ -545,7 +522,7 @@ footer {
 .platform-icon { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
 
 /* =========================================
-   13. ANIMATIONS
+   14. ANIMATIONS
    ========================================= */
 .fade-in { animation: fadeIn 0.5s ease-in; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -556,11 +533,10 @@ footer {
 .delay-1 { transition-delay: 0.1s; }
 .delay-2 { transition-delay: 0.2s; }
 .delay-3 { transition-delay: 0.3s; }
-/* =========================================
-   14. GLOBAL TEAL HOVER EFFECTS
-   ========================================= */
 
-/* All dark form inputs, select dropdowns, and textareas */
+/* =========================================
+   15. GLOBAL TEAL HOVER EFFECTS
+   ========================================= */
 .form-control-dark, 
 .search-filter-bar input, 
 .search-filter-bar select {
@@ -578,21 +554,10 @@ footer {
     outline: none !important;
 }
 
-/* All dark card boxes (like in Destinations details and Connect form) */
-.bg-card-dark {
-    transition: all 0.3s ease !important;
-}
+.bg-card-dark { transition: all 0.3s ease !important; }
+.bg-card-dark:hover { border-color: #2A9D8F !important; box-shadow: 0 10px 30px rgba(42, 157, 143, 0.2) !important; }
 
-.bg-card-dark:hover {
-    border-color: #2A9D8F !important;
-    box-shadow: 0 10px 30px rgba(42, 157, 143, 0.2) !important;
-}
-
-/* Global Social Media Buttons (Footer and Connect Page) */
-.social-btn {
-    transition: all 0.3s ease !important;
-}
-
+.social-btn { transition: all 0.3s ease !important; }
 .social-btn:hover {
     background-color: #2A9D8F !important;
     border-color: #2A9D8F !important;
@@ -600,104 +565,62 @@ footer {
     transform: translateY(-3px) !important;
     box-shadow: 0 5px 15px rgba(42, 157, 143, 0.4) !important;
 }
+
 /* =========================================
-   15. FINAL FRONTEND POLISH
+   16. FRONTEND POLISH & MODAL TABS
    ========================================= */
-
-/* Active Navbar Link Highlighting */
-.navbar-nav .nav-link {
-    position: relative;
-    transition: color 0.3s ease;
-}
-
-.navbar-nav .nav-link.active, 
-.navbar-nav .nav-link:hover {
-    color: #2A9D8F !important;
-}
-
-/* Optional: Small teal underline dot for the active page */
+.navbar-nav .nav-link { position: relative; transition: color 0.3s ease; }
+.navbar-nav .nav-link.active, .navbar-nav .nav-link:hover { color: #2A9D8F !important; }
 .navbar-nav .nav-link.active::after {
-    content: '';
-    position: absolute;
-    bottom: 5px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 5px;
-    height: 5px;
-    background-color: #2A9D8F;
-    border-radius: 50%;
+    content: ''; position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%);
+    width: 5px; height: 5px; background-color: #2A9D8F; border-radius: 50%;
 }
 
-/* Mini Social Icons in Navbar */
-.social-hover {
-    transition: color 0.3s ease, transform 0.3s ease;
-}
-.social-hover:hover {
-    color: #2A9D8F !important;
-    transform: translateY(-2px);
-}
+.social-hover { transition: color 0.3s ease, transform 0.3s ease; }
+.social-hover:hover { color: #2A9D8F !important; transform: translateY(-2px); }
 
-/* Make Footer Newsletter Input glow teal */
-footer input[type="email"] {
-    background-color: #021625 !important;
-    color: white !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    transition: all 0.3s ease !important;
-}
-
-footer input[type="email"]:hover,
-footer input[type="email"]:focus {
-    border-color: #2A9D8F !important;
-    box-shadow: 0 0 12px rgba(42, 157, 143, 0.4) !important;
-    outline: none !important;
-}
-/* =========================================
-   16. REGIONAL PREFERENCES MODAL
-   ========================================= */
+footer input[type="email"] { background-color: #021625 !important; color: white !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; transition: all 0.3s ease !important; }
+footer input[type="email"]:hover, footer input[type="email"]:focus { border-color: #2A9D8F !important; box-shadow: 0 0 12px rgba(42, 157, 143, 0.4) !important; outline: none !important; }
 
 /* Modal Tabs */
 .pref-tab {
-    background: transparent;
-    border: none;
-    color: #8b9bb4;
-    padding: 15px 20px;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    border-bottom: 2px solid transparent;
-    transition: all 0.3s ease;
+    background: transparent; border: none; color: #8b9bb4; padding: 15px 20px; font-family: 'Montserrat', sans-serif;
+    font-weight: 700; text-transform: uppercase; font-size: 0.85rem; border-bottom: 2px solid transparent; transition: all 0.3s ease;
 }
-
-.pref-tab:hover {
-    color: white;
-    background-color: rgba(255, 255, 255, 0.05);
-}
-
-.pref-tab.active {
-    color: #2A9D8F;
-    border-bottom-color: #2A9D8F;
-    background-color: rgba(42, 157, 143, 0.05);
-}
+.pref-tab:hover { color: white; background-color: rgba(255, 255, 255, 0.05); }
+.pref-tab.active { color: #2A9D8F; border-bottom-color: #2A9D8F; background-color: rgba(42, 157, 143, 0.05); }
 
 /* Grid Items */
-.pref-grid-item {
-    display: flex;
-    align-items: center;
-    padding: 12px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    border: 1px solid transparent;
-    transition: all 0.2s ease;
-    height: 100%;
-}
+.pref-grid-item { display: flex; align-items: center; padding: 12px 15px; border-radius: 8px; cursor: pointer; border: 1px solid transparent; transition: all 0.2s ease; height: 100%; }
+.pref-grid-item:hover { background-color: rgba(42, 157, 143, 0.1); border-color: rgba(42, 157, 143, 0.3); }
+.pref-grid-item.active { background-color: rgba(42, 157, 143, 0.2); border-color: #2A9D8F; }
 
-.pref-grid-item:hover {
-    background-color: rgba(42, 157, 143, 0.1);
-    border-color: rgba(42, 157, 143, 0.3);
+/* =========================================
+   17. LIGHT MODE OVERRIDES
+   ========================================= */
+[data-theme="light"] body { background-color: #f4f7f6 !important; color: #212529 !important; }
+[data-theme="light"] .bg-card-dark,
+[data-theme="light"] .modal-content,
+[data-theme="light"] .chat-popup {
+    background-color: #ffffff !important; border-color: rgba(0,0,0,0.1) !important; box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important;
 }
+[data-theme="light"] .text-white { color: #212529 !important; }
+[data-theme="light"] .text-white-50 { color: #6c757d !important; }
 
-.pref-grid-item.active {
-    background-color: rgba(42, 157, 143, 0.2);
-    border-color: #2A9D8F;
+[data-theme="light"] .form-control-dark,
+[data-theme="light"] .form-select {
+    background-color: #f8f9fa !important; color: #333 !important; border-color: #dee2e6 !important;
+}
+[data-theme="light"] .navbar.scrolled {
+    background-color: #ffffff !important; box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+}
+[data-theme="light"] .navbar.scrolled .nav-link,
+[data-theme="light"] .navbar.scrolled .navbar-brand { color: #333 !important; }
+[data-theme="light"] .navbar.scrolled .nav-link:hover,
+[data-theme="light"] .navbar.scrolled .nav-link.active { color: #2A9D8F !important; }
+
+[data-theme="light"] [style*="background-color: #021625"],
+[data-theme="light"] [style*="background-color: rgb(2, 22, 37)"],
+[data-theme="light"] [style*="backgroundColor: '#021625'"] {
+    background-color: #f8f9fa !important;
 }

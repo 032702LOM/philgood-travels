@@ -101,10 +101,16 @@ const Destinations = () => {
   
   const fetchWeather = async (lat, lon) => {
     try {
-      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=423c732b34abb2959bd3dd661246d90f`);
+      // 1. Grab the secure key from your .env file
+      const apiKey = import.meta.env.VITE_WEATHER_API_KEY; 
+      
+      // 2. Inject it into the URL dynamically
+      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`);
       const data = await response.json();
       setWeather(Math.round(data.main.temp) + '°C');
-    } catch (err) { setWeather('--°C'); }
+    } catch (err) { 
+      setWeather('--°C'); 
+    }
   };
 
   const handleRefreshWeather = async () => { if (selectedPlace && selectedPlace.lat) { setIsRefreshing(true); await fetchWeather(selectedPlace.lat, selectedPlace.lon); setTimeout(() => setIsRefreshing(false), 800); } };
