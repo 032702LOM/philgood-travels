@@ -102,7 +102,7 @@ const Destinations = () => {
   const fetchWeather = async (lat, lon) => {
     try {
       // 1. Grab the secure key from your .env file
-      const apiKey = import.meta.env.VITE_WEATHER_API_KEY; 
+      const apiKey = import.meta.env.VITE_WEATHER_API_KEY; // Testing live weather
       
       // 2. Inject it into the URL dynamically
       const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`);
