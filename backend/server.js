@@ -23,7 +23,7 @@ app.use(cors({
 // ⚡ THE STRIPE WEBHOOK (MUST BE BEFORE express.json) ⚡
 // ==========================================
 // We use express.raw() here so Stripe can verify the security signature
-app.post('/api/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+app.post('/api/bookings/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
     console.log("🔔 WEBHOOK CALLED! Signal received from Stripe.");
     const sig = req.headers['stripe-signature'];
     const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
