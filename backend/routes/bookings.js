@@ -86,3 +86,71 @@ router.get('/user/:userId', async (req, res) => {
 });
 
 module.exports = router;
+// ==========================================
+// DELETE: Remove a duplicate or unwanted booking
+// ==========================================
+router.delete('/:id', async (req, res) => {
+    try {
+        await Booking.findByIdAndDelete(req.params.id);
+        res.status(200).json({ message: "Booking permanently deleted." });
+    } catch (error) {
+        console.error("Delete Error:", error);
+        res.status(500).json({ error: "Failed to delete booking." });
+    }
+});
+
+// ==========================================
+// PUT: Cancel a booking (Must be 2 days prior)
+// ==========================================
+router.put('/cancel/:id', async (req, res) => {
+    try {
+        const booking = await Booking.findById(req.params.id);
+        if (!booking) return res.status(404).json({ error: "Booking not found." });
+
+        // Calculate days until trip
+        const travelDate = new Date(booking.travelDate);
+        const today = new Date();
+        const diffTime = travelDate.getTime() - today.getTime();
+        const diffDays = diffTime / (1000 * 3600 * 24);
+
+        if (diffDays < 2) {
+            return res.status(400).json({ error: "You can only cancel at least 2 days before travel." });
+        }
+
+        booking.bookingStatus = 'Cancelled';
+        await booking.save();
+        res.status(200).json({ message: "Booking cancelled successfully.", booking });
+    } catch (error) {
+        console.error("Cancel Error:", error);
+        res.status(500).json({ error: "Failed to cancel booking." });
+    }
+});
+
+// ==========================================
+// PUT: Postpone a booking (Must be 2 days prior)
+// ==========================================
+router.put('/postpone/:id', async (req, res) => {
+    try {
+        const { newDate } = req.body;
+        const booking = await Booking.findById(req.params.id);
+        if (!booking) return res.status(404).json({ error: "Booking not found." });
+
+        // Calculate days until CURRENT trip
+        const travelDate = new Date(booking.travelDate);
+        const today = new Date();
+        const diffTime = travelDate.getTime() - today.getTime();
+        const diffDays = diffTime / (1000 * 3600 * 24);
+
+        if (diffDays < 2) {
+            return res.status(400).json({ error: "You can only postpone at least 2 days before travel." });
+        }
+
+        booking.travelDate = newDate;
+        booking.bookingStatus = 'Postponed'; // Optional: Change status or leave it
+        await booking.save();
+        res.status(200).json({ message: "Booking postponed successfully.", booking });
+    } catch (error) {
+        console.error("Postpone Error:", error);
+        res.status(500).json({ error: "Failed to postpone booking." });
+    }
+});

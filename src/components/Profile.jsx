@@ -33,6 +33,68 @@ const Profile = () => {
     }
   }, [navigate, location]);
 
+  // ==========================================
+  // ⚡ NEW ACTION FUNCTIONS (Cancel/Postpone/Delete)
+  // ==========================================
+  const canModify = (travelDate) => {
+      const tripDate = new Date(travelDate);
+      const today = new Date();
+      const diffTime = tripDate.getTime() - today.getTime();
+      const diffDays = diffTime / (1000 * 3600 * 24);
+      return diffDays >= 2;
+  };
+
+  const handleDelete = async (bookingId) => {
+      if (window.confirm("Are you sure you want to permanently delete this booking?")) {
+          try {
+              await axios.delete(`https://philgood-travels.onrender.com/api/bookings/${bookingId}`);
+              // Instantly remove it from the screen
+              setBookings(prev => prev.filter(b => b._id !== bookingId));
+              alert("Booking deleted!");
+          } catch (error) {
+              console.error("Failed to delete", error);
+              alert("Failed to delete booking.");
+          }
+      }
+  };
+
+  const handleCancel = async (bookingId, travelDate) => {
+      if (!canModify(travelDate)) {
+          return alert("Sorry, you can only cancel at least 2 days before your trip.");
+      }
+      if (window.confirm("Are you sure you want to cancel this trip?")) {
+          try {
+              await axios.put(`https://philgood-travels.onrender.com/api/bookings/cancel/${bookingId}`);
+              // Instantly update the status on the screen
+              setBookings(prev => prev.map(b => b._id === bookingId ? { ...b, bookingStatus: 'Cancelled' } : b));
+              alert("Trip cancelled successfully.");
+          } catch (error) {
+              console.error("Failed to cancel", error);
+              alert(error.response?.data?.error || "Failed to cancel.");
+          }
+      }
+  };
+
+  const handlePostpone = async (bookingId, travelDate) => {
+      if (!canModify(travelDate)) {
+          return alert("Sorry, you can only postpone at least 2 days before your trip.");
+      }
+      const newDate = window.prompt("Enter your new travel date (YYYY-MM-DD):");
+      if (newDate) {
+          if (window.confirm(`Are you sure you want to move your trip to ${newDate}?`)) {
+              try {
+                  await axios.put(`https://philgood-travels.onrender.com/api/bookings/postpone/${bookingId}`, { newDate });
+                  // Instantly update the date and status on the screen
+                  setBookings(prev => prev.map(b => b._id === bookingId ? { ...b, travelDate: newDate, bookingStatus: 'Postponed' } : b));
+                  alert("Trip postponed successfully.");
+              } catch (error) {
+                  console.error("Failed to postpone", error);
+                  alert(error.response?.data?.error || "Failed to postpone.");
+              }
+          }
+      }
+  };
+
   // ⚡ INVOICE GENERATOR ⚡
   const handleDownloadInvoice = (booking) => {
     let actualPaid = booking.payments?.filter(p => p.status === 'Paid').reduce((acc, curr) => acc + curr.amountDue, 0) || 0;
@@ -136,7 +198,13 @@ const Profile = () => {
                         <div className="d-flex justify-content-between align-items-center mb-3">
                           <div className="d-flex align-items-center gap-3">
                               <h5 className="text-white fw-bold m-0" style={{ color: '#FF8C73' }}>{booking.packageName}</h5>
-                              {booking.bookingStatus === 'Confirmed' ? (
+                              
+                              {/* STATUS BADGES */}
+                              {booking.bookingStatus === 'Cancelled' ? (
+                                  <span className="badge bg-danger"><i className="fa-solid fa-ban me-1"></i> Cancelled</span>
+                              ) : booking.bookingStatus === 'Postponed' ? (
+                                  <span className="badge bg-warning text-dark"><i className="fa-regular fa-calendar-days me-1"></i> Postponed</span>
+                              ) : booking.bookingStatus === 'Confirmed' ? (
                                   <span className="badge bg-success"><i className="fa-solid fa-check me-1"></i> Fully Paid</span>
                               ) : (
                                   <span className="badge text-dark" style={{ backgroundColor: '#FFD166' }}>{progressPercent}% Collected</span>
@@ -194,6 +262,27 @@ const Profile = () => {
                               </div>
                           </div>
                         )}
+
+                        {/* ⚡ ACTION BUTTONS (Cancel, Postpone, Delete) ⚡ */}
+                        <div className="d-flex justify-content-end gap-2 mt-4 pt-3 border-top border-secondary border-opacity-25">
+                            {/* Only show Postpone/Cancel if the trip is >= 2 days away AND not already cancelled */}
+                            {canModify(booking.travelDate) && booking.bookingStatus !== 'Cancelled' && (
+                                <>
+                                    <button className="btn btn-sm btn-outline-warning" onClick={() => handlePostpone(booking._id, booking.travelDate)}>
+                                        <i className="fa-regular fa-calendar-days me-1"></i> Postpone
+                                    </button>
+                                    <button className="btn btn-sm btn-outline-danger" onClick={() => handleCancel(booking._id, booking.travelDate)}>
+                                        <i className="fa-solid fa-ban me-1"></i> Cancel Trip
+                                    </button>
+                                </>
+                            )}
+                            
+                            {/* Delete button is always visible to remove mistakes or old bookings */}
+                            <button className="btn btn-sm btn-danger" onClick={() => handleDelete(booking._id)}>
+                                <i className="fa-solid fa-trash me-1"></i> Delete
+                            </button>
+                        </div>
+
                       </div>
                     );
                   })}
