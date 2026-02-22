@@ -1,72 +1,106 @@
 const express = require('express');
 const router = express.Router();
 const Booking = require('../models/Booking');
+const nodemailer = require('nodemailer'); // 👈 NEW: The automated mail carrier
 
 // 1. Initialize Stripe using your Secret Key
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-// POST: Create a new booking
+// 2. Set up Nodemailer Transport (The Mailroom)
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+});
+
+// ==========================================
+// POST: Create a new booking & Send Emails
+// ==========================================
 router.post('/create', async (req, res) => {
     try {
-        // Extract all the data sent from the React frontend
         const { userId, packageName, travelDate, guests, totalPrice, paymentMethod, splitBetween = 1, friendEmails = [] } = req.body;
 
-        // 2. Calculate how much each person owes
         const amountDue = totalPrice / splitBetween;
         let paymentsArray = [];
 
-        // 3. Generate a unique Stripe Checkout link for each person
+        // Generate Stripe links for everyone
         for (let i = 0; i < splitBetween; i++) {
-            // Assign an email (Lead gets the first one, friends get the rest, or a placeholder)
             const payerEmail = friendEmails[i] || `guest${i+1}@pending.com`;
 
-            // Tell Stripe to create a checkout page for this share of the trip
             const session = await stripe.checkout.sessions.create({
                 payment_method_types: ['card'],
                 customer_email: payerEmail,
                 line_items: [{
                     price_data: {
-                        currency: 'php', // Philippine Peso
-                        product_data: {
-                            name: `${packageName} - Split Share (${i + 1} of ${splitBetween})`,
-                        },
-                        // Stripe expects amounts in cents/centavos, so we multiply by 100!
+                        currency: 'php',
+                        product_data: { name: `${packageName} - Split Share (${i + 1} of ${splitBetween})` },
                         unit_amount: Math.round(amountDue * 100), 
                     },
                     quantity: 1,
                 }],
                 mode: 'payment',
-                success_url: 'https://philgood-travels.vercel.app/profile?payment=success', // Where to go after paying
+                success_url: 'https://philgood-travels.vercel.app/profile?payment=success', 
                 cancel_url: 'https://philgood-travels.vercel.app/profile?payment=cancelled',
             });
 
-            // Add this specific invoice and Stripe URL to our database list
             paymentsArray.push({
                 payerEmail: payerEmail,
                 amountDue: amountDue,
                 amountPaid: 0,
                 status: 'Pending',
-                paymentUrl: session.url // 👈 This is the magic clickable link!
+                paymentUrl: session.url 
             });
         }
 
-        // 4. Save the upgraded booking to MongoDB
+        // Save to Database
         const newBooking = new Booking({
-            userId,
-            packageName,
-            travelDate,
-            guests,
-            totalPrice,
-            paymentMethod,
-            bookingStatus: 'Pending', // Held as Pending until everyone pays
-            splitBetween,
-            payments: paymentsArray
+            userId, packageName, travelDate, guests, totalPrice, paymentMethod,
+            bookingStatus: 'Pending', splitBetween, payments: paymentsArray
         });
 
         await newBooking.save();
+
+        // ⚡ SEND AUTOMATED EMAILS ⚡
+        try {
+            for (const payment of paymentsArray) {
+                // Don't send emails to dummy placeholder accounts
+                if (!payment.payerEmail.includes('@pending.com')) {
+                    const mailOptions = {
+                        from: `"PhilGood Travels" <${process.env.EMAIL_USER}>`,
+                        to: payment.payerEmail,
+                        subject: `Your Invoice & Payment Link for ${packageName}`,
+                        html: `
+                            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background-color: #f9f9f9;">
+                                <h2 style="color: #2A9D8F; text-align: center;">PhilGood Travels</h2>
+                                <p style="font-size: 16px;">Hello!</p>
+                                <p style="font-size: 16px;">You have a pending invoice for the upcoming trip to <strong>${packageName}</strong> on <strong>${travelDate}</strong>.</p>
+                                
+                                <div style="background-color: white; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 5px solid #2A9D8F;">
+                                    <h3 style="margin-top: 0; color: #333;">Invoice Details:</h3>
+                                    <p style="margin: 5px 0;"><strong>Total Amount Due:</strong> ₱${payment.amountDue.toLocaleString()}</p>
+                                    <p style="margin: 5px 0;"><strong>Status:</strong> <span style="color: #FF8C73; font-weight: bold;">Pending</span></p>
+                                </div>
+
+                                <p style="font-size: 16px;">To secure your spot, please click the secure link below to pay your share:</p>
+                                <div style="text-align: center; margin: 30px 0;">
+                                    <a href="${payment.paymentUrl}" style="background-color: #2A9D8F; color: white; padding: 14px 28px; text-decoration: none; font-size: 16px; font-weight: bold; border-radius: 50px; display: inline-block;">Pay My Share</a>
+                                </div>
+                                <hr style="border: none; border-top: 1px solid #eee; margin-top: 30px;" />
+                                <p style="font-size: 12px; color: #888; text-align: center;">If you did not request this booking, please ignore this email.</p>
+                            </div>
+                        `
+                    };
+                    await transporter.sendMail(mailOptions);
+                    console.log(`✅ Invoice email sent to: ${payment.payerEmail}`);
+                }
+            }
+        } catch (emailError) {
+            console.error("⚠️ Booking saved, but email sending failed:", emailError);
+        }
         
-        // 5. Send success message back to the frontend
-        res.status(201).json({ message: "✅ Booking and Split Payments created!", booking: newBooking });
+        res.status(201).json({ message: "✅ Booking created and emails sent!", booking: newBooking });
         
     } catch (error) {
         console.error("Booking Error:", error);
@@ -74,7 +108,9 @@ router.post('/create', async (req, res) => {
     }
 });
 
+// ==========================================
 // GET: Fetch all bookings for a specific user
+// ==========================================
 router.get('/user/:userId', async (req, res) => {
     try {
         const userBookings = await Booking.find({ userId: req.params.userId }).sort({ createdAt: -1 });
@@ -93,7 +129,6 @@ router.delete('/:id', async (req, res) => {
         await Booking.findByIdAndDelete(req.params.id);
         res.status(200).json({ message: "Booking permanently deleted." });
     } catch (error) {
-        console.error("Delete Error:", error);
         res.status(500).json({ error: "Failed to delete booking." });
     }
 });
@@ -115,7 +150,7 @@ router.put('/cancel/:id', async (req, res) => {
         }
 
         booking.bookingStatus = 'Cancelled';
-        booking.cancelledAt = new Date(); // 👈 Start the 1-month timer
+        booking.cancelledAt = new Date(); // Start the 1-month timer
         await booking.save();
         res.status(200).json({ message: "Booking cancelled successfully.", booking });
     } catch (error) {
@@ -132,7 +167,6 @@ router.put('/postpone/:id', async (req, res) => {
         const booking = await Booking.findById(req.params.id);
         if (!booking) return res.status(404).json({ error: "Booking not found." });
 
-        // Check the limit!
         if (booking.postponeCount >= 2) {
             return res.status(400).json({ error: "You have reached the maximum limit of 2 postponements." });
         }
@@ -147,7 +181,7 @@ router.put('/postpone/:id', async (req, res) => {
 
         booking.travelDate = newDate;
         booking.bookingStatus = 'Postponed'; 
-        booking.postponeCount += 1; // 👈 Increase the counter
+        booking.postponeCount = (booking.postponeCount || 0) + 1; // Increase the counter
         await booking.save();
         res.status(200).json({ message: "Booking postponed successfully.", booking });
     } catch (error) {
@@ -165,7 +199,6 @@ router.put('/rebook/:id', async (req, res) => {
         
         if (!booking) return res.status(404).json({ error: "Booking not found." });
 
-        // Ensure it's within 1 month of cancellation
         if (booking.cancelledAt) {
             const oneMonthAgo = new Date();
             oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
@@ -176,7 +209,6 @@ router.put('/rebook/:id', async (req, res) => {
 
         booking.travelDate = newDate;
         
-        // Return status to Pending (or Confirmed if they already fully paid before)
         const allPaid = booking.payments.length > 0 && booking.payments.every(p => p.status === 'Paid');
         booking.bookingStatus = allPaid ? 'Confirmed' : 'Pending';
         
@@ -187,5 +219,5 @@ router.put('/rebook/:id', async (req, res) => {
     }
 });
 
-// 👇 THE EXIT DOOR (MUST STAY AT THE VERY BOTTOM) 👇
+// 👇 THE EXIT DOOR (STAYS AT THE VERY BOTTOM) 👇
 module.exports = router;
