@@ -9,7 +9,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', formData);
+      const response = await axios.post('https://philgood-travels.onrender.com/api/auth/login', formData);
       
       // 1. Show success message
       setMessage(response.data.message);

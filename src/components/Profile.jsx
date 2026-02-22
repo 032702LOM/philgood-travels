@@ -20,7 +20,7 @@ const Profile = () => {
       const parsedUser = JSON.parse(userStr);
       setUser(parsedUser);
 
-      axios.get(`http://localhost:5000/api/bookings/user/${parsedUser.id}`)
+      axios.get(`https://philgood-travels.onrender.com/api/bookings/user/${parsedUser.id}`)
         .then(response => {
             setBookings(response.data);
         })

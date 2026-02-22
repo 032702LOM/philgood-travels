@@ -88,7 +88,7 @@ const Booking = () => {
     };
 
     try {
-        await axios.post('http://localhost:5000/api/bookings/create', bookingData);
+        await axios.post('https://philgood-travels.onrender.com/api/bookings/create', bookingData);
         alert(splitBetween > 1 
             ? `✅ Group Booking Created!\n\nYour split payment links have been generated and saved to your dashboard.` 
             : `✅ Payment processed securely via ${paymentMethod}!\n\nYour booking has been saved to your dashboard.`);

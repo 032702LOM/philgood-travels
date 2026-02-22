@@ -10,7 +10,7 @@ const Register = () => {
     e.preventDefault();
     try {
       // Sends the data to your Node.js backend on port 5000!
-      const response = await axios.post('http://localhost:5000/api/auth/register', formData);
+      const response = await axios.post('https://philgood-travels.onrender.com/api/auth/register', formData);
       setMessage(response.data.message);
       setIsError(false);
       setFormData({ name: '', email: '', password: '' }); // Clears the form on success
