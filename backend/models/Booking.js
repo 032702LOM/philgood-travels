@@ -17,20 +17,20 @@ const bookingSchema = new mongoose.Schema({
     totalPrice: { type: Number, required: true },
     paymentMethod: { type: String, required: true },
     
-    // New: Master status for the whole group
+    // ⚡ THE FIX: Added 'Postponed' to the VIP list ⚡
     bookingStatus: { 
         type: String, 
-        enum: ['Pending', 'Confirmed', 'Cancelled'], 
+        enum: ['Pending', 'Confirmed', 'Cancelled', 'Postponed'], 
         default: 'Pending' 
     },
     
-    // New: How many ways are we splitting the bill?
+    // How many ways are we splitting the bill?
     splitBetween: {
         type: Number,
         default: 1
     },
     
-    // New: A list of individual invoices for the group
+    // A list of individual invoices for the group
     payments: [
         {
             payerEmail: { type: String, required: true }, // Friend's email

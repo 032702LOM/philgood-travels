@@ -85,7 +85,6 @@ router.get('/user/:userId', async (req, res) => {
     }
 });
 
-module.exports = router;
 // ==========================================
 // DELETE: Remove a duplicate or unwanted booking
 // ==========================================
@@ -146,7 +145,7 @@ router.put('/postpone/:id', async (req, res) => {
         }
 
         booking.travelDate = newDate;
-        booking.bookingStatus = 'Postponed'; // Optional: Change status or leave it
+        booking.bookingStatus = 'Postponed'; 
         await booking.save();
         res.status(200).json({ message: "Booking postponed successfully.", booking });
     } catch (error) {
@@ -154,3 +153,6 @@ router.put('/postpone/:id', async (req, res) => {
         res.status(500).json({ error: "Failed to postpone booking." });
     }
 });
+
+// 👇 THE EXIT DOOR (MOVED TO THE BOTTOM) 👇
+module.exports = router;
