@@ -14,7 +14,10 @@ const Booking = require('./models/Booking');
 const app = express();
 
 // 3. Set up CORS (Allow frontend to talk to backend)
-app.use(cors()); 
+app.use(cors({
+    origin: ['http://localhost:5173', 'https://philgood-travels.vercel.app'], 
+    credentials: true
+}));
 
 // ==========================================
 // ⚡ THE STRIPE WEBHOOK (MUST BE BEFORE express.json) ⚡
