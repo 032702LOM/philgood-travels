@@ -106,27 +106,25 @@ router.put('/cancel/:id', async (req, res) => {
         const booking = await Booking.findById(req.params.id);
         if (!booking) return res.status(404).json({ error: "Booking not found." });
 
-        // Calculate days until trip
         const travelDate = new Date(booking.travelDate);
         const today = new Date();
-        const diffTime = travelDate.getTime() - today.getTime();
-        const diffDays = diffTime / (1000 * 3600 * 24);
+        const diffDays = (travelDate.getTime() - today.getTime()) / (1000 * 3600 * 24);
 
         if (diffDays < 2) {
             return res.status(400).json({ error: "You can only cancel at least 2 days before travel." });
         }
 
         booking.bookingStatus = 'Cancelled';
+        booking.cancelledAt = new Date(); // 👈 Start the 1-month timer
         await booking.save();
         res.status(200).json({ message: "Booking cancelled successfully.", booking });
     } catch (error) {
-        console.error("Cancel Error:", error);
         res.status(500).json({ error: "Failed to cancel booking." });
     }
 });
 
 // ==========================================
-// PUT: Postpone a booking (Must be 2 days prior)
+// PUT: Postpone a booking (Max 2 times, 2 days prior)
 // ==========================================
 router.put('/postpone/:id', async (req, res) => {
     try {
@@ -134,11 +132,14 @@ router.put('/postpone/:id', async (req, res) => {
         const booking = await Booking.findById(req.params.id);
         if (!booking) return res.status(404).json({ error: "Booking not found." });
 
-        // Calculate days until CURRENT trip
+        // Check the limit!
+        if (booking.postponeCount >= 2) {
+            return res.status(400).json({ error: "You have reached the maximum limit of 2 postponements." });
+        }
+
         const travelDate = new Date(booking.travelDate);
         const today = new Date();
-        const diffTime = travelDate.getTime() - today.getTime();
-        const diffDays = diffTime / (1000 * 3600 * 24);
+        const diffDays = (travelDate.getTime() - today.getTime()) / (1000 * 3600 * 24);
 
         if (diffDays < 2) {
             return res.status(400).json({ error: "You can only postpone at least 2 days before travel." });
@@ -146,13 +147,45 @@ router.put('/postpone/:id', async (req, res) => {
 
         booking.travelDate = newDate;
         booking.bookingStatus = 'Postponed'; 
+        booking.postponeCount += 1; // 👈 Increase the counter
         await booking.save();
         res.status(200).json({ message: "Booking postponed successfully.", booking });
     } catch (error) {
-        console.error("Postpone Error:", error);
         res.status(500).json({ error: "Failed to postpone booking." });
     }
 });
 
-// 👇 THE EXIT DOOR (MOVED TO THE BOTTOM) 👇
+// ==========================================
+// PUT: Rebook a Cancelled Trip
+// ==========================================
+router.put('/rebook/:id', async (req, res) => {
+    try {
+        const { newDate } = req.body;
+        const booking = await Booking.findById(req.params.id);
+        
+        if (!booking) return res.status(404).json({ error: "Booking not found." });
+
+        // Ensure it's within 1 month of cancellation
+        if (booking.cancelledAt) {
+            const oneMonthAgo = new Date();
+            oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+            if (new Date(booking.cancelledAt) < oneMonthAgo) {
+                return res.status(400).json({ error: "Rebooking period (1 month) has expired." });
+            }
+        }
+
+        booking.travelDate = newDate;
+        
+        // Return status to Pending (or Confirmed if they already fully paid before)
+        const allPaid = booking.payments.length > 0 && booking.payments.every(p => p.status === 'Paid');
+        booking.bookingStatus = allPaid ? 'Confirmed' : 'Pending';
+        
+        await booking.save();
+        res.status(200).json({ message: "Trip successfully rebooked!", booking });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to rebook." });
+    }
+});
+
+// 👇 THE EXIT DOOR (MUST STAY AT THE VERY BOTTOM) 👇
 module.exports = router;

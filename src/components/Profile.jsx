@@ -34,8 +34,10 @@ const Profile = () => {
   }, [navigate, location]);
 
   // ==========================================
-  // ⚡ NEW ACTION FUNCTIONS (Cancel/Postpone/Delete)
+  // ⚡ ACTION FUNCTIONS & RULES
   // ==========================================
+  
+  // Rule: Must be at least 2 days before the trip
   const canModify = (travelDate) => {
       const tripDate = new Date(travelDate);
       const today = new Date();
@@ -44,15 +46,21 @@ const Profile = () => {
       return diffDays >= 2;
   };
 
+  // Rule: Can only rebook if cancelled within the last 1 month
+  const isWithinRebookWindow = (cancelledAt) => {
+      if (!cancelledAt) return true;
+      const oneMonthAgo = new Date();
+      oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+      return new Date(cancelledAt) > oneMonthAgo;
+  };
+
   const handleDelete = async (bookingId) => {
       if (window.confirm("Are you sure you want to permanently delete this booking?")) {
           try {
               await axios.delete(`https://philgood-travels.onrender.com/api/bookings/${bookingId}`);
-              // Instantly remove it from the screen
               setBookings(prev => prev.filter(b => b._id !== bookingId));
               alert("Booking deleted!");
           } catch (error) {
-              console.error("Failed to delete", error);
               alert("Failed to delete booking.");
           }
       }
@@ -64,12 +72,11 @@ const Profile = () => {
       }
       if (window.confirm("Are you sure you want to cancel this trip?")) {
           try {
-              await axios.put(`https://philgood-travels.onrender.com/api/bookings/cancel/${bookingId}`);
-              // Instantly update the status on the screen
-              setBookings(prev => prev.map(b => b._id === bookingId ? { ...b, bookingStatus: 'Cancelled' } : b));
+              const response = await axios.put(`https://philgood-travels.onrender.com/api/bookings/cancel/${bookingId}`);
+              // Instantly update UI with new status and cancelledAt date
+              setBookings(prev => prev.map(b => b._id === bookingId ? response.data.booking : b));
               alert("Trip cancelled successfully.");
           } catch (error) {
-              console.error("Failed to cancel", error);
               alert(error.response?.data?.error || "Failed to cancel.");
           }
       }
@@ -83,19 +90,37 @@ const Profile = () => {
       if (newDate) {
           if (window.confirm(`Are you sure you want to move your trip to ${newDate}?`)) {
               try {
-                  await axios.put(`https://philgood-travels.onrender.com/api/bookings/postpone/${bookingId}`, { newDate });
-                  // Instantly update the date and status on the screen
-                  setBookings(prev => prev.map(b => b._id === bookingId ? { ...b, travelDate: newDate, bookingStatus: 'Postponed' } : b));
+                  const response = await axios.put(`https://philgood-travels.onrender.com/api/bookings/postpone/${bookingId}`, { newDate });
+                  // Instantly update UI with new date and incremented counter
+                  setBookings(prev => prev.map(b => b._id === bookingId ? response.data.booking : b));
                   alert("Trip postponed successfully.");
               } catch (error) {
-                  console.error("Failed to postpone", error);
                   alert(error.response?.data?.error || "Failed to postpone.");
               }
           }
       }
   };
 
-  // ⚡ INVOICE GENERATOR ⚡
+  const handleRebook = async (bookingId) => {
+      const newDate = window.prompt("Enter your new travel date (YYYY-MM-DD):");
+      if (newDate) {
+          if (window.confirm(`Are you sure you want to rebook this trip to ${newDate}?`)) {
+              try {
+                  const response = await axios.put(`https://philgood-travels.onrender.com/api/bookings/rebook/${bookingId}`, { newDate });
+                  // Instantly update the screen
+                  setBookings(prev => prev.map(b => b._id === bookingId ? response.data.booking : b));
+                  alert("Trip rebooked successfully!");
+              } catch (error) {
+                  alert(error.response?.data?.error || "Failed to rebook.");
+              }
+          }
+      }
+  };
+
+
+  // ==========================================
+  // ⚡ INVOICE GENERATOR
+  // ==========================================
   const handleDownloadInvoice = (booking) => {
     let actualPaid = booking.payments?.filter(p => p.status === 'Paid').reduce((acc, curr) => acc + curr.amountDue, 0) || 0;
     const actualDue = booking.totalPrice - actualPaid;
@@ -190,6 +215,7 @@ const Profile = () => {
                   {bookings.map((booking) => {
                     const totalPaid = booking.payments?.reduce((acc, p) => p.status === 'Paid' ? acc + p.amountDue : acc, 0) || 0;
                     const progressPercent = Math.round((totalPaid / booking.totalPrice) * 100);
+                    const postponeCount = booking.postponeCount || 0;
 
                     return (
                       <div key={booking._id} className="p-4 border border-secondary border-opacity-25 rounded-4 shadow-sm" style={{ backgroundColor: '#021625' }}>
@@ -203,29 +229,35 @@ const Profile = () => {
                               {booking.bookingStatus === 'Cancelled' ? (
                                   <span className="badge bg-danger"><i className="fa-solid fa-ban me-1"></i> Cancelled</span>
                               ) : booking.bookingStatus === 'Postponed' ? (
-                                  <span className="badge bg-warning text-dark"><i className="fa-regular fa-calendar-days me-1"></i> Postponed</span>
+                                  <span className="badge bg-warning text-dark"><i className="fa-regular fa-calendar-days me-1"></i> Postponed ({postponeCount}/2)</span>
                               ) : booking.bookingStatus === 'Confirmed' ? (
                                   <span className="badge bg-success"><i className="fa-solid fa-check me-1"></i> Fully Paid</span>
                               ) : (
                                   <span className="badge text-dark" style={{ backgroundColor: '#FFD166' }}>{progressPercent}% Collected</span>
                               )}
                           </div>
-                          <button className="btn btn-sm btn-outline-light" onClick={() => handleDownloadInvoice(booking)}>
-                              <i className="fa-solid fa-download me-2"></i> Invoice
-                          </button>
+                          
+                          {/* Only show invoice if the trip is NOT cancelled */}
+                          {booking.bookingStatus !== 'Cancelled' && (
+                              <button className="btn btn-sm btn-outline-light" onClick={() => handleDownloadInvoice(booking)}>
+                                  <i className="fa-solid fa-download me-2"></i> Invoice
+                              </button>
+                          )}
                         </div>
 
                         {/* Progress Bar */}
-                        <div className="mb-4">
-                            <div className="d-flex justify-content-between mb-1">
-                                <span className="text-white-50 small">Group Payment Progress</span>
-                                <span className="text-accent small fw-bold">{formatPrice(totalPaid)} / {formatPrice(booking.totalPrice)}</span>
+                        {booking.bookingStatus !== 'Cancelled' && (
+                            <div className="mb-4">
+                                <div className="d-flex justify-content-between mb-1">
+                                    <span className="text-white-50 small">Group Payment Progress</span>
+                                    <span className="text-accent small fw-bold">{formatPrice(totalPaid)} / {formatPrice(booking.totalPrice)}</span>
+                                </div>
+                                <div className="progress rounded-pill" style={{ height: '8px', backgroundColor: 'rgba(255,255,255,0.1)' }}>
+                                    <div className="progress-bar progress-bar-striped progress-bar-animated rounded-pill" 
+                                         style={{ width: `${progressPercent}%`, backgroundColor: '#2A9D8F' }}></div>
+                                </div>
                             </div>
-                            <div className="progress rounded-pill" style={{ height: '8px', backgroundColor: 'rgba(255,255,255,0.1)' }}>
-                                <div className="progress-bar progress-bar-striped progress-bar-animated rounded-pill" 
-                                     style={{ width: `${progressPercent}%`, backgroundColor: '#2A9D8F' }}></div>
-                            </div>
-                        </div>
+                        )}
 
                         {/* Booking Details */}
                         <div className="row mb-3">
@@ -235,12 +267,14 @@ const Profile = () => {
                             </div>
                             <div className="col-md-6 text-end">
                                 <span className="text-white-50 small d-block">Method: {booking.paymentMethod}</span>
-                                <h4 className="text-white fw-bold m-0">{formatPrice(booking.totalPrice)}</h4>
+                                <h4 className="text-white fw-bold m-0" style={{ textDecoration: booking.bookingStatus === 'Cancelled' ? 'line-through' : 'none' }}>
+                                    {formatPrice(booking.totalPrice)}
+                                </h4>
                             </div>
                         </div>
                         
-                        {/* Individual Payment Links */}
-                        {booking.payments && booking.payments.length > 0 && (
+                        {/* Individual Payment Links (Hide if cancelled) */}
+                        {booking.bookingStatus !== 'Cancelled' && booking.payments && booking.payments.length > 0 && (
                           <div className="p-3 rounded-3" style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(42, 157, 143, 0.2)' }}>
                               <h6 className="text-white-50 mb-3" style={{ fontSize: '0.8rem', textTransform: 'uppercase' }}>Individual Shares</h6>
                               <div className="d-flex flex-column gap-2">
@@ -263,21 +297,31 @@ const Profile = () => {
                           </div>
                         )}
 
-                        {/* ⚡ ACTION BUTTONS (Cancel, Postpone, Delete) ⚡ */}
+                        {/* ⚡ ADVANCED ACTION BUTTONS ⚡ */}
                         <div className="d-flex justify-content-end gap-2 mt-4 pt-3 border-top border-secondary border-opacity-25">
-                            {/* Only show Postpone/Cancel if the trip is >= 2 days away AND not already cancelled */}
+                            
+                            {/* REBOOK BUTTON: Only shows if Cancelled AND within 1 month */}
+                            {booking.bookingStatus === 'Cancelled' && isWithinRebookWindow(booking.cancelledAt) && (
+                                <button className="btn btn-sm btn-outline-success" onClick={() => handleRebook(booking._id)}>
+                                    <i className="fa-solid fa-rotate-right me-1"></i> Rebook
+                                </button>
+                            )}
+
+                            {/* POSTPONE BUTTON: Disappears if Cancelled, or if they already postponed 2 times */}
+                            {canModify(booking.travelDate) && booking.bookingStatus !== 'Cancelled' && postponeCount < 2 && (
+                                <button className="btn btn-sm btn-outline-warning" onClick={() => handlePostpone(booking._id, booking.travelDate)}>
+                                    <i className="fa-regular fa-calendar-days me-1"></i> Postpone
+                                </button>
+                            )}
+
+                            {/* CANCEL BUTTON: Disappears once it is already Cancelled */}
                             {canModify(booking.travelDate) && booking.bookingStatus !== 'Cancelled' && (
-                                <>
-                                    <button className="btn btn-sm btn-outline-warning" onClick={() => handlePostpone(booking._id, booking.travelDate)}>
-                                        <i className="fa-regular fa-calendar-days me-1"></i> Postpone
-                                    </button>
-                                    <button className="btn btn-sm btn-outline-danger" onClick={() => handleCancel(booking._id, booking.travelDate)}>
-                                        <i className="fa-solid fa-ban me-1"></i> Cancel Trip
-                                    </button>
-                                </>
+                                <button className="btn btn-sm btn-outline-danger" onClick={() => handleCancel(booking._id, booking.travelDate)}>
+                                    <i className="fa-solid fa-ban me-1"></i> Cancel Trip
+                                </button>
                             )}
                             
-                            {/* Delete button is always visible to remove mistakes or old bookings */}
+                            {/* DELETE BUTTON: Always visible for cleanup */}
                             <button className="btn btn-sm btn-danger" onClick={() => handleDelete(booking._id)}>
                                 <i className="fa-solid fa-trash me-1"></i> Delete
                             </button>
