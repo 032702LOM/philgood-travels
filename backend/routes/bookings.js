@@ -36,8 +36,8 @@ router.post('/create', async (req, res) => {
                     quantity: 1,
                 }],
                 mode: 'payment',
-                success_url: 'http://localhost:5173/profile?payment=success', // Where to go after paying
-                cancel_url: 'http://localhost:5173/profile?payment=cancelled',
+                success_url: 'https://philgood-travels.vercel.app/profile?payment=success', // Where to go after paying
+                cancel_url: 'https://philgood-travels.vercel.app/profile?payment=cancelled',
             });
 
             // Add this specific invoice and Stripe URL to our database list
