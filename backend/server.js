@@ -15,7 +15,14 @@ const app = express();
 
 // 3. Set up CORS (Allow frontend to talk to backend)
 app.use(cors({
-    origin: ['http://localhost:5173', 'https://philgood-travels.vercel.app'], 
+    origin: function (origin, callback) {
+        // Allow any Vercel domain that starts with 'philgood-travels'
+        if (!origin || origin.startsWith('https://philgood-travels') || origin.includes('localhost')) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true
 }));
 
