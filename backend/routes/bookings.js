@@ -1,17 +1,23 @@
 const express = require('express');
 const router = express.Router();
 const Booking = require('../models/Booking');
-const nodemailer = require('nodemailer'); // 👈 NEW: The automated mail carrier
+const nodemailer = require('nodemailer'); 
 
 // 1. Initialize Stripe using your Secret Key
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-// 2. Set up Nodemailer Transport (The Mailroom)
+// 2. Set up Nodemailer Transport (Updated for Port 587/Render compatibility)
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false, // Port 587 requires this to be false
+    requireTLS: true, 
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
+    },
+    tls: {
+        rejectUnauthorized: false // Helps avoid handshake errors on Render
     }
 });
 
@@ -65,7 +71,6 @@ router.post('/create', async (req, res) => {
         // ⚡ SEND AUTOMATED EMAILS ⚡
         try {
             for (const payment of paymentsArray) {
-                // Don't send emails to dummy placeholder accounts
                 if (!payment.payerEmail.includes('@pending.com')) {
                     const mailOptions = {
                         from: `"PhilGood Travels" <${process.env.EMAIL_USER}>`,
@@ -108,9 +113,7 @@ router.post('/create', async (req, res) => {
     }
 });
 
-// ==========================================
 // GET: Fetch all bookings for a specific user
-// ==========================================
 router.get('/user/:userId', async (req, res) => {
     try {
         const userBookings = await Booking.find({ userId: req.params.userId }).sort({ createdAt: -1 });
@@ -121,9 +124,7 @@ router.get('/user/:userId', async (req, res) => {
     }
 });
 
-// ==========================================
 // DELETE: Remove a duplicate or unwanted booking
-// ==========================================
 router.delete('/:id', async (req, res) => {
     try {
         await Booking.findByIdAndDelete(req.params.id);
@@ -133,9 +134,7 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-// ==========================================
 // PUT: Cancel a booking (Must be 2 days prior)
-// ==========================================
 router.put('/cancel/:id', async (req, res) => {
     try {
         const booking = await Booking.findById(req.params.id);
@@ -150,7 +149,7 @@ router.put('/cancel/:id', async (req, res) => {
         }
 
         booking.bookingStatus = 'Cancelled';
-        booking.cancelledAt = new Date(); // Start the 1-month timer
+        booking.cancelledAt = new Date(); 
         await booking.save();
         res.status(200).json({ message: "Booking cancelled successfully.", booking });
     } catch (error) {
@@ -158,16 +157,14 @@ router.put('/cancel/:id', async (req, res) => {
     }
 });
 
-// ==========================================
 // PUT: Postpone a booking (Max 2 times, 2 days prior)
-// ==========================================
 router.put('/postpone/:id', async (req, res) => {
     try {
         const { newDate } = req.body;
         const booking = await Booking.findById(req.params.id);
         if (!booking) return res.status(404).json({ error: "Booking not found." });
 
-        if (booking.postponeCount >= 2) {
+        if ((booking.postponeCount || 0) >= 2) {
             return res.status(400).json({ error: "You have reached the maximum limit of 2 postponements." });
         }
 
@@ -181,7 +178,7 @@ router.put('/postpone/:id', async (req, res) => {
 
         booking.travelDate = newDate;
         booking.bookingStatus = 'Postponed'; 
-        booking.postponeCount = (booking.postponeCount || 0) + 1; // Increase the counter
+        booking.postponeCount = (booking.postponeCount || 0) + 1; 
         await booking.save();
         res.status(200).json({ message: "Booking postponed successfully.", booking });
     } catch (error) {
@@ -189,9 +186,7 @@ router.put('/postpone/:id', async (req, res) => {
     }
 });
 
-// ==========================================
 // PUT: Rebook a Cancelled Trip
-// ==========================================
 router.put('/rebook/:id', async (req, res) => {
     try {
         const { newDate } = req.body;
@@ -219,5 +214,4 @@ router.put('/rebook/:id', async (req, res) => {
     }
 });
 
-// 👇 THE EXIT DOOR (STAYS AT THE VERY BOTTOM) 👇
 module.exports = router;
