@@ -238,14 +238,14 @@ const Gallery = () => {
     const filteredRegions = galleryData.filter(r => r.name.toLowerCase().includes(searchKeyword.toLowerCase()));
     return (
       <div className="fade-in">
-        <div className="d-flex justify-content-between align-items-center mb-4"><h4 className="text-white font-montserrat fw-bold mb-0">Explore by Region</h4><span className="text-white-50 small">{galleryData.length} Regions</span></div>
+        <div className="d-flex justify-content-between align-items-center mb-4"><h4 className="text-navy font-montserrat fw-bold mb-0">Explore by Region</h4><span className="text-grey fw-bold small">{galleryData.length} Regions</span></div>
         <div className="row g-4">
           {filteredRegions.map((region) => (
             <div key={region.id} className="col-md-4 scroll-reveal visible">
               <div className="card h-100 border-0 overflow-hidden shadow" style={{ cursor: 'pointer' }} onClick={() => handleRegionClick(region.id)}>
                 <div className="card-img-wrapper" style={{ height: '250px' }}>
                   <img src={region.cover} className="card-img-top w-100 h-100 object-fit-cover" alt={region.name} loading="lazy" />
-                  <div className="position-absolute w-100 h-100 top-0 start-0 d-flex align-items-center justify-content-center" style={{ background: 'rgba(0,0,0,0.3)', transition: 'background 0.3s' }}>
+                  <div className="position-absolute w-100 h-100 top-0 start-0 d-flex align-items-center justify-content-center" style={{ background: 'rgba(0, 119, 182, 0.4)', transition: 'background 0.3s' }}>
                     <h3 className="text-white fw-bold text-uppercase shadow-sm" style={{ letterSpacing: '2px', textShadow: '2px 2px 8px rgba(0,0,0,0.8)' }}>{region.name}</h3>
                   </div>
                 </div>
@@ -263,8 +263,8 @@ const Gallery = () => {
     const filteredSubcards = region.subcards.filter(s => s.name.toLowerCase().includes(searchKeyword.toLowerCase()));
     return (
       <div className="fade-in">
-        <button className="btn btn-link text-white text-decoration-none p-0 mb-4 opacity-75" onClick={handleBackToRegions}><i className="fa-solid fa-arrow-left me-2"></i> Back to All Regions</button>
-        <div className="d-flex justify-content-between align-items-center mb-4"><h4 className="text-white font-montserrat fw-bold mb-0">{region.name} Destinations</h4><span className="text-white-50 small">{region.subcards.length} Locations</span></div>
+        <button className="btn btn-link text-navy fw-bold text-decoration-none p-0 mb-4 opacity-75" onClick={handleBackToRegions}><i className="fa-solid fa-arrow-left me-2"></i> Back to All Regions</button>
+        <div className="d-flex justify-content-between align-items-center mb-4"><h4 className="text-navy font-montserrat fw-bold mb-0">{region.name} Destinations</h4><span className="text-grey fw-bold small">{region.subcards.length} Locations</span></div>
         <div className="row g-4 justify-content-center">
           {filteredSubcards.map((sub) => (
             <div key={sub.id} className="col-md-4 scroll-reveal visible">
@@ -273,8 +273,8 @@ const Gallery = () => {
                   <span className="card-badge" style={{ top: '10px', right: '10px', fontSize: '0.65rem' }}>{sub.images.length} Images</span>
                   <img src={sub.cover} className="card-img-top w-100 h-100 object-fit-cover" alt={sub.name} loading="lazy" />
                 </div>
-                <div className="card-body p-3 text-center">
-                  <h6 className="card-title mb-0 fs-5 text-white">{sub.name}</h6>
+                <div className="card-body p-3 text-center border-top border-primary border-opacity-10">
+                  <h6 className="card-title mb-0 fs-5 text-navy">{sub.name}</h6>
                 </div>
               </div>
             </div>
@@ -292,20 +292,20 @@ const Gallery = () => {
     
     return (
       <div className="fade-in">
-        <button className="btn btn-link text-white text-decoration-none p-0 mb-4 opacity-75" onClick={handleBackToSubcards}>
+        <button className="btn btn-link text-navy fw-bold text-decoration-none p-0 mb-4 opacity-75" onClick={handleBackToSubcards}>
             <i className="fa-solid fa-arrow-left me-2"></i> Back to {region.name} Destinations
         </button>
         <div className="d-flex justify-content-between align-items-center mb-4">
-            <h4 className="text-white font-montserrat fw-bold mb-0">{subcard.name} Gallery</h4>
-            <span className="text-white-50 small">{subcard.images.length} Photos</span>
+            <h4 className="text-navy font-montserrat fw-bold mb-0">{subcard.name} Gallery</h4>
+            <span className="text-grey fw-bold small">{subcard.images.length} Photos</span>
         </div>
         
         <div className="row g-3 justify-content-center">
           {filteredImages.map((img) => (
             <div key={img.id} className="col-6 col-md-4 col-lg scroll-reveal visible gallery-item" style={{ minWidth: '20%' }}>
-              <div className="position-relative overflow-hidden rounded-3 shadow-sm h-100">
+              <div className="position-relative overflow-hidden rounded-3 shadow-sm h-100 border border-primary border-opacity-10">
                 <img src={img.url} alt={img.title} loading="lazy" className="w-100 h-100 object-fit-cover gallery-img" style={{ aspectRatio: '1/1', transition: 'transform 0.4s ease' }} />
-                <div className="position-absolute bottom-0 start-0 w-100 p-2" style={{ background: 'linear-gradient(transparent, rgba(0,0,0,0.8))' }}>
+                <div className="position-absolute bottom-0 start-0 w-100 p-2" style={{ background: 'linear-gradient(transparent, rgba(0, 119, 182, 0.9))' }}>
                   <small className="text-white font-montserrat fw-semibold">{img.title}</small>
                 </div>
               </div>
@@ -320,20 +320,20 @@ const Gallery = () => {
     <div className="fade-in" style={{ paddingTop: '76px' }}>
       
       <section className="gallery-hero" style={{ 
-          backgroundImage: "linear-gradient(to bottom, rgba(2, 26, 46, 0.4), #021A2E), url('https://images.unsplash.com/photo-1590077423771-474b8862cb24?q=80&w=2000&auto=format&fit=crop')",
+          backgroundImage: "linear-gradient(to bottom, rgba(0, 119, 182, 0.5), var(--bg-dark)), url('https://images.unsplash.com/photo-1590077423771-474b8862cb24?q=80&w=2000&auto=format&fit=crop')",
           padding: '130px 0 50px 0', backgroundSize: 'cover', backgroundPosition: 'center 30%'
       }}>
           <div className="container text-center mb-4 scroll-reveal visible">
               <h1 className="hero-title" style={{ fontSize: '4rem' }}>{t('gal_title', 'VISUAL JOURNEY')}</h1>
-              <p className="section-desc mb-0">{t('gal_desc', 'Discover the beauty of the Philippines through our lens')}</p>
+              <p className="section-desc text-white mb-0" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.5)' }}>{t('gal_desc', 'Discover the beauty of the Philippines through our lens')}</p>
           </div>
 
           <div className="container pb-4 scroll-reveal visible delay-1">
-              <div className="search-filter-bar p-4 rounded-4 mx-auto" style={{ maxWidth: '900px', backgroundColor: '#03233B', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+              <div className="search-filter-bar p-4 rounded-4 mx-auto" style={{ maxWidth: '900px' }}>
                   <div className="row g-3 align-items-center">
-                      <div className="col-md-4"><label className="text-white-50 small mb-1 fw-bold">Region</label><div className="input-with-icon position-relative"><i className="fa-solid fa-map-location-dot position-absolute" style={{ left: '15px', top: '50%', transform: 'translateY(-50%)', color: '#a0a0a0', zIndex: 1 }}></i><select className="form-select w-100 border-0" style={{ backgroundColor: '#021625', color: 'white', paddingLeft: '45px', height: '50px' }} value={selectedRegion} onChange={(e) => { setSelectedRegion(e.target.value); setSelectedSubcard('All'); }}><option value="All">All Regions</option>{galleryData.map(r => (<option key={r.id} value={r.id}>{r.name}</option>))}</select></div></div>
-                      <div className="col-md-4"><label className="text-white-50 small mb-1 fw-bold">Location</label><div className="input-with-icon position-relative"><i className="fa-solid fa-camera position-absolute" style={{ left: '15px', top: '50%', transform: 'translateY(-50%)', color: '#a0a0a0', zIndex: 1 }}></i><select className="form-select w-100 border-0" style={{ backgroundColor: '#021625', color: 'white', paddingLeft: '45px', height: '50px' }} value={selectedSubcard} onChange={(e) => setSelectedSubcard(e.target.value)} disabled={selectedRegion === 'All'}><option value="All">{selectedRegion === 'All' ? 'Select a Region first' : 'All Locations'}</option>{availableSubcards.map(sub => (<option key={sub.id} value={sub.name}>{sub.name}</option>))}</select></div></div>
-                      <div className="col-md-4"><label className="text-white-50 small mb-1 fw-bold">Keyword Search</label><div className="input-with-icon position-relative"><i className="fa-solid fa-magnifying-glass position-absolute" style={{ left: '15px', top: '50%', transform: 'translateY(-50%)', color: '#a0a0a0', zIndex: 1 }}></i><input type="text" className="form-control border-0 w-100" style={{ backgroundColor: '#021625', color: 'white', paddingLeft: '45px', height: '50px' }} placeholder="Type to search..." value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)}/></div></div>
+                      <div className="col-md-4"><label className="text-primary-dark fw-bold small mb-1">Region</label><div className="input-with-icon"><i className="fa-solid fa-map-location-dot"></i><select className="form-control-dark form-select w-100" value={selectedRegion} onChange={(e) => { setSelectedRegion(e.target.value); setSelectedSubcard('All'); }}><option value="All">All Regions</option>{galleryData.map(r => (<option key={r.id} value={r.id}>{r.name}</option>))}</select></div></div>
+                      <div className="col-md-4"><label className="text-primary-dark fw-bold small mb-1">Location</label><div className="input-with-icon"><i className="fa-solid fa-camera"></i><select className="form-control-dark form-select w-100" value={selectedSubcard} onChange={(e) => setSelectedSubcard(e.target.value)} disabled={selectedRegion === 'All'}><option value="All">{selectedRegion === 'All' ? 'Select a Region first' : 'All Locations'}</option>{availableSubcards.map(sub => (<option key={sub.id} value={sub.name}>{sub.name}</option>))}</select></div></div>
+                      <div className="col-md-4"><label className="text-primary-dark fw-bold small mb-1">Keyword Search</label><div className="input-with-icon"><i className="fa-solid fa-magnifying-glass"></i><input type="text" className="form-control-dark form-control w-100" placeholder="Type to search..." value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)}/></div></div>
                   </div>
               </div>
           </div>
