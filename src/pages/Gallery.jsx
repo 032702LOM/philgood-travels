@@ -2,49 +2,48 @@ import React, { useState, useEffect } from 'react';
 import { usePreferences } from '../context/PreferencesContext';
 
 // ==========================================
-// HARD-CODED GALLERY DATA
-// 6 Regions -> 3 Subcards per Region -> 5 Images per Subcard
+// HARD-CODED GALLERY DATA (UPDATED WITH NEW LINKS)
 // ==========================================
 const galleryData = [
   { 
     id: 'Palawan', 
     name: 'Palawan', 
-    cover: 'https://images.unsplash.com/photo-1531168556467-8053153c361c?q=80&w=800&auto=format&fit=crop', 
+    cover: 'https://loremflickr.com/800/800/El,Nido,philippines/all?lock=00', 
     subcards: [
       { 
         id: 'palawan-elnido', 
         name: 'El Nido', 
-        cover: 'https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?q=80&w=800&auto=format&fit=crop',
+        cover: 'https://loremflickr.com/800/800/El,Nido,philippines/all?lock=00',
         images: [
-          { id: 'el-img-1', title: 'Big Lagoon', url: 'https://images.unsplash.com/photo-1520626337972-8ee434ee744c?q=80&w=800&auto=format&fit=crop' },
-          { id: 'el-img-2', title: 'Secret Beach', url: 'https://images.unsplash.com/photo-1582967788606-a171c1080cb0?q=80&w=800&auto=format&fit=crop' },
-          { id: 'el-img-3', title: 'Nacpan Beach', url: 'https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=80&w=800&auto=format&fit=crop' },
-          { id: 'el-img-4', title: 'Limestone Cliffs', url: 'https://images.unsplash.com/photo-1606676366299-fdec90590467?q=80&w=800&auto=format&fit=crop' },
-          { id: 'el-img-5', title: 'Hidden Lagoon', url: 'https://images.unsplash.com/photo-1544253303-346c19694f6e?q=80&w=800&auto=format&fit=crop' }
+          { id: 'el-img-1', title: 'El Nido - 1', url: 'https://loremflickr.com/800/800/El,Nido,philippines/all?lock=00' },
+          { id: 'el-img-2', title: 'El Nido - 2', url: 'https://loremflickr.com/800/800/El,Nido,philippines/all?lock=01' },
+          { id: 'el-img-3', title: 'El Nido - 3', url: 'https://loremflickr.com/800/800/El,Nido,philippines/all?lock=02' },
+          { id: 'el-img-4', title: 'El Nido - 4', url: 'https://loremflickr.com/800/800/El,Nido,philippines/all?lock=03' },
+          { id: 'el-img-5', title: 'El Nido - 5', url: 'https://loremflickr.com/800/800/El,Nido,philippines/all?lock=04' }
         ]
       },
       { 
         id: 'palawan-coron', 
         name: 'Coron', 
-        cover: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=800&auto=format&fit=crop',
+        cover: 'https://loremflickr.com/800/800/Coron,philippines/all?lock=10',
         images: [
-          { id: 'co-img-1', title: 'Kayangan Lake', url: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=800&auto=format&fit=crop' },
-          { id: 'co-img-2', title: 'Twin Lagoon', url: 'https://images.unsplash.com/photo-1531168556467-8053153c361c?q=80&w=800&auto=format&fit=crop' },
-          { id: 'co-img-3', title: 'Shipwreck Dive', url: 'https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=800&auto=format&fit=crop' },
-          { id: 'co-img-4', title: 'Mt. Tapyas View', url: 'https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?q=80&w=800&auto=format&fit=crop' },
-          { id: 'co-img-5', title: 'Coron Bay', url: 'https://images.unsplash.com/photo-1520626337972-8ee434ee744c?q=80&w=800&auto=format&fit=crop' }
+          { id: 'co-img-1', title: 'Coron - 1', url: 'https://loremflickr.com/800/800/Coron,philippines/all?lock=10' },
+          { id: 'co-img-2', title: 'Coron - 2', url: 'https://loremflickr.com/800/800/Coron,philippines/all?lock=11' },
+          { id: 'co-img-3', title: 'Coron - 3', url: 'https://loremflickr.com/800/800/Coron,philippines/all?lock=12' },
+          { id: 'co-img-4', title: 'Coron - 4', url: 'https://loremflickr.com/800/800/Coron,philippines/all?lock=13' },
+          { id: 'co-img-5', title: 'Coron - 5', url: 'https://loremflickr.com/800/800/Coron,philippines/all?lock=14' }
         ]
       },
       { 
         id: 'palawan-puerto', 
         name: 'Puerto Princesa', 
-        cover: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop',
+        cover: 'https://loremflickr.com/800/800/Puerto,Princesa,philippines/all?lock=20',
         images: [
-          { id: 'pp-img-1', title: 'Underground River', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop' },
-          { id: 'pp-img-2', title: 'Honda Bay', url: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=800&auto=format&fit=crop' },
-          { id: 'pp-img-3', title: 'City Tour', url: 'https://images.unsplash.com/photo-1571896349842-6e5a51335022?q=80&w=800&auto=format&fit=crop' },
-          { id: 'pp-img-4', title: 'Firefly Watching', url: 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=800&auto=format&fit=crop' },
-          { id: 'pp-img-5', title: 'Sabang Beach', url: 'https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=80&w=800&auto=format&fit=crop' }
+          { id: 'pp-img-1', title: 'Puerto Princesa - 1', url: 'https://loremflickr.com/800/800/Puerto,Princesa,philippines/all?lock=20' },
+          { id: 'pp-img-2', title: 'Puerto Princesa - 2', url: 'https://loremflickr.com/800/800/Puerto,Princesa,philippines/all?lock=21' },
+          { id: 'pp-img-3', title: 'Puerto Princesa - 3', url: 'https://loremflickr.com/800/800/Puerto,Princesa,philippines/all?lock=22' },
+          { id: 'pp-img-4', title: 'Puerto Princesa - 4', url: 'https://loremflickr.com/800/800/Puerto,Princesa,philippines/all?lock=23' },
+          { id: 'pp-img-5', title: 'Puerto Princesa - 5', url: 'https://loremflickr.com/800/800/Puerto,Princesa,philippines/all?lock=24' }
         ]
       }
     ] 
@@ -52,42 +51,42 @@ const galleryData = [
   { 
     id: 'Bohol', 
     name: 'Bohol', 
-    cover: 'https://images.unsplash.com/photo-1518182170546-0766bd6f6a56?q=80&w=800&auto=format&fit=crop', 
+    cover: 'https://loremflickr.com/800/800/Chocolate,Hills,philippines/all?lock=00', 
     subcards: [
       { 
         id: 'bohol-choc', 
         name: 'Chocolate Hills', 
-        cover: 'https://images.unsplash.com/photo-1518182170546-0766bd6f6a56?q=80&w=800&auto=format&fit=crop',
+        cover: 'https://loremflickr.com/800/800/Chocolate,Hills,philippines/all?lock=00',
         images: [
-          { id: 'ch-img-1', title: 'Sunrise Hills', url: 'https://images.unsplash.com/photo-1518182170546-0766bd6f6a56?q=80&w=800&auto=format&fit=crop' },
-          { id: 'ch-img-2', title: 'Viewing Deck', url: 'https://images.unsplash.com/photo-1590077423771-474b8862cb24?q=80&w=800&auto=format&fit=crop' },
-          { id: 'ch-img-3', title: 'ATV Adventure', url: 'https://images.unsplash.com/photo-1544253303-346c19694f6e?q=80&w=800&auto=format&fit=crop' },
-          { id: 'ch-img-4', title: 'Green Season', url: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=800&auto=format&fit=crop' },
-          { id: 'ch-img-5', title: 'Brown Season', url: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=800&auto=format&fit=crop' }
+          { id: 'ch-img-1', title: 'Chocolate Hills - 1', url: 'https://loremflickr.com/800/800/Chocolate,Hills,philippines/all?lock=00' },
+          { id: 'ch-img-2', title: 'Chocolate Hills - 2', url: 'https://loremflickr.com/800/800/Chocolate,Hills,philippines/all?lock=01' },
+          { id: 'ch-img-3', title: 'Chocolate Hills - 3', url: 'https://loremflickr.com/800/800/Chocolate,Hills,philippines/all?lock=02' },
+          { id: 'ch-img-4', title: 'Chocolate Hills - 4', url: 'https://loremflickr.com/800/800/Chocolate,Hills,philippines/all?lock=03' },
+          { id: 'ch-img-5', title: 'Chocolate Hills - 5', url: 'https://loremflickr.com/800/800/Chocolate,Hills,philippines/all?lock=04' }
         ]
       },
       { 
         id: 'bohol-panglao', 
         name: 'Panglao Island', 
-        cover: 'https://images.unsplash.com/photo-1571407921666-da644f80c656?q=80&w=800&auto=format&fit=crop',
+        cover: 'https://loremflickr.com/800/800/Panglao,Island,philippines/all?lock=10',
         images: [
-          { id: 'pa-img-1', title: 'Alona Beach', url: 'https://images.unsplash.com/photo-1571407921666-da644f80c656?q=80&w=800&auto=format&fit=crop' },
-          { id: 'pa-img-2', title: 'Dumaluan Beach', url: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=800&auto=format&fit=crop' },
-          { id: 'pa-img-3', title: 'Balicasag Island', url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800&auto=format&fit=crop' },
-          { id: 'pa-img-4', title: 'Hinagdanan Reef', url: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=800&auto=format&fit=crop' },
-          { id: 'pa-img-5', title: 'Resort Sunset', url: 'https://images.unsplash.com/photo-1455587734955-081b22074882?q=80&w=800&auto=format&fit=crop' }
+          { id: 'pa-img-1', title: 'Panglao Island - 1', url: 'https://loremflickr.com/800/800/Panglao,Island,philippines/all?lock=10' },
+          { id: 'pa-img-2', title: 'Panglao Island - 2', url: 'https://loremflickr.com/800/800/Panglao,Island,philippines/all?lock=11' },
+          { id: 'pa-img-3', title: 'Panglao Island - 3', url: 'https://loremflickr.com/800/800/Panglao,Island,philippines/all?lock=12' },
+          { id: 'pa-img-4', title: 'Panglao Island - 4', url: 'https://loremflickr.com/800/800/Panglao,Island,philippines/all?lock=13' },
+          { id: 'pa-img-5', title: 'Panglao Island - 5', url: 'https://loremflickr.com/800/800/Panglao,Island,philippines/all?lock=14' }
         ]
       },
       { 
         id: 'bohol-loboc', 
         name: 'Loboc River', 
-        cover: 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=800&auto=format&fit=crop',
+        cover: 'https://loremflickr.com/800/800/Loboc,River,philippines/all?lock=20',
         images: [
-          { id: 'lo-img-1', title: 'River Cruise', url: 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=800&auto=format&fit=crop' },
-          { id: 'lo-img-2', title: 'Tarsier Sanctuary', url: 'https://images.unsplash.com/photo-1590077423771-474b8862cb24?q=80&w=800&auto=format&fit=crop' },
-          { id: 'lo-img-3', title: 'Floating Restaurant', url: 'https://images.unsplash.com/photo-1518182170546-0766bd6f6a56?q=80&w=800&auto=format&fit=crop' },
-          { id: 'lo-img-4', title: 'Paddle Boarding', url: 'https://images.unsplash.com/photo-1544253303-346c19694f6e?q=80&w=800&auto=format&fit=crop' },
-          { id: 'lo-img-5', title: 'Jungle Views', url: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=800&auto=format&fit=crop' }
+          { id: 'lo-img-1', title: 'Loboc River - 1', url: 'https://loremflickr.com/800/800/Loboc,River,philippines/all?lock=20' },
+          { id: 'lo-img-2', title: 'Loboc River - 2', url: 'https://loremflickr.com/800/800/Loboc,River,philippines/all?lock=21' },
+          { id: 'lo-img-3', title: 'Loboc River - 3', url: 'https://loremflickr.com/800/800/Loboc,River,philippines/all?lock=22' },
+          { id: 'lo-img-4', title: 'Loboc River - 4', url: 'https://loremflickr.com/800/800/Loboc,River,philippines/all?lock=23' },
+          { id: 'lo-img-5', title: 'Loboc River - 5', url: 'https://loremflickr.com/800/800/Loboc,River,philippines/all?lock=24' }
         ]
       }
     ] 
@@ -95,42 +94,42 @@ const galleryData = [
   { 
     id: 'Boracay', 
     name: 'Boracay (Aklan)', 
-    cover: 'https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=80&w=800&auto=format&fit=crop', 
+    cover: 'https://loremflickr.com/800/800/White,Beach,philippines/all?lock=00', 
     subcards: [
       { 
         id: 'boracay-white', 
         name: 'White Beach', 
-        cover: 'https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=80&w=800&auto=format&fit=crop',
+        cover: 'https://loremflickr.com/800/800/White,Beach,philippines/all?lock=00',
         images: [
-          { id: 'wb-img-1', title: 'Station 1 Views', url: 'https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=80&w=800&auto=format&fit=crop' },
-          { id: 'wb-img-2', title: 'Paraw Sailing', url: 'https://images.unsplash.com/photo-1544253303-346c19694f6e?q=80&w=800&auto=format&fit=crop' },
-          { id: 'wb-img-3', title: 'Famous Sunset', url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800&auto=format&fit=crop' },
-          { id: 'wb-img-4', title: 'Station 2 Sands', url: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=800&auto=format&fit=crop' },
-          { id: 'wb-img-5', title: 'Nightlife Fire Dance', url: 'https://images.unsplash.com/photo-1455587734955-081b22074882?q=80&w=800&auto=format&fit=crop' }
+          { id: 'wb-img-1', title: 'White Beach - 1', url: 'https://loremflickr.com/800/800/White,Beach,philippines/all?lock=00' },
+          { id: 'wb-img-2', title: 'White Beach - 2', url: 'https://loremflickr.com/800/800/White,Beach,philippines/all?lock=01' },
+          { id: 'wb-img-3', title: 'White Beach - 3', url: 'https://loremflickr.com/800/800/White,Beach,philippines/all?lock=02' },
+          { id: 'wb-img-4', title: 'White Beach - 4', url: 'https://loremflickr.com/800/800/White,Beach,philippines/all?lock=03' },
+          { id: 'wb-img-5', title: 'White Beach - 5', url: 'https://loremflickr.com/800/800/White,Beach,philippines/all?lock=04' }
         ]
       },
       { 
         id: 'boracay-puka', 
         name: 'Puka Shell Beach', 
-        cover: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800&auto=format&fit=crop',
+        cover: 'https://www.travel-palawan.com/wp-content/uploads/2024/12/Puka-Shell-Beach-Boracay.jpg',
         images: [
-          { id: 'ps-img-1', title: 'Quiet Shores', url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800&auto=format&fit=crop' },
-          { id: 'ps-img-2', title: 'Puka Shells', url: 'https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=80&w=800&auto=format&fit=crop' },
-          { id: 'ps-img-3', title: 'Crystal Waters', url: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=800&auto=format&fit=crop' },
-          { id: 'ps-img-4', title: 'Local Vendors', url: 'https://images.unsplash.com/photo-1455587734955-081b22074882?q=80&w=800&auto=format&fit=crop' },
-          { id: 'ps-img-5', title: 'Island Hopping Boat', url: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=800&auto=format&fit=crop' }
+          { id: 'ps-img-1', title: 'Puka Shell Beach - 1', url: 'https://www.pelago.com/img/products/PH-Philippines/boracay-island-hopping-day-tour-puka-beach-tambisaan-beach-coral-garden-crocodile-island-ilig-iligan-beach-philippines/b2c1f9aa-6285-4cd4-9442-2425b1b770b3_boracay-island-hopping-day-tour-puka-beach-tambisaan-beach-coral-garden-crocodile-island-ilig-iligan-beach-philippines.jpg' },
+          { id: 'ps-img-2', title: 'Puka Shell Beach - 2', url: 'https://www.travel-palawan.com/wp-content/uploads/2024/12/Puka-Shell-Beach-Boracay.jpg' },
+          { id: 'ps-img-3', title: 'Puka Shell Beach - 3', url: 'https://res.klook.com/image/upload/w_750,h_469,c_fill,q_85/w_80,x_15,y_15,g_south_west,l_Klook_water_br_trans_yhcmh3/activities/ot9yodnkzmflglxeooce.jpg' },
+          { id: 'ps-img-4', title: 'Puka Shell Beach - 4', url: 'https://www.boracaybeach.guide/wp-content/uploads/2020/04/puka-beach-borocay-sign.jpg' },
+          { id: 'ps-img-5', title: 'Puka Shell Beach - 5', url: 'https://www.thedistrictboracay.com/wp-content/uploads/2015/02/IMG_5286.jpg' }
         ]
       },
       { 
-        id: 'boracay-ariel', 
-        name: 'Ariels Point', 
-        cover: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=800&auto=format&fit=crop',
+        id: 'boracay-diniwid', 
+        name: 'Diniwid', 
+        cover: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0d/19/6b/2b/view-of-diniwid-beach.jpg?w=900&h=500&s=1',
         images: [
-          { id: 'ap-img-1', title: 'Cliff Diving', url: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=800&auto=format&fit=crop' },
-          { id: 'ap-img-2', title: 'Snorkeling', url: 'https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=800&auto=format&fit=crop' },
-          { id: 'ap-img-3', title: 'Kayaking', url: 'https://images.unsplash.com/photo-1544253303-346c19694f6e?q=80&w=800&auto=format&fit=crop' },
-          { id: 'ap-img-4', title: 'Boat Party', url: 'https://images.unsplash.com/photo-1455587734955-081b22074882?q=80&w=800&auto=format&fit=crop' },
-          { id: 'ap-img-5', title: 'Ocean Views', url: 'https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=80&w=800&auto=format&fit=crop' }
+          { id: 'dw-img-1', title: 'Diniwid - 1', url: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0d/19/6b/2b/view-of-diniwid-beach.jpg?w=900&h=500&s=1' },
+          { id: 'dw-img-2', title: 'Diniwid - 2', url: 'https://www.myboracayguide.com/Air-Photo/Air-Photo-5.jpg' },
+          { id: 'dw-img-3', title: 'Diniwid - 3', url: 'https://images.trvl-media.com/place/6184371/9682f548-3b4a-4f12-bbb3-3b7b72e1537e.jpg' },
+          { id: 'dw-img-4', title: 'Diniwid - 4', url: 'https://www.vigattintourism.com/assets/article_main_photos/optimize/1346405392d7ojUY31.jpg' },
+          { id: 'dw-img-5', title: 'Diniwid - 5', url: 'https://viaje.com.ph/wp-content/uploads/2024/03/vrt-posts-img-2-cropped.png' }
         ]
       }
     ] 
@@ -138,42 +137,42 @@ const galleryData = [
   { 
     id: 'Cebu', 
     name: 'Cebu', 
-    cover: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=800&auto=format&fit=crop', 
+    cover: 'https://media.meer.com/attachments/f8f6ceb2e265665e65eb48fbd307be350c970dd2/store/fill/1090/613/c65a7589724cc0a95638e63bce224d19cc7b1d70b96da5cbfd33ee5b18e0/A-kayaker-paddles-above-whale-sharks-in-the-waters-of-Oslob-a-town-in-the-Philippines-that-has.jpg', 
     subcards: [
       { 
-        id: 'cebu-south', 
-        name: 'South Cebu', 
-        cover: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=800&auto=format&fit=crop',
+        id: 'cebu-moalboal', 
+        name: 'Moalboal', 
+        cover: 'https://loremflickr.com/800/800/Moalboal,philippines/all?lock=00',
         images: [
-          { id: 'sc-img-1', title: 'Kawasan Falls', url: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=800&auto=format&fit=crop' },
-          { id: 'sc-img-2', title: 'Moalboal Sardines', url: 'https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=800&auto=format&fit=crop' },
-          { id: 'sc-img-3', title: 'Oslob Whalesharks', url: 'https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?q=80&w=800&auto=format&fit=crop' },
-          { id: 'sc-img-4', title: 'Sumilon Island', url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800&auto=format&fit=crop' },
-          { id: 'sc-img-5', title: 'Canyoneering', url: 'https://images.unsplash.com/photo-1531168556467-8053153c361c?q=80&w=800&auto=format&fit=crop' }
+          { id: 'mb-img-1', title: 'Moalboal - 1', url: 'https://loremflickr.com/800/800/Moalboal,philippines/all?lock=00' },
+          { id: 'mb-img-2', title: 'Moalboal - 2', url: 'https://loremflickr.com/800/800/Moalboal,philippines/all?lock=01' },
+          { id: 'mb-img-3', title: 'Moalboal - 3', url: 'https://loremflickr.com/800/800/Moalboal,philippines/all?lock=02' },
+          { id: 'mb-img-4', title: 'Moalboal - 4', url: 'https://loremflickr.com/800/800/Moalboal,philippines/all?lock=03' },
+          { id: 'mb-img-5', title: 'Moalboal - 5', url: 'https://loremflickr.com/800/800/Moalboal,philippines/all?lock=04' }
         ]
       },
       { 
-        id: 'cebu-city', 
-        name: 'Cebu City', 
-        cover: 'https://images.unsplash.com/photo-1571896349842-6e5a51335022?q=80&w=800&auto=format&fit=crop',
+        id: 'cebu-oslob', 
+        name: 'Oslob', 
+        cover: 'https://media.meer.com/attachments/f8f6ceb2e265665e65eb48fbd307be350c970dd2/store/fill/1090/613/c65a7589724cc0a95638e63bce224d19cc7b1d70b96da5cbfd33ee5b18e0/A-kayaker-paddles-above-whale-sharks-in-the-waters-of-Oslob-a-town-in-the-Philippines-that-has.jpg',
         images: [
-          { id: 'cc-img-1', title: 'Magellans Cross', url: 'https://images.unsplash.com/photo-1571896349842-6e5a51335022?q=80&w=800&auto=format&fit=crop' },
-          { id: 'cc-img-2', title: 'Basilica Minore', url: 'https://images.unsplash.com/photo-1518439179707-1b0b7531776b?q=80&w=800&auto=format&fit=crop' },
-          { id: 'cc-img-3', title: 'Sirao Garden', url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=800&auto=format&fit=crop' },
-          { id: 'cc-img-4', title: 'Temple of Leah', url: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=800&auto=format&fit=crop' },
-          { id: 'cc-img-5', title: 'City Skyline', url: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=800&auto=format&fit=crop' }
+          { id: 'os-img-1', title: 'Oslob - 1', url: 'https://media.meer.com/attachments/f8f6ceb2e265665e65eb48fbd307be350c970dd2/store/fill/1090/613/c65a7589724cc0a95638e63bce224d19cc7b1d70b96da5cbfd33ee5b18e0/A-kayaker-paddles-above-whale-sharks-in-the-waters-of-Oslob-a-town-in-the-Philippines-that-has.jpg' },
+          { id: 'os-img-2', title: 'Oslob - 2', url: 'https://outoftownblog.com/wp-content/uploads/2020/01/Tourists-are-watching-whale-sharks-in-the-town-of-Oslob-Philippines-aerial-view..jpg' },
+          { id: 'os-img-3', title: 'Oslob - 3', url: 'https://gttp.images.tshiftcdn.com/225443/x/0/best-travel-guide-to-oslob-town-in-cebu-island-everything-you-need-to-know-17.jpg?auto=compress%2Cformat&ch=Width%2CDPR&dpr=1&ixlib=php-3.3.0&w=883' },
+          { id: 'os-img-4', title: 'Oslob - 4', url: 'https://img.freepik.com/free-photo/aerial-view-sandy-beach-with-tourists-swimming-beautiful-clear-sea-water-sumilon-island-beach-landing-near-oslob-cebu-philippines-boost-up-color-processing_1253-893.jpg?semt=ais_user_personalization&w=740&q=80' },
+          { id: 'os-img-5', title: 'Oslob - 5', url: 'https://www.vacationhive.com/wp-content/uploads/2022/10/sumilon-content-img-banner.jpg' }
         ]
       },
       { 
         id: 'cebu-bantayan', 
         name: 'Bantayan Island', 
-        cover: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=800&auto=format&fit=crop',
+        cover: 'https://shoestringdiary.wordpress.com/wp-content/uploads/2025/09/kota_beach108-ssd-cover.jpg?w=1140',
         images: [
-          { id: 'ba-img-1', title: 'Kota Beach', url: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=800&auto=format&fit=crop' },
-          { id: 'ba-img-2', title: 'Virgin Island', url: 'https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=80&w=800&auto=format&fit=crop' },
-          { id: 'ba-img-3', title: 'Ogtong Cave', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop' },
-          { id: 'ba-img-4', title: 'Sandbar', url: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=800&auto=format&fit=crop' },
-          { id: 'ba-img-5', title: 'Sunset Views', url: 'https://images.unsplash.com/photo-1455587734955-081b22074882?q=80&w=800&auto=format&fit=crop' }
+          { id: 'bi-img-1', title: 'Bantayan Island - 1', url: 'https://shoestringdiary.wordpress.com/wp-content/uploads/2025/09/kota_beach108-ssd-cover.jpg?w=1140' },
+          { id: 'bi-img-2', title: 'Bantayan Island - 2', url: 'https://res.klook.com/image/upload/w_750,h_469,c_fill,q_85/w_80,x_15,y_15,g_south_west,l_Klook_water_br_trans_yhcmh3/activities/qrdrvazewadua9rcxw00.jpg' },
+          { id: 'bi-img-3', title: 'Bantayan Island - 3', url: 'https://imgs.mongabay.com/wp-content/uploads/sites/20/2020/10/05072221/bantayan-features.png' },
+          { id: 'bi-img-4', title: 'Bantayan Island - 4', url: 'https://www.baconismagic.ca/wp-content/uploads/2024/11/santa-Fe-Beach.jpg' },
+          { id: 'bi-img-5', title: 'Bantayan Island - 5', url: 'https://cdn.forevervacation.com/uploads/attraction/bantayan-island-important-2439.webp' }
         ]
       }
     ] 
@@ -181,42 +180,42 @@ const galleryData = [
   { 
     id: 'Manila', 
     name: 'Manila', 
-    cover: 'https://images.unsplash.com/photo-1518439179707-1b0b7531776b?q=80&w=800&auto=format&fit=crop', 
+    cover: 'https://upload.wikimedia.org/wikipedia/commons/6/6b/Rizal_Monument_%28Manila%2C_2024%29.jpg', 
     subcards: [
       { 
         id: 'manila-intra', 
         name: 'Intramuros', 
-        cover: 'https://images.unsplash.com/photo-1518439179707-1b0b7531776b?q=80&w=800&auto=format&fit=crop',
+        cover: 'https://loremflickr.com/800/800/Intramuros,philippines/all?lock=00',
         images: [
-          { id: 'in-img-1', title: 'Walled City', url: 'https://images.unsplash.com/photo-1518439179707-1b0b7531776b?q=80&w=800&auto=format&fit=crop' },
-          { id: 'in-img-2', title: 'Fort Santiago', url: 'https://images.unsplash.com/photo-1571896349842-6e5a51335022?q=80&w=800&auto=format&fit=crop' },
-          { id: 'in-img-3', title: 'Manila Cathedral', url: 'https://images.unsplash.com/photo-1561501900-3701fa6a36a6?q=80&w=800&auto=format&fit=crop' },
-          { id: 'in-img-4', title: 'Cobblestone Streets', url: 'https://images.unsplash.com/photo-1542314831-c6a420325142?q=80&w=800&auto=format&fit=crop' },
-          { id: 'in-img-5', title: 'Kalesa Ride', url: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=800&auto=format&fit=crop' }
+          { id: 'in-img-1', title: 'Intramuros - 1', url: 'https://loremflickr.com/800/800/Intramuros,philippines/all?lock=00' },
+          { id: 'in-img-2', title: 'Intramuros - 2', url: 'https://loremflickr.com/800/800/Intramuros,philippines/all?lock=01' },
+          { id: 'in-img-3', title: 'Intramuros - 3', url: 'https://loremflickr.com/800/800/Intramuros,philippines/all?lock=02' },
+          { id: 'in-img-4', title: 'Intramuros - 4', url: 'https://loremflickr.com/800/800/Intramuros,philippines/all?lock=03' },
+          { id: 'in-img-5', title: 'Intramuros - 5', url: 'https://loremflickr.com/800/800/Intramuros,philippines/all?lock=04' }
         ]
       },
       { 
-        id: 'manila-makati', 
-        name: 'Makati CBD', 
-        cover: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=800&auto=format&fit=crop',
+        id: 'manila-rizal', 
+        name: 'Rizal Park', 
+        cover: 'https://upload.wikimedia.org/wikipedia/commons/6/6b/Rizal_Monument_%28Manila%2C_2024%29.jpg',
         images: [
-          { id: 'mk-img-1', title: 'City Skyline', url: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=800&auto=format&fit=crop' },
-          { id: 'mk-img-2', title: 'Ayala Triangle', url: 'https://images.unsplash.com/photo-1561501900-3701fa6a36a6?q=80&w=800&auto=format&fit=crop' },
-          { id: 'mk-img-3', title: 'Night City Lights', url: 'https://images.unsplash.com/photo-1518439179707-1b0b7531776b?q=80&w=800&auto=format&fit=crop' },
-          { id: 'mk-img-4', title: 'Greenbelt Park', url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=800&auto=format&fit=crop' },
-          { id: 'mk-img-5', title: 'Modern Architecture', url: 'https://images.unsplash.com/photo-1542314831-c6a420325142?q=80&w=800&auto=format&fit=crop' }
+          { id: 'rp-img-1', title: 'Rizal Park - 1', url: 'https://upload.wikimedia.org/wikipedia/commons/6/6b/Rizal_Monument_%28Manila%2C_2024%29.jpg' },
+          { id: 'rp-img-2', title: 'Rizal Park - 2', url: 'https://pgaacreativedesign.com/wp-content/uploads/2024/11/rizal_park_looking_west_medres.jpg' },
+          { id: 'rp-img-3', title: 'Rizal Park - 3', url: 'https://images.summitmedia-digital.com/spotph/images/2024/06/29/flag-and-rizal-1-1719675185.jpg' },
+          { id: 'rp-img-4', title: 'Rizal Park - 4', url: 'https://res.klook.com/image/upload/w_500,h_313,c_fill,q_85/activities/hdxxrasmgoinb0ofyrxz.jpg' },
+          { id: 'rp-img-5', title: 'Rizal Park - 5', url: 'https://thursd.com/storage/media/97017/Rizal-Park-Luneta-by-Apolinario.jpg?1760646138831' }
         ]
       },
       { 
-        id: 'manila-bay', 
-        name: 'Manila Bay', 
-        cover: 'https://images.unsplash.com/photo-1561501900-3701fa6a36a6?q=80&w=800&auto=format&fit=crop',
+        id: 'manila-bgc', 
+        name: 'BGC', 
+        cover: 'https://bgc.com.ph/wp-content/uploads/2021/11/activities.jpg',
         images: [
-          { id: 'mb-img-1', title: 'Bay Sunset', url: 'https://images.unsplash.com/photo-1561501900-3701fa6a36a6?q=80&w=800&auto=format&fit=crop' },
-          { id: 'mb-img-2', title: 'Rizal Park', url: 'https://images.unsplash.com/photo-1571896349842-6e5a51335022?q=80&w=800&auto=format&fit=crop' },
-          { id: 'mb-img-3', title: 'Ocean Park', url: 'https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=800&auto=format&fit=crop' },
-          { id: 'mb-img-4', title: 'Baywalk Promenade', url: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=800&auto=format&fit=crop' },
-          { id: 'mb-img-5', title: 'Cultural Center', url: 'https://images.unsplash.com/photo-1518439179707-1b0b7531776b?q=80&w=800&auto=format&fit=crop' }
+          { id: 'bgc-img-1', title: 'BGC - 1', url: 'https://bgc.com.ph/wp-content/uploads/2021/11/activities.jpg' },
+          { id: 'bgc-img-2', title: 'BGC - 2', url: 'https://bunny-wp-pullzone-jq11rxv9xs.b-cdn.net/wp-content/uploads/2023/04/bgc.webp' },
+          { id: 'bgc-img-3', title: 'BGC - 3', url: 'https://sms-bridges.com/wp-content/uploads/2023/02/BGC-photo-4.jpg' },
+          { id: 'bgc-img-4', title: 'BGC - 4', url: 'https://thefortcity.com/wp-content/uploads/20201435200129sYzw50ac309fa08668468b87f662656ab1604.jpg' },
+          { id: 'bgc-img-5', title: 'BGC - 5', url: 'https://upload.wikimedia.org/wikipedia/commons/6/6f/View_from_Grand_Hyatt_Manila_overlooking_Bonifacio_Global_City_and_Makati_skylines_at_sunset.jpg' }
         ]
       }
     ] 
@@ -224,42 +223,42 @@ const galleryData = [
   { 
     id: 'Banaue', 
     name: 'Ifugao (Banaue)', 
-    cover: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=800&auto=format&fit=crop', 
+    cover: 'https://islandhoppinginthephilippines.com/luzon/wp-content/uploads/2023/10/Banaue-Rice-Terraces.webp', 
     subcards: [
       { 
         id: 'banaue-batad', 
         name: 'Batad Terraces', 
-        cover: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=800&auto=format&fit=crop',
+        cover: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/17/51/34/df/photo0jpg.jpg?w=900&h=500&s=1',
         images: [
-          { id: 'bt-img-1', title: 'Amphitheater View', url: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=800&auto=format&fit=crop' },
-          { id: 'bt-img-2', title: 'Rice Paddies', url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=800&auto=format&fit=crop' },
-          { id: 'bt-img-3', title: 'Mountain Village', url: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=800&auto=format&fit=crop' },
-          { id: 'bt-img-4', title: 'Trekking Trails', url: 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=800&auto=format&fit=crop' },
-          { id: 'bt-img-5', title: 'Ifugao Culture', url: 'https://images.unsplash.com/photo-1571896349842-6e5a51335022?q=80&w=800&auto=format&fit=crop' }
+          { id: 'bt-img-1', title: 'Batad Terraces - 1', url: 'https://loremflickr.com/800/800/Batad,Terraces,philippines/all?lock=00' },
+          { id: 'bt-img-2', title: 'Batad Terraces - 2', url: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/17/51/34/df/photo0jpg.jpg?w=900&h=500&s=1' },
+          { id: 'bt-img-3', title: 'Batad Terraces - 3', url: 'https://cdn.audleytravel.com/2272/1623/79/15978475-batad-village.jpg' },
+          { id: 'bt-img-4', title: 'Batad Terraces - 4', url: 'https://www.goparoo.com/asia/philippines/luzon/banaue/attractions/batad-rice-terraces/images/pics/Batad%20Rice%20Terraces.jpg' },
+          { id: 'bt-img-5', title: 'Batad Terraces - 5', url: 'https://afar.brightspotcdn.com/dims4/default/d0b27db/2147483647/strip/false/crop/800x450+0+25/resize/1200x675!/quality/90/?url=https%3A%2F%2Fk3-prod-afar-media.s3.us-west-2.amazonaws.com%2Fbrightspot%2F71%2F28%2Fc189a543b31f45e031b2171cc55f%2Foriginal-ifugao-rha-29-5018-20tony-20waltham-age.jpg' }
         ]
       },
       { 
         id: 'banaue-view', 
         name: 'Banaue Viewpoint', 
-        cover: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=800&auto=format&fit=crop',
+        cover: 'https://islandhoppinginthephilippines.com/luzon/wp-content/uploads/2023/10/Banaue-Rice-Terraces.webp',
         images: [
-          { id: 'vp-img-1', title: 'Main Viewpoint', url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=800&auto=format&fit=crop' },
-          { id: 'vp-img-2', title: 'Morning Mist', url: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=800&auto=format&fit=crop' },
-          { id: 'vp-img-3', title: 'Terraces Horizon', url: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=800&auto=format&fit=crop' },
-          { id: 'vp-img-4', title: 'Local Handicrafts', url: 'https://images.unsplash.com/photo-1518182170546-0766bd6f6a56?q=80&w=800&auto=format&fit=crop' },
-          { id: 'vp-img-5', title: 'Sunset Glow', url: 'https://images.unsplash.com/photo-1590077423771-474b8862cb24?q=80&w=800&auto=format&fit=crop' }
+          { id: 'vp-img-1', title: 'Banaue Viewpoint - 1', url: 'https://islandhoppinginthephilippines.com/luzon/wp-content/uploads/2023/10/Banaue-Rice-Terraces.webp' },
+          { id: 'vp-img-2', title: 'Banaue Viewpoint - 2', url: 'https://images.euronews.com/articles/stories/07/37/80/50/1536x864_cmsv2_8d5d3d96-cc69-508d-a6b3-2f78ed51eaf8-7378050.jpg' },
+          { id: 'vp-img-3', title: 'Banaue Viewpoint - 3', url: 'https://img1.advisor.travel/1314x680px-Banaue_Rice_Terraces_8.jpg' },
+          { id: 'vp-img-4', title: 'Banaue Viewpoint - 4', url: 'https://static.easyrock.com.ph/posts/2024/7/GxDq2Y8IoFaEoXnRavfmw.jpeg' },
+          { id: 'vp-img-5', title: 'Banaue Viewpoint - 5', url: 'https://cdn.britannica.com/98/150498-050-C7E45C90/Banaue-rice-terraces-Luzon-Philippines.jpg' }
         ]
       },
       { 
         id: 'banaue-tappiya', 
         name: 'Tappiya Falls', 
-        cover: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=800&auto=format&fit=crop',
+        cover: 'https://nojuanisanisland.com/wp-content/uploads/2015/06/dsc_0879.jpg',
         images: [
-          { id: 'tf-img-1', title: 'Hidden Waterfall', url: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=800&auto=format&fit=crop' },
-          { id: 'tf-img-2', title: 'Jungle Hike', url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=800&auto=format&fit=crop' },
-          { id: 'tf-img-3', title: 'Plunge Pool', url: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=800&auto=format&fit=crop' },
-          { id: 'tf-img-4', title: 'River Boulders', url: 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=800&auto=format&fit=crop' },
-          { id: 'tf-img-5', title: 'Nature Escape', url: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=800&auto=format&fit=crop' }
+          { id: 'tf-img-1', title: 'Tappiya Falls - 1', url: 'https://nojuanisanisland.com/wp-content/uploads/2015/06/dsc_0879.jpg' },
+          { id: 'tf-img-2', title: 'Tappiya Falls - 2', url: 'https://mediaim.expedia.com/destination/2/6fdb280cc6400d6bb875b58c40003fe0.jpg' },
+          { id: 'tf-img-3', title: 'Tappiya Falls - 3', url: 'https://upload.wikimedia.org/wikipedia/commons/6/6b/Tappiyah_Waterfalls.jpg' },
+          { id: 'tf-img-4', title: 'Tappiya Falls - 4', url: 'https://jontotheworld.com/wp-content/uploads/2015/08/tappiya-tappiya-falls.jpg' },
+          { id: 'tf-img-5', title: 'Tappiya Falls - 5', url: 'https://www.willflyforfood.net/uploads/food-travel3/batad-sagada/batad/tappiya/tappiya8.jpg' }
         ]
       }
     ] 
@@ -352,7 +351,6 @@ const Gallery = () => {
         {/* --- UPDATED GRID LAYOUT FOR 5 IMAGES --- */}
         <div className="row g-3 justify-content-center">
           {filteredImages.map((img) => (
-            // Changed from col-lg-3 (25% width) to col-lg (auto width) so 5 items share the row equally
             <div key={img.id} className="col-6 col-md-4 col-lg scroll-reveal visible gallery-item" style={{ minWidth: '20%' }}>
               <div className="position-relative overflow-hidden rounded-3 shadow-sm h-100">
                 <img src={img.url} alt={img.title} className="w-100 h-100 object-fit-cover gallery-img" style={{ aspectRatio: '1/1', transition: 'transform 0.4s ease' }} />
