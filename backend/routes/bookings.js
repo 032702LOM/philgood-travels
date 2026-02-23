@@ -70,40 +70,40 @@ router.post('/create', async (req, res) => {
 
         // ⚡ SEND AUTOMATED EMAILS ⚡
         try {
-            for (const payment of paymentsArray) {
-                if (!payment.payerEmail.includes('@pending.com')) {
-                    const mailOptions = {
-                        from: `"PhilGood Travels" <${process.env.EMAIL_USER}>`,
-                        to: payment.payerEmail,
-                        subject: `Your Invoice & Payment Link for ${packageName}`,
-                        html: `
-                            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background-color: #f9f9f9;">
-                                <h2 style="color: #2A9D8F; text-align: center;">PhilGood Travels</h2>
-                                <p style="font-size: 16px;">Hello!</p>
-                                <p style="font-size: 16px;">You have a pending invoice for the upcoming trip to <strong>${packageName}</strong> on <strong>${travelDate}</strong>.</p>
-                                
-                                <div style="background-color: white; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 5px solid #2A9D8F;">
-                                    <h3 style="margin-top: 0; color: #333;">Invoice Details:</h3>
-                                    <p style="margin: 5px 0;"><strong>Total Amount Due:</strong> ₱${payment.amountDue.toLocaleString()}</p>
-                                    <p style="margin: 5px 0;"><strong>Status:</strong> <span style="color: #FF8C73; font-weight: bold;">Pending</span></p>
-                                </div>
+    for (const payment of paymentsArray) {
+        if (!payment.payerEmail.includes('@pending.com')) {
+            const mailOptions = {
+                from: `"PhilGood Travels" <${process.env.EMAIL_USER}>`,
+                to: payment.payerEmail,
+                subject: `Your Invoice & Payment Link for ${packageName}`,
+                html: `
+                    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #E0F7FA; border-radius: 16px; background-color: #FFFFFF;">
+                        <h2 style="color: #023E8A; text-align: center; text-transform: uppercase; letter-spacing: 2px;">PhilGood Travels</h2>
+                        <p style="font-size: 16px; color: #4A5568;">Hello!</p>
+                        <p style="font-size: 16px; color: #4A5568;">You have a pending invoice for the upcoming trip to <strong style="color: #00B4D8;">${packageName}</strong> on <strong>${travelDate}</strong>.</p>
+                        
+                        <div style="background-color: #F4FAFC; padding: 20px; border-radius: 12px; margin: 20px 0; border-left: 5px solid #00B4D8;">
+                            <h3 style="margin-top: 0; color: #023E8A; font-size: 18px;">Invoice Details:</h3>
+                            <p style="margin: 8px 0; color: #4A5568;"><strong>Total Amount Due:</strong> ₱${payment.amountDue.toLocaleString()}</p>
+                            <p style="margin: 8px 0; color: #4A5568;"><strong>Status:</strong> <span style="color: #FF9F1C; font-weight: bold; text-transform: uppercase;">Pending</span></p>
+                        </div>
 
-                                <p style="font-size: 16px;">To secure your spot, please click the secure link below to pay your share:</p>
-                                <div style="text-align: center; margin: 30px 0;">
-                                    <a href="${payment.paymentUrl}" style="background-color: #2A9D8F; color: white; padding: 14px 28px; text-decoration: none; font-size: 16px; font-weight: bold; border-radius: 50px; display: inline-block;">Pay My Share</a>
-                                </div>
-                                <hr style="border: none; border-top: 1px solid #eee; margin-top: 30px;" />
-                                <p style="font-size: 12px; color: #888; text-align: center;">If you did not request this booking, please ignore this email.</p>
-                            </div>
-                        `
-                    };
-                    await transporter.sendMail(mailOptions);
-                    console.log(`✅ Invoice email sent to: ${payment.payerEmail}`);
-                }
-            }
-        } catch (emailError) {
-            console.error("⚠️ Booking saved, but email sending failed:", emailError);
+                        <p style="font-size: 16px; color: #4A5568; text-align: center;">To secure your spot, please click the secure link below to pay your share:</p>
+                        <div style="text-align: center; margin: 30px 0;">
+                            <a href="${payment.paymentUrl}" style="background-color: #FF9F1C; color: #023E8A; padding: 16px 32px; text-decoration: none; font-size: 16px; font-weight: bold; border-radius: 50px; display: inline-block; box-shadow: 0 4px 10px rgba(255, 159, 28, 0.3);">Pay My Share</a>
+                        </div>
+                        <hr style="border: none; border-top: 1px solid #E0F7FA; margin-top: 30px;" />
+                        <p style="font-size: 12px; color: #A0AEC0; text-align: center;">If you did not request this booking, please ignore this email.</p>
+                    </div>
+                `
+            };
+            await transporter.sendMail(mailOptions);
+            console.log(`✅ Invoice email sent to: ${payment.payerEmail}`);
         }
+    }
+} catch (emailError) {
+    console.error("⚠️ Booking saved, but email sending failed:", emailError);
+}
         
         res.status(201).json({ message: "✅ Booking created and emails sent!", booking: newBooking });
         
