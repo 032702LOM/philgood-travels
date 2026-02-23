@@ -181,13 +181,13 @@ export const allPlaces = [
 ];
 
 // ==========================================
-// TOUR PACKAGES (Used in Featured Tours & Homepage)
+// ⚡ NEW: JAW-DROPPING TOUR PACKAGES IMAGES
 // ==========================================
 export const tourPackages = [
-    { id: 'Tour-ElNido', name: 'El Nido Island Paradise', price: 34999, duration: '4 Days / 3 Nights', img: 'https://images.unsplash.com/photo-1544253303-346c19694f6e?q=80&w=800&auto=format&fit=crop', type: 'Diving / Beach' },
-    { id: 'Tour-Bohol', name: 'Bohol Adventure Package', price: 25999, duration: '3 Days / 2 Nights', img: 'https://images.unsplash.com/photo-1518182170546-0766bd6f6a56?q=80&w=800&auto=format&fit=crop', type: 'Nature / Sightseeing' },
-    { id: 'Tour-Boracay', name: 'Boracay Beach Escape', price: 39999, duration: '5 Days / 4 Nights', img: 'https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=80&w=800&auto=format&fit=crop', type: 'Beach / Relaxation' },
-    { id: 'Tour-Cebu', name: 'Cebu Canyoneering', price: 22999, duration: '3 Days / 2 Nights', img: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=800&auto=format&fit=crop', type: 'Adventure / Diving' },
-    { id: 'Tour-Banaue', name: 'Banaue Heritage Tour', price: 28999, duration: '4 Days / 3 Nights', img: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=800&auto=format&fit=crop', type: 'Culture / Mountains' },
-    { id: 'Tour-Manila', name: 'Manila City Escape', price: 16999, duration: '2 Days / 1 Night', img: 'https://images.unsplash.com/photo-1518439179707-1b0b7531776b?q=80&w=800&auto=format&fit=crop', type: 'City / History' }
+    { id: 'Tour-ElNido', name: 'El Nido Island Paradise', price: 34999, duration: '4 Days / 3 Nights', img: 'https://images.unsplash.com/photo-1520626337972-8ee434ee744c?q=80&w=1200&auto=format&fit=crop', type: 'Diving / Beach' },
+    { id: 'Tour-Bohol', name: 'Bohol Adventure Package', price: 25999, duration: '3 Days / 2 Nights', img: 'https://images.unsplash.com/photo-1590077423771-474b8862cb24?q=80&w=1200&auto=format&fit=crop', type: 'Nature / Sightseeing' },
+    { id: 'Tour-Boracay', name: 'Boracay Beach Escape', price: 39999, duration: '5 Days / 4 Nights', img: 'https://images.unsplash.com/photo-1542213493895-edf5b94f5a96?q=80&w=1200&auto=format&fit=crop', type: 'Beach / Relaxation' },
+    { id: 'Tour-Cebu', name: 'Cebu Canyoneering', price: 22999, duration: '3 Days / 2 Nights', img: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=1200&auto=format&fit=crop', type: 'Adventure / Diving' },
+    { id: 'Tour-Banaue', name: 'Banaue Heritage Tour', price: 28999, duration: '4 Days / 3 Nights', img: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=1200&auto=format&fit=crop', type: 'Culture / Mountains' },
+    { id: 'Tour-Manila', name: 'Manila City Escape', price: 16999, duration: '2 Days / 1 Night', img: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1200&auto=format&fit=crop', type: 'City / History' }
 ];
