@@ -33,15 +33,15 @@ const Login = () => {
   };
 
   return (
-    <div className="fade-in d-flex align-items-center justify-content-center" style={{ minHeight: '80vh', paddingTop: '76px' }}>
-      <div className="bg-card-dark p-5 rounded-4 shadow-lg border border-secondary border-opacity-25" style={{ maxWidth: '400px', width: '100%' }}>
-        <h2 className="text-white font-montserrat fw-bold text-center mb-4">Welcome Back</h2>
+    <div className="fade-in d-flex align-items-center justify-content-center" style={{ minHeight: '80vh', paddingTop: '76px', backgroundColor: 'var(--bg-dark)' }}>
+      <div className="bg-card-dark p-5 rounded-4 shadow-lg border border-primary border-opacity-10" style={{ maxWidth: '400px', width: '100%', backgroundColor: 'var(--card-bg)' }}>
+        <h2 className="text-navy font-montserrat fw-bold text-center mb-4">Welcome Back</h2>
         
         <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
           <div>
             <input 
               type="email" 
-              className="form-control-dark w-100" 
+              className="form-control-dark w-100 shadow-none" 
               placeholder="Email Address" 
               value={formData.email}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
@@ -51,14 +51,14 @@ const Login = () => {
           <div>
             <input 
               type="password" 
-              className="form-control-dark w-100" 
+              className="form-control-dark w-100 shadow-none" 
               placeholder="Password" 
               value={formData.password}
               onChange={(e) => setFormData({...formData, password: e.target.value})}
               required 
             />
           </div>
-          <button type="submit" className="btn btn-proceed w-100 mt-3 py-3 text-uppercase font-montserrat fw-bold">Log In</button>
+          <button type="submit" className="btn btn-proceed w-100 mt-3 py-3 text-uppercase font-montserrat fw-bold shadow">Log In</button>
         </form>
 
         {message && (
