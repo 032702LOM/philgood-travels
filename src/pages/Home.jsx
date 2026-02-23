@@ -36,7 +36,7 @@ const Home = () => {
         <section id="home" style={{ marginTop: '0', backgroundColor: 'var(--bg-dark)' }}>
             <div id="heroCarousel" className="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
                 <div className="carousel-inner">
-                    <div className="carousel-item active" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1606676366299-fdec90590467?q=80&w=1170&auto=format&fit=crop')" }}>
+                    <div className="carousel-item active" style={{ backgroundImage: "url('https://i.postimg.cc/Ls7QtQyn/Untitled-design-(21).png')" }}>
                         <div className="hero-overlay">
                             <div className="container scroll-reveal visible">
                                 <h1 className="hero-title">{t('hero_island', 'ISLAND PARADISE')}</h1>
