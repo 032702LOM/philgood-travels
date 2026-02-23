@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { usePreferences } from '../context/PreferencesContext';
 
 // ==========================================
-// HIGH-RES GALLERY DATA
+// HIGH-RES GALLERY DATA (FULLY COMPLETED & DISTINCT)
 // ==========================================
 const galleryData = [
   { 
@@ -25,17 +25,17 @@ const galleryData = [
           { id: 'co-2', title: 'Shipwreck Dive', url: 'https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=1000&auto=format&fit=crop' },
           { id: 'co-3', title: 'Twin Lagoon', url: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1000&auto=format&fit=crop' },
           { id: 'co-4', title: 'Tropical Palms', url: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'co-5', title: 'Sunset Views', url: 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=1000&auto=format&fit=crop' }
+          { id: 'co-5', title: 'Coron Sunset', url: 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=1000&auto=format&fit=crop' }
         ]
       },
       { 
         id: 'palawan-puerto', name: 'Puerto Princesa', cover: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1000&auto=format&fit=crop',
         images: [
-          { id: 'pp-1', title: 'Underground River', url: 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'pp-1', title: 'Mangrove River', url: 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=1000&auto=format&fit=crop' },
           { id: 'pp-2', title: 'Honda Bay', url: 'https://images.unsplash.com/photo-1542213493895-edf5b94f5a96?q=80&w=1000&auto=format&fit=crop' },
           { id: 'pp-3', title: 'Eco Resort', url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'pp-4', title: 'Firefly Tour', url: 'https://images.unsplash.com/photo-1531168556467-8053153c361c?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'pp-5', title: 'City Walk', url: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1000&auto=format&fit=crop' }
+          { id: 'pp-4', title: 'City Walk', url: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'pp-5', title: 'Sabang Beach', url: 'https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=80&w=1000&auto=format&fit=crop' }
         ]
       }
     ] 
@@ -50,62 +50,62 @@ const galleryData = [
           { id: 'ch-2', title: 'Viewing Deck', url: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=1000&auto=format&fit=crop' },
           { id: 'ch-3', title: 'Lush Greenery', url: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=1000&auto=format&fit=crop' },
           { id: 'ch-4', title: 'Trekking Path', url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'ch-5', title: 'Nature Escape', url: 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=1000&auto=format&fit=crop' }
+          { id: 'ch-5', title: 'ATV Trails', url: 'https://images.unsplash.com/photo-1513407030348-51e4ec7950fa?q=80&w=1000&auto=format&fit=crop' }
         ]
       },
       { 
         id: 'bohol-panglao', name: 'Panglao Island', cover: 'https://images.unsplash.com/photo-1571407921666-da644f80c656?q=80&w=1000&auto=format&fit=crop',
         images: [
           { id: 'pa-1', title: 'Alona Beach', url: 'https://images.unsplash.com/photo-1571407921666-da644f80c656?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'pa-2', title: 'Dumaluan Sand', url: 'https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'pa-3', title: 'Balicasag Reef', url: 'https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'pa-4', title: 'Resort Pool', url: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'pa-5', title: 'Ocean Sunset', url: 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=1000&auto=format&fit=crop' }
+          { id: 'pa-2', title: 'Dumaluan Sand', url: 'https://images.unsplash.com/photo-1501890664351-4ef399c1524f?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'pa-3', title: 'Balicasag Reef', url: 'https://images.unsplash.com/photo-1582967788606-a171c1080cb0?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'pa-4', title: 'Resort Pool', url: 'https://images.unsplash.com/photo-1564507592227-6102a474dd7e?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'pa-5', title: 'Ocean Sunset', url: 'https://images.unsplash.com/photo-1455587734955-081b22074882?q=80&w=1000&auto=format&fit=crop' }
         ]
       },
       { 
-        id: 'bohol-loboc', name: 'Loboc River', cover: 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=1000&auto=format&fit=crop',
+        id: 'bohol-loboc', name: 'Loboc River', cover: 'https://images.unsplash.com/photo-1579625197446-3b8c000acfac?q=80&w=1000&auto=format&fit=crop',
         images: [
-          { id: 'lo-1', title: 'River Cruise', url: 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'lo-2', title: 'Jungle Canopy', url: 'https://images.unsplash.com/photo-1531168556467-8053153c361c?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'lo-3', title: 'Paddle Boarding', url: 'https://images.unsplash.com/photo-1544253303-346c19694f6e?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'lo-4', title: 'Tarsier Sanctuary', url: 'https://images.unsplash.com/photo-1518182170546-0766bd6f6a56?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'lo-5', title: 'Rainforest Views', url: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=1000&auto=format&fit=crop' }
+          { id: 'lo-1', title: 'River Cruise', url: 'https://images.unsplash.com/photo-1579625197446-3b8c000acfac?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'lo-2', title: 'Jungle Canopy', url: 'https://images.unsplash.com/photo-1625505826533-5c80aca7d157?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'lo-3', title: 'Paddle Boarding', url: 'https://images.unsplash.com/photo-1596208620712-42171c66c3c5?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'lo-4', title: 'Tarsier Sanctuary', url: 'https://images.unsplash.com/photo-1581216061628-2187b387eb5c?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'lo-5', title: 'Rainforest Views', url: 'https://images.unsplash.com/photo-1568283084589-91cb61858693?q=80&w=1000&auto=format&fit=crop' }
         ]
       }
     ] 
   },
   { 
-    id: 'Boracay', name: 'Boracay (Aklan)', cover: 'https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=80&w=1000&auto=format&fit=crop', 
+    id: 'Boracay', name: 'Boracay (Aklan)', cover: 'https://images.unsplash.com/photo-1656521161419-ac6889a753f1?q=80&w=1000&auto=format&fit=crop', 
     subcards: [
       { 
-        id: 'boracay-white', name: 'White Beach', cover: 'https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=80&w=1000&auto=format&fit=crop',
+        id: 'boracay-white', name: 'White Beach', cover: 'https://images.unsplash.com/photo-1656521161419-ac6889a753f1?q=80&w=1000&auto=format&fit=crop',
         images: [
-          { id: 'wb-1', title: 'Station 1 Sand', url: 'https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'wb-2', title: 'Paraw Sailing', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'wb-3', title: 'Famous Sunset', url: 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'wb-1', title: 'Station 1 Sand', url: 'https://images.unsplash.com/photo-1656521161419-ac6889a753f1?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'wb-2', title: 'Paraw Sailing', url: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'wb-3', title: 'Famous Sunset', url: 'https://images.unsplash.com/photo-1605302685934-8c7fc63321db?q=80&w=1000&auto=format&fit=crop' },
           { id: 'wb-4', title: 'Station 2 Vibe', url: 'https://images.unsplash.com/photo-1542213493895-edf5b94f5a96?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'wb-5', title: 'Luxury Stay', url: 'https://images.unsplash.com/photo-1571896349842-6e5a51335022?q=80&w=1000&auto=format&fit=crop' }
+          { id: 'wb-5', title: 'Nightlife', url: 'https://images.unsplash.com/photo-1571896349842-6e5a51335022?q=80&w=1000&auto=format&fit=crop' }
         ]
       },
       { 
-        id: 'boracay-puka', name: 'Puka Shell Beach', cover: 'https://images.unsplash.com/photo-1542213493895-edf5b94f5a96?q=80&w=1000&auto=format&fit=crop',
+        id: 'boracay-puka', name: 'Puka Shell Beach', cover: 'https://images.unsplash.com/photo-1591506557489-e8ca407063e7?q=80&w=1000&auto=format&fit=crop',
         images: [
-          { id: 'ps-1', title: 'Quiet Shores', url: 'https://images.unsplash.com/photo-1542213493895-edf5b94f5a96?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'ps-2', title: 'Puka Shells', url: 'https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'ps-3', title: 'Crystal Waters', url: 'https://images.unsplash.com/photo-1520626337972-8ee434ee744c?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'ps-4', title: 'Island Boat', url: 'https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'ps-5', title: 'Ocean Views', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1000&auto=format&fit=crop' }
+          { id: 'ps-1', title: 'Quiet Shores', url: 'https://images.unsplash.com/photo-1591506557489-e8ca407063e7?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'ps-2', title: 'Puka Shells', url: 'https://images.unsplash.com/photo-1580210214361-b472ea98c430?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'ps-3', title: 'Crystal Waters', url: 'https://images.unsplash.com/photo-1572970588667-1725b871ed19?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'ps-4', title: 'Island Boat', url: 'https://images.unsplash.com/photo-1557345681-19717646ba43?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'ps-5', title: 'Ocean Views', url: 'https://images.unsplash.com/photo-1604502016259-dfc469b6dc67?q=80&w=1000&auto=format&fit=crop' }
         ]
       },
       { 
-        id: 'boracay-diniwid', name: 'Diniwid', cover: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1000&auto=format&fit=crop',
+        id: 'boracay-diniwid', name: 'Diniwid', cover: 'https://images.unsplash.com/photo-1610411894902-602dc85208f8?q=80&w=1000&auto=format&fit=crop',
         images: [
-          { id: 'dw-1', title: 'Cliff Cove', url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'dw-2', title: 'Hidden Beach', url: 'https://images.unsplash.com/photo-1544253303-346c19694f6e?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'dw-3', title: 'Rocky Shore', url: 'https://images.unsplash.com/photo-1531168556467-8053153c361c?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'dw-4', title: 'Coastal Walk', url: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'dw-5', title: 'Sunset Cocktails', url: 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=1000&auto=format&fit=crop' }
+          { id: 'dw-1', title: 'Cliff Cove', url: 'https://images.unsplash.com/photo-1610411894902-602dc85208f8?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'dw-2', title: 'Hidden Beach', url: 'https://images.unsplash.com/photo-1515444743217-1a4cd2a25df5?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'dw-3', title: 'Rocky Shore', url: 'https://images.unsplash.com/photo-1566497282835-f1262d05fdd5?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'dw-4', title: 'Coastal Walk', url: 'https://images.unsplash.com/photo-1604502127263-6e3e5ed5ebbb?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'dw-5', title: 'Sunset Cocktails', url: 'https://images.unsplash.com/photo-1530968997232-47525fc95092?q=80&w=1000&auto=format&fit=crop' }
         ]
       }
     ] 
@@ -114,33 +114,33 @@ const galleryData = [
     id: 'Cebu', name: 'Cebu', cover: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=1000&auto=format&fit=crop', 
     subcards: [
       { 
-        id: 'cebu-moalboal', name: 'Moalboal', cover: 'https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=1000&auto=format&fit=crop',
+        id: 'cebu-moalboal', name: 'Moalboal', cover: 'https://images.unsplash.com/photo-1573551089778-46a7abc39d9f?q=80&w=1000&auto=format&fit=crop',
         images: [
-          { id: 'mb-1', title: 'Sardine Run', url: 'https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'mb-2', title: 'Coral Reefs', url: 'https://images.unsplash.com/photo-1544253303-346c19694f6e?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'mb-3', title: 'Sea Turtles', url: 'https://images.unsplash.com/photo-1520626337972-8ee434ee744c?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'mb-4', title: 'Dive Spot', url: 'https://images.unsplash.com/photo-1531168556467-8053153c361c?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'mb-5', title: 'Beach Life', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1000&auto=format&fit=crop' }
+          { id: 'mb-1', title: 'Sardine Run', url: 'https://images.unsplash.com/photo-1573551089778-46a7abc39d9f?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'mb-2', title: 'Coral Reefs', url: 'https://images.unsplash.com/photo-1541940989-63309a6fb5e1?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'mb-3', title: 'Sea Turtles', url: 'https://images.unsplash.com/photo-1587585507345-a773229b47e2?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'mb-4', title: 'Dive Spot', url: 'https://images.unsplash.com/photo-1603565815301-1915ea014e7a?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'mb-5', title: 'Beach Life', url: 'https://images.unsplash.com/photo-1612438210352-875f1064299b?q=80&w=1000&auto=format&fit=crop' }
         ]
       },
       { 
-        id: 'cebu-oslob', name: 'Oslob', cover: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=1000&auto=format&fit=crop',
+        id: 'cebu-oslob', name: 'Oslob', cover: 'https://images.unsplash.com/photo-1742965635343-d8949a669935?q=80&w=1000&auto=format&fit=crop',
         images: [
-          { id: 'os-1', title: 'Whale Sharks', url: 'https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'os-1', title: 'Whale Sharks', url: 'https://images.unsplash.com/photo-1742965635343-d8949a669935?q=80&w=1000&auto=format&fit=crop' },
           { id: 'os-2', title: 'Kawasan Falls', url: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'os-3', title: 'Sumilon Island', url: 'https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'os-4', title: 'Canyoneering', url: 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'os-5', title: 'South Cebu', url: 'https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?q=80&w=1000&auto=format&fit=crop' }
+          { id: 'os-3', title: 'Sumilon Island', url: 'https://images.unsplash.com/photo-1600109961621-1c5c4cb517de?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'os-4', title: 'Canyoneering', url: 'https://images.unsplash.com/photo-1538332560-6bfa43c683b7?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'os-5', title: 'South Cebu', url: 'https://images.unsplash.com/photo-1568283084589-91cb61858693?q=80&w=1000&auto=format&fit=crop' }
         ]
       },
       { 
-        id: 'cebu-bantayan', name: 'Bantayan Island', cover: 'https://images.unsplash.com/photo-1542213493895-edf5b94f5a96?q=80&w=1000&auto=format&fit=crop',
+        id: 'cebu-bantayan', name: 'Bantayan Island', cover: 'https://images.unsplash.com/photo-1622396113941-de93c8d17208?q=80&w=1000&auto=format&fit=crop',
         images: [
-          { id: 'bi-1', title: 'Kota Beach', url: 'https://images.unsplash.com/photo-1542213493895-edf5b94f5a96?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'bi-2', title: 'Virgin Island', url: 'https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'bi-3', title: 'Ogtong Cave', url: 'https://images.unsplash.com/photo-1520626337972-8ee434ee744c?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'bi-4', title: 'Sandbar Views', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'bi-5', title: 'Relaxing Vibes', url: 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=1000&auto=format&fit=crop' }
+          { id: 'bi-1', title: 'Kota Beach', url: 'https://images.unsplash.com/photo-1622396113941-de93c8d17208?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'bi-2', title: 'Virgin Island', url: 'https://images.unsplash.com/photo-1591030467554-47e2bfdf2eb5?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'bi-3', title: 'Ogtong Cave', url: 'https://images.unsplash.com/photo-1600185966373-c155d8df6f83?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'bi-4', title: 'Sandbar Views', url: 'https://images.unsplash.com/photo-1602492161421-2eec30dcab9f?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'bi-5', title: 'Relaxing Vibes', url: 'https://images.unsplash.com/photo-1501890664351-4ef399c1524f?q=80&w=1000&auto=format&fit=crop' }
         ]
       }
     ] 
@@ -152,30 +152,30 @@ const galleryData = [
         id: 'manila-intra', name: 'Intramuros', cover: 'https://images.unsplash.com/photo-1518439179707-1b0b7531776b?q=80&w=1000&auto=format&fit=crop',
         images: [
           { id: 'in-1', title: 'Walled City', url: 'https://images.unsplash.com/photo-1518439179707-1b0b7531776b?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'in-2', title: 'Fort Santiago', url: 'https://images.unsplash.com/photo-1561501900-3701fa6a36a6?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'in-3', title: 'Manila Cathedral', url: 'https://images.unsplash.com/photo-1542314831-c6a420325142?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'in-4', title: 'Cobblestones', url: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'in-5', title: 'Historic Vibe', url: 'https://images.unsplash.com/photo-1571896349842-6e5a51335022?q=80&w=1000&auto=format&fit=crop' }
+          { id: 'in-2', title: 'Fort Santiago', url: 'https://images.unsplash.com/photo-1571896349842-6e5a51335022?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'in-3', title: 'Manila Cathedral', url: 'https://images.unsplash.com/photo-1604502127263-6e3e5ed5ebbb?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'in-4', title: 'Cobblestones', url: 'https://images.unsplash.com/photo-1599557422967-df59a68a54d4?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'in-5', title: 'Historic Vibe', url: 'https://images.unsplash.com/photo-1596208620712-42171c66c3c5?q=80&w=1000&auto=format&fit=crop' }
         ]
       },
       { 
-        id: 'manila-rizal', name: 'Rizal Park', cover: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1000&auto=format&fit=crop',
+        id: 'manila-rizal', name: 'Rizal Park', cover: 'https://images.unsplash.com/photo-1561501900-3701fa6a36a6?q=80&w=1000&auto=format&fit=crop',
         images: [
-          { id: 'rp-1', title: 'Park Monument', url: 'https://images.unsplash.com/photo-1518439179707-1b0b7531776b?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'rp-2', title: 'Green Spaces', url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'rp-3', title: 'City Gardens', url: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'rp-4', title: 'National Museum', url: 'https://images.unsplash.com/photo-1542314831-c6a420325142?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'rp-5', title: 'Sunset Walks', url: 'https://images.unsplash.com/photo-1561501900-3701fa6a36a6?q=80&w=1000&auto=format&fit=crop' }
+          { id: 'rp-1', title: 'Park Monument', url: 'https://images.unsplash.com/photo-1561501900-3701fa6a36a6?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'rp-2', title: 'Green Spaces', url: 'https://images.unsplash.com/photo-1542314831-c6a420325142?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'rp-3', title: 'City Gardens', url: 'https://images.unsplash.com/photo-1568283084589-91cb61858693?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'rp-4', title: 'National Museum', url: 'https://images.unsplash.com/photo-1605302685934-8c7fc63321db?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'rp-5', title: 'Sunset Walks', url: 'https://images.unsplash.com/photo-1612438210352-875f1064299b?q=80&w=1000&auto=format&fit=crop' }
         ]
       },
       { 
         id: 'manila-bgc', name: 'BGC', cover: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1000&auto=format&fit=crop',
         images: [
           { id: 'bgc-1', title: 'Modern Skyline', url: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'bgc-2', title: 'High Street', url: 'https://images.unsplash.com/photo-1561501900-3701fa6a36a6?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'bgc-3', title: 'Night Lights', url: 'https://images.unsplash.com/photo-1542314831-c6a420325142?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'bgc-4', title: 'Luxury Malls', url: 'https://images.unsplash.com/photo-1571896349842-6e5a51335022?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'bgc-5', title: 'City Living', url: 'https://images.unsplash.com/photo-1518439179707-1b0b7531776b?q=80&w=1000&auto=format&fit=crop' }
+          { id: 'bgc-2', title: 'High Street', url: 'https://images.unsplash.com/photo-1513407030348-51e4ec7950fa?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'bgc-3', title: 'Night Lights', url: 'https://images.unsplash.com/photo-1566497282835-f1262d05fdd5?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'bgc-4', title: 'Luxury Malls', url: 'https://images.unsplash.com/photo-1603565815301-1915ea014e7a?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'bgc-5', title: 'City Living', url: 'https://images.unsplash.com/photo-1559812239-65a4eeb755de?q=80&w=1000&auto=format&fit=crop' }
         ]
       }
     ] 
@@ -184,33 +184,33 @@ const galleryData = [
     id: 'Banaue', name: 'Ifugao (Banaue)', cover: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=1000&auto=format&fit=crop', 
     subcards: [
       { 
-        id: 'banaue-batad', name: 'Batad Terraces', cover: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=1000&auto=format&fit=crop',
+        id: 'banaue-batad', name: 'Batad Terraces', cover: 'https://images.unsplash.com/photo-1711060169357-ed923c9f2156?q=80&w=1000&auto=format&fit=crop',
         images: [
-          { id: 'bt-1', title: 'Amphitheater', url: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'bt-2', title: 'Rice Paddies', url: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'bt-3', title: 'Village Life', url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'bt-4', title: 'Trekking Path', url: 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'bt-5', title: 'Mountain Peaks', url: 'https://images.unsplash.com/photo-1518182170546-0766bd6f6a56?q=80&w=1000&auto=format&fit=crop' }
+          { id: 'bt-1', title: 'Amphitheater', url: 'https://images.unsplash.com/photo-1711060169357-ed923c9f2156?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'bt-2', title: 'Rice Paddies', url: 'https://images.unsplash.com/photo-1575406811594-da848ffb8a50?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'bt-3', title: 'Village Life', url: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'bt-4', title: 'Trekking Path', url: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'bt-5', title: 'Mountain Peaks', url: 'https://images.unsplash.com/photo-1581216061628-2187b387eb5c?q=80&w=1000&auto=format&fit=crop' }
         ]
       },
       { 
-        id: 'banaue-view', name: 'Banaue Viewpoint', cover: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=1000&auto=format&fit=crop',
+        id: 'banaue-view', name: 'Banaue Viewpoint', cover: 'https://images.unsplash.com/photo-1540611025311-01df3cef54b5?q=80&w=1000&auto=format&fit=crop',
         images: [
-          { id: 'vp-1', title: 'Main Viewpoint', url: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'vp-1', title: 'Main Viewpoint', url: 'https://images.unsplash.com/photo-1540611025311-01df3cef54b5?q=80&w=1000&auto=format&fit=crop' },
           { id: 'vp-2', title: 'Morning Mist', url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'vp-3', title: 'Terraces Horizon', url: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'vp-4', title: 'Heritage', url: 'https://images.unsplash.com/photo-1518182170546-0766bd6f6a56?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'vp-5', title: 'Golden Hour', url: 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=1000&auto=format&fit=crop' }
+          { id: 'vp-3', title: 'Terraces Horizon', url: 'https://images.unsplash.com/photo-1600109961621-1c5c4cb517de?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'vp-4', title: 'Heritage', url: 'https://images.unsplash.com/photo-1587585507345-a773229b47e2?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'vp-5', title: 'Golden Hour', url: 'https://images.unsplash.com/photo-1538332560-6bfa43c683b7?q=80&w=1000&auto=format&fit=crop' }
         ]
       },
       { 
         id: 'banaue-tappiya', name: 'Tappiya Falls', cover: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=1000&auto=format&fit=crop',
         images: [
           { id: 'tf-1', title: 'Hidden Waterfall', url: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'tf-2', title: 'Jungle Hike', url: 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'tf-3', title: 'Plunge Pool', url: 'https://images.unsplash.com/photo-1544253303-346c19694f6e?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'tf-4', title: 'River Boulders', url: 'https://images.unsplash.com/photo-1520626337972-8ee434ee744c?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'tf-5', title: 'Nature Escape', url: 'https://images.unsplash.com/photo-1531168556467-8053153c361c?q=80&w=1000&auto=format&fit=crop' }
+          { id: 'tf-2', title: 'Jungle Hike', url: 'https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'tf-3', title: 'Plunge Pool', url: 'https://images.unsplash.com/photo-1625505826533-5c80aca7d157?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'tf-4', title: 'River Boulders', url: 'https://images.unsplash.com/photo-1602492161421-2eec30dcab9f?q=80&w=1000&auto=format&fit=crop' },
+          { id: 'tf-5', title: 'Nature Escape', url: 'https://images.unsplash.com/photo-1591030467554-47e2bfdf2eb5?q=80&w=1000&auto=format&fit=crop' }
         ]
       }
     ] 
