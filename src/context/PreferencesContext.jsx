@@ -9,7 +9,8 @@ export const PreferencesProvider = ({ children }) => {
   const [currency, setCurrency] = useState('PHP');
   
   // --- THEME STATE ---
-  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
+  // ⚡ UPDATED: Changed the default fallback from 'dark' to 'light' to match the new Tropical Archipelago theme
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
 
   // Automatically update the HTML body and save to local storage when theme changes
   useEffect(() => {
