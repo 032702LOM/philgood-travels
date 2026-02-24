@@ -92,14 +92,15 @@ const Home = () => {
             <div id="heroCarousel" className="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
                 <div className="carousel-inner">
                     
-                    {/* ⚡ SLIDE 1: HD TRANSPARENT (No Blend) ⚡ */}
+                    {/* ⚡ SLIDE 1: HD TRANSPARENT & NO BOTTOM CROPPING ⚡ */}
                     <div className="carousel-item active" style={{ 
                         backgroundImage: `url(${islandParadiseImg})`, 
-                        backgroundPosition: 'center center',
+                        backgroundPosition: 'bottom center', // <-- Locks the bottom to prevent clipping
                         backgroundSize: 'cover',
-                        backgroundRepeat: 'no-repeat'
+                        backgroundRepeat: 'no-repeat',
+                        backgroundColor: 'transparent'
                     }}>
-                        {/* ⚡ REMOVED BLEND - Back to transparent for HD clarity ⚡ */}
+                        {/* Strictly Transparent Overlay (No Blend) */}
                         <div className="hero-overlay" style={{ background: 'transparent' }}>
                             <div className="container scroll-reveal visible d-flex flex-column align-items-center justify-content-center h-100">
                                 <div className="mt-5 pt-5 text-center">
