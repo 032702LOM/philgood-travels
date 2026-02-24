@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { regions, tourPackages } from '../data/placesData';
 import { usePreferences } from '../context/PreferencesContext';
 
-// ⚡ UPDATED LOCAL IMAGE IMPORTS ⚡
 import islandParadiseImg from '../assets/img/island_paradise.png'; 
 import seashellsImg from '../assets/img/seashells.png'; 
 import sunbathingImg from '../assets/img/sunbathing.png'; 
@@ -57,28 +56,30 @@ const Home = () => {
   return (
     <div className="fade-in">
         
-        {/* ⚡ FLOATING PROMO POPUP ⚡ */}
+        {/* ⚡ FLOATING PROMO POPUP (Moved to Left, Pop Color) ⚡ */}
         {showPromo && !isPromoClosed && (
-            <div className="fade-in shadow-lg border border-primary border-opacity-25" style={{
+            <div className="fade-in shadow-lg" style={{
                 position: 'fixed',
                 bottom: '30px',
-                right: '30px',
-                backgroundColor: 'var(--card-bg)',
+                left: '30px', /* Moved to left */
+                background: 'linear-gradient(135deg, var(--accent-color), #FF4500)', /* Vibrant Pop Color */
+                color: '#fff',
                 padding: '20px',
                 borderRadius: '12px',
                 zIndex: 1050,
-                maxWidth: '300px'
+                maxWidth: '300px',
+                border: 'none'
             }}>
                 <button 
                     onClick={() => setIsPromoClosed(true)} 
-                    className="btn-close position-absolute top-0 end-0 m-2 shadow-none" 
+                    className="btn-close btn-close-white position-absolute top-0 end-0 m-2 shadow-none" 
                     style={{ fontSize: '0.8rem' }}
                     aria-label="Close"
                 ></button>
-                <h6 className="text-navy fw-bold mb-2 font-montserrat">
-                    <i className="fa-solid fa-sun me-2 text-accent"></i>MONSOON SPECIAL
+                <h6 className="text-white fw-bold mb-2 font-montserrat">
+                    <i className="fa-solid fa-sun me-2"></i>MONSOON SPECIAL
                 </h6>
-                <p className="text-grey small mb-0">
+                <p className="text-white small mb-0 opacity-75">
                     <strong>30% OFF</strong> on all Palawan packages! Limited time only!
                 </p>
             </div>
@@ -158,13 +159,10 @@ const Home = () => {
             </div>
         </section>
 
-        {/* ⚡ SCENE 1: SEASHELLS WITH MULTIPLY BLEND & WAVING TEXT ⚡ */}
+        {/* ⚡ SCENE 1: SEASHELLS ⚡ */}
         <section className="scene-section trail-makers-bg" style={{ 
             backgroundColor: 'var(--bg-dark)', 
             backgroundImage: `url("${seashellsImg}")`,
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'right center',
-            backgroundSize: 'contain',
             backgroundBlendMode: 'multiply' 
         }}>
             <div className="container">
@@ -172,9 +170,10 @@ const Home = () => {
                     <div className="col-lg-6">
                         <div className="scene-content pe-lg-5">
                             <span className="section-subtitle">DISCOVER</span>
+                            {/* ⚡ Title 1 Waving ⚡ */}
                             <h2 className="scene-title text-navy wave-text">Seashell Treasures</h2>
-                            <p className="scene-text text-grey wave-text">Walk along the coastline and let the ocean reveal its hidden gems. A moment of peace accompanied by the rhythmic sound of waves.</p>     
-                            <p className="scene-text text-grey wave-text">Every shell holds a story from the deep blue. Collect memories as you leave your footprints in the pristine white sand.</p>             
+                            <p className="scene-text text-grey">Walk along the coastline and let the ocean reveal its hidden gems. A moment of peace accompanied by the rhythmic sound of waves.</p>     
+                            <p className="scene-text text-grey">Every shell holds a story from the deep blue. Collect memories as you leave your footprints in the pristine white sand.</p>             
                             <Link to="/destinations" className="btn-text-link mt-3 d-inline-block">Explore Beaches <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
                     </div>
@@ -187,7 +186,8 @@ const Home = () => {
             <div className="container py-5">
                 <div className="section-header scroll-reveal visible">
                     <span className="section-subtitle">Regional</span>
-                    <h2 className="section-title text-navy">{t('pop_dest', 'Most Popular Destinations')}</h2>
+                    {/* ⚡ Title 2 Waving ⚡ */}
+                    <h2 className="section-title text-navy wave-text">{t('pop_dest', 'Most Popular Destinations')}</h2>
                     <p className="section-desc text-grey">Discover the key regions and landmarks the Philippines has to offer.</p>
                 </div>
                 <div className="fanned-stack-container scroll-reveal visible mt-4">
@@ -226,25 +226,23 @@ const Home = () => {
             </div>
         </section>
 
-        {/* ⚡ SCENE 2: SUNBATHING WITH BOTTOM CORNER BLENDS & WAVING TEXT ⚡ */}
+        {/* ⚡ SCENE 2: SUNBATHING ⚡ */}
         <section className="scene-section sleep-bg" style={{ 
             backgroundColor: 'var(--bg-dark)', 
             backgroundImage: `
                 radial-gradient(ellipse at bottom left, var(--bg-dark) 5%, transparent 35%),
                 radial-gradient(ellipse at bottom right, var(--bg-dark) 5%, transparent 35%),
                 url("${sunbathingImg}")
-            `,
-            backgroundRepeat: 'no-repeat, no-repeat, no-repeat',
-            backgroundPosition: 'bottom left, bottom right, right center',
-            backgroundSize: '100% 100%, 100% 100%, contain'
+            `
         }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal visible">
                     <div className="col-lg-6">
                         <div className="scene-content pe-lg-5">
                             <span className="section-subtitle">RELAXATION</span>
+                            {/* ⚡ Title 3 Waving ⚡ */}
                             <h2 className="scene-title text-navy wave-text">Soak in the Sun</h2>
-                            <p className="scene-text text-grey wave-text">Unwind under the tropical canopy. Feel the warmth of the sun on your skin and the gentle island breeze.</p>
+                            <p className="scene-text text-grey">Unwind under the tropical canopy. Feel the warmth of the sun on your skin and the gentle island breeze.</p>
                             <Link to="/destinations?search=beach" className="btn-text-link mt-3 d-inline-block">Book a Resort Stay <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
                     </div>
@@ -257,7 +255,8 @@ const Home = () => {
             <div className="container py-5">
                 <div className="section-header scroll-reveal visible">
                     <span className="section-subtitle">Packages</span>
-                    <h2 className="section-title text-navy">{t('top_pkg', 'Top Packages That Fit You')}</h2>
+                    {/* ⚡ Title 4 Waving ⚡ */}
+                    <h2 className="section-title text-navy wave-text">{t('top_pkg', 'Top Packages That Fit You')}</h2>
                 </div>
                 <div className="fanned-stack-container scroll-reveal visible mt-4">
                     <button className="stack-nav-btn prev-btn" onClick={() => rotateStack('pkg', 'prev')}><i className="fa-solid fa-chevron-left"></i></button>
@@ -328,28 +327,27 @@ const Home = () => {
         {/* --- CTA --- */}
         <section className="cta-section scroll-reveal visible" style={{ backgroundColor: 'var(--bg-dark)' }}>
             <div className="container text-center py-5">
-                <h2 className="section-title text-navy mb-3">Ready for Your Next Adventure?</h2>
+                {/* ⚡ Title 5 Waving ⚡ */}
+                <h2 className="section-title text-navy mb-3 wave-text">Ready for Your Next Adventure?</h2>
                 <p className="section-desc text-grey mb-4">Book your dream Philippine vacation today and create memories that will last a lifetime.</p>
                 <Link to="/booking" className="hero-btn">START YOUR JOURNEY</Link>
             </div>
         </section>
 
-        {/* ⚡ SCENE 3: READY FOR YOUR NEXT DIVE WITH WAVING TEXT ⚡ */}
+        {/* ⚡ SCENE 3: READY FOR YOUR NEXT DIVE ⚡ */}
         <section className="scene-section dive-bg" style={{ 
             backgroundColor: 'var(--bg-dark)', 
-            backgroundImage: `url("${swimImg}")`,
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'right center',
-            backgroundSize: 'contain'
+            backgroundImage: `url("${swimImg}")`
         }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal visible">
                     <div className="col-lg-6">
                         <div className="scene-content pe-lg-5">
                             <span className="section-subtitle">UNDERWATER</span>
+                            {/* ⚡ Title 6 Waving ⚡ */}
                             <h2 className="scene-title text-navy wave-text">Ready for Your Next Dive?</h2>
-                            <p className="scene-text text-grey wave-text">Descend into the deep blue. Discover vibrant coral reefs, swim alongside majestic sea turtles, and explore the mysteries of the ocean floor.</p>
-                            <p className="scene-text text-grey wave-text">Beyond the technicolor gardens of coral lies a world frozen in time. Navigate through haunting shipwrecks and silent underwater caverns where history rests beneath the tides.</p>
+                            <p className="scene-text text-grey">Descend into the deep blue. Discover vibrant coral reefs, swim alongside majestic sea turtles, and explore the mysteries of the ocean floor.</p>
+                            <p className="scene-text text-grey">Beyond the technicolor gardens of coral lies a world frozen in time. Navigate through haunting shipwrecks and silent underwater caverns where history rests beneath the tides.</p>
                             <Link to="/tours?search=diving" className="btn-text-link mt-3 d-inline-block">View Diving Packages <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
                     </div>

@@ -277,18 +277,38 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .scene-title { font-size: 3rem; margin-bottom: 20px; color: var(--dark-navy); }
 .scene-text { color: var(--text-grey); font-size: 1.1rem; line-height: 1.8; margin-bottom: 25px; }
 
-/* ⚡ UPDATED LOCAL IMAGE FILENAMES ⚡ */
-.trail-makers-bg { background-image: url('img/man on cliff.png'); background-repeat: no-repeat; background-position: right center; background-size: contain; }
-.dive-bg { background-image: url('img/swim.png'); background-repeat: no-repeat; background-position: right center; background-size: contain; }
-.sleep-bg { background-image: url('img/sleeping.png'); background-repeat: no-repeat; background-position: right center; background-size: contain; }
-
-@media (min-width: 992px) {
-    .trail-makers-bg, .dive-bg, .sleep-bg { background-position: right center; background-size: 50% auto; }
+.trail-makers-bg, .dive-bg, .sleep-bg {
+    background-repeat: no-repeat !important;
 }
+
+/* ⚡ DESKTOP: Images on the right, Sunbathing made larger (65%) ⚡ */
+@media (min-width: 992px) {
+    .trail-makers-bg, .dive-bg { 
+        background-position: right center !important; 
+        background-size: 50% auto !important; 
+    }
+    .sleep-bg { 
+        background-position: bottom left, bottom right, right center !important; 
+        background-size: 100% 100%, 100% 100%, 65% auto !important; /* Made larger */
+        background-repeat: no-repeat, no-repeat, no-repeat !important;
+    }
+}
+
+/* ⚡ MOBILE: Images tuck underneath the text ⚡ */
 @media (max-width: 991px) {
-    .trail-makers-bg, .dive-bg, .sleep-bg { background-position: bottom right; background-size: 90%; padding-bottom: 350px; }
-    .scene-block { margin-bottom: 80px; text-align: center; }
-    .scene-content { padding: 0 !important; }
+    .trail-makers-bg, .dive-bg { 
+        background-position: bottom center !important; 
+        background-size: 90% auto !important; 
+        padding-bottom: 350px !important; /* Pushes image under text */
+    }
+    .sleep-bg { 
+        background-position: bottom left, bottom right, bottom center !important; 
+        background-size: 100% 100%, 100% 100%, 95% auto !important; 
+        background-repeat: no-repeat, no-repeat, no-repeat !important;
+        padding-bottom: 350px !important; 
+    }
+    .scene-block { margin-bottom: 40px; text-align: center; }
+    .scene-content { padding: 0 15px !important; }
 }
 
 /* =========================================
@@ -545,14 +565,22 @@ footer { position: relative; background-color: var(--dark-navy); color: #E0F7FA;
 .platform-icon { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; color: white; }
 
 /* =========================================
-   14. ANIMATIONS
+   14. ANIMATIONS & SCROLL REVEALS
    ========================================= */
 .fade-in { animation: fadeIn 0.5s ease-in; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes slideUpChat { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-.scroll-reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
-.scroll-reveal.visible { opacity: 1; transform: translateY(0); }
+/* ⚡ SMOOTH UPWARD SCROLL REVEAL ⚡ */
+.scroll-reveal { 
+    opacity: 0; 
+    transform: translateY(40px); /* Starts lower */
+    transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); /* Slower, elegant slide up */
+}
+.scroll-reveal.visible { 
+    opacity: 1; 
+    transform: translateY(0); /* Moves to original position */
+}
 .delay-1 { transition-delay: 0.1s; }
 .delay-2 { transition-delay: 0.2s; }
 .delay-3 { transition-delay: 0.3s; }
@@ -648,6 +676,7 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
 [data-theme="light"] [style*="backgroundColor: '#021625'"] {
     background-color: #f8f9fa !important;
 }
+
 /* =========================================
    18. OCEAN WAVE TEXT ANIMATION
    ========================================= */
@@ -658,17 +687,16 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
     100% { transform: translateY(0px) rotate(0deg); }
 }
 
-.wave-text {
+/* ⚡ Automatically wave ALL major titles across ALL pages when they appear ⚡ */
+.wave-text,
+.scroll-reveal.visible .section-title,
+.scroll-reveal.visible .scene-title {
     transform-origin: center;
     display: inline-block; /* Required for transforms to work on text */
-}
-
-/* Triggers the continuous wave only when the element scrolls into view */
-.scroll-reveal.visible .wave-text {
     animation: oceanWave 4s ease-in-out infinite;
 }
 
-/* Stagger the paragraphs slightly so they wave after the title */
+/* If you ever want to manually wave a paragraph, stagger it slightly */
 .scroll-reveal.visible p.wave-text {
     animation-delay: 0.5s;
 }
