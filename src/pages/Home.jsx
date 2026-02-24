@@ -92,15 +92,15 @@ const Home = () => {
             <div id="heroCarousel" className="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
                 <div className="carousel-inner">
                     
-                    {/* ⚡ SLIDE 1: HD CLEAR TOP, SEAMLESS FADE AT THE BOTTOM ⚡ */}
+                    {/* ⚡ SLIDE 1: HD TRANSPARENT (No Blend) ⚡ */}
                     <div className="carousel-item active" style={{ 
                         backgroundImage: `url(${islandParadiseImg})`, 
                         backgroundPosition: 'center center',
-                        backgroundSize: 'cover', // Ensures the image spans the full width
+                        backgroundSize: 'cover',
                         backgroundRepeat: 'no-repeat'
                     }}>
-                        {/* The background style below creates the smooth blending effect! */}
-                        <div className="hero-overlay" style={{ background: 'linear-gradient(to bottom, transparent 65%, var(--bg-dark) 105%)' }}>
+                        {/* ⚡ REMOVED BLEND - Back to transparent for HD clarity ⚡ */}
+                        <div className="hero-overlay" style={{ background: 'transparent' }}>
                             <div className="container scroll-reveal visible d-flex flex-column align-items-center justify-content-center h-100">
                                 <div className="mt-5 pt-5 text-center">
                                     <p className="hero-subtitle text-navy fw-bold mt-5" style={{ textShadow: '0 0 10px rgba(255,255,255,0.8)', fontSize: '1.2rem' }}>
