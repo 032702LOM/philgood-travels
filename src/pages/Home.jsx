@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { regions, tourPackages } from '../data/placesData';
-import { usePreferences } from '../context/PreferencesContext'; // <-- IMPORT CONTEXT
+import { usePreferences } from '../context/PreferencesContext';
+// ⚡ IMPORT THE IMAGE DIRECTLY HERE ⚡
+import islandParadiseImg from '../assets/img/island_paradise.png'; 
 
 const Home = () => {
   const navigate = useNavigate();
-  const { t, formatPrice } = usePreferences(); // <-- PULL IN TOOLS
+  const { t, formatPrice } = usePreferences(); 
   
   const initialPositions = ['pos-hidden', 'pos-far-left', 'pos-left', 'pos-center', 'pos-right', 'pos-far-right'];
   const [destPositions, setDestPositions] = useState(initialPositions);
@@ -36,7 +38,8 @@ const Home = () => {
         <section id="home" style={{ marginTop: '0', backgroundColor: 'var(--bg-dark)' }}>
             <div id="heroCarousel" className="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
                 <div className="carousel-inner">
-                    <div className="carousel-item active" style={{ backgroundImage: "url('img/island_paradise.png')" }}>
+                    {/* ⚡ USE THE IMPORTED IMAGE VARIABLE HERE ⚡ */}
+                    <div className="carousel-item active" style={{ backgroundImage: `url(${islandParadiseImg})` }}>
                         <div className="hero-overlay">
                             <div className="container scroll-reveal visible">
                                 <h1 className="hero-title">{t('hero_island', 'ISLAND PARADISE')}</h1>
@@ -206,7 +209,7 @@ const Home = () => {
             </div>
         </section>
 
-        {/* --- TESTIMONIALS (Restored!) --- */}
+        {/* --- TESTIMONIALS --- */}
         <section className="py-5" style={{ backgroundColor: 'var(--bg-dark)' }}>
             <div className="container py-5">
                 <div className="section-header scroll-reveal visible">
@@ -254,7 +257,7 @@ const Home = () => {
             </div>
         </section>
 
-        {/* --- SCENE 3: READY FOR YOUR NEXT DIVE --- (Restored!) */}
+        {/* --- SCENE 3: READY FOR YOUR NEXT DIVE --- */}
         <section className="scene-section dive-bg" style={{ backgroundColor: 'var(--bg-dark)', backgroundImage: "url('https://i.postimg.cc/rshH22yZ/dive.png')" }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal visible">
