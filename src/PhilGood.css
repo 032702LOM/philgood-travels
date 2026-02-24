@@ -288,8 +288,9 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
         background-size: 50% auto !important; 
     }
     .sleep-bg { 
-        background-position: bottom left, bottom right, right center !important; 
-        background-size: 100% 100%, 100% 100%, 65% auto !important; /* Made larger */
+        /* Kept gradients at 100%, but reduced image size to 48% and anchored to bottom right */
+        background-position: bottom left, bottom right, right bottom !important; 
+        background-size: 100% 100%, 100% 100%, 48% auto !important; 
         background-repeat: no-repeat, no-repeat, no-repeat !important;
     }
 }
