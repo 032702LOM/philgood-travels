@@ -17,6 +17,10 @@ const Home = () => {
   const [destPositions, setDestPositions] = useState(initialPositions);
   const [pkgPositions, setPkgPositions] = useState(initialPositions);
 
+  // ⚡ NEW STATE: Control the floating Promo Box ⚡
+  const [showPromo, setShowPromo] = useState(false);
+  const [isPromoClosed, setIsPromoClosed] = useState(false);
+
   const rotateStack = (type, direction) => {
     const setFunction = type === 'dest' ? setDestPositions : setPkgPositions;
     setFunction((current) => {
@@ -32,41 +36,74 @@ const Home = () => {
 
   useEffect(() => {
     const handleScroll = () => {
+        // 1. Reveal Elements on Scroll
         const elements = document.querySelectorAll('.scroll-reveal');
         elements.forEach(el => {
             if (el.getBoundingClientRect().top < window.innerHeight - 100) {
                 el.classList.add('visible');
             }
         });
+
+        // 2. ⚡ Show Promo Box when scrolling down (if not closed) ⚡
+        if (window.scrollY > 300) {
+            setShowPromo(true);
+        } else {
+            setShowPromo(false);
+        }
     };
+
     window.addEventListener('scroll', handleScroll);
-    handleScroll();
+    handleScroll(); // Trigger once on load
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
     <div className="fade-in">
-        {/* --- TOP ALERT BANNER --- */}
-        <div className="top-alert" id="specialOfferBanner">
-            <span className="text-navy fw-bold"><i className="fa-solid fa-sun me-2 text-navy"></i> MONSOON SPECIAL: 30% OFF on all Palawan packages! Limited time only!</span>
-            <i className="fa-solid fa-xmark close-alert text-navy" onClick={(e) => e.target.parentElement.style.display='none'}></i>
-        </div>
         
+        {/* ⚡ NEW FLOATING PROMO POPUP ⚡ */}
+        {showPromo && !isPromoClosed && (
+            <div className="fade-in shadow-lg border border-primary border-opacity-25" style={{
+                position: 'fixed',
+                bottom: '30px',
+                right: '30px',
+                backgroundColor: 'var(--card-bg)',
+                padding: '20px',
+                borderRadius: '12px',
+                zIndex: 1050,
+                maxWidth: '300px'
+            }}>
+                <button 
+                    onClick={() => setIsPromoClosed(true)} 
+                    className="btn-close position-absolute top-0 end-0 m-2 shadow-none" 
+                    style={{ fontSize: '0.8rem' }}
+                    aria-label="Close"
+                ></button>
+                <h6 className="text-navy fw-bold mb-2 font-montserrat">
+                    <i className="fa-solid fa-sun me-2 text-accent"></i>MONSOON SPECIAL
+                </h6>
+                <p className="text-grey small mb-0">
+                    <strong>30% OFF</strong> on all Palawan packages! Limited time only!
+                </p>
+            </div>
+        )}
+
         {/* --- HERO SECTION CAROUSEL --- */}
         <section id="home" style={{ marginTop: '0', backgroundColor: 'var(--bg-dark)' }}>
             <div id="heroCarousel" className="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
                 <div className="carousel-inner">
                     
-                    {/* ⚡ SLIDE 1: FIXED BOTTOM CROPPING ⚡ */}
+                    {/* ⚡ SLIDE 1: FIXED BLENDING & NO CROPPING ⚡ */}
                     <div className="carousel-item active" style={{ 
                         backgroundImage: `url(${islandParadiseImg})`, 
-                        backgroundPosition: 'bottom center', // Forces the bottom of the image to stay visible
-                        backgroundSize: 'cover' 
+                        backgroundPosition: 'bottom center',
+                        backgroundSize: 'contain', // 'contain' stops the cropping
+                        backgroundRepeat: 'no-repeat',
+                        backgroundColor: 'var(--bg-dark)' // Blends perfectly with your theme sky!
                     }}>
                         <div className="hero-overlay" style={{ background: 'transparent' }}>
                             <div className="container scroll-reveal visible d-flex flex-column align-items-center justify-content-center h-100">
-                                <div className="mt-5 pt-5">
-                                    <p className="hero-subtitle text-white fw-bold mt-5" style={{ textShadow: '1px 1px 6px rgba(0,0,0,0.8)', fontSize: '1.2rem' }}>
+                                <div className="mt-5 pt-5 text-center">
+                                    <p className="hero-subtitle text-navy fw-bold mt-5" style={{ fontSize: '1.2rem' }}>
                                         Relax on pristine white sand beaches
                                     </p>
                                     <Link to="/booking" className="hero-btn shadow-lg mt-2">{t('book_now', 'BOOK NOW')}</Link>
@@ -126,8 +163,14 @@ const Home = () => {
             </div>
         </section>
 
-        {/* ⚡ SCENE 1: TRAIL MAKERS (FIXED IMPORT) ⚡ */}
-        <section className="scene-section trail-makers-bg" style={{ backgroundColor: 'var(--bg-dark)', backgroundImage: `url("${manOnCliffImg}")` }}>
+        {/* ⚡ SCENE 1: TRAIL MAKERS ⚡ */}
+        <section className="scene-section trail-makers-bg" style={{ 
+            backgroundColor: 'var(--bg-dark)', 
+            backgroundImage: `url("${manOnCliffImg}")`,
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'right center',
+            backgroundSize: 'contain'
+        }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal visible">
                     <div className="col-lg-6">
@@ -187,8 +230,14 @@ const Home = () => {
             </div>
         </section>
 
-        {/* ⚡ SCENE 2: SLEEP UNDER THE STARS (FIXED IMPORT) ⚡ */}
-        <section className="scene-section sleep-bg" style={{ backgroundColor: 'var(--bg-dark)', backgroundImage: `url("${sleepingImg}")` }}>
+        {/* ⚡ SCENE 2: SLEEP UNDER THE STARS ⚡ */}
+        <section className="scene-section sleep-bg" style={{ 
+            backgroundColor: 'var(--bg-dark)', 
+            backgroundImage: `url("${sleepingImg}")`,
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'right center',
+            backgroundSize: 'contain'
+        }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal visible">
                     <div className="col-lg-6">
@@ -285,8 +334,14 @@ const Home = () => {
             </div>
         </section>
 
-        {/* ⚡ SCENE 3: READY FOR YOUR NEXT DIVE (FIXED IMPORT) ⚡ */}
-        <section className="scene-section dive-bg" style={{ backgroundColor: 'var(--bg-dark)', backgroundImage: `url("${swimImg}")` }}>
+        {/* ⚡ SCENE 3: READY FOR YOUR NEXT DIVE ⚡ */}
+        <section className="scene-section dive-bg" style={{ 
+            backgroundColor: 'var(--bg-dark)', 
+            backgroundImage: `url("${swimImg}")`,
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'right center',
+            backgroundSize: 'contain'
+        }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal visible">
                     <div className="col-lg-6">
