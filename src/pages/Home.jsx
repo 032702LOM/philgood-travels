@@ -240,6 +240,8 @@ const Home = () => {
                             <span className="section-subtitle">RELAXATION</span>
                             <h2 className="scene-title text-navy wave-text">Soak in the Sun</h2>
                             <p className="scene-text text-grey">Unwind under the tropical canopy. Feel the warmth of the sun on your skin and the gentle island breeze.</p>
+                            <p className="scene-text text-grey">As the tide retreats, a kaleidoscope of shapes and hues emerges from the surf. From the delicate spiral of a whelk to the iridescent shimmer of a conch, each find is a tiny masterpiece crafted by time and the currents.</p>
+                            <p className="scene-text text-grey">Pause to breathe in the salt-tinged air as the horizon glows with the warmth of a setting sun. This isn't just a walk; it’s a chance to reconnect with the earth’s rhythm and find beauty in the smallest of details.</p>
                             <Link to="/destinations?search=beach" className="btn-text-link mt-3 d-inline-block">Book a Resort Stay <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
                     </div>
