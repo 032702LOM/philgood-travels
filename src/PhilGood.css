@@ -648,3 +648,27 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
 [data-theme="light"] [style*="backgroundColor: '#021625'"] {
     background-color: #f8f9fa !important;
 }
+/* =========================================
+   18. OCEAN WAVE TEXT ANIMATION
+   ========================================= */
+@keyframes oceanWave {
+    0% { transform: translateY(0px) rotate(0deg); }
+    33% { transform: translateY(-4px) rotate(-1deg); }
+    66% { transform: translateY(4px) rotate(1deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+}
+
+.wave-text {
+    transform-origin: center;
+    display: inline-block; /* Required for transforms to work on text */
+}
+
+/* Triggers the continuous wave only when the element scrolls into view */
+.scroll-reveal.visible .wave-text {
+    animation: oceanWave 4s ease-in-out infinite;
+}
+
+/* Stagger the paragraphs slightly so they wave after the title */
+.scroll-reveal.visible p.wave-text {
+    animation-delay: 0.5s;
+}

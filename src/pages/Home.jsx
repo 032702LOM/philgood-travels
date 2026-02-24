@@ -3,10 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { regions, tourPackages } from '../data/placesData';
 import { usePreferences } from '../context/PreferencesContext';
 
-// ⚡ BULLETPROOF LOCAL IMAGE IMPORTS ⚡
+// ⚡ UPDATED LOCAL IMAGE IMPORTS ⚡
 import islandParadiseImg from '../assets/img/island_paradise.png'; 
-import manOnCliffImg from '../assets/img/man on cliff.png';
-import sleepingImg from '../assets/img/sleeping.png';
+import seashellsImg from '../assets/img/seashells.png'; 
+import sunbathingImg from '../assets/img/sunbathing.png'; 
 import swimImg from '../assets/img/swim.png';
 
 const Home = () => {
@@ -17,7 +17,6 @@ const Home = () => {
   const [destPositions, setDestPositions] = useState(initialPositions);
   const [pkgPositions, setPkgPositions] = useState(initialPositions);
 
-  // ⚡ Control the floating Promo Box ⚡
   const [showPromo, setShowPromo] = useState(false);
   const [isPromoClosed, setIsPromoClosed] = useState(false);
 
@@ -36,7 +35,6 @@ const Home = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-        // 1. Reveal Elements on Scroll
         const elements = document.querySelectorAll('.scroll-reveal');
         elements.forEach(el => {
             if (el.getBoundingClientRect().top < window.innerHeight - 100) {
@@ -44,7 +42,6 @@ const Home = () => {
             }
         });
 
-        // 2. Show Promo Box when scrolling down
         if (window.scrollY > 300) {
             setShowPromo(true);
         } else {
@@ -91,16 +88,13 @@ const Home = () => {
         <section id="home" style={{ marginTop: '0', backgroundColor: 'var(--bg-dark)' }}>
             <div id="heroCarousel" className="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
                 <div className="carousel-inner">
-                    
-                    {/* ⚡ SLIDE 1: HD TRANSPARENT & NO BOTTOM CROPPING ⚡ */}
                     <div className="carousel-item active" style={{ 
                         backgroundImage: `url(${islandParadiseImg})`, 
-                        backgroundPosition: 'bottom center', // <-- Locks the bottom to prevent clipping
+                        backgroundPosition: 'bottom center',
                         backgroundSize: 'cover',
                         backgroundRepeat: 'no-repeat',
                         backgroundColor: 'transparent'
                     }}>
-                        {/* Strictly Transparent Overlay (No Blend) */}
                         <div className="hero-overlay" style={{ background: 'transparent' }}>
                             <div className="container scroll-reveal visible d-flex flex-column align-items-center justify-content-center h-100">
                                 <div className="mt-5 pt-5 text-center">
@@ -164,23 +158,24 @@ const Home = () => {
             </div>
         </section>
 
-        {/* ⚡ SCENE 1: TRAIL MAKERS ⚡ */}
+        {/* ⚡ SCENE 1: SEASHELLS WITH MULTIPLY BLEND & WAVING TEXT ⚡ */}
         <section className="scene-section trail-makers-bg" style={{ 
             backgroundColor: 'var(--bg-dark)', 
-            backgroundImage: `url("${manOnCliffImg}")`,
+            backgroundImage: `url("${seashellsImg}")`,
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'right center',
-            backgroundSize: 'contain'
+            backgroundSize: 'contain',
+            backgroundBlendMode: 'multiply' 
         }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal visible">
                     <div className="col-lg-6">
                         <div className="scene-content pe-lg-5">
-                            <span className="section-subtitle">PERSPECTIVE</span>
-                            <h2 className="scene-title text-navy">The Trail Makers</h2>
-                            <p className="scene-text text-grey">Sometimes the best view comes after the hardest climb. Take a moment to sit, breathe, and appreciate the world from a new perspective.</p>     
-                            <p className="scene-text text-grey">A breathtaking panoramic view from a mountain summit at sunset. A lone hiker is sitting on a rocky ledge, silhouette against a vibrant orange and purple sky, looking out over a sea of clouds and distant peaks.</p>             
-                            <Link to="/destinations" className="btn-text-link">Explore Mountains <i className="fa-solid fa-arrow-right"></i></Link>
+                            <span className="section-subtitle">DISCOVER</span>
+                            <h2 className="scene-title text-navy wave-text">Seashell Treasures</h2>
+                            <p className="scene-text text-grey wave-text">Walk along the coastline and let the ocean reveal its hidden gems. A moment of peace accompanied by the rhythmic sound of waves.</p>     
+                            <p className="scene-text text-grey wave-text">Every shell holds a story from the deep blue. Collect memories as you leave your footprints in the pristine white sand.</p>             
+                            <Link to="/destinations" className="btn-text-link mt-3 d-inline-block">Explore Beaches <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
                     </div>
                 </div>
@@ -231,22 +226,26 @@ const Home = () => {
             </div>
         </section>
 
-        {/* ⚡ SCENE 2: SLEEP UNDER THE STARS ⚡ */}
+        {/* ⚡ SCENE 2: SUNBATHING WITH BOTTOM CORNER BLENDS & WAVING TEXT ⚡ */}
         <section className="scene-section sleep-bg" style={{ 
             backgroundColor: 'var(--bg-dark)', 
-            backgroundImage: `url("${sleepingImg}")`,
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'right center',
-            backgroundSize: 'contain'
+            backgroundImage: `
+                radial-gradient(ellipse at bottom left, var(--bg-dark) 5%, transparent 35%),
+                radial-gradient(ellipse at bottom right, var(--bg-dark) 5%, transparent 35%),
+                url("${sunbathingImg}")
+            `,
+            backgroundRepeat: 'no-repeat, no-repeat, no-repeat',
+            backgroundPosition: 'bottom left, bottom right, right center',
+            backgroundSize: '100% 100%, 100% 100%, contain'
         }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal visible">
                     <div className="col-lg-6">
                         <div className="scene-content pe-lg-5">
-                            <span className="section-subtitle">IMMERSION</span>
-                            <h2 className="scene-title text-navy">Sleep Under the Stars</h2>
-                            <p className="scene-text text-grey">Disconnect to reconnect. Experience the serenity of a night in the wild, with nothing but the crackle of a campfire and the starry sky above.</p>
-                            <Link to="/destinations?search=camping" className="btn-text-link">Book a Camping Trip <i className="fa-solid fa-arrow-right"></i></Link>
+                            <span className="section-subtitle">RELAXATION</span>
+                            <h2 className="scene-title text-navy wave-text">Soak in the Sun</h2>
+                            <p className="scene-text text-grey wave-text">Unwind under the tropical canopy. Feel the warmth of the sun on your skin and the gentle island breeze.</p>
+                            <Link to="/destinations?search=beach" className="btn-text-link mt-3 d-inline-block">Book a Resort Stay <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
                     </div>
                 </div>
@@ -335,7 +334,7 @@ const Home = () => {
             </div>
         </section>
 
-        {/* ⚡ SCENE 3: READY FOR YOUR NEXT DIVE ⚡ */}
+        {/* ⚡ SCENE 3: READY FOR YOUR NEXT DIVE WITH WAVING TEXT ⚡ */}
         <section className="scene-section dive-bg" style={{ 
             backgroundColor: 'var(--bg-dark)', 
             backgroundImage: `url("${swimImg}")`,
@@ -348,10 +347,10 @@ const Home = () => {
                     <div className="col-lg-6">
                         <div className="scene-content pe-lg-5">
                             <span className="section-subtitle">UNDERWATER</span>
-                            <h2 className="scene-title text-navy">Ready for Your Next Dive?</h2>
-                            <p className="scene-text text-grey">Descend into the deep blue. Discover vibrant coral reefs, swim alongside majestic sea turtles, and explore the mysteries of the ocean floor.</p>
-                            <p className="scene-text text-grey">Beyond the technicolor gardens of coral lies a world frozen in time. Navigate through haunting shipwrecks and silent underwater caverns where history rests beneath the tides.</p>
-                            <Link to="/tours?search=diving" className="btn-text-link">View Diving Packages <i className="fa-solid fa-arrow-right"></i></Link>
+                            <h2 className="scene-title text-navy wave-text">Ready for Your Next Dive?</h2>
+                            <p className="scene-text text-grey wave-text">Descend into the deep blue. Discover vibrant coral reefs, swim alongside majestic sea turtles, and explore the mysteries of the ocean floor.</p>
+                            <p className="scene-text text-grey wave-text">Beyond the technicolor gardens of coral lies a world frozen in time. Navigate through haunting shipwrecks and silent underwater caverns where history rests beneath the tides.</p>
+                            <Link to="/tours?search=diving" className="btn-text-link mt-3 d-inline-block">View Diving Packages <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
                     </div>
                 </div>
