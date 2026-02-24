@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { regions, tourPackages } from '../data/placesData';
 import { usePreferences } from '../context/PreferencesContext';
-import islandParadiseImg from '../assets/img/island_paradise.png'; // <-- Local HD Image
+
+// ⚡ BULLETPROOF LOCAL IMAGE IMPORTS ⚡
+import islandParadiseImg from '../assets/img/island_paradise.png'; 
+import manOnCliffImg from '../assets/img/man on cliff.png';
+import sleepingImg from '../assets/img/sleeping.png';
+import swimImg from '../assets/img/swim.png';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -52,8 +57,12 @@ const Home = () => {
             <div id="heroCarousel" className="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
                 <div className="carousel-inner">
                     
-                    {/* ⚡ SLIDE 1: HD CLEAR ISLAND PARADISE ⚡ */}
-                    <div className="carousel-item active" style={{ backgroundImage: `url(${islandParadiseImg})` }}>
+                    {/* ⚡ SLIDE 1: FIXED BOTTOM CROPPING ⚡ */}
+                    <div className="carousel-item active" style={{ 
+                        backgroundImage: `url(${islandParadiseImg})`, 
+                        backgroundPosition: 'bottom center', // Forces the bottom of the image to stay visible
+                        backgroundSize: 'cover' 
+                    }}>
                         <div className="hero-overlay" style={{ background: 'transparent' }}>
                             <div className="container scroll-reveal visible d-flex flex-column align-items-center justify-content-center h-100">
                                 <div className="mt-5 pt-5">
@@ -117,8 +126,8 @@ const Home = () => {
             </div>
         </section>
 
-        {/* ⚡ SCENE 1: TRAIL MAKERS (Now using CSS class) ⚡ */}
-        <section className="scene-section trail-makers-bg" style={{ backgroundColor: 'var(--bg-dark)' }}>
+        {/* ⚡ SCENE 1: TRAIL MAKERS (FIXED IMPORT) ⚡ */}
+        <section className="scene-section trail-makers-bg" style={{ backgroundColor: 'var(--bg-dark)', backgroundImage: `url("${manOnCliffImg}")` }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal visible">
                     <div className="col-lg-6">
@@ -178,8 +187,8 @@ const Home = () => {
             </div>
         </section>
 
-        {/* ⚡ SCENE 2: SLEEP UNDER THE STARS (Now using CSS class) ⚡ */}
-        <section className="scene-section sleep-bg" style={{ backgroundColor: 'var(--bg-dark)' }}>
+        {/* ⚡ SCENE 2: SLEEP UNDER THE STARS (FIXED IMPORT) ⚡ */}
+        <section className="scene-section sleep-bg" style={{ backgroundColor: 'var(--bg-dark)', backgroundImage: `url("${sleepingImg}")` }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal visible">
                     <div className="col-lg-6">
@@ -276,8 +285,8 @@ const Home = () => {
             </div>
         </section>
 
-        {/* ⚡ SCENE 3: READY FOR YOUR NEXT DIVE (Now using CSS class) ⚡ */}
-        <section className="scene-section dive-bg" style={{ backgroundColor: 'var(--bg-dark)' }}>
+        {/* ⚡ SCENE 3: READY FOR YOUR NEXT DIVE (FIXED IMPORT) ⚡ */}
+        <section className="scene-section dive-bg" style={{ backgroundColor: 'var(--bg-dark)', backgroundImage: `url("${swimImg}")` }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal visible">
                     <div className="col-lg-6">
