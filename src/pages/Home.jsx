@@ -17,7 +17,7 @@ const Home = () => {
   const [destPositions, setDestPositions] = useState(initialPositions);
   const [pkgPositions, setPkgPositions] = useState(initialPositions);
 
-  // ⚡ NEW STATE: Control the floating Promo Box ⚡
+  // ⚡ Control the floating Promo Box ⚡
   const [showPromo, setShowPromo] = useState(false);
   const [isPromoClosed, setIsPromoClosed] = useState(false);
 
@@ -44,7 +44,7 @@ const Home = () => {
             }
         });
 
-        // 2. ⚡ Show Promo Box when scrolling down (if not closed) ⚡
+        // 2. Show Promo Box when scrolling down
         if (window.scrollY > 300) {
             setShowPromo(true);
         } else {
@@ -53,14 +53,14 @@ const Home = () => {
     };
 
     window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Trigger once on load
+    handleScroll(); 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
     <div className="fade-in">
         
-        {/* ⚡ NEW FLOATING PROMO POPUP ⚡ */}
+        {/* ⚡ FLOATING PROMO POPUP ⚡ */}
         {showPromo && !isPromoClosed && (
             <div className="fade-in shadow-lg border border-primary border-opacity-25" style={{
                 position: 'fixed',
@@ -92,18 +92,18 @@ const Home = () => {
             <div id="heroCarousel" className="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
                 <div className="carousel-inner">
                     
-                    {/* ⚡ SLIDE 1: FIXED BLENDING & NO CROPPING ⚡ */}
+                    {/* ⚡ SLIDE 1: HD CLEAR TOP, SEAMLESS FADE AT THE BOTTOM ⚡ */}
                     <div className="carousel-item active" style={{ 
                         backgroundImage: `url(${islandParadiseImg})`, 
-                        backgroundPosition: 'bottom center',
-                        backgroundSize: 'contain', // 'contain' stops the cropping
-                        backgroundRepeat: 'no-repeat',
-                        backgroundColor: 'var(--bg-dark)' // Blends perfectly with your theme sky!
+                        backgroundPosition: 'center center',
+                        backgroundSize: 'cover', // Ensures the image spans the full width
+                        backgroundRepeat: 'no-repeat'
                     }}>
-                        <div className="hero-overlay" style={{ background: 'transparent' }}>
+                        {/* The background style below creates the smooth blending effect! */}
+                        <div className="hero-overlay" style={{ background: 'linear-gradient(to bottom, transparent 65%, var(--bg-dark) 105%)' }}>
                             <div className="container scroll-reveal visible d-flex flex-column align-items-center justify-content-center h-100">
                                 <div className="mt-5 pt-5 text-center">
-                                    <p className="hero-subtitle text-navy fw-bold mt-5" style={{ fontSize: '1.2rem' }}>
+                                    <p className="hero-subtitle text-navy fw-bold mt-5" style={{ textShadow: '0 0 10px rgba(255,255,255,0.8)', fontSize: '1.2rem' }}>
                                         Relax on pristine white sand beaches
                                     </p>
                                     <Link to="/booking" className="hero-btn shadow-lg mt-2">{t('book_now', 'BOOK NOW')}</Link>
