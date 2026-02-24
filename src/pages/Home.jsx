@@ -56,13 +56,13 @@ const Home = () => {
   return (
     <div className="fade-in">
         
-        {/* ⚡ FLOATING PROMO POPUP (Moved to Left, Pop Color) ⚡ */}
+        {/* ⚡ FLOATING PROMO POPUP ⚡ */}
         {showPromo && !isPromoClosed && (
             <div className="fade-in shadow-lg" style={{
                 position: 'fixed',
                 bottom: '30px',
-                left: '30px', /* Moved to left */
-                background: 'linear-gradient(135deg, var(--accent-color), #FF4500)', /* Vibrant Pop Color */
+                left: '30px',
+                background: 'linear-gradient(135deg, var(--accent-color), #FF4500)',
                 color: '#fff',
                 padding: '20px',
                 borderRadius: '12px',
@@ -159,7 +159,7 @@ const Home = () => {
             </div>
         </section>
 
-        {/* ⚡ SCENE 1: SEASHELLS ⚡ */}
+        {/* ⚡ SCENE 1: SEASHELLS WITH UPDATED TEXT ⚡ */}
         <section className="scene-section trail-makers-bg" style={{ 
             backgroundColor: 'var(--bg-dark)', 
             backgroundImage: `url("${seashellsImg}")`,
@@ -170,10 +170,9 @@ const Home = () => {
                     <div className="col-lg-6">
                         <div className="scene-content pe-lg-5">
                             <span className="section-subtitle">DISCOVER</span>
-                            {/* ⚡ Title 1 Waving ⚡ */}
                             <h2 className="scene-title text-navy wave-text">Seashell Treasures</h2>
-                            <p className="scene-text text-grey">Walk along the coastline and let the ocean reveal its hidden gems. A moment of peace accompanied by the rhythmic sound of waves.</p>     
-                            <p className="scene-text text-grey">Every shell holds a story from the deep blue. Collect memories as you leave your footprints in the pristine white sand.</p>             
+                            <p className="scene-text text-grey">As the tide retreats, a kaleidoscope of shapes and hues emerges from the surf. From the delicate spiral of a whelk to the iridescent shimmer of a conch, each find is a tiny masterpiece crafted by time and the currents.</p>     
+                            <p className="scene-text text-grey">Pause to breathe in the salt-tinged air as the horizon glows with the warmth of a setting sun. This isn't just a walk; it’s a chance to reconnect with the earth’s rhythm and find beauty in the smallest of details.</p>             
                             <Link to="/destinations" className="btn-text-link mt-3 d-inline-block">Explore Beaches <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
                     </div>
@@ -186,7 +185,6 @@ const Home = () => {
             <div className="container py-5">
                 <div className="section-header scroll-reveal visible">
                     <span className="section-subtitle">Regional</span>
-                    {/* ⚡ Title 2 Waving ⚡ */}
                     <h2 className="section-title text-navy wave-text">{t('pop_dest', 'Most Popular Destinations')}</h2>
                     <p className="section-desc text-grey">Discover the key regions and landmarks the Philippines has to offer.</p>
                 </div>
@@ -240,7 +238,6 @@ const Home = () => {
                     <div className="col-lg-6">
                         <div className="scene-content pe-lg-5">
                             <span className="section-subtitle">RELAXATION</span>
-                            {/* ⚡ Title 3 Waving ⚡ */}
                             <h2 className="scene-title text-navy wave-text">Soak in the Sun</h2>
                             <p className="scene-text text-grey">Unwind under the tropical canopy. Feel the warmth of the sun on your skin and the gentle island breeze.</p>
                             <Link to="/destinations?search=beach" className="btn-text-link mt-3 d-inline-block">Book a Resort Stay <i className="fa-solid fa-arrow-right"></i></Link>
@@ -255,7 +252,6 @@ const Home = () => {
             <div className="container py-5">
                 <div className="section-header scroll-reveal visible">
                     <span className="section-subtitle">Packages</span>
-                    {/* ⚡ Title 4 Waving ⚡ */}
                     <h2 className="section-title text-navy wave-text">{t('top_pkg', 'Top Packages That Fit You')}</h2>
                 </div>
                 <div className="fanned-stack-container scroll-reveal visible mt-4">
@@ -290,7 +286,7 @@ const Home = () => {
             <div className="container py-5">
                 <div className="section-header scroll-reveal visible">
                     <span className="section-subtitle">Testimonials</span>
-                    <h2 className="section-title text-navy">What Our Clients Say</h2>
+                    <h2 className="section-title text-navy wave-text">What Our Clients Say</h2>
                 </div>
                 <div className="row g-4">
                     <div className="col-md-4 scroll-reveal visible">
@@ -327,7 +323,6 @@ const Home = () => {
         {/* --- CTA --- */}
         <section className="cta-section scroll-reveal visible" style={{ backgroundColor: 'var(--bg-dark)' }}>
             <div className="container text-center py-5">
-                {/* ⚡ Title 5 Waving ⚡ */}
                 <h2 className="section-title text-navy mb-3 wave-text">Ready for Your Next Adventure?</h2>
                 <p className="section-desc text-grey mb-4">Book your dream Philippine vacation today and create memories that will last a lifetime.</p>
                 <Link to="/booking" className="hero-btn">START YOUR JOURNEY</Link>
@@ -344,7 +339,6 @@ const Home = () => {
                     <div className="col-lg-6">
                         <div className="scene-content pe-lg-5">
                             <span className="section-subtitle">UNDERWATER</span>
-                            {/* ⚡ Title 6 Waving ⚡ */}
                             <h2 className="scene-title text-navy wave-text">Ready for Your Next Dive?</h2>
                             <p className="scene-text text-grey">Descend into the deep blue. Discover vibrant coral reefs, swim alongside majestic sea turtles, and explore the mysteries of the ocean floor.</p>
                             <p className="scene-text text-grey">Beyond the technicolor gardens of coral lies a world frozen in time. Navigate through haunting shipwrecks and silent underwater caverns where history rests beneath the tides.</p>
