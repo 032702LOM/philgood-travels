@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { regions, tourPackages } from '../data/placesData';
 import { usePreferences } from '../context/PreferencesContext';
-// ⚡ IMPORT THE IMAGE DIRECTLY HERE ⚡
-import islandParadiseImg from '../assets/img/island_paradise.png'; 
+import islandParadiseImg from '../assets/img/island_paradise.png'; // <-- Local HD Image
 
 const Home = () => {
   const navigate = useNavigate();
-  const { t, formatPrice } = usePreferences(); 
+  const { t, formatPrice } = usePreferences();
   
   const initialPositions = ['pos-hidden', 'pos-far-left', 'pos-left', 'pos-center', 'pos-right', 'pos-far-right'];
   const [destPositions, setDestPositions] = useState(initialPositions);
@@ -26,6 +25,20 @@ const Home = () => {
     });
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+        const elements = document.querySelectorAll('.scroll-reveal');
+        elements.forEach(el => {
+            if (el.getBoundingClientRect().top < window.innerHeight - 100) {
+                el.classList.add('visible');
+            }
+        });
+    };
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <div className="fade-in">
         {/* --- TOP ALERT BANNER --- */}
@@ -38,16 +51,21 @@ const Home = () => {
         <section id="home" style={{ marginTop: '0', backgroundColor: 'var(--bg-dark)' }}>
             <div id="heroCarousel" className="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
                 <div className="carousel-inner">
-                    {/* ⚡ USE THE IMPORTED IMAGE VARIABLE HERE ⚡ */}
+                    
+                    {/* ⚡ SLIDE 1: HD CLEAR ISLAND PARADISE ⚡ */}
                     <div className="carousel-item active" style={{ backgroundImage: `url(${islandParadiseImg})` }}>
-                        <div className="hero-overlay">
-                            <div className="container scroll-reveal visible">
-                                <h1 className="hero-title">{t('hero_island', 'ISLAND PARADISE')}</h1>
-                                <p className="hero-subtitle text-white">Relax on pristine white sand beaches</p>
-                                <Link to="/booking" className="hero-btn">{t('book_now', 'BOOK NOW')}</Link>
+                        <div className="hero-overlay" style={{ background: 'transparent' }}>
+                            <div className="container scroll-reveal visible d-flex flex-column align-items-center justify-content-center h-100">
+                                <div className="mt-5 pt-5">
+                                    <p className="hero-subtitle text-white fw-bold mt-5" style={{ textShadow: '1px 1px 6px rgba(0,0,0,0.8)', fontSize: '1.2rem' }}>
+                                        Relax on pristine white sand beaches
+                                    </p>
+                                    <Link to="/booking" className="hero-btn shadow-lg mt-2">{t('book_now', 'BOOK NOW')}</Link>
+                                </div>
                             </div>
                         </div>
                     </div>
+
                     <div className="carousel-item" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1707730088436-0e55e78843d8?q=80&w=1310&auto=format&fit=crop')" }}>
                         <div className="hero-overlay">
                             <div className="container">
@@ -57,6 +75,7 @@ const Home = () => {
                             </div>
                         </div>
                     </div>
+
                     <div className="carousel-item" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1564425230164-1e63b4922d3f?q=80&w=735&auto=format&fit=crop')" }}>
                         <div className="hero-overlay">
                             <div className="container">
@@ -98,8 +117,8 @@ const Home = () => {
             </div>
         </section>
 
-        {/* --- SCENE 1: TRAIL MAKERS --- */}
-        <section className="scene-section trail-makers-bg" style={{ backgroundColor: 'var(--bg-dark)', backgroundImage: "url('https://i.postimg.cc/9MkYFcs3/man_on_the_cliff.png')" }}>
+        {/* ⚡ SCENE 1: TRAIL MAKERS (Now using CSS class) ⚡ */}
+        <section className="scene-section trail-makers-bg" style={{ backgroundColor: 'var(--bg-dark)' }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal visible">
                     <div className="col-lg-6">
@@ -159,8 +178,8 @@ const Home = () => {
             </div>
         </section>
 
-        {/* --- SCENE 2: SLEEP UNDER THE STARS --- */}
-        <section className="scene-section sleep-bg" style={{ backgroundColor: 'var(--bg-dark)', backgroundImage: "url('https://i.postimg.cc/jqyq9xMK/man_on_cliff.png')" }}>
+        {/* ⚡ SCENE 2: SLEEP UNDER THE STARS (Now using CSS class) ⚡ */}
+        <section className="scene-section sleep-bg" style={{ backgroundColor: 'var(--bg-dark)' }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal visible">
                     <div className="col-lg-6">
@@ -257,8 +276,8 @@ const Home = () => {
             </div>
         </section>
 
-        {/* --- SCENE 3: READY FOR YOUR NEXT DIVE --- */}
-        <section className="scene-section dive-bg" style={{ backgroundColor: 'var(--bg-dark)', backgroundImage: "url('https://i.postimg.cc/rshH22yZ/dive.png')" }}>
+        {/* ⚡ SCENE 3: READY FOR YOUR NEXT DIVE (Now using CSS class) ⚡ */}
+        <section className="scene-section dive-bg" style={{ backgroundColor: 'var(--bg-dark)' }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal visible">
                     <div className="col-lg-6">

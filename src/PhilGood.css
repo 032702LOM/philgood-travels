@@ -277,9 +277,10 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .scene-title { font-size: 3rem; margin-bottom: 20px; color: var(--dark-navy); }
 .scene-text { color: var(--text-grey); font-size: 1.1rem; line-height: 1.8; margin-bottom: 25px; }
 
-.trail-makers-bg { background-image: url('img/man on the cliff.png'); background-repeat: no-repeat; background-position: right center; background-size: contain; }
-.dive-bg { background-image: url('img/dive.png'); background-repeat: no-repeat; background-position: right center; background-size: contain; }
-.sleep-bg { background-image: url('img/speeling_man.png'); background-repeat: no-repeat; background-position: right center; background-size: contain; }
+/* ⚡ UPDATED LOCAL IMAGE FILENAMES ⚡ */
+.trail-makers-bg { background-image: url('img/man on cliff.png'); background-repeat: no-repeat; background-position: right center; background-size: contain; }
+.dive-bg { background-image: url('img/swim.png'); background-repeat: no-repeat; background-position: right center; background-size: contain; }
+.sleep-bg { background-image: url('img/sleeping.png'); background-repeat: no-repeat; background-position: right center; background-size: contain; }
 
 @media (min-width: 992px) {
     .trail-makers-bg, .dive-bg, .sleep-bg { background-position: right center; background-size: 50% auto; }
