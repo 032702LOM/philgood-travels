@@ -398,7 +398,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 }
 
 .stat-card { 
-    background-color: var(--card-bg); 
+    background-color: var(--card-bg); /* Pure white default */
     padding: 40px 30px; 
     border-radius: 15px; 
     height: 100%; 
@@ -407,8 +407,10 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     justify-content: center; 
     align-items: center; 
     color: var(--dark-navy); 
-    border: none; /* Removed border to enhance the float illusion */
+    border: none; 
     animation: floatAir 6s ease-in-out infinite; 
+    transition: background-color 0.4s ease; /* Smooth color transition */
+    box-shadow: 0 10px 20px rgba(2, 62, 138, 0.05);
 }
 
 /* Stagger the animations so they float independently */
@@ -416,14 +418,21 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .stats-container .col-md-4:nth-child(2) .stat-card { animation-delay: 1.5s; }
 .stats-container .col-md-4:nth-child(3) .stat-card { animation-delay: 3s; }
 
-.stat-card i { color: var(--accent-color); font-size: 2.5rem; margin-bottom: 15px; }
-.stat-number { font-size: 3rem; margin-bottom: 5px; color: var(--dark-navy); }
-.stat-label { text-transform: uppercase; font-size: 0.9rem; font-weight: 700; letter-spacing: 1px; color: var(--text-grey); }
+/* ⚡ Teal Hover Effect ⚡ */
+.stat-card:hover {
+    background-color: var(--primary-color) !important;
+}
 
-/* ⚡ Dark Theme for the First Card ⚡ */
-.stat-card.dark-theme { background-color: var(--dark-navy); color: white; }
-.stat-card.dark-theme .stat-number { color: var(--primary-color); }
-.stat-card.dark-theme .stat-label { color: rgba(255, 255, 255, 0.6); }
+.stat-card i { color: var(--accent-color); font-size: 2.5rem; margin-bottom: 15px; transition: color 0.4s ease; }
+.stat-number { font-size: 3rem; margin-bottom: 5px; color: var(--dark-navy); transition: color 0.4s ease; }
+.stat-label { text-transform: uppercase; font-size: 0.9rem; font-weight: 700; letter-spacing: 1px; color: var(--text-grey); transition: color 0.4s ease; }
+
+/* Turn text and icons pure white when hovering over the card */
+.stat-card:hover i,
+.stat-card:hover .stat-number,
+.stat-card:hover .stat-label {
+    color: #ffffff !important;
+}
 
 .testimonial-item { background-color: var(--card-bg); padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(2, 62, 138, 0.08); height: 100%; text-align: left; border: 1px solid rgba(0, 119, 182, 0.1); }
 .testimonial-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; float: left; margin-right: 15px; border: 2px solid var(--primary-color); }
