@@ -266,23 +266,39 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .prev-btn { left: 20px; }
 .next-btn { right: 20px; }
 
-/* ⚡ MOBILE: Keep Fanned Effect, but scale it down to fit screens perfectly ⚡ */
+/* ⚡ MOBILE: Keep Fanned Effect by tightening the spread instead of just scaling ⚡ */
 @media (max-width: 991px) {
     .fanned-stack-container { 
-        transform: scale(0.75); 
-        margin-top: -50px; 
-        margin-bottom: -50px; 
+        transform: scale(0.85); 
+        margin-top: -30px; 
+        margin-bottom: -30px; 
     }
-}
-@media (max-width: 576px) {
-    .fanned-stack-container { 
-        transform: scale(0.55); 
-        margin-top: -100px; 
-        margin-bottom: -100px; 
-    }
-    .stack-nav-btn { width: 70px; height: 70px; font-size: 1.8rem; }
+    
+    /* Bring cards closer together on tablets */
+    .fanned-card-wrapper.pos-left { transform: translateX(-150px) scale(0.9) translateY(20px) rotate(-5deg) translateZ(-50px); }
+    .fanned-card-wrapper.pos-right { transform: translateX(150px) scale(0.9) translateY(20px) rotate(5deg) translateZ(-50px); }
+    .fanned-card-wrapper.pos-far-left { transform: translateX(-260px) scale(0.8) translateY(40px) rotate(-10deg) translateZ(-100px); }
+    .fanned-card-wrapper.pos-far-right { transform: translateX(260px) scale(0.8) translateY(40px) rotate(10deg) translateZ(-100px); }
 }
 
+@media (max-width: 576px) {
+    .fanned-stack-container { 
+        transform: scale(0.85); /* Keeps text readable */
+        margin-top: -40px; 
+        margin-bottom: -40px; 
+    }
+
+    /* Tighten the fan heavily for mobile screens so they don't cause horizontal scrolling */
+    .fanned-card-wrapper.pos-left { transform: translateX(-80px) scale(0.85) translateY(15px) rotate(-5deg) translateZ(-50px); }
+    .fanned-card-wrapper.pos-right { transform: translateX(80px) scale(0.85) translateY(15px) rotate(5deg) translateZ(-50px); }
+    .fanned-card-wrapper.pos-far-left { transform: translateX(-140px) scale(0.75) translateY(30px) rotate(-10deg) translateZ(-100px); }
+    .fanned-card-wrapper.pos-far-right { transform: translateX(140px) scale(0.75) translateY(30px) rotate(10deg) translateZ(-100px); }
+
+    /* Adjust nav buttons so they stay on the edges and don't block the center card */
+    .prev-btn { left: 5px; }
+    .next-btn { right: 5px; }
+    .stack-nav-btn { width: 45px; height: 45px; font-size: 1.2rem; }
+}
 /* =========================================
    8. VISUAL SCENES (Trail, Dive, Sleep)
    ========================================= */
