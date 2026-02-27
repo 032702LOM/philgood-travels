@@ -5,6 +5,7 @@ import { usePreferences } from '../context/PreferencesContext';
 
 // ⚡ LOCAL IMAGE IMPORTS ⚡
 import islandParadiseImg from '../assets/img/island_paradise.png'; 
+import palImg from '../assets/img/pal.png'; // <-- Added PAL airplane image
 import seashellsImg from '../assets/img/seashells.png'; 
 import sunbathingImg from '../assets/img/sunbathing.png'; 
 import swimImg from '../assets/img/swim.png';
@@ -132,33 +133,43 @@ const Home = () => {
                 <button className="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev"><span className="carousel-control-prev-icon"></span></button>
                 <button className="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next"><span className="carousel-control-next-icon"></span></button>
             </div>
+        </section>
 
+        {/* ⚡ STATS SECTION WITH PAL.PNG BACKGROUND ⚡ */}
+        <div className="stats-wrapper py-5" style={{ 
+            backgroundImage: `url(${palImg})`, 
+            backgroundPosition: 'center', 
+            backgroundSize: 'cover', 
+            backgroundRepeat: 'no-repeat',
+            backgroundColor: 'var(--bg-dark)'
+        }}>
             <div className="container py-5">
                 <div className="stats-container row text-center g-4">
                     <div className="col-md-4">
-                        <div className="stat-card scroll-reveal visible">
+                        {/* ⚡ Applied dark-theme class here ⚡ */}
+                        <div className="stat-card dark-theme scroll-reveal visible">
                             <i className="fa-solid fa-user-group"></i>
-                            <h3 className="stat-number text-navy">12,000+</h3>
-                            <span className="stat-label text-grey">SATISFIED CLIENTS</span>
+                            <h3 className="stat-number">12,000+</h3>
+                            <span className="stat-label">SATISFIED CLIENTS</span>
                         </div>
                     </div>
                     <div className="col-md-4">
                         <div className="stat-card scroll-reveal visible">
                             <i className="fa-regular fa-calendar-check"></i>
-                            <h3 className="stat-number text-navy">3,500+</h3>
-                            <span className="stat-label text-grey">TOURS ORGANIZED</span>
+                            <h3 className="stat-number">3,500+</h3>
+                            <span className="stat-label">TOURS ORGANIZED</span>
                         </div>
                     </div>
                     <div className="col-md-4">
                         <div className="stat-card scroll-reveal visible">
                             <i className="fa-solid fa-location-dot"></i>
-                            <h3 className="stat-number text-navy">50+</h3>
-                            <span className="stat-label text-grey">DESTINATIONS</span>
+                            <h3 className="stat-number">50+</h3>
+                            <span className="stat-label">DESTINATIONS</span>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
 
         {/* ⚡ SCENE 1: SEASHELLS WITH UPDATED TEXT ⚡ */}
         <section className="scene-section trail-makers-bg" style={{ 
