@@ -261,11 +261,21 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .prev-btn { left: 20px; }
 .next-btn { right: 20px; }
 
+/* ⚡ MOBILE: Keep Fanned Effect, but scale it down to fit screens perfectly ⚡ */
 @media (max-width: 991px) {
-    .fanned-stack-container { height: auto !important; display: flex; flex-direction: column; align-items: center; gap: 30px; perspective: none; }
-    .fanned-card-wrapper { position: relative !important; width: 100%; max-width: 450px; height: auto !important; transform: none !important; opacity: 1 !important; filter: none !important; left: auto !important; right: auto !important; margin-bottom: 0; }
-    .fanned-card-wrapper .card { height: 500px; }
-    .stack-nav-btn { display: none; }
+    .fanned-stack-container { 
+        transform: scale(0.75); 
+        margin-top: -50px; 
+        margin-bottom: -50px; 
+    }
+}
+@media (max-width: 576px) {
+    .fanned-stack-container { 
+        transform: scale(0.55); 
+        margin-top: -100px; 
+        margin-bottom: -100px; 
+    }
+    .stack-nav-btn { width: 70px; height: 70px; font-size: 1.8rem; }
 }
 
 /* =========================================
@@ -399,7 +409,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 
 .stat-card { 
     background-color: var(--card-bg); /* Pure white default */
-    padding: 40px 30px; 
+    padding: 30px; /* Original padding restored */
     border-radius: 15px; 
     height: 100%; 
     display: flex; 
@@ -407,9 +417,9 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     justify-content: center; 
     align-items: center; 
     color: var(--dark-navy); 
-    border: none; 
+    border: 1px solid rgba(0, 119, 182, 0.1); /* Original border restored */
     animation: floatAir 6s ease-in-out infinite; 
-    transition: background-color 0.4s ease; /* Smooth color transition */
+    transition: background-color 0.4s ease, border-color 0.4s ease; /* Smooth color transition */
     box-shadow: 0 10px 20px rgba(2, 62, 138, 0.05);
 }
 
@@ -421,6 +431,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 /* ⚡ Teal Hover Effect ⚡ */
 .stat-card:hover {
     background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
 }
 
 .stat-card i { color: var(--accent-color); font-size: 2.5rem; margin-bottom: 15px; transition: color 0.4s ease; }

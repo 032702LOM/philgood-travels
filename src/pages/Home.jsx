@@ -5,7 +5,7 @@ import { usePreferences } from '../context/PreferencesContext';
 
 import islandParadiseImg from '../assets/img/island_paradise.png'; 
 import palImg from '../assets/img/pal.png'; 
-import seashellsImg from '../assets/img/seashells.png'; 
+import manOnCliffImg from '../assets/img/man on cliff.png'; // ⚡ Swapped back to Man on Cliff
 import sunbathingImg from '../assets/img/sunbathing.png'; 
 import swimImg from '../assets/img/swim.png';
 
@@ -134,17 +134,10 @@ const Home = () => {
             </div>
         </section>
 
-        {/* ⚡ STATS SECTION WITH PAL.PNG BACKGROUND & OVERLAPPING CARDS ⚡ */}
-        <div className="stats-wrapper" style={{ 
-            backgroundImage: `url(${palImg})`, 
-            backgroundPosition: 'center', 
-            backgroundSize: 'cover', 
-            backgroundRepeat: 'no-repeat',
-            backgroundColor: 'var(--bg-dark)',
-            paddingBottom: '100px' // Added padding at bottom before next section
-        }}>
+        {/* ⚡ STATS SECTION WITH FULL RESPONSIVE AIRPLANE IMAGE ⚡ */}
+        <div className="stats-wrapper" style={{ backgroundColor: 'var(--bg-dark)', paddingBottom: '60px' }}>
             <div className="container">
-                {/* ⚡ Negative margin top pulls the container up to overlap the hero image ⚡ */}
+                {/* 1. Stat Cards (zIndex 10 pushes them to the top) */}
                 <div className="stats-container row text-center g-4" style={{ marginTop: '-60px', position: 'relative', zIndex: 10 }}>
                     <div className="col-md-4">
                         <div className="stat-card scroll-reveal visible">
@@ -168,24 +161,34 @@ const Home = () => {
                         </div>
                     </div>
                 </div>
+                
+                {/* 2. Airplane Image (zIndex 1 keeps it underneath the cards) */}
+                <div className="text-center d-flex justify-content-center" style={{ position: 'relative', zIndex: 1, marginTop: '-80px' }}>
+                    <img 
+                        src={palImg} 
+                        alt="Philippine Airlines Airplane" 
+                        className="img-fluid scroll-reveal visible" 
+                        style={{ maxWidth: '950px', width: '100%', objectFit: 'contain' }} 
+                    />
+                </div>
             </div>
         </div>
 
-        {/* ⚡ SCENE 1: SEASHELLS ⚡ */}
+        {/* ⚡ SCENE 1: MAN ON CLIFF ⚡ */}
         <section className="scene-section trail-makers-bg" style={{ 
             backgroundColor: 'var(--bg-dark)', 
-            backgroundImage: `url("${seashellsImg}")`,
+            backgroundImage: `url("${manOnCliffImg}")`,
             backgroundBlendMode: 'multiply' 
         }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal visible">
                     <div className="col-lg-6">
                         <div className="scene-content pe-lg-5">
-                            <span className="section-subtitle">DISCOVER</span>
-                            <h2 className="scene-title text-navy wave-text">Seashell Treasures</h2>
-                            <p className="scene-text text-grey">As the tide retreats, a kaleidoscope of shapes and hues emerges from the surf. From the delicate spiral of a whelk to the iridescent shimmer of a conch, each find is a tiny masterpiece crafted by time and the currents.</p>     
-                            <p className="scene-text text-grey">Pause to breathe in the salt-tinged air as the horizon glows with the warmth of a setting sun. This isn't just a walk; it’s a chance to reconnect with the earth’s rhythm and find beauty in the smallest of details.</p>             
-                            <Link to="/destinations" className="btn-text-link mt-3 d-inline-block">Explore Beaches <i className="fa-solid fa-arrow-right"></i></Link>
+                            <span className="section-subtitle">PERSPECTIVE</span>
+                            <h2 className="scene-title text-navy wave-text">The Trail Makers</h2>
+                            <p className="scene-text text-grey">Sometimes the best view comes after the hardest climb. Take a moment to sit, breathe, and appreciate the world from a new perspective.</p>     
+                            <p className="scene-text text-grey">A breathtaking panoramic view from a mountain summit at sunset. A lone hiker is sitting on a rocky ledge, silhouette against a vibrant orange and purple sky, looking out over a sea of clouds and distant peaks.</p>             
+                            <Link to="/destinations" className="btn-text-link mt-3 d-inline-block">Explore Mountains <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
                     </div>
                 </div>
@@ -193,7 +196,7 @@ const Home = () => {
         </section>
 
         {/* --- POPULAR DESTINATIONS (Fanned Stack) --- */}
-        <section className="py-5 destinations-bg"> 
+        <section className="py-5 destinations-bg" style={{ overflowX: 'hidden' }}> 
             <div className="container py-5">
                 <div className="section-header scroll-reveal visible">
                     <span className="section-subtitle">Regional</span>
@@ -260,7 +263,7 @@ const Home = () => {
         </section>
 
         {/* --- TOP PACKAGES (Fanned Stack 2) --- */}
-        <section className="py-5" style={{ backgroundColor: 'var(--bg-dark)' }}>
+        <section className="py-5" style={{ backgroundColor: 'var(--bg-dark)', overflowX: 'hidden' }}>
             <div className="container py-5">
                 <div className="section-header scroll-reveal visible">
                     <span className="section-subtitle">Packages</span>
