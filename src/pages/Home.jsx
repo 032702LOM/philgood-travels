@@ -5,7 +5,6 @@ import { usePreferences } from '../context/PreferencesContext';
 
 // ⚡ LOCAL IMAGE IMPORTS ⚡
 import islandParadiseImg from '../assets/img/island_paradise.png'; 
-import palImg from '../assets/img/pal.png'; // <-- Added Philippine Airlines Image
 import seashellsImg from '../assets/img/seashells.png'; 
 import sunbathingImg from '../assets/img/sunbathing.png'; 
 import swimImg from '../assets/img/swim.png';
@@ -110,12 +109,11 @@ const Home = () => {
                         </div>
                     </div>
 
-                    {/* ⚡ SLIDE 2: UPDATED TO USE PAL.PNG ⚡ */}
-                    <div className="carousel-item" style={{ backgroundImage: `url(${palImg})`, backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}>
+                    <div className="carousel-item" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1707730088436-0e55e78843d8?q=80&w=1310&auto=format&fit=crop')" }}>
                         <div className="hero-overlay">
                             <div className="container">
                                 <h1 className="hero-title">{t('hero_adv', 'ADVENTURE AWAITS')}</h1>
-                                <p className="hero-subtitle text-white">Experience the beauty of the Philippines</p>
+                                <p className="hero-subtitle text-white">Experience the Chocolate Hills of Bohol</p>
                                 <Link to="/tours" className="hero-btn">VIEW TOURS</Link>
                             </div>
                         </div>
@@ -138,32 +136,31 @@ const Home = () => {
             <div className="container py-5">
                 <div className="stats-container row text-center g-4">
                     <div className="col-md-4">
-                        {/* ⚡ Added dark-theme class here ⚡ */}
-                        <div className="stat-card dark-theme scroll-reveal visible">
+                        <div className="stat-card scroll-reveal visible">
                             <i className="fa-solid fa-user-group"></i>
-                            <h3 className="stat-number">12,000+</h3>
-                            <span className="stat-label">SATISFIED CLIENTS</span>
+                            <h3 className="stat-number text-navy">12,000+</h3>
+                            <span className="stat-label text-grey">SATISFIED CLIENTS</span>
                         </div>
                     </div>
                     <div className="col-md-4">
                         <div className="stat-card scroll-reveal visible">
                             <i className="fa-regular fa-calendar-check"></i>
-                            <h3 className="stat-number">3,500+</h3>
-                            <span className="stat-label">TOURS ORGANIZED</span>
+                            <h3 className="stat-number text-navy">3,500+</h3>
+                            <span className="stat-label text-grey">TOURS ORGANIZED</span>
                         </div>
                     </div>
                     <div className="col-md-4">
                         <div className="stat-card scroll-reveal visible">
                             <i className="fa-solid fa-location-dot"></i>
-                            <h3 className="stat-number">50+</h3>
-                            <span className="stat-label">DESTINATIONS</span>
+                            <h3 className="stat-number text-navy">50+</h3>
+                            <span className="stat-label text-grey">DESTINATIONS</span>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        {/* ⚡ SCENE 1: SEASHELLS ⚡ */}
+        {/* ⚡ SCENE 1: SEASHELLS WITH UPDATED TEXT ⚡ */}
         <section className="scene-section trail-makers-bg" style={{ 
             backgroundColor: 'var(--bg-dark)', 
             backgroundImage: `url("${seashellsImg}")`,
