@@ -20,6 +20,33 @@ const Home = () => {
   const [showPromo, setShowPromo] = useState(false);
   const [isPromoClosed, setIsPromoClosed] = useState(false);
 
+  // --- MOBILE SWIPE LOGIC ---
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const minSwipeDistance = 50; 
+
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX);
+
+  const onTouchEndDest = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    if (distance > minSwipeDistance) rotateStack('dest', 'next'); // Swipe Left
+    if (distance < -minSwipeDistance) rotateStack('dest', 'prev'); // Swipe Right
+  };
+
+  const onTouchEndPkg = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    if (distance > minSwipeDistance) rotateStack('pkg', 'next'); 
+    if (distance < -minSwipeDistance) rotateStack('pkg', 'prev'); 
+  };
+  // --------------------------
+
   const rotateStack = (type, direction) => {
     const setFunction = type === 'dest' ? setDestPositions : setPkgPositions;
     setFunction((current) => {
@@ -211,7 +238,14 @@ const Home = () => {
                     <h2 className="section-title text-navy wave-text">{t('pop_dest', 'Most Popular Destinations')}</h2>
                     <p className="section-desc text-grey">Discover the key regions and landmarks the Philippines has to offer.</p>
                 </div>
-                <div className="fanned-stack-container scroll-reveal visible mt-4">
+                
+                {/* ⚡ ADDED SWIPE HANDLERS HERE ⚡ */}
+                <div 
+                    className="fanned-stack-container scroll-reveal visible mt-4"
+                    onTouchStart={onTouchStart} 
+                    onTouchMove={onTouchMove} 
+                    onTouchEnd={onTouchEndDest}
+                >
                     <button className="stack-nav-btn prev-btn" onClick={() => rotateStack('dest', 'prev')}><i className="fa-solid fa-chevron-left"></i></button>
                     <button className="stack-nav-btn next-btn" onClick={() => rotateStack('dest', 'next')}><i className="fa-solid fa-chevron-right"></i></button>
                     {regions.map((region, index) => (
@@ -277,7 +311,14 @@ const Home = () => {
                     <span className="section-subtitle">Packages</span>
                     <h2 className="section-title text-navy wave-text">{t('top_pkg', 'Top Packages That Fit You')}</h2>
                 </div>
-                <div className="fanned-stack-container scroll-reveal visible mt-4">
+                
+                {/* ⚡ ADDED SWIPE HANDLERS HERE ⚡ */}
+                <div 
+                    className="fanned-stack-container scroll-reveal visible mt-4"
+                    onTouchStart={onTouchStart} 
+                    onTouchMove={onTouchMove} 
+                    onTouchEnd={onTouchEndPkg}
+                >
                     <button className="stack-nav-btn prev-btn" onClick={() => rotateStack('pkg', 'prev')}><i className="fa-solid fa-chevron-left"></i></button>
                     <button className="stack-nav-btn next-btn" onClick={() => rotateStack('pkg', 'next')}><i className="fa-solid fa-chevron-right"></i></button>
                     {tourPackages.map((pkg, index) => (
