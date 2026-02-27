@@ -137,17 +137,12 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
    ========================================= */
 .carousel-item { height: 90vh; background-size: cover; background-position: center; }
 
-/* ⚡ Slide 1 Adjustments to Prevent Graphic Overlap ⚡ */
-.hero-slide-1 .hero-text-box { 
-    margin-top: 100px; /* Keeps desktop spacing identical */
-}
-
+/* ⚡ STRICTLY HIDE TEXT AND BUTTON ON MOBILE FOR SLIDE 1 ⚡ */
 @media (max-width: 991px) {
-    .hero-slide-1 .container {
-        justify-content: flex-end !important; /* Pushes content to the bottom */
-        padding-bottom: 18vh; /* Keeps it neatly floating above the very bottom edge */
+    .hero-slide-1 .hero-text-box,
+    .carousel-item:first-child .hero-text-box {
+        display: none !important;
     }
-    .hero-slide-1 .hero-text-box { margin-top: 0; }
 }
 
 /* Hero Overlay fades into Light Sky Blue */
