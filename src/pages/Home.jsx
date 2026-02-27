@@ -91,7 +91,6 @@ const Home = () => {
             <div id="heroCarousel" className="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
                 <div className="carousel-inner">
                     
-                    {/* ⚡ Added hero-slide-1 class here ⚡ */}
                     <div className="carousel-item active hero-slide-1" style={{ 
                         backgroundImage: `url(${islandParadiseImg})`, 
                         backgroundPosition: 'bottom center',
@@ -101,8 +100,8 @@ const Home = () => {
                     }}>
                         <div className="hero-overlay" style={{ background: 'transparent' }}>
                             <div className="container scroll-reveal visible d-flex flex-column align-items-center justify-content-center h-100">
-                                {/* ⚡ Cleaned up classes, added hero-text-box ⚡ */}
-                                <div className="hero-text-box text-center">
+                                {/* ⚡ d-none d-lg-block hides this entirely on mobile! ⚡ */}
+                                <div className="hero-text-box text-center d-none d-lg-block">
                                     <p className="hero-subtitle text-navy fw-bold" style={{ textShadow: '0 0 10px rgba(255,255,255,0.8)', fontSize: '1.2rem' }}>
                                         Relax on pristine white sand beaches
                                     </p>
