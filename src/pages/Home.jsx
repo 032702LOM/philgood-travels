@@ -5,7 +5,7 @@ import { usePreferences } from '../context/PreferencesContext';
 
 import islandParadiseImg from '../assets/img/island_paradise.png'; 
 import palImg from '../assets/img/pal.png'; 
-import manOnCliffImg from '../assets/img/man on cliff.png'; // ⚡ Swapped back to Man on Cliff
+import manOnCliffVid from '../assets/img/man on cliff.mp4'; 
 import sunbathingImg from '../assets/img/sunbathing.png'; 
 import swimImg from '../assets/img/swim.png';
 
@@ -90,7 +90,9 @@ const Home = () => {
         <section id="home" style={{ marginTop: '0', backgroundColor: 'var(--bg-dark)' }}>
             <div id="heroCarousel" className="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
                 <div className="carousel-inner">
-                    <div className="carousel-item active" style={{ 
+                    
+                    {/* ⚡ Added hero-slide-1 class here ⚡ */}
+                    <div className="carousel-item active hero-slide-1" style={{ 
                         backgroundImage: `url(${islandParadiseImg})`, 
                         backgroundPosition: 'bottom center',
                         backgroundSize: 'cover',
@@ -99,8 +101,9 @@ const Home = () => {
                     }}>
                         <div className="hero-overlay" style={{ background: 'transparent' }}>
                             <div className="container scroll-reveal visible d-flex flex-column align-items-center justify-content-center h-100">
-                                <div className="mt-5 pt-5 text-center">
-                                    <p className="hero-subtitle text-navy fw-bold mt-5" style={{ textShadow: '0 0 10px rgba(255,255,255,0.8)', fontSize: '1.2rem' }}>
+                                {/* ⚡ Cleaned up classes, added hero-text-box ⚡ */}
+                                <div className="hero-text-box text-center">
+                                    <p className="hero-subtitle text-navy fw-bold" style={{ textShadow: '0 0 10px rgba(255,255,255,0.8)', fontSize: '1.2rem' }}>
                                         Relax on pristine white sand beaches
                                     </p>
                                     <Link to="/booking" className="hero-btn shadow-lg mt-2">{t('book_now', 'BOOK NOW')}</Link>
@@ -137,7 +140,6 @@ const Home = () => {
         {/* ⚡ STATS SECTION WITH FULL RESPONSIVE AIRPLANE IMAGE ⚡ */}
         <div className="stats-wrapper" style={{ backgroundColor: 'var(--bg-dark)', paddingBottom: '60px' }}>
             <div className="container">
-                {/* 1. Stat Cards (zIndex 10 pushes them to the top) */}
                 <div className="stats-container row text-center g-4" style={{ marginTop: '-60px', position: 'relative', zIndex: 10 }}>
                     <div className="col-md-4">
                         <div className="stat-card scroll-reveal visible">
@@ -162,7 +164,6 @@ const Home = () => {
                     </div>
                 </div>
                 
-                {/* 2. Airplane Image (zIndex 1 keeps it underneath the cards) */}
                 <div className="text-center d-flex justify-content-center" style={{ position: 'relative', zIndex: 1, marginTop: '-80px' }}>
                     <img 
                         src={palImg} 
@@ -174,12 +175,20 @@ const Home = () => {
             </div>
         </div>
 
-        {/* ⚡ SCENE 1: MAN ON CLIFF ⚡ */}
+        {/* ⚡ SCENE 1: MAN ON CLIFF (NOW A BACKGROUND VIDEO) ⚡ */}
         <section className="scene-section trail-makers-bg" style={{ 
-            backgroundColor: 'var(--bg-dark)', 
-            backgroundImage: `url("${manOnCliffImg}")`,
-            backgroundBlendMode: 'multiply' 
+            backgroundColor: 'var(--bg-dark)'
         }}>
+            <video 
+                className="scene-video"
+                autoPlay 
+                loop 
+                muted 
+                playsInline
+            >
+                <source src={manOnCliffVid} type="video/mp4" />
+            </video>
+
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal visible">
                     <div className="col-lg-6">

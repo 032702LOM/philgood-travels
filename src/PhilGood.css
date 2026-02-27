@@ -135,10 +135,22 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 /* =========================================
    4. HERO SECTIONS
    ========================================= */
-/* Home Page Hero Carousel */
 .carousel-item { height: 90vh; background-size: cover; background-position: center; }
 
-/* Updated Hero Overlay to fade into Light Sky Blue */
+/* ⚡ Slide 1 Adjustments to Prevent Graphic Overlap ⚡ */
+.hero-slide-1 .hero-text-box { 
+    margin-top: 100px; /* Keeps desktop spacing identical */
+}
+
+@media (max-width: 991px) {
+    .hero-slide-1 .container {
+        justify-content: flex-end !important; /* Pushes content to the bottom */
+        padding-bottom: 18vh; /* Keeps it neatly floating above the very bottom edge */
+    }
+    .hero-slide-1 .hero-text-box { margin-top: 0; }
+}
+
+/* Hero Overlay fades into Light Sky Blue */
 .hero-overlay {
     background: linear-gradient(to bottom, 
         rgba(0, 119, 182, 0.3) 0%, 
@@ -156,13 +168,11 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     background-size: cover; background-position: center 30%;
     padding: 130px 0 50px 0; margin-top: 0;
 }
-
 .destinations-hero { background-image: linear-gradient(to bottom, rgba(0, 119, 182, 0.4), var(--bg-dark)), url('https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?q=80&w=2000&auto=format&fit=crop'); }
 .gallery-hero { background-image: linear-gradient(to bottom, rgba(0, 119, 182, 0.5), var(--bg-dark)), url('https://images.unsplash.com/photo-1531168556467-8053153c361c?q=80&w=2000&auto=format&fit=crop'); }
 .contact-hero { background-image: linear-gradient(to bottom, rgba(0, 119, 182, 0.5), var(--bg-dark)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2000&auto=format&fit=crop'); }
 .booking-hero { background-image: linear-gradient(to bottom, rgba(0, 119, 182, 0.4), var(--bg-dark)), url('https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=80&w=2000&auto=format&fit=crop'); }
 .tours-hero { background-image: linear-gradient(to bottom, rgba(0, 119, 182, 0.4), var(--bg-dark)), url('https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=2000&auto=format&fit=crop'); }
-
 /* =========================================
    5. MOST POPULAR DESTINATIONS (BACKGROUND)
    ========================================= */
