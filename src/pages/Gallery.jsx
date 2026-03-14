@@ -241,7 +241,7 @@ const Gallery = () => {
         <div className="d-flex justify-content-between align-items-center mb-4"><h4 className="text-navy font-montserrat fw-bold mb-0">Explore by Region</h4><span className="text-grey fw-bold small">{galleryData.length} Regions</span></div>
         <div className="row g-4">
           {filteredRegions.map((region) => (
-            <div key={region.id} className="col-md-4 scroll-reveal visible">
+            <div key={region.id} className="col-md-6 col-lg-4 scroll-reveal visible">
               <div className="card h-100 border-0 overflow-hidden shadow" style={{ cursor: 'pointer' }} onClick={() => handleRegionClick(region.id)}>
                 <div className="card-img-wrapper" style={{ height: '250px' }}>
                   <img src={region.cover} className="card-img-top w-100 h-100 object-fit-cover" alt={region.name} loading="lazy" />
@@ -267,7 +267,7 @@ const Gallery = () => {
         <div className="d-flex justify-content-between align-items-center mb-4"><h4 className="text-navy font-montserrat fw-bold mb-0">{region.name} Destinations</h4><span className="text-grey fw-bold small">{region.subcards.length} Locations</span></div>
         <div className="row g-4 justify-content-center">
           {filteredSubcards.map((sub) => (
-            <div key={sub.id} className="col-md-4 scroll-reveal visible">
+            <div key={sub.id} className="col-md-6 col-lg-4 scroll-reveal visible">
               <div className="card h-100 border-0 shadow" style={{ cursor: 'pointer', backgroundColor: 'var(--card-bg)' }} onClick={() => handleSubcardClick(sub.name)}>
                 <div className="card-img-wrapper" style={{ height: '220px' }}>
                   <span className="card-badge" style={{ top: '10px', right: '10px', fontSize: '0.65rem' }}>{sub.images.length} Images</span>
@@ -318,11 +318,7 @@ const Gallery = () => {
 
   return (
     <div className="fade-in" style={{ paddingTop: '76px' }}>
-      
-      <section className="gallery-hero" style={{ 
-          backgroundImage: "linear-gradient(to bottom, rgba(0, 119, 182, 0.5), var(--bg-dark)), url('https://images.unsplash.com/photo-1590077423771-474b8862cb24?q=80&w=2000&auto=format&fit=crop')",
-          padding: '130px 0 50px 0', backgroundSize: 'cover', backgroundPosition: 'center 30%'
-      }}>
+      <section className="gallery-hero">
           <div className="container text-center mb-4 scroll-reveal visible">
               <h1 className="hero-title" style={{ fontSize: '4rem' }}>{t('gal_title', 'VISUAL JOURNEY')}</h1>
               <p className="section-desc text-white mb-0" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.5)' }}>{t('gal_desc', 'Discover the beauty of the Philippines through our lens')}</p>
@@ -346,7 +342,6 @@ const Gallery = () => {
           {selectedRegion !== 'All' && selectedSubcard !== 'All' && renderImages()}
         </div>
       </section>
-
     </div>
   );
 };

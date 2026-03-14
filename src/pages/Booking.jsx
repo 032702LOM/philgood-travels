@@ -19,9 +19,8 @@ const Booking = () => {
   const [paymentMethod, setPaymentMethod] = useState('Card');
   const [addons, setAddons] = useState({ airportTransfer: false, insurance: false, romanticDinner: false, carbonOffset: false });
   
-  // ⚡ NEW: Split Payment State ⚡
   const [splitBetween, setSplitBetween] = useState(1);
-  const [payerEmails, setPayerEmails] = useState(['']); // 👈 NEW: Tracks all emails
+  const [payerEmails, setPayerEmails] = useState(['']);
 
   const accClassRates = { Standard: 0, Deluxe: 2500, Luxury: 5000 };
   const addonPrices = { airportTransfer: 1500, insurance: 950, romanticDinner: 2500, carbonOffset: 500 };
@@ -63,7 +62,6 @@ const Booking = () => {
   const handleInfoChange = (e) => setPersonalInfo({ ...personalInfo, [e.target.name]: e.target.value });
   const toggleAddon = (addonName) => setAddons({ ...addons, [addonName]: !addons[addonName] });
 
-  // ⚡ UPDATED: Sending Split Data to the Backend ⚡
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedPackage || !date) { alert("Please select a destination and a travel date."); return; }
@@ -83,7 +81,7 @@ const Booking = () => {
         guests: guests,
         totalPrice: grandTotal,
         paymentMethod: paymentMethod,
-        splitBetween: parseInt(splitBetween), // Sending the number of splits to Stripe!
+        splitBetween: parseInt(splitBetween), 
         friendEmails: payerEmails
     };
 
@@ -102,10 +100,7 @@ const Booking = () => {
   return (
     <div className="fade-in" style={{ paddingTop: '76px' }}>
       
-      <section className="booking-hero" style={{ 
-          backgroundImage: "linear-gradient(to bottom, rgba(0, 119, 182, 0.4), var(--bg-dark)), url('https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=80&w=2000&auto=format&fit=crop')",
-          padding: '130px 0 50px 0', backgroundSize: 'cover', backgroundPosition: 'center 30%'
-      }}>
+      <section className="booking-hero">
           <div className="container text-center mb-4 scroll-reveal visible">
               <h1 className="hero-title" style={{ fontSize: '4rem' }}>{t('booking_title', 'SECURE YOUR SPOT')}</h1>
               <p className="section-desc mb-0 text-white">{t('booking_desc', 'Complete your booking and pack your bags')}</p>
@@ -191,7 +186,6 @@ const Booking = () => {
                 <div className={`p-3 rounded-3 border ${addons.romanticDinner ? 'border-primary' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: addons.romanticDinner ? 'rgba(0, 180, 216, 0.1)' : '#F4FAFC', cursor: 'pointer', transition: 'all 0.3s' }} onClick={() => toggleAddon('romanticDinner')}><div className="form-check d-flex justify-content-between align-items-center m-0 p-0"><div><input className="form-check-input me-3 ms-0 mt-0" type="checkbox" checked={addons.romanticDinner} readOnly style={{ cursor: 'pointer' }} /><label className="form-check-label text-navy fw-bold d-inline" style={{ cursor: 'pointer' }}>Romantic Dinner Setup</label><p className="text-grey small m-0 ms-4 ps-2">Candlelit dinner by the beach.</p></div><span className="text-accent fw-bold">+{formatPrice(2500)}</span></div></div>
               </div>
 
-              {/* ⚡ UPGRADED SPLIT PAYMENT COMPONENT ⚡ */}
               <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 mb-4 teal-hover-box">
                 <h4 className="fw-bold mb-4 font-montserrat text-navy"><i className="fa-solid fa-people-arrows text-accent me-2"></i> Payment Details</h4>
                 <div className="row g-3">
@@ -201,7 +195,6 @@ const Booking = () => {
                         <i className="fa-solid fa-users position-absolute" style={{ left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'var(--primary-color)', zIndex: 1 }}></i>
                         <select className="form-control-dark w-100" value={splitBetween} onChange={(e) => {
                             setSplitBetween(e.target.value);
-                            // Adjust the array size based on how many people are paying
                             setPayerEmails(Array(parseInt(e.target.value)).fill(''));
                         }} style={{ paddingLeft: '45px' }}>
                             <option value="1">Just me (Pay in full)</option>
@@ -213,7 +206,6 @@ const Booking = () => {
                     </div>
                   </div>
 
-                  {/* ⚡ DYNAMIC EMAIL INPUTS ⚡ */}
                   <div className="col-md-12 mt-3">
                       <label className="text-grey fw-bold small mb-2">Email Addresses for Invoices:</label>
                       {Array.from({ length: splitBetween }).map((_, index) => (
@@ -281,7 +273,6 @@ const Booking = () => {
 
                 <div className="border-top border-primary border-opacity-10 mt-4 pt-3 d-flex justify-content-between align-items-center mb-4"><span className="text-navy fw-bold fs-5">{t('total', 'Total')}</span><span className="fw-bold fs-3 text-accent">{formatPrice(grandTotal)}</span></div>
                 
-                {/* ⚡ NEW: Show the split amount in the summary ⚡ */}
                 {splitBetween > 1 && (
                     <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-primary border-opacity-10">
                         <span className="text-grey small">Split {splitBetween} ways</span>

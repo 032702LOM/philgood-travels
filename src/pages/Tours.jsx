@@ -56,7 +56,7 @@ const Tours = () => {
                         <div className="col-12 text-center text-grey py-5 fw-bold">No tour packages match your search. Try clearing the filter!</div>
                     ) : (
                         filteredTours.map((pkg) => (
-                            <div key={pkg.id} className="col-md-4 scroll-reveal visible">
+                            <div key={pkg.id} className="col-md-6 col-lg-4 scroll-reveal visible">
                                 <div className="card h-100 border border-primary border-opacity-10 shadow-sm teal-hover-box">
                                     <div className="card-img-wrapper"><div className="card-badges-container"><span className="badge-item"><i className="fa-regular fa-clock text-accent"></i> {pkg.duration}</span><span className="badge-item"><i className="fa-solid fa-tag text-accent"></i> {pkg.type || 'Guided'}</span></div><img src={pkg.img} className="card-img-top" alt={pkg.name} /></div>
                                     <div className="card-body">

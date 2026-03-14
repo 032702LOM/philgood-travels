@@ -16,11 +16,7 @@ const Connect = () => {
   return (
     <div className="fade-in" style={{ paddingTop: '76px' }}>
       
-      {/* --- FOOLPROOF HERO SECTION --- */}
-      <section className="contact-hero" style={{ 
-          backgroundImage: "linear-gradient(to bottom, rgba(0, 119, 182, 0.5), var(--bg-dark)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2000&auto=format&fit=crop')",
-          padding: '130px 0 50px 0', backgroundSize: 'cover', backgroundPosition: 'center 30%'
-      }}>
+      <section className="contact-hero">
           <div className="container text-center mb-4 scroll-reveal visible">
               <h1 className="hero-title" style={{ fontSize: '4rem' }}>{t('conn_title', 'GET IN TOUCH')}</h1>
               <p className="section-desc mb-0 text-white" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.5)' }}>We're here to help you plan your perfect escape.</p>
