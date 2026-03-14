@@ -766,17 +766,24 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
     
     .hero-title { font-size: 3.5rem !important; }
 
-    /* Scene Images - Force to bottom so they don't cover text */
-    .trail-makers-bg, .dive-bg, .sleep-bg {
+    /* Scene Images - Force to bottom */
+    .dive-bg, .sleep-bg {
         background-position: bottom center !important;
         background-size: 80% auto !important; 
         padding-bottom: 350px !important; 
+    }
+
+    /* ⚡ FIX: Force the cliff to stick to the absolute right edge on mobile ⚡ */
+    .trail-makers-bg {
+        background-position: bottom right !important;
+        background-size: 85% auto !important; 
+        padding-bottom: 350px !important;
     }
     
     /* Scene Text - Perfectly matched to background on mobile */
     .scene-content {
         background-color: var(--bg-dark) !important;
-        padding: 0 !important; /* Removes box effect */
+        padding: 0 !important; 
         text-align: center;
         box-shadow: none !important;
     }
@@ -835,9 +842,16 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
 @media (max-width: 576px) {
     .hero-title { font-size: 2.8rem !important; }
     
-    .trail-makers-bg, .dive-bg, .sleep-bg { 
+    .dive-bg, .sleep-bg { 
         background-size: 100% auto !important; 
         padding-bottom: 300px !important; 
+    }
+
+    /* Keep the cliff anchored right on extra small screens */
+    .trail-makers-bg {
+        background-position: bottom right !important;
+        background-size: 100% auto !important;
+        padding-bottom: 300px !important;
     }
 
     .fanned-card, .fanned-card-wrapper {
