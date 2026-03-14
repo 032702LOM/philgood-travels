@@ -116,20 +116,11 @@ const Home = () => {
         <section id="home" style={{ marginTop: '0', backgroundColor: 'var(--bg-dark)' }}>
             <div id="heroCarousel" className="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
                 <div className="carousel-inner">
-                    
-                    <div className="carousel-item active hero-slide-1" style={{ 
-                        backgroundImage: `url(${islandParadiseImg})`, 
-                        backgroundPosition: 'bottom center',
-                        backgroundSize: 'cover',
-                        backgroundRepeat: 'no-repeat',
-                        backgroundColor: 'transparent'
-                    }}>
+                    <div className="carousel-item active hero-slide-1" style={{ backgroundImage: `url(${islandParadiseImg})`, backgroundPosition: 'bottom center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundColor: 'transparent' }}>
                         <div className="hero-overlay" style={{ background: 'transparent' }}>
                             <div className="container scroll-reveal visible d-flex flex-column align-items-center justify-content-center h-100">
                                 <div className="hero-text-box text-center d-none d-lg-block">
-                                    <p className="hero-subtitle text-navy fw-bold" style={{ textShadow: '0 0 10px rgba(255,255,255,0.8)', fontSize: '1.2rem' }}>
-                                        Relax on pristine white sand beaches
-                                    </p>
+                                    <p className="hero-subtitle text-navy fw-bold" style={{ textShadow: '0 0 10px rgba(255,255,255,0.8)', fontSize: '1.2rem' }}>Relax on pristine white sand beaches</p>
                                     <Link to="/booking" className="hero-btn shadow-lg mt-2">{t('book_now', 'BOOK NOW')}</Link>
                                 </div>
                             </div>
@@ -161,58 +152,23 @@ const Home = () => {
             </div>
         </section>
 
-        {/* ⚡ STATS SECTION WITH FULL RESPONSIVE AIRPLANE IMAGE ⚡ */}
+        {/* ⚡ STATS SECTION ⚡ */}
         <div className="stats-wrapper" style={{ backgroundColor: 'var(--bg-dark)', paddingBottom: '60px' }}>
             <div className="container">
                 <div className="stats-container row text-center g-4" style={{ marginTop: '-60px', position: 'relative', zIndex: 10 }}>
-                    <div className="col-md-4">
-                        <div className="stat-card scroll-reveal visible">
-                            <i className="fa-solid fa-user-group"></i>
-                            <h3 className="stat-number">12,000+</h3>
-                            <span className="stat-label">SATISFIED CLIENTS</span>
-                        </div>
-                    </div>
-                    <div className="col-md-4">
-                        <div className="stat-card scroll-reveal visible">
-                            <i className="fa-regular fa-calendar-check"></i>
-                            <h3 className="stat-number">3,500+</h3>
-                            <span className="stat-label">TOURS ORGANIZED</span>
-                        </div>
-                    </div>
-                    <div className="col-md-4">
-                        <div className="stat-card scroll-reveal visible">
-                            <i className="fa-solid fa-location-dot"></i>
-                            <h3 className="stat-number">50+</h3>
-                            <span className="stat-label">DESTINATIONS</span>
-                        </div>
-                    </div>
+                    <div className="col-md-4"><div className="stat-card scroll-reveal visible"><i className="fa-solid fa-user-group"></i><h3 className="stat-number">12,000+</h3><span className="stat-label">SATISFIED CLIENTS</span></div></div>
+                    <div className="col-md-4"><div className="stat-card scroll-reveal visible"><i className="fa-regular fa-calendar-check"></i><h3 className="stat-number">3,500+</h3><span className="stat-label">TOURS ORGANIZED</span></div></div>
+                    <div className="col-md-4"><div className="stat-card scroll-reveal visible"><i className="fa-solid fa-location-dot"></i><h3 className="stat-number">50+</h3><span className="stat-label">DESTINATIONS</span></div></div>
                 </div>
-                
                 <div className="text-center d-flex justify-content-center" style={{ position: 'relative', zIndex: 1, marginTop: '-80px' }}>
-                    <img 
-                        src={palImg} 
-                        alt="Philippine Airlines Airplane" 
-                        className="img-fluid scroll-reveal visible" 
-                        style={{ maxWidth: '950px', width: '100%', objectFit: 'contain' }} 
-                    />
+                    <img src={palImg} alt="Philippine Airlines Airplane" className="img-fluid scroll-reveal visible" style={{ maxWidth: '950px', width: '100%', objectFit: 'contain' }} />
                 </div>
             </div>
         </div>
 
         {/* ⚡ SCENE 1: MAN ON CLIFF ⚡ */}
-        <section className="scene-section trail-makers-bg" style={{ 
-            backgroundColor: 'var(--bg-dark)'
-        }}>
-            <video 
-                className="scene-video"
-                autoPlay 
-                loop 
-                muted 
-                playsInline
-            >
-                <source src={manOnCliffVid} type="video/mp4" />
-            </video>
-
+        <section className="scene-section trail-makers-bg" style={{ backgroundColor: 'var(--bg-dark)' }}>
+            <video className="scene-video" autoPlay loop muted playsInline><source src={manOnCliffVid} type="video/mp4" /></video>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal visible">
                     <div className="col-lg-6">
@@ -228,7 +184,7 @@ const Home = () => {
             </div>
         </section>
 
-        {/* --- POPULAR DESTINATIONS (Fanned Stack) --- */}
+        {/* --- POPULAR DESTINATIONS (Fanned Stack 1) --- */}
         <section className="py-5 destinations-bg" style={{ overflowX: 'hidden' }}> 
             <div className="container py-5">
                 <div className="section-header scroll-reveal visible">
@@ -237,28 +193,21 @@ const Home = () => {
                     <p className="section-desc text-grey">Discover the key regions and landmarks the Philippines has to offer.</p>
                 </div>
                 
-                {/* ⚡ INLINE STYLE FIX: Enforcing a massive 600px height directly in the HTML ⚡ */}
-                <div 
-                    className="fanned-stack-container scroll-reveal visible mt-4"
-                    onTouchStart={onTouchStart} 
-                    onTouchMove={onTouchMove} 
-                    onTouchEnd={onTouchEndDest}
-                    style={{ height: '600px', minHeight: '600px', marginBottom: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}
-                >
+                {/* ⚡ RENAMED CACHE-BUSTED CLASSES ⚡ */}
+                <div className="fanned-layout-wrapper scroll-reveal visible mt-4" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEndDest}>
                     <button className="stack-nav-btn prev-btn" onClick={() => rotateStack('dest', 'prev')}><i className="fa-solid fa-chevron-left"></i></button>
                     <button className="stack-nav-btn next-btn" onClick={() => rotateStack('dest', 'next')}><i className="fa-solid fa-chevron-right"></i></button>
                     {regions.map((region, index) => (
                         <div 
                             key={region.id} 
-                            className={`fanned-card-wrapper ${destPositions[index]}`} 
+                            className={`fanned-card ${destPositions[index]}`} 
                             onClick={() => {
-                                if (destPositions[index] === 'pos-center') {
+                                if (window.innerWidth <= 991 || destPositions[index] === 'pos-center') {
                                     navigate(`/destinations?region=${region.id}`);
                                 } else {
                                     rotateStack('dest', destPositions[index].includes('right') ? 'next' : 'prev');
                                 }
                             }}
-                            style={{ cursor: 'pointer' }}
                         >
                             <div className="card h-100">
                                 <div className="card-img-wrapper">
@@ -275,8 +224,7 @@ const Home = () => {
                     ))}
                 </div>
 
-                {/* ⚡ INLINE STYLE FIX: Physically shoving the button down 100 pixels ⚡ */}
-                <div className="text-center scroll-reveal visible" style={{ marginTop: '100px', position: 'relative', zIndex: 50 }}>
+                <div className="text-center mt-5 mb-4 scroll-reveal visible">
                     <Link to="/destinations" className="btn-outline-custom">View All Destinations</Link>
                 </div>
             </div>
@@ -285,11 +233,7 @@ const Home = () => {
         {/* ⚡ SCENE 2: SUNBATHING ⚡ */}
         <section className="scene-section sleep-bg" style={{ 
             backgroundColor: 'var(--bg-dark)', 
-            backgroundImage: `
-                radial-gradient(ellipse at bottom left, var(--bg-dark) 5%, transparent 35%),
-                radial-gradient(ellipse at bottom right, var(--bg-dark) 5%, transparent 35%),
-                url("${sunbathingImg}")
-            `
+            backgroundImage: `radial-gradient(ellipse at bottom left, var(--bg-dark) 5%, transparent 35%), radial-gradient(ellipse at bottom right, var(--bg-dark) 5%, transparent 35%), url("${sunbathingImg}")`
         }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal visible">
@@ -313,18 +257,18 @@ const Home = () => {
                     <h2 className="section-title text-navy wave-text">{t('top_pkg', 'Top Packages That Fit You')}</h2>
                 </div>
                 
-                {/* ⚡ INLINE STYLE FIX: Enforcing a massive 600px height directly in the HTML ⚡ */}
-                <div 
-                    className="fanned-stack-container scroll-reveal visible mt-4"
-                    onTouchStart={onTouchStart} 
-                    onTouchMove={onTouchMove} 
-                    onTouchEnd={onTouchEndPkg}
-                    style={{ height: '600px', minHeight: '600px', marginBottom: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}
-                >
+                {/* ⚡ RENAMED CACHE-BUSTED CLASSES ⚡ */}
+                <div className="fanned-layout-wrapper scroll-reveal visible mt-4" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEndPkg}>
                     <button className="stack-nav-btn prev-btn" onClick={() => rotateStack('pkg', 'prev')}><i className="fa-solid fa-chevron-left"></i></button>
                     <button className="stack-nav-btn next-btn" onClick={() => rotateStack('pkg', 'next')}><i className="fa-solid fa-chevron-right"></i></button>
                     {tourPackages.map((pkg, index) => (
-                        <div key={pkg.id} className={`fanned-card-wrapper ${pkgPositions[index]}`} onClick={() => rotateStack('pkg', 'next')}>
+                        <div key={pkg.id} className={`fanned-card ${pkgPositions[index]}`} onClick={() => {
+                            if (window.innerWidth <= 991 || pkgPositions[index] === 'pos-center') {
+                                navigate('/tours');
+                            } else {
+                                rotateStack('pkg', pkgPositions[index].includes('right') ? 'next' : 'prev');
+                            }
+                        }}>
                             <div className="card h-100">
                                 <div className="card-img-wrapper">
                                     <span className="card-badge">{pkg.duration}</span>
@@ -342,8 +286,7 @@ const Home = () => {
                     ))}
                 </div>
 
-                {/* ⚡ INLINE STYLE FIX: Physically shoving the button down 100 pixels ⚡ */}
-                <div className="text-center scroll-reveal visible" style={{ marginTop: '100px', position: 'relative', zIndex: 50 }}>
+                <div className="text-center mt-5 mb-4 scroll-reveal visible">
                     <Link to="/tours" className="hero-btn">Explore All Tours</Link>
                 </div>
             </div>
@@ -357,33 +300,9 @@ const Home = () => {
                     <h2 className="section-title text-navy wave-text">What Our Clients Say</h2>
                 </div>
                 <div className="row g-4">
-                    <div className="col-md-4 scroll-reveal visible">
-                        <div className="testimonial-item">
-                            <img src="https://randomuser.me/api/portraits/men/32.jpg" className="testimonial-img" alt="Client" />
-                            <h5 className="client-name text-navy">Mario Santos</h5>
-                            <p className="client-loc text-primary-dark">Manila</p>
-                            <div className="stars"><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i></div>
-                            <p className="quote text-grey">"PhilGood Travels made our El Nido trip absolutely unforgettable! The team was professional and the experiences were beyond amazing."</p>
-                        </div>
-                    </div>
-                    <div className="col-md-4 scroll-reveal visible">
-                        <div className="testimonial-item">
-                            <img src="https://randomuser.me/api/portraits/men/45.jpg" className="testimonial-img" alt="Client" />
-                            <h5 className="client-name text-navy">John Reyes</h5>
-                            <p className="client-loc text-primary-dark">Cebu</p>
-                            <div className="stars"><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star-half-stroke"></i></div>
-                            <p className="quote text-grey">"The Chocolate Hills tour was breathtaking! Everything was well-organized and our guide was incredibly knowledgeable."</p>
-                        </div>
-                    </div>
-                     <div className="col-md-4 scroll-reveal visible">
-                        <div className="testimonial-item">
-                            <img src="https://randomuser.me/api/portraits/women/44.jpg" className="testimonial-img" alt="Client" />
-                            <h5 className="client-name text-navy">Sarah Chen</h5>
-                            <p className="client-loc text-primary-dark">Singapore</p>
-                            <div className="stars"><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i></div>
-                            <p className="quote text-grey">"As a first-time visitor to the Philippines, I was impressed by the service and beautiful destinations. Highly recommend!"</p>
-                        </div>
-                    </div>
+                    <div className="col-md-4 scroll-reveal visible"><div className="testimonial-item"><img src="https://randomuser.me/api/portraits/men/32.jpg" className="testimonial-img" alt="Client" /><h5 className="client-name text-navy">Mario Santos</h5><p className="client-loc text-primary-dark">Manila</p><div className="stars"><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i></div><p className="quote text-grey">"PhilGood Travels made our El Nido trip absolutely unforgettable! The team was professional and the experiences were beyond amazing."</p></div></div>
+                    <div className="col-md-4 scroll-reveal visible"><div className="testimonial-item"><img src="https://randomuser.me/api/portraits/men/45.jpg" className="testimonial-img" alt="Client" /><h5 className="client-name text-navy">John Reyes</h5><p className="client-loc text-primary-dark">Cebu</p><div className="stars"><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star-half-stroke"></i></div><p className="quote text-grey">"The Chocolate Hills tour was breathtaking! Everything was well-organized and our guide was incredibly knowledgeable."</p></div></div>
+                    <div className="col-md-4 scroll-reveal visible"><div className="testimonial-item"><img src="https://randomuser.me/api/portraits/women/44.jpg" className="testimonial-img" alt="Client" /><h5 className="client-name text-navy">Sarah Chen</h5><p className="client-loc text-primary-dark">Singapore</p><div className="stars"><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i></div><p className="quote text-grey">"As a first-time visitor to the Philippines, I was impressed by the service and beautiful destinations. Highly recommend!"</p></div></div>
                 </div>
             </div>
         </section>
@@ -398,10 +317,7 @@ const Home = () => {
         </section>
 
         {/* ⚡ SCENE 3: READY FOR YOUR NEXT DIVE ⚡ */}
-        <section className="scene-section dive-bg" style={{ 
-            backgroundColor: 'var(--bg-dark)', 
-            backgroundImage: `url("${swimImg}")`
-        }}>
+        <section className="scene-section dive-bg" style={{ backgroundColor: 'var(--bg-dark)', backgroundImage: `url("${swimImg}")`}}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal visible">
                     <div className="col-lg-6">
@@ -416,7 +332,6 @@ const Home = () => {
                 </div>
             </div>
         </section>
-
     </div>
   );
 };
