@@ -817,3 +817,41 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
         background-size: 100% auto !important;
     }
 }
+/* =========================================
+   🚨 FINAL MOBILE OVERLAP FIX 🚨
+   ========================================= */
+@media (max-width: 991px) {
+    /* 1. Give the container a guaranteed minimum height */
+    .fanned-stack-container {
+        min-height: 550px !important;
+        margin-bottom: 20px !important;
+    }
+    
+    /* 2. Force the actual cards to obey their wrappers so they don't stretch */
+    .fanned-card-wrapper .card {
+        height: 100% !important;
+        max-height: 400px !important;
+    }
+
+    /* 3. Aggressively push the button wrappers down and bring them to the front */
+    .fanned-stack-container + .text-center {
+        margin-top: 80px !important;
+        position: relative !important;
+        z-index: 50 !important; 
+    }
+}
+
+@media (max-width: 576px) {
+    /* Tighter constraints for small phones */
+    .fanned-stack-container {
+        min-height: 480px !important;
+    }
+    
+    .fanned-card-wrapper .card {
+        max-height: 350px !important;
+    }
+
+    .fanned-stack-container + .text-center {
+        margin-top: 60px !important;
+    }
+}

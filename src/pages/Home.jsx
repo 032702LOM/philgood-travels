@@ -275,9 +275,9 @@ const Home = () => {
                         </div>
                     ))}
                 </div>
-                <div className="text-center mt-5 scroll-reveal visible">
-                    <Link to="/destinations" className="btn-outline-custom">View All Destinations</Link>
-                </div>
+                <div className="text-center scroll-reveal visible" style={{ marginTop: '100px', position: 'relative', zIndex: 20 }}>
+    <Link to="/destinations" className="btn-outline-custom">View All Destinations</Link>
+</div>
             </div>
         </section>
 
@@ -339,9 +339,9 @@ const Home = () => {
                         </div>
                     ))}
                 </div>
-                <div className="text-center mt-5 scroll-reveal visible">
-                    <Link to="/tours" className="hero-btn">Explore All Tours</Link>
-                </div>
+               <div className="text-center scroll-reveal visible" style={{ marginTop: '100px', position: 'relative', zIndex: 20 }}>
+    <Link to="/tours" className="hero-btn">Explore All Tours</Link>
+</div>
             </div>
         </section>
 
