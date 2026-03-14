@@ -137,7 +137,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
    ========================================= */
 .carousel-item { height: 90vh; background-size: cover; background-position: center; }
 
-/* ⚡ STRICTLY HIDE TEXT AND BUTTON ON MOBILE FOR SLIDE 1 ⚡ */
+/* STRICTLY HIDE TEXT AND BUTTON ON MOBILE FOR SLIDE 1 */
 @media (max-width: 991px) {
     .hero-slide-1 .hero-text-box,
     .carousel-item:first-child .hero-text-box {
@@ -198,7 +198,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     border: 1px solid rgba(0, 119, 182, 0.1); 
     border-radius: 16px; 
     overflow: hidden;
-    height: 100% !important; /* Ensure card takes full height */
+    height: 100%;
     color: var(--text-grey) !important;
     transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, border-color 0.3s ease-out;
     box-shadow: 0 10px 25px rgba(2, 62, 138, 0.08);
@@ -206,7 +206,15 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 }
 .card:hover { transform: translateY(-8px); border-color: var(--primary-color); box-shadow: 0 15px 35px rgba(0, 180, 216, 0.2); }
 
-.card-img-wrapper { position: relative; height: 300px; overflow: hidden; flex-shrink: 0; }
+/* Ensure image is ALWAYS a perfect square */
+.card-img-wrapper { 
+    position: relative; 
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1; 
+    overflow: hidden; 
+    flex-shrink: 0;
+}
 .card-img-top { height: 100%; width: 100%; object-fit: cover; transition: transform 0.5s ease-out; }
 .card:hover .card-img-top { transform: scale(1.1); }
 
@@ -220,7 +228,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .card-location i { color: var(--accent-color); font-size: 0.8rem; transition: color 0.2s ease-out; }
 .card:hover .card-location, .card:hover .card-location i { color: var(--primary-color); }
 
-/* Clamping text limits lines to prevent overflow pushing out of the box */
+/* Clamping text lines prevents overflow and keeps cards uniform */
 .card-title { 
     color: var(--dark-navy) !important; font-weight: 800; font-size: 1.35rem; margin-bottom: 12px; line-height: 1.2; transition: color 0.2s ease-out; 
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 3.2rem;
@@ -246,7 +254,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .includes-list li i { color: var(--accent-color); font-size: 0.9rem; }
 
 /* =========================================
-   7. HOMEPAGE FANNED STACK (DESKTOP)
+   7. HOMEPAGE FANNED STACK (DESKTOP ONLY)
    ========================================= */
 .fanned-layout-wrapper, .fanned-stack-container {
     position: relative; 
@@ -263,14 +271,15 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     margin-top: -225px; 
     margin-left: -160px; 
     width: 320px; 
-    height: 450px; 
+    height: auto; 
+    min-height: 450px;
     transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); 
     transform-style: preserve-3d;
 }
 
 .fanned-card .card, .fanned-card-wrapper .card { height: 100%; width: 100%; box-shadow: 0 15px 35px rgba(2, 62, 138, 0.2); }
 
-/* Stack Positions (Desktop Only) */
+/* Stack Positions */
 .pos-center { z-index: 10; transform: scale(1.1) translateZ(0); opacity: 1; }
 .pos-center:hover { transform: scale(1.15) translateY(-10px) translateZ(20px); box-shadow: 0 25px 50px rgba(0, 180, 216, 0.3); }
 .pos-left { z-index: 5; transform: translateX(-220px) scale(0.9) translateY(20px) rotate(-5deg) translateZ(-50px); opacity: 0.9; }
@@ -289,54 +298,6 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .stack-nav-btn:hover { background-color: var(--accent-color); transform: translateY(-50%) scale(1.1); box-shadow: 0 6px 20px rgba(255, 159, 28, 0.4); }
 .prev-btn { left: 20px; }
 .next-btn { right: 20px; }
-
-/* ⚡ MOBILE VIEW: VERTICAL STACKED CARDS (Matches HTML Layout Perfectly) ⚡ */
-@media (max-width: 991px) {
-    /* Destroys the 3D container and forces a standard vertical column */
-    .fanned-layout-wrapper, .fanned-stack-container {
-        height: auto !important; 
-        min-height: auto !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-        gap: 30px !important;
-        overflow: visible !important;
-        padding: 10px 15px !important;
-        margin-top: 20px !important;
-        margin-bottom: 40px !important;
-        perspective: none !important;
-    }
-
-    /* Resets the cards so they span the screen width normally */
-    .fanned-card, .fanned-card-wrapper {
-        position: relative !important;
-        top: auto !important;
-        left: auto !important;
-        margin-top: 0 !important;
-        margin-left: 0 !important;
-        width: 100% !important;
-        max-width: 400px !important; /* Perfect phone/tablet size */
-        height: auto !important;
-        min-height: 450px !important; /* Allows stretching for text */
-        transform: none !important; 
-        opacity: 1 !important;
-        pointer-events: auto !important;
-    }
-
-    .fanned-card .card, .fanned-card-wrapper .card {
-        height: 100% !important;
-    }
-
-    /* Hide the 3D navigation arrows on mobile */
-    .stack-nav-btn { display: none !important; }
-}
-
-@media (max-width: 576px) {
-    .fanned-card, .fanned-card-wrapper {
-        max-width: 100% !important;
-    }
-}
 
 /* =========================================
    8. VISUAL SCENES (Trail, Dive, Sleep)
@@ -423,7 +384,6 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 
 .search-filter-bar input::placeholder { color: rgba(2, 62, 138, 0.4) !important; font-weight: 400; }
 
-/* Region Tabs & Sidebar */
 .region-tabs-wrapper { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
 .region-tab { background-color: var(--card-bg); border: 2px solid rgba(0, 119, 182, 0.2); color: var(--primary-dark); padding: 10px 25px; border-radius: 50px; font-family: 'Montserrat', sans-serif; font-weight: 700; text-transform: uppercase; font-size: 0.85rem; transition: all 0.3s ease; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 .region-tab:hover { border-color: var(--primary-color); color: var(--primary-color); transform: translateY(-2px); }
@@ -502,12 +462,11 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .btn-text-link { color: var(--accent-color); font-family: 'Montserrat', sans-serif; font-weight: 800; text-transform: uppercase; text-decoration: none; letter-spacing: 1px; font-size: 0.9rem; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 10px; }
 .btn-text-link:hover { color: var(--accent-hover); padding-left: 10px; }
 
-/* Forms & Modals - General */
+/* Forms & Modals */
 .form-control-dark { background-color: #F4FAFC !important; border: 1px solid rgba(0, 119, 182, 0.2) !important; color: var(--dark-navy) !important; padding: 12px 20px 12px 45px; border-radius: 8px; font-size: 1rem; font-weight: 600; }
 .form-control-dark:focus { border-color: var(--primary-color) !important; box-shadow: 0 0 0 2px rgba(0, 180, 216, 0.3) !important; outline: none; }
 .bg-card-dark { background-color: var(--card-bg); border: 1px solid rgba(0, 119, 182, 0.1); }
 
-/* Hotel Selection Cards */
 .hotel-card { display: block; cursor: pointer; position: relative; height: 100%; }
 .hotel-card input { position: absolute; opacity: 0; cursor: pointer; }
 .hotel-content { background-color: var(--card-bg); border: 2px solid rgba(0, 119, 182, 0.1); border-radius: 12px; padding: 20px; text-align: center; transition: all 0.2s ease; height: 100%; box-shadow: 0 4px 10px rgba(2, 62, 138, 0.05); }
@@ -517,7 +476,6 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .hotel-card input:checked ~ .hotel-content { border-color: var(--accent-color); background-color: rgba(255, 159, 28, 0.05); box-shadow: 0 6px 15px rgba(255, 159, 28, 0.15); transform: translateY(-3px);}
 .hotel-card input:checked ~ .hotel-content i { color: var(--accent-color); }
 
-/* Addon Item Styling */
 .addon-item:hover { background-color: rgba(0, 119, 182, 0.05); }
 
 /* Gallery */
@@ -529,7 +487,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .gallery-item:hover .gallery-img { transform: scale(1.08); }
 
 /* =========================================
-   11. ALERTS & TOASTS (WITH SLIDING LOGIC)
+   11. ALERTS & TOASTS
    ========================================= */
 .top-alert { 
     background-color: var(--accent-color); 
@@ -652,15 +610,14 @@ footer { position: relative; background-color: var(--dark-navy); color: #E0F7FA;
 @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes slideUpChat { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ⚡ SMOOTH UPWARD SCROLL REVEAL ⚡ */
 .scroll-reveal { 
     opacity: 0; 
-    transform: translateY(40px); /* Starts lower */
-    transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); /* Slower, elegant slide up */
+    transform: translateY(40px); 
+    transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); 
 }
 .scroll-reveal.visible { 
     opacity: 1; 
-    transform: translateY(0); /* Moves to original position */
+    transform: translateY(0); 
 }
 .delay-1 { transition-delay: 0.1s; }
 .delay-2 { transition-delay: 0.2s; }
@@ -714,7 +671,6 @@ footer { position: relative; background-color: var(--dark-navy); color: #E0F7FA;
 footer input[type="email"] { background-color: rgba(255,255,255,0.1) !important; color: white !important; border: 1px solid rgba(255, 255, 255, 0.2) !important; transition: all 0.3s ease !important; }
 footer input[type="email"]:hover, footer input[type="email"]:focus { border-color: var(--primary-color) !important; box-shadow: 0 0 12px rgba(0, 180, 216, 0.4) !important; outline: none !important; }
 
-/* Modal Tabs */
 .pref-tab {
     background: transparent; border: none; color: var(--text-grey); padding: 15px 20px; font-family: 'Montserrat', sans-serif;
     font-weight: 700; text-transform: uppercase; font-size: 0.85rem; border-bottom: 2px solid transparent; transition: all 0.3s ease;
@@ -722,7 +678,6 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
 .pref-tab:hover { color: var(--dark-navy); background-color: rgba(0, 119, 182, 0.05); }
 .pref-tab.active { color: var(--primary-dark); border-bottom-color: var(--primary-color); background-color: rgba(0, 180, 216, 0.05); }
 
-/* Grid Items */
 .pref-grid-item { display: flex; align-items: center; padding: 12px 15px; border-radius: 8px; cursor: pointer; border: 1px solid transparent; transition: all 0.2s ease; height: 100%; color: var(--dark-navy); }
 .pref-grid-item:hover { background-color: rgba(0, 180, 216, 0.1); border-color: rgba(0, 180, 216, 0.3); }
 .pref-grid-item.active { background-color: rgba(0, 180, 216, 0.2); border-color: var(--primary-color); }
@@ -730,7 +685,6 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
 /* =========================================
    17. LIGHT MODE OVERRIDES
    ========================================= */
-/* Since the entire theme is now inherently Light/Tropical, these act as a pure white fallback */
 [data-theme="light"] body { background-color: #f4f7f6 !important; color: #212529 !important; }
 [data-theme="light"] .bg-card-dark,
 [data-theme="light"] .modal-content,
@@ -768,7 +722,6 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
     100% { transform: translateY(0px) rotate(0deg); }
 }
 
-/* ⚡ Automatically wave ALL major titles across ALL pages when they appear ⚡ */
 .wave-text,
 .scroll-reveal.visible .section-title,
 .scroll-reveal.visible .scene-title {
@@ -782,30 +735,33 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
 }
 
 /* =========================================
-   19. MOBILE SPACING & OVERLAP FIXES 
+   19. MOBILE SPACING, STACKING & OVERLAP FIXES 
    ========================================= */
 @media (max-width: 991px) {
-    /* Hero Sections (All Pages) - Prevent text from cramping the background */
+    /* Hero Sections - Prevent text from cramping the background */
     .destinations-hero, .gallery-hero, .tours-hero, .contact-hero, .booking-hero {
         padding: 160px 0 80px 0 !important; 
     }
     
-    /* Scale down giant titles slightly on mobile to save space */
-    .hero-title {
-        font-size: 3.5rem !important; 
-    }
+    .hero-title { font-size: 3.5rem !important; }
 
-    /* Visual Scenes (Homepage) - Push text higher so it clears the images */
-    .trail-makers-bg, .dive-bg { 
-        padding-bottom: 480px !important; 
-    }
-    .sleep-bg { 
-        padding-bottom: 480px !important; 
+    /* Scene Images - Force to bottom so they don't cover text */
+    .trail-makers-bg, .dive-bg, .sleep-bg {
+        background-position: bottom center !important;
+        background-size: 80% auto !important; 
+        padding-bottom: 350px !important; 
     }
     
-    .scene-block { 
-        margin-bottom: 20px !important; 
+    /* Scene Text - Frosted glass backing for perfect legibility */
+    .scene-content {
+        background-color: rgba(255, 255, 255, 0.85) !important; 
+        padding: 30px !important;
+        border-radius: 16px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     }
+    
+    .scene-block { margin-bottom: 40px !important; }
 
     /* Airplane Stats Section - Stop airplane from crashing into stat cards */
     .stats-wrapper .d-flex.justify-content-center {
@@ -813,59 +769,58 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
         padding-top: 30px;
     }
 
-    /* Image Shrink: Gives text room to breathe inside the cards */
-    .card-img-wrapper {
-        height: 220px !important; 
-        min-height: 220px !important;
+    /* ⚡ FANNED STACK FIX: Convert 3D desktop fan to a clean vertical stack ⚡ */
+    .fanned-layout-wrapper, .fanned-stack-container {
+        height: auto !important;
+        min-height: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 30px !important;
+        overflow: visible !important;
+        padding: 10px 15px !important;
+        margin-top: 20px !important;
+        margin-bottom: 40px !important;
+        perspective: none !important;
     }
+
+    /* Allow the cards to stretch automatically based on text height */
+    .fanned-card, .fanned-card-wrapper {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 400px !important; 
+        height: auto !important;
+        transform: none !important; 
+        opacity: 1 !important;
+        filter: none !important;
+        pointer-events: auto !important;
+    }
+
+    .fanned-card .card, .fanned-card-wrapper .card {
+        height: auto !important; 
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    /* Hide the 3D navigation arrows on mobile */
+    .stack-nav-btn { display: none !important; }
 }
 
-/* Extra tight spacing for smaller phones (iPhone SE, etc.) */
+/* Extra tight spacing for smaller phones */
 @media (max-width: 576px) {
-    .hero-title {
-        font-size: 2.8rem !important; 
-    }
+    .hero-title { font-size: 2.8rem !important; }
     
     .trail-makers-bg, .dive-bg, .sleep-bg { 
-        padding-bottom: 400px !important; 
-        background-size: 100% auto !important;
-    }
-
-    .card-img-wrapper {
-        height: 200px !important;
-        min-height: 200px !important;
-    }
-}
-/* =========================================
-   FIX: SCENE IMAGES OVERLAPPING TEXT ON MOBILE
-   ========================================= */
-@media (max-width: 991px) {
-    /* Anchor the image to the bottom and give the text room at the top */
-    .trail-makers-bg, .dive-bg, .sleep-bg {
-        background-position: bottom center !important;
-        background-size: 80% auto !important; 
-        padding-bottom: 400px !important; /* Forces 400px of empty space at the bottom for the image */
-    }
-    
-    /* Center the text and add a slight frosted backing just in case */
-    .scene-content {
-        background-color: rgba(224, 247, 250, 0.85) !important;
-        padding: 30px !important;
-        border-radius: 16px;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    }
-    
-    .scene-block {
-        margin-bottom: 40px !important;
-    }
-}
-
-@media (max-width: 576px) {
-    /* For smaller phones, make the image span the full width at the bottom */
-    .trail-makers-bg, .dive-bg, .sleep-bg {
-        background-position: bottom center !important;
         background-size: 100% auto !important; 
-        padding-bottom: 350px !important; 
+        padding-bottom: 300px !important; 
+    }
+
+    .fanned-card, .fanned-card-wrapper {
+        max-width: 100% !important;
     }
 }
