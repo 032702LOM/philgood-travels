@@ -191,14 +191,14 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 }
 
 /* =========================================
-   6. CARD STYLES (⚡ FIXED FOR UNIFORMITY)
+   6. CARD STYLES
    ========================================= */
 .card {
     background-color: var(--card-bg); 
     border: 1px solid rgba(0, 119, 182, 0.1); 
     border-radius: 16px; 
     overflow: hidden;
-    height: 100% !important; /* Forces stretch */
+    height: 100% !important; /* Ensure card takes full height */
     color: var(--text-grey) !important;
     transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, border-color 0.3s ease-out;
     box-shadow: 0 10px 25px rgba(2, 62, 138, 0.08);
@@ -206,13 +206,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 }
 .card:hover { transform: translateY(-8px); border-color: var(--primary-color); box-shadow: 0 15px 35px rgba(0, 180, 216, 0.2); }
 
-.card-img-wrapper { 
-    position: relative; 
-    height: 240px; /* Reduced to give text room */
-    min-height: 240px; 
-    flex-shrink: 0;
-    overflow: hidden; 
-}
+.card-img-wrapper { position: relative; height: 300px; overflow: hidden; flex-shrink: 0; }
 .card-img-top { height: 100%; width: 100%; object-fit: cover; transition: transform 0.5s ease-out; }
 .card:hover .card-img-top { transform: scale(1.1); }
 
@@ -226,8 +220,9 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .card-location i { color: var(--accent-color); font-size: 0.8rem; transition: color 0.2s ease-out; }
 .card:hover .card-location, .card:hover .card-location i { color: var(--primary-color); }
 
+/* Clamping text limits lines to prevent overflow pushing out of the box */
 .card-title { 
-    color: var(--dark-navy) !important; font-weight: 800; font-size: 1.35rem; margin-bottom: 12px; line-height: 1.3; transition: color 0.2s ease-out; 
+    color: var(--dark-navy) !important; font-weight: 800; font-size: 1.35rem; margin-bottom: 12px; line-height: 1.2; transition: color 0.2s ease-out; 
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 3.2rem;
 }
 .card:hover .card-title { color: var(--primary-color) !important; }
@@ -251,38 +246,42 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .includes-list li i { color: var(--accent-color); font-size: 0.9rem; }
 
 /* =========================================
-   7. HOMEPAGE FANNED STACK (⚡ MOBILE FIX)
+   7. HOMEPAGE FANNED STACK (DESKTOP)
    ========================================= */
-.fanned-stack-container {
+.fanned-layout-wrapper, .fanned-stack-container {
     position: relative; 
-    height: 550px; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    perspective: 1200px; 
-    margin-bottom: 60px;
+    width: 100%;
+    height: 600px;
+    margin: 0 auto 60px auto; 
+    perspective: 1200px;
 }
-.fanned-card-wrapper {
+
+.fanned-card, .fanned-card-wrapper {
     position: absolute; 
+    top: 50%; 
+    left: 50%; 
+    margin-top: -225px; 
+    margin-left: -160px; 
     width: 320px; 
-    height: 480px; 
+    height: 450px; 
     transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); 
     transform-style: preserve-3d;
 }
 
-.fanned-card-wrapper .card { height: 100%; width: 100%; box-shadow: 0 15px 35px rgba(2, 62, 138, 0.2); }
+.fanned-card .card, .fanned-card-wrapper .card { height: 100%; width: 100%; box-shadow: 0 15px 35px rgba(2, 62, 138, 0.2); }
 
 /* Stack Positions (Desktop Only) */
-.fanned-card-wrapper.pos-center { z-index: 10; transform: scale(1.1) translateY(0) translateZ(0); opacity: 1; }
-.fanned-card-wrapper.pos-center:hover { transform: scale(1.15) translateY(-10px) translateZ(20px); box-shadow: 0 25px 50px rgba(0, 180, 216, 0.3); }
-.fanned-card-wrapper.pos-left { z-index: 5; transform: translateX(-220px) scale(0.9) translateY(20px) rotate(-5deg) translateZ(-50px); opacity: 0.9; }
-.fanned-card-wrapper.pos-right { z-index: 5; transform: translateX(220px) scale(0.9) translateY(20px) rotate(5deg) translateZ(-50px); opacity: 0.9; }
-.fanned-card-wrapper.pos-far-left { z-index: 2; transform: translateX(-380px) scale(0.8) translateY(40px) rotate(-10deg) translateZ(-100px); opacity: 0.7; }
-.fanned-card-wrapper.pos-far-right { z-index: 2; transform: translateX(380px) scale(0.8) translateY(40px) rotate(10deg) translateZ(-100px); opacity: 0.7; }
-.fanned-card-wrapper.pos-hidden { z-index: 0; transform: scale(0.5) translateY(0) translateZ(-200px); opacity: 0; pointer-events: none; }
+.pos-center { z-index: 10; transform: scale(1.1) translateZ(0); opacity: 1; }
+.pos-center:hover { transform: scale(1.15) translateY(-10px) translateZ(20px); box-shadow: 0 25px 50px rgba(0, 180, 216, 0.3); }
+.pos-left { z-index: 5; transform: translateX(-220px) scale(0.9) translateY(20px) rotate(-5deg) translateZ(-50px); opacity: 0.9; }
+.pos-right { z-index: 5; transform: translateX(220px) scale(0.9) translateY(20px) rotate(5deg) translateZ(-50px); opacity: 0.9; }
+.pos-far-left { z-index: 2; transform: translateX(-380px) scale(0.8) translateY(40px) rotate(-10deg) translateZ(-100px); opacity: 0.7; }
+.pos-far-right { z-index: 2; transform: translateX(380px) scale(0.8) translateY(40px) rotate(10deg) translateZ(-100px); opacity: 0.7; }
+.pos-hidden { z-index: 0; transform: scale(0.5) translateZ(-200px); opacity: 0; pointer-events: none; }
 
-.fanned-card-wrapper:not(.pos-center) { cursor: pointer; }
-.fanned-card-wrapper:not(.pos-center) a, .fanned-card-wrapper:not(.pos-center) button { pointer-events: none; }
+.fanned-card:not(.pos-center), .fanned-card-wrapper:not(.pos-center) { cursor: pointer; }
+.fanned-card:not(.pos-center) a, .fanned-card-wrapper:not(.pos-center) a, 
+.fanned-card:not(.pos-center) button, .fanned-card-wrapper:not(.pos-center) button { pointer-events: none; }
 
 .stack-nav-btn {
     position: absolute; top: 50%; transform: translateY(-50%); background-color: var(--primary-color); color: white; border: none; width: 50px; height: 50px; border-radius: 50%; font-size: 1.2rem; z-index: 100; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0, 180, 216, 0.4);
@@ -291,54 +290,51 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .prev-btn { left: 20px; }
 .next-btn { right: 20px; }
 
-/* ⚡ MOBILE VIEW: LARGE HORIZONTAL SWIPE CAROUSEL ⚡ */
+/* ⚡ MOBILE VIEW: VERTICAL STACKED CARDS (Matches HTML Layout Perfectly) ⚡ */
 @media (max-width: 991px) {
-    .fanned-stack-container {
-        height: auto !important;
-        min-height: 480px !important;
+    /* Destroys the 3D container and forces a standard vertical column */
+    .fanned-layout-wrapper, .fanned-stack-container {
+        height: auto !important; 
+        min-height: auto !important;
         display: flex !important;
-        flex-direction: row !important;
-        justify-content: flex-start !important;
-        align-items: stretch !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-        scroll-snap-type: x mandatory;
-        padding: 20px 20px 40px 20px !important; 
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 30px !important;
+        overflow: visible !important;
+        padding: 10px 15px !important;
         margin-top: 20px !important;
         margin-bottom: 40px !important;
-        gap: 20px !important;
-        -webkit-overflow-scrolling: touch;
         perspective: none !important;
-        transform: none !important; /* Prevents scaling down */
     }
 
-    .fanned-stack-container::-webkit-scrollbar { display: none; }
-    .fanned-stack-container { -ms-overflow-style: none; scrollbar-width: none; }
-
-    .fanned-card-wrapper {
+    /* Resets the cards so they span the screen width normally */
+    .fanned-card, .fanned-card-wrapper {
         position: relative !important;
         top: auto !important;
         left: auto !important;
         margin-top: 0 !important;
         margin-left: 0 !important;
-        width: 320px !important;
-        min-width: 320px !important;
+        width: 100% !important;
+        max-width: 400px !important; /* Perfect phone/tablet size */
         height: auto !important;
-        min-height: 480px !important;
+        min-height: 450px !important; /* Allows stretching for text */
         transform: none !important; 
         opacity: 1 !important;
-        scroll-snap-align: center;
+        pointer-events: auto !important;
     }
 
+    .fanned-card .card, .fanned-card-wrapper .card {
+        height: 100% !important;
+    }
+
+    /* Hide the 3D navigation arrows on mobile */
     .stack-nav-btn { display: none !important; }
 }
 
 @media (max-width: 576px) {
-    .fanned-card-wrapper {
-        width: 85vw !important; /* Dynamic sizing to be perfectly large on phones */
-        min-width: 85vw !important;
-        height: auto !important;
-        min-height: 500px !important;
+    .fanned-card, .fanned-card-wrapper {
+        max-width: 100% !important;
     }
 }
 
@@ -816,6 +812,12 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
         margin-top: 20px !important; 
         padding-top: 30px;
     }
+
+    /* Image Shrink: Gives text room to breathe inside the cards */
+    .card-img-wrapper {
+        height: 220px !important; 
+        min-height: 220px !important;
+    }
 }
 
 /* Extra tight spacing for smaller phones (iPhone SE, etc.) */
@@ -828,52 +830,42 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
         padding-bottom: 400px !important; 
         background-size: 100% auto !important;
     }
-}
-/* =========================================
-   MINIMAL FIX: PREVENT TEXT OVERLAP ON CARDS
-   ========================================= */
 
-/* 1. Limit the text lines so they stay uniform */
-.card-title {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.card-text {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-/* 2. Fix the height math on tablets/mobile */
-@media (max-width: 991px) {
-    /* Allow the card wrapper to stretch dynamically instead of being locked to 420px */
-    .fanned-card, 
-    .fanned-card-wrapper {
-        height: auto !important; 
-        min-height: 480px !important;
-    }
-    
-    /* Shrink the image slightly on mobile to give text room to breathe */
-    .card-img-wrapper {
-        height: 220px !important; 
-        min-height: 220px !important;
-    }
-}
-
-/* 3. Fix the extreme shrink on small phones */
-@media (max-width: 576px) {
-    .fanned-card, 
-    .fanned-card-wrapper {
-        height: auto !important;
-        min-height: 480px !important;
-    }
-    
     .card-img-wrapper {
         height: 200px !important;
         min-height: 200px !important;
+    }
+}
+/* =========================================
+   FIX: SCENE IMAGES OVERLAPPING TEXT ON MOBILE
+   ========================================= */
+@media (max-width: 991px) {
+    /* Anchor the image to the bottom and give the text room at the top */
+    .trail-makers-bg, .dive-bg, .sleep-bg {
+        background-position: bottom center !important;
+        background-size: 80% auto !important; 
+        padding-bottom: 400px !important; /* Forces 400px of empty space at the bottom for the image */
+    }
+    
+    /* Center the text and add a slight frosted backing just in case */
+    .scene-content {
+        background-color: rgba(224, 247, 250, 0.85) !important;
+        padding: 30px !important;
+        border-radius: 16px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+    
+    .scene-block {
+        margin-bottom: 40px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    /* For smaller phones, make the image span the full width at the bottom */
+    .trail-makers-bg, .dive-bg, .sleep-bg {
+        background-position: bottom center !important;
+        background-size: 100% auto !important; 
+        padding-bottom: 350px !important; 
     }
 }
