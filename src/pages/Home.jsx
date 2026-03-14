@@ -44,7 +44,7 @@ const Home = () => {
     }
   };
 
-  // --- DESKTOP SWIPE LOGIC ---
+  // --- SWIPE LOGIC ---
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
   const minSwipeDistance = 50; 
@@ -148,7 +148,7 @@ const Home = () => {
                     <div className="col-lg-6">
                         <div className="scene-content pe-lg-5">
                             <span className="section-subtitle">PERSPECTIVE</span>
-                            <h2 className="scene-title">The Trail Makers</h2>
+                            <h2 className="scene-title wave-text">The Trail Makers</h2>
                             <p className="scene-text">Sometimes the best view comes after the hardest climb. Take a moment to sit, breathe, and appreciate the world from a new perspective.</p>     
                             <p className="scene-text">A breathtaking panoramic view from a mountain summit at sunset. A lone hiker is sitting on a rocky ledge, silhouette against a vibrant orange and purple sky, looking out over a sea of clouds and distant peaks.</p>             
                             <Link to="/destinations" className="btn-text-link">Explore Mountains <i className="fa-solid fa-arrow-right"></i></Link>
@@ -163,12 +163,12 @@ const Home = () => {
             <div className="container py-5">
                 <div className="section-header scroll-reveal">
                     <span className="section-subtitle">Regional</span>
-                    <h2 className="section-title">Most Popular Destinations</h2>
+                    <h2 className="section-title wave-text">{t('pop_dest', 'Most Popular Destinations')}</h2>
                     <p className="section-desc">Discover the key regions and landmarks the Philippines has to offer.</p>
                 </div>
                 
-                {/* ⚡ DESKTOP VIEW: STRICTLY 6 CARDS ⚡ */}
-                <div className="fanned-stack-container d-none d-lg-flex scroll-reveal mt-4" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEndDest}>
+                {/* ⚡ ONE UNIFIED BLOCK: 6 CARDS ONLY ⚡ */}
+                <div className="fanned-stack-container scroll-reveal mt-4" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEndDest}>
                     <button className="stack-nav-btn prev-btn" onClick={() => rotateStack('dest', 'prev')}><i className="fa-solid fa-chevron-left"></i></button>
                     <button className="stack-nav-btn next-btn" onClick={() => rotateStack('dest', 'next')}><i className="fa-solid fa-chevron-right"></i></button>
                     
@@ -189,25 +189,6 @@ const Home = () => {
                     ))}
                 </div>
 
-                {/* ⚡ MOBILE & TABLET VIEW: STRICTLY 6 CARDS ⚡ */}
-                <div className="row g-4 d-flex d-lg-none scroll-reveal mt-2">
-                    {regions.slice(0, 6).map((region) => (
-                        <div key={`mobile-${region.id}`} className="col-12 col-md-6">
-                            <div className="card shadow-sm border-0" onClick={() => navigate(`/destinations?region=${region.id}`)} style={{ cursor: 'pointer' }}>
-                                <div className="card-img-wrapper">
-                                    <span className="card-badge">{region.typeBadge || 'View'}</span>
-                                    <img src={region.image} className="card-img-top" alt={region.name} />
-                                </div>
-                                <div className="card-body">
-                                    <div className="card-location"><i className="fa-solid fa-location-dot"></i> {region.locationLabel || 'Philippines'}</div>
-                                    <h5 className="card-title text-navy"><span className="region-text">{region.name}</span></h5>
-                                    <p className="card-text text-grey">{region.desc}</p>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
                 <div className="text-center mt-5 scroll-reveal">
                     <Link to="/destinations" className="btn-outline-custom">View All Destinations</Link>
                 </div>
@@ -221,7 +202,7 @@ const Home = () => {
                     <div className="col-lg-6">
                         <div className="scene-content pe-lg-5">
                             <span className="section-subtitle">IMMERSION</span>
-                            <h2 className="scene-title">Sleep Under the Stars</h2>
+                            <h2 className="scene-title wave-text">Sleep Under the Stars</h2>
                             <p className="scene-text">Disconnect to reconnect. Experience the serenity of a night in the wild, with nothing but the crackle of a campfire and the starry sky above.</p>
                             <Link to="/destinations?search=beach" className="btn-text-link">Book a Resort Stay <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
@@ -235,11 +216,11 @@ const Home = () => {
             <div className="container py-5">
                 <div className="section-header scroll-reveal">
                     <span className="section-subtitle">Packages</span>
-                    <h2 className="section-title">Top Packages That Fit You</h2>
+                    <h2 className="section-title wave-text">Top Packages That Fit You</h2>
                 </div>
                 
-                {/* ⚡ DESKTOP VIEW: STRICTLY 6 CARDS ⚡ */}
-                <div className="fanned-stack-container d-none d-lg-flex scroll-reveal mt-4" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEndPkg}>
+                {/* ⚡ ONE UNIFIED BLOCK: 6 CARDS ONLY ⚡ */}
+                <div className="fanned-stack-container scroll-reveal mt-4" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEndPkg}>
                     <button className="stack-nav-btn prev-btn" onClick={() => rotateStack('pkg', 'prev')}><i className="fa-solid fa-chevron-left"></i></button>
                     <button className="stack-nav-btn next-btn" onClick={() => rotateStack('pkg', 'next')}><i className="fa-solid fa-chevron-right"></i></button>
                     
@@ -254,30 +235,9 @@ const Home = () => {
                                     <div className="card-location"><i className="fa-solid fa-location-dot"></i> {pkg.locationLabel || pkg.region || 'Philippines'}</div>
                                     <h5 className="card-title"><span className="region-text">{pkg.name}</span></h5>
                                     <p className="card-text text-white-50">{pkg.desc || pkg.type || 'Experience the beauty of the Philippines.'}</p>
-                                    <div className="d-flex justify-content-between align-items-center mt-3">
+                                    <div className="d-flex justify-content-between align-items-center mt-3 border-top pt-3" style={{borderColor: 'rgba(0,0,0,0.1)'}}>
                                         <span className="fw-bold fs-5" style={{ color: '#2A9D8F' }}>{formatPrice(pkg.price)}</span>
                                         <Link to="/tours" className="btn btn-view-details" onClick={(e) => e.stopPropagation()}>{t('view_details', 'View')}</Link>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* ⚡ MOBILE & TABLET VIEW: STRICTLY 6 CARDS ⚡ */}
-                <div className="row g-4 d-flex d-lg-none scroll-reveal mt-2">
-                    {tourPackages.slice(0, 6).map((pkg) => (
-                        <div key={`mobile-pkg-${pkg.id}`} className="col-12 col-md-6">
-                            <div className="card shadow-sm border-0" onClick={() => navigate('/tours')} style={{ cursor: 'pointer' }}>
-                                <div className="card-img-wrapper">
-                                    <span className="card-badge">{pkg.duration}</span>
-                                    <img src={pkg.img} className="card-img-top" alt={pkg.name} />
-                                </div>
-                                <div className="card-body">
-                                    <h5 className="card-title text-navy">{pkg.name}</h5>
-                                    <div className="mt-auto d-flex justify-content-between align-items-center border-top pt-3" style={{borderColor: 'rgba(0,0,0,0.1)'}}>
-                                        <span className="fw-bold fs-5" style={{color: 'var(--accent-color)'}}>{formatPrice(pkg.price)}</span>
-                                        <Link to="/tours" className="btn btn-view-details" style={{fontSize: '0.8rem'}}>{t('view_details', 'View')}</Link>
                                     </div>
                                 </div>
                             </div>
@@ -296,7 +256,7 @@ const Home = () => {
             <div className="container py-5">
                 <div className="section-header scroll-reveal">
                     <span className="section-subtitle">Testimonials</span>
-                    <h2 className="section-title">What Our Clients Say</h2>
+                    <h2 className="section-title wave-text">What Our Clients Say</h2>
                 </div>
                 <div className="row g-4">
                     <div className="col-md-4 scroll-reveal"><div className="testimonial-item"><img src="https://randomuser.me/api/portraits/men/32.jpg" className="testimonial-img" alt="Client" /><h5 className="client-name">Mario Santos</h5><p className="client-loc">Manila</p><div className="stars"><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i></div><p className="quote">"PhilGood Travels made our El Nido trip absolutely unforgettable! The team was professional and the experiences were beyond amazing."</p></div></div>
@@ -309,7 +269,7 @@ const Home = () => {
         {/* --- CTA --- */}
         <section className="cta-section scroll-reveal">
             <div className="container text-center py-5">
-                <h2 className="section-title mb-3">Ready for Your Next Adventure?</h2>
+                <h2 className="section-title mb-3 wave-text">Ready for Your Next Adventure?</h2>
                 <p className="section-desc mb-4">Book your dream Philippine vacation today and create memories that will last a lifetime.</p>
                 <Link to="/booking" className="hero-btn">START YOUR JOURNEY</Link>
             </div>
@@ -322,7 +282,7 @@ const Home = () => {
                     <div className="col-lg-6">
                         <div className="scene-content pe-lg-5">
                             <span className="section-subtitle">UNDERWATER</span>
-                            <h2 className="scene-title">Ready for Your Next Dive?</h2>
+                            <h2 className="scene-title wave-text">Ready for Your Next Dive?</h2>
                             <p className="scene-text">Descend into the deep blue. Discover vibrant coral reefs, swim alongside majestic sea turtles, and explore the mysteries of the ocean floor.</p>
                             <p className="scene-text">Beyond the technicolor gardens of coral lies a world frozen in time. Navigate through haunting shipwrecks and silent underwater caverns where history rests beneath the tides.</p>
                             <Link to="/tours?search=diving" className="btn-text-link mt-3 d-inline-block">View Diving Packages <i className="fa-solid fa-arrow-right"></i></Link>
