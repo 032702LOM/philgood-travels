@@ -5,7 +5,6 @@ import { usePreferences } from '../context/PreferencesContext';
 
 import islandParadiseImg from '../assets/img/island_paradise.png'; 
 import palImg from '../assets/img/pal.png'; 
-import manOnCliffVid from '../assets/img/man on cliff.mp4'; 
 import sunbathingImg from '../assets/img/sunbathing.png'; 
 import swimImg from '../assets/img/swim.png';
 
@@ -20,7 +19,7 @@ const Home = () => {
   const [showPromo, setShowPromo] = useState(false);
   const [isPromoClosed, setIsPromoClosed] = useState(false);
 
-  // --- MOBILE SWIPE LOGIC ---
+  // --- DESKTOP SWIPE LOGIC ---
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
   const minSwipeDistance = 50; 
@@ -177,7 +176,7 @@ const Home = () => {
             </div>
         </section>
 
-        {/* --- POPULAR DESTINATIONS (Fanned Stack 1) --- */}
+        {/* --- POPULAR DESTINATIONS --- */}
         <section className="py-5 destinations-bg"> 
             <div className="container py-5">
                 <div className="section-header scroll-reveal visible">
@@ -186,8 +185,8 @@ const Home = () => {
                     <p className="section-desc">Discover the key regions and landmarks the Philippines has to offer.</p>
                 </div>
                 
-                {/* ⚡ EXACT MATCH TO ORIGINAL HTML STRUCTURE ⚡ */}
-                <div className="fanned-stack-container scroll-reveal visible mt-4" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEndDest}>
+                {/* ⚡ DESKTOP VIEW: FANNED STACK ⚡ */}
+                <div className="fanned-stack-container d-none d-lg-flex scroll-reveal visible mt-4" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEndDest}>
                     <button className="stack-nav-btn prev-btn" onClick={() => rotateStack('dest', 'prev')}><i className="fa-solid fa-chevron-left"></i></button>
                     <button className="stack-nav-btn next-btn" onClick={() => rotateStack('dest', 'next')}><i className="fa-solid fa-chevron-right"></i></button>
                     
@@ -196,7 +195,7 @@ const Home = () => {
                             key={region.id} 
                             className={`fanned-card-wrapper ${destPositions[index]}`} 
                             onClick={() => {
-                                if (window.innerWidth <= 991 || destPositions[index] === 'pos-center') {
+                                if (destPositions[index] === 'pos-center') {
                                     navigate(`/destinations?region=${region.id}`);
                                 } else {
                                     rotateStack('dest', destPositions[index].includes('right') ? 'next' : 'prev');
@@ -218,7 +217,25 @@ const Home = () => {
                     ))}
                 </div>
 
-                {/* EXACT HTML MARGIN (mt-5) RESTORED */}
+                {/* ⚡ MOBILE & TABLET VIEW: REGULAR CARDS ⚡ */}
+                <div className="row g-4 d-flex d-lg-none scroll-reveal visible mt-2">
+                    {regions.map((region) => (
+                        <div key={`mobile-${region.id}`} className="col-12 col-md-6">
+                            <div className="card shadow-sm border-0" onClick={() => navigate(`/destinations?region=${region.id}`)} style={{ cursor: 'pointer' }}>
+                                <div className="card-img-wrapper">
+                                    <span className="card-badge">{region.typeBadge || 'View'}</span>
+                                    <img src={region.image} className="card-img-top" alt={region.name} />
+                                </div>
+                                <div className="card-body">
+                                    <div className="card-location"><i className="fa-solid fa-location-dot"></i> {region.locationLabel || 'Philippines'}</div>
+                                    <h5 className="card-title text-navy"><span className="region-text">{region.name}</span></h5>
+                                    <p className="card-text text-grey">{region.desc}</p>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
                 <div className="text-center mt-5 scroll-reveal visible">
                     <Link to="/destinations" className="btn-outline-custom">View All Destinations</Link>
                 </div>
@@ -241,7 +258,7 @@ const Home = () => {
             </div>
         </section>
 
-        {/* --- TOP PACKAGES (Fanned Stack 2) --- */}
+        {/* --- TOP PACKAGES --- */}
         <section className="py-5" style={{ backgroundColor: 'var(--bg-dark)' }}>
             <div className="container py-5">
                 <div className="section-header scroll-reveal visible">
@@ -249,14 +266,14 @@ const Home = () => {
                     <h2 className="section-title wave-text">{t('top_pkg', 'Top Packages That Fit You')}</h2>
                 </div>
                 
-                {/* ⚡ EXACT MATCH TO ORIGINAL HTML STRUCTURE ⚡ */}
-                <div className="fanned-stack-container scroll-reveal visible mt-4" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEndPkg}>
+                {/* ⚡ DESKTOP VIEW: FANNED STACK ⚡ */}
+                <div className="fanned-stack-container d-none d-lg-flex scroll-reveal visible mt-4" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEndPkg}>
                     <button className="stack-nav-btn prev-btn" onClick={() => rotateStack('pkg', 'prev')}><i className="fa-solid fa-chevron-left"></i></button>
                     <button className="stack-nav-btn next-btn" onClick={() => rotateStack('pkg', 'next')}><i className="fa-solid fa-chevron-right"></i></button>
                     
                     {tourPackages.map((pkg, index) => (
                         <div key={pkg.id} className={`fanned-card-wrapper ${pkgPositions[index]}`} onClick={() => {
-                            if (window.innerWidth <= 991 || pkgPositions[index] === 'pos-center') {
+                            if (pkgPositions[index] === 'pos-center') {
                                 navigate('/tours');
                             } else {
                                 rotateStack('pkg', pkgPositions[index].includes('right') ? 'next' : 'prev');
@@ -269,7 +286,6 @@ const Home = () => {
                                 </div>
                                 <div className="card-body">
                                     <h5 className="card-title">{pkg.name}</h5>
-                                    
                                     <div className="mt-auto d-flex justify-content-between align-items-center">
                                         <span className="fw-bold fs-5" style={{color: 'var(--accent-color)'}}>{formatPrice(pkg.price)}</span>
                                         <Link to="/tours" className="btn btn-view-details" style={{fontSize: '0.8rem'}}>{t('view_details', 'View')}</Link>
@@ -280,7 +296,27 @@ const Home = () => {
                     ))}
                 </div>
 
-                {/* EXACT HTML MARGIN (mt-5) RESTORED */}
+                {/* ⚡ MOBILE & TABLET VIEW: REGULAR CARDS ⚡ */}
+                <div className="row g-4 d-flex d-lg-none scroll-reveal visible mt-2">
+                    {tourPackages.map((pkg) => (
+                        <div key={`mobile-pkg-${pkg.id}`} className="col-12 col-md-6">
+                            <div className="card shadow-sm border-0" onClick={() => navigate('/tours')} style={{ cursor: 'pointer' }}>
+                                <div className="card-img-wrapper">
+                                    <span className="card-badge">{pkg.duration}</span>
+                                    <img src={pkg.img} className="card-img-top" alt={pkg.name} />
+                                </div>
+                                <div className="card-body">
+                                    <h5 className="card-title text-navy">{pkg.name}</h5>
+                                    <div className="mt-auto d-flex justify-content-between align-items-center border-top pt-3" style={{borderColor: 'rgba(0,0,0,0.1)'}}>
+                                        <span className="fw-bold fs-5" style={{color: 'var(--accent-color)'}}>{formatPrice(pkg.price)}</span>
+                                        <Link to="/tours" className="btn btn-view-details" style={{fontSize: '0.8rem'}}>{t('view_details', 'View')}</Link>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
                 <div className="text-center mt-5 scroll-reveal visible">
                     <Link to="/tours" className="hero-btn">Explore All Tours</Link>
                 </div>
