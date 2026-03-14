@@ -168,6 +168,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .contact-hero { background-image: linear-gradient(to bottom, rgba(0, 119, 182, 0.5), var(--bg-dark)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2000&auto=format&fit=crop'); }
 .booking-hero { background-image: linear-gradient(to bottom, rgba(0, 119, 182, 0.4), var(--bg-dark)), url('https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=80&w=2000&auto=format&fit=crop'); }
 .tours-hero { background-image: linear-gradient(to bottom, rgba(0, 119, 182, 0.4), var(--bg-dark)), url('https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=2000&auto=format&fit=crop'); }
+
 /* =========================================
    5. MOST POPULAR DESTINATIONS (BACKGROUND)
    ========================================= */
@@ -269,10 +270,10 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 /* ⚡ MOBILE: Enforce Fanned Effect and prevent vertical stacking ⚡ */
 @media (max-width: 991px) {
     .fanned-stack-container { 
-        height: 450px !important;
+        height: 500px !important; /* Increased from 450px to clear the overlap */
         transform: scale(0.9) !important; 
-        margin-top: 0 !important; 
-        margin-bottom: 0 !important; 
+        margin-top: 20px !important; 
+        margin-bottom: 50px !important; /* Increased to push buttons down */
         display: flex !important;
     }
     
@@ -295,9 +296,10 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 
 @media (max-width: 576px) {
     .fanned-stack-container { 
-        height: 400px !important;
+        height: 460px !important; /* Increased from 400px */
         transform: scale(1) !important; /* Reset scale to keep text readable */
-        margin-bottom: 20px !important;
+        margin-top: 20px !important;
+        margin-bottom: 60px !important; /* Heavy margin to protect the buttons */
     }
     
     /* Shrink cards slightly to fit mobile width */
@@ -317,6 +319,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     .prev-btn { left: 5px !important; }
     .next-btn { right: 5px !important; }
 }
+
 /* =========================================
    8. VISUAL SCENES (Trail, Dive, Sleep)
    ========================================= */
@@ -342,23 +345,6 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
         background-size: 100% 100%, 100% 100%, 48% auto !important; 
         background-repeat: no-repeat, no-repeat, no-repeat !important;
     }
-}
-
-/* ⚡ MOBILE: Images tuck underneath the text ⚡ */
-@media (max-width: 991px) {
-    .trail-makers-bg, .dive-bg { 
-        background-position: bottom center !important; 
-        background-size: 90% auto !important; 
-        padding-bottom: 350px !important; /* Pushes image under text */
-    }
-    .sleep-bg { 
-        background-position: bottom left, bottom right, bottom center !important; 
-        background-size: 100% 100%, 100% 100%, 95% auto !important; 
-        background-repeat: no-repeat, no-repeat, no-repeat !important;
-        padding-bottom: 350px !important; 
-    }
-    .scene-block { margin-bottom: 40px; text-align: center; }
-    .scene-content { padding: 0 15px !important; }
 }
 
 /* =========================================
@@ -447,8 +433,8 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 }
 
 .stat-card { 
-    background-color: var(--card-bg); /* Pure white default */
-    padding: 30px; /* Original padding restored */
+    background-color: var(--card-bg); 
+    padding: 30px; 
     border-radius: 15px; 
     height: 100%; 
     display: flex; 
@@ -456,18 +442,16 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     justify-content: center; 
     align-items: center; 
     color: var(--dark-navy); 
-    border: 1px solid rgba(0, 119, 182, 0.1); /* Original border restored */
+    border: 1px solid rgba(0, 119, 182, 0.1); 
     animation: floatAir 6s ease-in-out infinite; 
-    transition: background-color 0.4s ease, border-color 0.4s ease; /* Smooth color transition */
+    transition: background-color 0.4s ease, border-color 0.4s ease; 
     box-shadow: 0 10px 20px rgba(2, 62, 138, 0.05);
 }
 
-/* Stagger the animations so they float independently */
 .stats-container .col-md-4:nth-child(1) .stat-card { animation-delay: 0s; }
 .stats-container .col-md-4:nth-child(2) .stat-card { animation-delay: 1.5s; }
 .stats-container .col-md-4:nth-child(3) .stat-card { animation-delay: 3s; }
 
-/* ⚡ Teal Hover Effect ⚡ */
 .stat-card:hover {
     background-color: var(--primary-color) !important;
     border-color: var(--primary-color) !important;
@@ -477,7 +461,6 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .stat-number { font-size: 3rem; margin-bottom: 5px; color: var(--dark-navy); transition: color 0.4s ease; }
 .stat-label { text-transform: uppercase; font-size: 0.9rem; font-weight: 700; letter-spacing: 1px; color: var(--text-grey); transition: color 0.4s ease; }
 
-/* Turn text and icons pure white when hovering over the card */
 .stat-card:hover i,
 .stat-card:hover .stat-number,
 .stat-card:hover .stat-label {
@@ -541,7 +524,6 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     text-align: center; 
     padding: 10px 0; 
     position: fixed; 
-    /* Default position: 50px logo + 30px nav padding = 80px */
     top: 80px; 
     left: 0; 
     width: 100%; 
@@ -550,18 +532,14 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-/* Adjust Promo Bar down when Navbar enlarges on scroll */
 .navbar.scrolled ~ .fade-in .top-alert,
 .navbar.scrolled ~ .top-alert,
 body:has(.navbar.scrolled) .top-alert {
-    /* Scrolled position: 75px logo + 20px nav padding = 95px */
     top: 95px; 
 }
 
-/* Mobile adjustments to keep it tight on smaller screens */
 @media (max-width: 991px) {
     body:has(.navbar.scrolled) .top-alert {
-        /* Mobile scrolled logo is 60px + 20px padding = 80px */
         top: 80px; 
     }
 }
@@ -617,7 +595,6 @@ footer { position: relative; background-color: var(--dark-navy); color: #E0F7FA;
 .waves-container { position: absolute; top: -100px; left: 0; width: 100%; height: 100px; overflow: hidden; line-height: 0; z-index: 1; pointer-events: none; }
 .waves { width: 100%; height: 100%; }
 
-/* The SVG waves act as the transition from Light Sky Blue down to Deep Navy */
 .parallax > use { animation: move-forever 25s cubic-bezier(.55,.5,.45,.5) infinite; }
 .parallax > use:nth-child(1) { animation-delay: -2s; animation-duration: 7s; fill: rgba(0, 180, 216, 0.5); }
 .parallax > use:nth-child(2) { animation-delay: -3s; animation-duration: 10s; fill: rgba(0, 119, 182, 0.6); }
@@ -788,4 +765,49 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
 /* If you ever want to manually wave a paragraph, stagger it slightly */
 .scroll-reveal.visible p.wave-text {
     animation-delay: 0.5s;
+}
+
+/* =========================================
+   19. MOBILE SPACING & OVERLAP FIXES 
+   ========================================= */
+@media (max-width: 991px) {
+    /* Hero Sections (All Pages) - Prevent text from cramping the background */
+    .destinations-hero, .gallery-hero, .tours-hero, .contact-hero, .booking-hero {
+        padding: 160px 0 80px 0 !important; 
+    }
+    
+    /* Scale down giant titles slightly on mobile to save space */
+    .hero-title {
+        font-size: 3.5rem !important; 
+    }
+
+    /* Visual Scenes (Homepage) - Push text higher so it clears the images */
+    .trail-makers-bg, .dive-bg { 
+        padding-bottom: 480px !important; 
+    }
+    .sleep-bg { 
+        padding-bottom: 480px !important; 
+    }
+    
+    .scene-block { 
+        margin-bottom: 20px !important; 
+    }
+
+    /* Airplane Stats Section - Stop airplane from crashing into stat cards */
+    .stats-wrapper .d-flex.justify-content-center {
+        margin-top: 20px !important; 
+        padding-top: 30px;
+    }
+}
+
+/* Extra tight spacing for smaller phones (iPhone SE, etc.) */
+@media (max-width: 576px) {
+    .hero-title {
+        font-size: 2.8rem !important; 
+    }
+    
+    .trail-makers-bg, .dive-bg, .sleep-bg { 
+        padding-bottom: 400px !important; 
+        background-size: 100% auto !important;
+    }
 }
