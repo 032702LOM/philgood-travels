@@ -417,13 +417,13 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
    10. COMPONENTS & UTILITIES
    ========================================= */
 @keyframes floatAir {
-    0% { transform: translateY(0px); box-shadow: 0 10px 20px rgba(2, 62, 138, 0.05); }
-    50% { transform: translateY(-15px); box-shadow: 0 25px 45px rgba(2, 62, 138, 0.18); }
-    100% { transform: translateY(0px); box-shadow: 0 10px 20px rgba(2, 62, 138, 0.05); }
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+    100% { transform: translateY(0px); }
 }
 
 .stat-card { 
-    background-color: var(--card-bg); 
+    background-color: transparent !important; /* Makes the card body see-through */
     padding: 30px; 
     border-radius: 15px; 
     height: 100%; 
@@ -432,29 +432,42 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     justify-content: center; 
     align-items: center; 
     color: var(--dark-navy); 
-    border: 1px solid rgba(0, 119, 182, 0.1); 
+    border: none !important; /* Removes the outline */
+    box-shadow: none !important; /* Removes the shadow */
     animation: floatAir 6s ease-in-out infinite; 
-    transition: background-color 0.4s ease, border-color 0.4s ease; 
-    box-shadow: 0 10px 20px rgba(2, 62, 138, 0.05);
+    transition: transform 0.4s ease; 
 }
 
+/* Staggered floating animation */
 .stats-container .col-md-4:nth-child(1) .stat-card { animation-delay: 0s; }
 .stats-container .col-md-4:nth-child(2) .stat-card { animation-delay: 1.5s; }
 .stats-container .col-md-4:nth-child(3) .stat-card { animation-delay: 3s; }
 
-.stat-card:hover {
-    background-color: var(--primary-color) !important;
-    border-color: var(--primary-color) !important;
+/* Keep the icons and numbers sharp */
+.stat-card i { 
+    color: var(--accent-color); 
+    font-size: 2.5rem; 
+    margin-bottom: 15px; 
 }
 
-.stat-card i { color: var(--accent-color); font-size: 2.5rem; margin-bottom: 15px; transition: color 0.4s ease; }
-.stat-number { font-size: 3rem; margin-bottom: 5px; color: var(--dark-navy); transition: color 0.4s ease; }
-.stat-label { text-transform: uppercase; font-size: 0.9rem; font-weight: 700; letter-spacing: 1px; color: var(--text-grey); transition: color 0.4s ease; }
+.stat-number { 
+    font-size: 3rem; 
+    margin-bottom: 5px; 
+    color: var(--dark-navy); 
+    font-family: 'Anton', sans-serif !important;
+}
 
-.stat-card:hover i,
-.stat-card:hover .stat-number,
-.stat-card:hover .stat-label {
-    color: #ffffff !important;
+.stat-label { 
+    text-transform: uppercase; 
+    font-size: 0.9rem; 
+    font-weight: 700; 
+    letter-spacing: 1px; 
+    color: var(--text-grey); 
+}
+
+/* Optional: Slight scale up on hover instead of a color change */
+.stat-card:hover {
+    transform: scale(1.05) translateY(-15px) !important;
 }
 
 .testimonial-item { background-color: var(--card-bg); padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(2, 62, 138, 0.08); height: 100%; text-align: left; border: 1px solid rgba(0, 119, 182, 0.1); }
