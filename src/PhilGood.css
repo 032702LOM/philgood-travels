@@ -309,7 +309,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .scene-block { margin-bottom: 120px; }
 .scene-block:last-child { margin-bottom: 0; }
 
-/* ⚡ FIX: Force Scene Boxes to match background color perfectly */
+/* Force Scene Boxes to match background color perfectly */
 .scene-content {
     background-color: var(--bg-dark) !important;
     box-shadow: none !important;
@@ -319,19 +319,23 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .scene-title { font-size: 3rem; margin-bottom: 20px; color: var(--dark-navy); }
 .scene-text { color: var(--text-grey); font-size: 1.1rem; line-height: 1.8; margin-bottom: 25px; }
 
+/* Ensure backgrounds NEVER tile or repeat */
 .trail-makers-bg, .dive-bg, .sleep-bg {
     background-repeat: no-repeat !important;
 }
 
+/* ⚡ DESKTOP VIEW: Anchored perfectly to the right edge ⚡ */
 @media (min-width: 992px) {
-    .trail-makers-bg, .dive-bg { 
-        background-position: right center !important; 
-        background-size: 50% auto !important; 
+    /* Unify all 3 sections to sit cleanly on the right side */
+    .trail-makers-bg, .dive-bg, .sleep-bg {
+        background-position: right center !important;
+        background-size: 45% auto !important; 
     }
-    .sleep-bg { 
-        background-position: bottom left, bottom right, right bottom !important; 
-        background-size: 100% 100%, 100% 100%, 48% auto !important; 
-        background-repeat: no-repeat, no-repeat, no-repeat !important;
+
+    /* Force the cliff image to strictly hug the absolute right edge */
+    .trail-makers-bg {
+        background-position: right 0px center !important;
+        background-size: 55% auto !important; /* Slightly larger so the cliff connects to the screen edge */
     }
 }
 
