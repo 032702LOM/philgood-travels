@@ -615,24 +615,30 @@ footer { position: relative; background-color: var(--dark-navy); color: #E0F7FA;
 .platform-icon { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; color: white; }
 
 /* =========================================
-   14. ANIMATIONS & SCROLL REVEALS
+   14. ANIMATIONS & SCROLL REVEALS (SLOW GLIDE UP)
    ========================================= */
-.fade-in { animation: fadeIn 0.5s ease-in; }
+.fade-in { animation: fadeIn 0.8s ease-in; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes slideUpChat { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
+/* ⚡ THE SLOW GLIDE UP EFFECT ⚡ */
 .scroll-reveal { 
     opacity: 0; 
-    transform: translateY(40px); 
-    transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); 
+    transform: translateY(80px); /* Starts much lower for a dramatic glide */
+    transition: opacity 1.2s ease-out, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1); /* Slower, ultra-smooth floating effect */
+    will-change: opacity, transform; /* Tells the browser to use hardware acceleration to prevent lag */
 }
+
 .scroll-reveal.visible { 
     opacity: 1; 
-    transform: translateY(0); 
+    transform: translateY(0); /* Glides into its final resting place */
 }
-.delay-1 { transition-delay: 0.1s; }
-.delay-2 { transition-delay: 0.2s; }
-.delay-3 { transition-delay: 0.3s; }
+
+/* Staggered delays so rows of cards glide up one after the other */
+.delay-1 { transition-delay: 0.15s; }
+.delay-2 { transition-delay: 0.3s; }
+.delay-3 { transition-delay: 0.45s; }
+.delay-4 { transition-delay: 0.6s; }
 
 /* =========================================
    15. GLOBAL AQUA/TURQUOISE HOVER EFFECTS
