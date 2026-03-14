@@ -259,8 +259,10 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .fanned-layout-wrapper, .fanned-stack-container {
     position: relative; 
     width: 100%;
-    height: 600px;
-    margin: 0 auto 60px auto; 
+    /* INCREASED HEIGHT: Gives the cards plenty of room to scale up without bleeding out */
+    height: 700px;
+    /* INCREASED MARGIN: Pushes the "Explore All Tours" button down safely */
+    margin: 0 auto 80px auto; 
     perspective: 1200px;
 }
 
@@ -268,11 +270,12 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     position: absolute; 
     top: 50%; 
     left: 50%; 
-    margin-top: -225px; 
+    /* Pulled up slightly to stay perfectly centered in the new taller container */
+    margin-top: -260px; 
     margin-left: -160px; 
     width: 320px; 
     height: auto; 
-    min-height: 450px;
+    min-height: 480px;
     transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); 
     transform-style: preserve-3d;
 }
@@ -305,6 +308,14 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .scene-section { padding: 80px 0; position: relative; overflow: hidden; background-color: var(--bg-dark); }
 .scene-block { margin-bottom: 120px; }
 .scene-block:last-child { margin-bottom: 0; }
+
+/* ⚡ FIX: Force Scene Boxes to match background color perfectly */
+.scene-content {
+    background-color: var(--bg-dark) !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
 .scene-title { font-size: 3rem; margin-bottom: 20px; color: var(--dark-navy); }
 .scene-text { color: var(--text-grey); font-size: 1.1rem; line-height: 1.8; margin-bottom: 25px; }
 
@@ -752,13 +763,12 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
         padding-bottom: 350px !important; 
     }
     
-    /* Scene Text - Frosted glass backing for perfect legibility */
+    /* Scene Text - Perfectly matched to background on mobile */
     .scene-content {
-        background-color: rgba(255, 255, 255, 0.85) !important; 
-        padding: 30px !important;
-        border-radius: 16px;
+        background-color: var(--bg-dark) !important;
+        padding: 0 !important; /* Removes box effect */
         text-align: center;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        box-shadow: none !important;
     }
     
     .scene-block { margin-bottom: 40px !important; }
