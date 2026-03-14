@@ -759,18 +759,45 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
    19. MOBILE SPACING, STACKING & OVERLAP FIXES 
    ========================================= */
 @media (max-width: 991px) {
-    /* ... (Keep your hero and scene fixes at the top of this block) ... */
+    /* Hero Sections - Prevent text from cramping the background */
+    .destinations-hero, .gallery-hero, .tours-hero, .contact-hero, .booking-hero {
+        padding: 160px 0 80px 0 !important; 
+    }
+    
+    .hero-title { font-size: 3.5rem !important; }
 
-    /* ⚡ FANNED STACK FIX: Force a pure vertical stack ⚡ */
-    .fanned-layout-wrapper, 
-    .fanned-stack-container {
+    /* Scene Images - Force to bottom so they don't cover text */
+    .trail-makers-bg, .dive-bg, .sleep-bg {
+        background-position: bottom center !important;
+        background-size: 80% auto !important; 
+        padding-bottom: 350px !important; 
+    }
+    
+    /* Scene Text - Perfectly matched to background on mobile */
+    .scene-content {
+        background-color: var(--bg-dark) !important;
+        padding: 0 !important; /* Removes box effect */
+        text-align: center;
+        box-shadow: none !important;
+    }
+    
+    .scene-block { margin-bottom: 40px !important; }
+
+    /* Airplane Stats Section - Stop airplane from crashing into stat cards */
+    .stats-wrapper .d-flex.justify-content-center {
+        margin-top: 20px !important; 
+        padding-top: 30px;
+    }
+
+    /* ⚡ FANNED STACK FIX: Convert 3D desktop fan to a clean vertical stack ⚡ */
+    .fanned-layout-wrapper, .fanned-stack-container {
         height: auto !important;
         min-height: auto !important;
         display: flex !important;
-        flex-direction: column !important; /* Forces vertical stacking */
+        flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
-        gap: 40px !important; /* Space between stacked cards */
+        gap: 30px !important;
         overflow: visible !important;
         padding: 10px 15px !important;
         margin-top: 20px !important;
@@ -778,32 +805,23 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
         perspective: none !important;
     }
 
-    /* ⚡ KILL ALL 3D DESKTOP POSITIONS ON MOBILE ⚡ */
-    .fanned-card, 
-    .fanned-card-wrapper,
-    .fanned-card-wrapper.pos-center,
-    .fanned-card-wrapper.pos-left,
-    .fanned-card-wrapper.pos-right,
-    .fanned-card-wrapper.pos-far-left,
-    .fanned-card-wrapper.pos-far-right,
-    .fanned-card-wrapper.pos-hidden {
+    /* Allow the cards to stretch automatically based on text height */
+    .fanned-card, .fanned-card-wrapper {
         position: relative !important;
         top: auto !important;
         left: auto !important;
         right: auto !important;
         margin: 0 !important;
         width: 100% !important;
-        max-width: 400px !important; /* Keeps cards a nice size on phones */
+        max-width: 400px !important; 
         height: auto !important;
-        transform: none !important; /* Destroys the 3D fan effect */
-        opacity: 1 !important; /* Makes sure all 6 cards are visible */
+        transform: none !important; 
+        opacity: 1 !important;
         filter: none !important;
-        pointer-events: auto !important; /* Makes sure all cards are clickable */
-        z-index: 1 !important;
+        pointer-events: auto !important;
     }
 
-    .fanned-card .card, 
-    .fanned-card-wrapper .card {
+    .fanned-card .card, .fanned-card-wrapper .card {
         height: auto !important; 
         display: flex !important;
         flex-direction: column !important;
@@ -811,6 +829,20 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
 
     /* Hide the 3D navigation arrows on mobile */
     .stack-nav-btn { display: none !important; }
+}
+
+/* Extra tight spacing for smaller phones */
+@media (max-width: 576px) {
+    .hero-title { font-size: 2.8rem !important; }
+    
+    .trail-makers-bg, .dive-bg, .sleep-bg { 
+        background-size: 100% auto !important; 
+        padding-bottom: 300px !important; 
+    }
+
+    .fanned-card, .fanned-card-wrapper {
+        max-width: 100% !important;
+    }
 }
 /* =========================================
    FIX: READABILITY ON LIGHT BACKGROUNDS
