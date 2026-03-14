@@ -35,8 +35,8 @@ const Home = () => {
   const onTouchEndDest = () => {
     if (!touchStart || !touchEnd) return;
     const distance = touchStart - touchEnd;
-    if (distance > minSwipeDistance) rotateStack('dest', 'next'); // Swipe Left
-    if (distance < -minSwipeDistance) rotateStack('dest', 'prev'); // Swipe Right
+    if (distance > minSwipeDistance) rotateStack('dest', 'next'); 
+    if (distance < -minSwipeDistance) rotateStack('dest', 'prev'); 
   };
 
   const onTouchEndPkg = () => {
@@ -45,7 +45,6 @@ const Home = () => {
     if (distance > minSwipeDistance) rotateStack('pkg', 'next'); 
     if (distance < -minSwipeDistance) rotateStack('pkg', 'prev'); 
   };
-  // --------------------------
 
   const rotateStack = (type, direction) => {
     const setFunction = type === 'dest' ? setDestPositions : setPkgPositions;
@@ -127,7 +126,6 @@ const Home = () => {
                     }}>
                         <div className="hero-overlay" style={{ background: 'transparent' }}>
                             <div className="container scroll-reveal visible d-flex flex-column align-items-center justify-content-center h-100">
-                                {/* ⚡ d-none d-lg-block hides this entirely on mobile! ⚡ */}
                                 <div className="hero-text-box text-center d-none d-lg-block">
                                     <p className="hero-subtitle text-navy fw-bold" style={{ textShadow: '0 0 10px rgba(255,255,255,0.8)', fontSize: '1.2rem' }}>
                                         Relax on pristine white sand beaches
@@ -201,7 +199,7 @@ const Home = () => {
             </div>
         </div>
 
-        {/* ⚡ SCENE 1: MAN ON CLIFF (NOW A BACKGROUND VIDEO) ⚡ */}
+        {/* ⚡ SCENE 1: MAN ON CLIFF ⚡ */}
         <section className="scene-section trail-makers-bg" style={{ 
             backgroundColor: 'var(--bg-dark)'
         }}>
@@ -239,12 +237,13 @@ const Home = () => {
                     <p className="section-desc text-grey">Discover the key regions and landmarks the Philippines has to offer.</p>
                 </div>
                 
-                {/* ⚡ ADDED SWIPE HANDLERS HERE ⚡ */}
+                {/* ⚡ INLINE STYLE FIX: Enforcing a massive 600px height directly in the HTML ⚡ */}
                 <div 
                     className="fanned-stack-container scroll-reveal visible mt-4"
                     onTouchStart={onTouchStart} 
                     onTouchMove={onTouchMove} 
                     onTouchEnd={onTouchEndDest}
+                    style={{ height: '600px', minHeight: '600px', marginBottom: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}
                 >
                     <button className="stack-nav-btn prev-btn" onClick={() => rotateStack('dest', 'prev')}><i className="fa-solid fa-chevron-left"></i></button>
                     <button className="stack-nav-btn next-btn" onClick={() => rotateStack('dest', 'next')}><i className="fa-solid fa-chevron-right"></i></button>
@@ -275,9 +274,11 @@ const Home = () => {
                         </div>
                     ))}
                 </div>
-                <div className="text-center scroll-reveal visible" style={{ marginTop: '100px', position: 'relative', zIndex: 20 }}>
-    <Link to="/destinations" className="btn-outline-custom">View All Destinations</Link>
-</div>
+
+                {/* ⚡ INLINE STYLE FIX: Physically shoving the button down 100 pixels ⚡ */}
+                <div className="text-center scroll-reveal visible" style={{ marginTop: '100px', position: 'relative', zIndex: 50 }}>
+                    <Link to="/destinations" className="btn-outline-custom">View All Destinations</Link>
+                </div>
             </div>
         </section>
 
@@ -312,12 +313,13 @@ const Home = () => {
                     <h2 className="section-title text-navy wave-text">{t('top_pkg', 'Top Packages That Fit You')}</h2>
                 </div>
                 
-                {/* ⚡ ADDED SWIPE HANDLERS HERE ⚡ */}
+                {/* ⚡ INLINE STYLE FIX: Enforcing a massive 600px height directly in the HTML ⚡ */}
                 <div 
                     className="fanned-stack-container scroll-reveal visible mt-4"
                     onTouchStart={onTouchStart} 
                     onTouchMove={onTouchMove} 
                     onTouchEnd={onTouchEndPkg}
+                    style={{ height: '600px', minHeight: '600px', marginBottom: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}
                 >
                     <button className="stack-nav-btn prev-btn" onClick={() => rotateStack('pkg', 'prev')}><i className="fa-solid fa-chevron-left"></i></button>
                     <button className="stack-nav-btn next-btn" onClick={() => rotateStack('pkg', 'next')}><i className="fa-solid fa-chevron-right"></i></button>
@@ -339,9 +341,11 @@ const Home = () => {
                         </div>
                     ))}
                 </div>
-               <div className="text-center scroll-reveal visible" style={{ marginTop: '100px', position: 'relative', zIndex: 20 }}>
-    <Link to="/tours" className="hero-btn">Explore All Tours</Link>
-</div>
+
+                {/* ⚡ INLINE STYLE FIX: Physically shoving the button down 100 pixels ⚡ */}
+                <div className="text-center scroll-reveal visible" style={{ marginTop: '100px', position: 'relative', zIndex: 50 }}>
+                    <Link to="/tours" className="hero-btn">Explore All Tours</Link>
+                </div>
             </div>
         </section>
 
