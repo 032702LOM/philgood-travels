@@ -6,7 +6,7 @@
 export const regions = [
   { id: 'Palawan', name: 'Palawan', image: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/7d/39/5f/caption.jpg?w=800&h=800&s=1', desc: 'The last frontier.', typeBadge: 'Parks, Beaches', locationLabel: 'MIMAROPA' },
   { id: 'Bohol', name: 'Bohol', image: 'https://www.tripsavvy.com/thmb/ENcqAjtXtH3XNV3eIg4MKfSyQ6A=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-135558476-8533a33260d9436c9bc432ce630ec732.jpg', desc: 'Nature and heritage.', typeBadge: 'Mountains, Beaches', locationLabel: 'Central Visayas' },
-  { id: 'Boracay', name: 'Aklan (Boracay)', image: 'https://www.philippinebeaches.org/wp-content/uploads/2024/05/Boracay-White-Beach.jpg', desc: 'World-famous powdery sands.', typeBadge: 'Beaches, Resorts', locationLabel: 'Western Visayas' },
+  { id: 'Aklan', name: 'Aklan (Boracay)', image: 'https://www.philippinebeaches.org/wp-content/uploads/2024/05/Boracay-White-Beach.jpg', desc: 'World-famous powdery sands.', typeBadge: 'Beaches, Resorts', locationLabel: 'Western Visayas' },
   { id: 'Cebu', name: 'Cebu', image: 'https://www.agoda.com/wp-content/uploads/2023/12/Featured-image-Cebu-1244x700.jpg', desc: 'Queen City of the South.', typeBadge: 'Beaches, Mountains', locationLabel: 'Central Visayas' },
   { id: 'Manila', name: 'Manila', image: 'https://www.travel-palawan.com/wp-content/uploads/2023/04/Manila-Intramuros-Kalesa-city-tour-Philippines.jpeg', desc: 'Historic core of the capital.', typeBadge: 'Cities, Resort Hotels', locationLabel: 'NCR' },
   { id: 'Banaue', name: 'Ifugao (Banaue)', image: 'https://cdn-v2.theculturetrip.com/1220x680/wp-content/uploads/2018/02/shutterstock_634025597-e1730712247519.webp', desc: 'The eighth wonder of the world.', typeBadge: 'Mountains, Culture', locationLabel: 'North Central Luzon' }
@@ -47,17 +47,17 @@ export const allPlaces = [
         payment: ['Pay at the hotel', 'Pay now'], travelStyle: ['Mountains', 'Hiking/Mountaineering', 'Camping', 'Resort Hotel'], roomOffers: ['Breakfast included', 'Outside food delivery allowed', 'Bottle of wine', 'Recreation area access with conditions'], facilities: ['Swimming pool', 'Internet', 'Car park', 'Restaurants', 'Family/child friendly', 'Front desk [24-hour]', 'Smoking area'], family: 'Kids stay for free', distance: '>10 km to center', bed: ['Queen', 'Double', 'Single/twin'], bedrooms: ['1 bedroom/studio']
     },
     {
-        id: 'Aklan-A', region: 'Boracay', name: 'Shangri-La Boracay', type: 'Resort Hotel / Beach', price: 22000,
+        id: 'Aklan-A', region: 'Aklan', name: 'Shangri-La Boracay', type: 'Resort Hotel / Beach', price: 22000,
         img: 'https://sitecore-cd.shangri-la.com/-/media/Shangri-La/boracay_boracayresort/about/2023_SLBO_Explore-Boracay.jpg', panorama: 'https://pannellum.org/images/alma.jpg', lat: 11.9804, lon: 121.9126, 
         payment: ['Pay at the hotel', 'Pay now'], travelStyle: ['Resort Hotel'], roomOffers: ['Breakfast included', 'Airport transfer', 'Espresso machine with pods', 'Dinner included', 'Bottle of wine'], facilities: ['Swimming pool', 'Gym/fitness', 'Spa/sauna', 'Family/child friendly', 'Restaurants', 'Business facilities', 'Front desk [24-hour]'], family: 'Kids stay for free', distance: '5-10 km to center', bed: ['King', 'Queen', 'Single/twin'], bedrooms: ['1 bedroom/studio', '2 bedrooms', '3+ bedrooms'], beachAccess: 'Private beach'
     },
     {
-        id: 'Aklan-B', region: 'Boracay', name: 'Movenpick Resort & Spa', type: 'Resort Hotel / Beach', price: 14500,
+        id: 'Aklan-B', region: 'Aklan', name: 'Movenpick Resort & Spa', type: 'Resort Hotel / Beach', price: 14500,
         img: 'https://static51.com-hotel.com/uploads/hotel/79977/photo/movenpick-resort-spa-jimbaran-bali_15833146371.jpg', panorama: 'https://pannellum.org/images/alma.jpg', lat: 11.9781, lon: 121.9137, 
         payment: ['Free cancellation', 'Pay at the hotel', 'Pay now'], travelStyle: ['Resort Hotel'], roomOffers: ['Breakfast included', 'Airport transfer', 'Espresso machine with pods', 'Bottle of wine', 'Vegetarian'], facilities: ['Swimming pool', 'Internet', 'Gym/fitness', 'Spa/sauna', 'Restaurants', 'Front desk [24-hour]'], family: 'Kids stay for free', distance: '2-5 km to center', bed: ['King', 'Single/twin'], bedrooms: ['1 bedroom/studio', '2 bedrooms'], beachAccess: 'Private beach'
     },
     {
-        id: 'Aklan-C', region: 'Boracay', name: 'Discovery Shores', type: 'Resort Hotel / Beach', price: 18000,
+        id: 'Aklan-C', region: 'Aklan', name: 'Discovery Shores', type: 'Resort Hotel / Beach', price: 18000,
         img: 'https://www.hotelscombined.com/himg/2a/8d/29/ice-188879268-65954305_3XL-177763.jpg', panorama: 'https://pannellum.org/images/alma.jpg', lat: 11.9664, lon: 121.9234, 
         payment: ['Pay at the hotel', 'Book now, pay later'], travelStyle: ['Resort Hotel'], roomOffers: ['Breakfast included', 'Airport transfer', 'Espresso machine with pods', 'Vegan', 'Early check-in'], facilities: ['Swimming pool', 'Internet', 'Gym/fitness', 'Spa/sauna', 'Restaurants', 'Family/child friendly'], family: 'Kids stay for free', distance: '<2 km to center', bed: ['Queen', 'Double', 'King'], bedrooms: ['1 bedroom/studio', '2 bedrooms'], beachAccess: 'Public beach'
     },
