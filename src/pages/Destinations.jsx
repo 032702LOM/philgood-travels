@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { allPlaces, regions } from '../data/placesData';
 import { usePreferences } from '../context/PreferencesContext';
 
 const Destinations = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { t, formatPrice } = usePreferences();
 
   const [view, setView] = useState('main'); 
@@ -32,7 +33,11 @@ const Destinations = () => {
     { title: 'Beach Access', field: 'beachAccess', options: ['Public beach', 'Private beach'] }
   ];
 
-  const hotelsForDropdown = selectedRegion === 'All' ? allPlaces : allPlaces.filter(p => p.region === selectedRegion);
+  // Safely grab hotel names for the Accommodation dropdown based on the Region Dropdown
+  const hotelsForDropdown = selectedRegion === 'All' 
+    ? allPlaces 
+    : allPlaces.filter(p => p.region.toLowerCase().trim() === selectedRegion.toLowerCase().trim());
+
   const isDefaultView = selectedRegion === 'All' && selectedHotel === '' && searchKeyword === '' && activeCheckboxes.length === 0;
 
   // --- MOBILE SWIPE LOGIC ---
@@ -52,15 +57,27 @@ const Destinations = () => {
     if (distance < -minSwipeDistance) rotateRegionStack('prev'); 
   };
 
+  // ⚡ URL TRANSLATOR: Instantly converts old Boracay/Banaue links to Aklan/Ifugao
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const searchParam = params.get('search');
     const regionParam = params.get('region'); 
-    if (searchParam) { setSearchKeyword(searchParam); setSelectedRegion('All'); } 
+    
+    if (searchParam) { 
+      setSearchKeyword(searchParam); 
+      setSelectedRegion('All'); 
+    } 
+    
     if (regionParam) {
-      const valueMap = { 'Banaue': 'Ifugao', 'Boracay': 'Boracay' };
-      setSelectedRegion(valueMap[regionParam] || regionParam);
-      setSearchKeyword(''); setSelectedHotel(''); setActiveCheckboxes([]);
+      let mappedRegion = regionParam;
+      // Force exact matches so the filter doesn't fail
+      if (regionParam.toLowerCase() === 'boracay') mappedRegion = 'Aklan';
+      if (regionParam.toLowerCase() === 'banaue') mappedRegion = 'Ifugao';
+      
+      setSelectedRegion(mappedRegion);
+      setSearchKeyword(''); 
+      setSelectedHotel(''); 
+      setActiveCheckboxes([]);
       window.scrollTo(0, 0); 
     }
   }, [location.search]);
@@ -73,10 +90,18 @@ const Destinations = () => {
     });
   };
 
+  // ⚡ BULLETPROOF FILTER: Ignores spaces and capitalization
   const baseFilteredPlaces = allPlaces.filter(p => {
     let match = true;
-    if (selectedRegion !== 'All' && p.region !== selectedRegion) match = false;
+    
+    if (selectedRegion !== 'All') {
+        const safePlaceRegion = p.region.toLowerCase().trim();
+        const safeSelectedRegion = selectedRegion.toLowerCase().trim();
+        if (safePlaceRegion !== safeSelectedRegion) match = false;
+    }
+    
     if (selectedHotel !== '' && p.id !== selectedHotel) match = false;
+    
     if (searchKeyword) {
       const lowerKw = searchKeyword.toLowerCase();
       match = match && (p.name.toLowerCase().includes(lowerKw) || p.type.toLowerCase().includes(lowerKw) || p.region.toLowerCase().includes(lowerKw) || (p.facilities && p.facilities.some(f => f.toLowerCase().includes(lowerKw))));
@@ -291,12 +316,19 @@ const Destinations = () => {
                                     <span className="text-white-50 small fw-bold">6 Major Regions</span>
                                 </div>
                                 
-                                {/* ⚡ EXACT ORIGINAL HTML FANNED STACK ⚡ */}
                                 <div className="fanned-stack-container mt-4" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEndDest}>
                                     <button className="stack-nav-btn prev-btn shadow" onClick={() => rotateRegionStack('prev')}><i className="fa-solid fa-chevron-left"></i></button>
                                     <button className="stack-nav-btn next-btn shadow" onClick={() => rotateRegionStack('next')}><i className="fa-solid fa-chevron-right"></i></button>
                                     {regions.map((region, index) => (
-                                        <div key={region.id} className={`fanned-card-wrapper ${regionPositions[index]}`} onClick={() => { if(window.innerWidth <= 991 || regionPositions[index] === 'pos-center') { const valueMap = { 'Manila': 'Manila', 'Cebu': 'Cebu', 'Palawan': 'Palawan', 'Bohol': 'Bohol', 'Boracay': 'Aklan', 'Banaue': 'Ifugao' }; setSelectedRegion(valueMap[region.id] || region.id); window.scrollTo({ top: 400, behavior: 'smooth' }); } else if(regionPositions[index].includes('right')) { rotateRegionStack('next'); } else { rotateRegionStack('prev'); } }}>
+                                        <div key={region.id} className={`fanned-card-wrapper ${regionPositions[index]}`} onClick={() => { 
+                                            if(window.innerWidth <= 991 || regionPositions[index] === 'pos-center') { 
+                                                let rId = region.id;
+                                                if (rId.toLowerCase() === 'boracay') rId = 'Aklan';
+                                                if (rId.toLowerCase() === 'banaue') rId = 'Ifugao';
+                                                setSelectedRegion(rId); 
+                                                window.scrollTo({ top: 400, behavior: 'smooth' }); 
+                                            } else if(regionPositions[index].includes('right')) { rotateRegionStack('next'); } else { rotateRegionStack('prev'); } 
+                                        }}>
                                             
                                             <div className="card">
                                                 <div className="card-img-wrapper">
@@ -320,7 +352,11 @@ const Destinations = () => {
                         ) : (
                             <div className="fade-in">
                                 <div className="d-flex justify-content-between align-items-center mb-3">
-                                    <h4 className="text-white font-montserrat fw-bold mb-0">{selectedRegion === 'All' ? 'Search Results' : (selectedRegion === 'Boracay' || selectedRegion === 'Aklan' ? 'Aklan (Boracay)' : (selectedRegion === 'Ifugao' || selectedRegion === 'Banaue' ? 'Ifugao (Banaue)' : selectedRegion))}</h4>
+                                    <h4 className="text-white font-montserrat fw-bold mb-0">
+                                        {selectedRegion === 'All' ? 'Search Results' : 
+                                         (selectedRegion.toLowerCase() === 'aklan' || selectedRegion.toLowerCase() === 'boracay' ? 'Aklan (Boracay)' : 
+                                         (selectedRegion.toLowerCase() === 'ifugao' || selectedRegion.toLowerCase() === 'banaue' ? 'Ifugao (Banaue)' : selectedRegion))}
+                                    </h4>
                                     <span className="text-white-50 small" id="destCount">{filteredPlaces.length} destination{filteredPlaces.length !== 1 ? 's' : ''} found</span>
                                 </div>
                                 <div className="row g-4" id="cardsContainer">
@@ -334,7 +370,6 @@ const Destinations = () => {
                                         filteredPlaces.map((place) => (
                                             <div key={place.id} className="col-md-6 destination-card scroll-reveal visible">
                                                 
-                                                {/* ⚡ EXACT ORIGINAL HTML CARD ⚡ */}
                                                 <div className="card h-100">
                                                     <div className="card-img-wrapper">
                                                         <span className="card-badge">{place.type ? place.type.split('/')[0].trim() : 'Place'}</span>

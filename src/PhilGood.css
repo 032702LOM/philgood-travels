@@ -824,3 +824,44 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
         max-width: 100% !important;
     }
 }
+/* =========================================
+   FIX: READABILITY ON LIGHT BACKGROUNDS
+   Automatically converts hardcoded white text 
+   to dark colors so it is readable on white cards.
+   ========================================= */
+
+/* 1. Globally invert white text to dark navy/grey */
+.text-white {
+    color: var(--dark-navy) !important;
+}
+
+.text-white-50 {
+    color: var(--text-grey) !important;
+}
+
+/* 2. Protect areas that legitimately have dark backgrounds */
+.hero-overlay .text-white,
+.destinations-hero .text-white,
+.tours-hero .text-white,
+.gallery-hero .text-white,
+.contact-hero .text-white,
+.booking-hero .text-white,
+.detail-hero .text-white,
+footer .text-white,
+.chat-popup-header .text-white,
+.platform-icon .text-white,
+[style*="background-color: #021625"] .text-white,
+[style*="background-color: rgb(2, 22, 37)"] .text-white,
+[style*="background-color: #023E8A"] .text-white {
+    color: #FFFFFF !important;
+}
+
+/* 3. Keep the 50% opacity text looking slightly faded in dark areas */
+.detail-hero .text-white-50,
+footer .text-white-50,
+.chat-popup-header .text-white-50,
+[style*="background-color: #021625"] .text-white-50,
+[style*="background-color: rgb(2, 22, 37)"] .text-white-50,
+[style*="background-color: #023E8A"] .text-white-50 {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
