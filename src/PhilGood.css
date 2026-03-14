@@ -829,3 +829,51 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
         background-size: 100% auto !important;
     }
 }
+/* =========================================
+   MINIMAL FIX: PREVENT TEXT OVERLAP ON CARDS
+   ========================================= */
+
+/* 1. Limit the text lines so they stay uniform */
+.card-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.card-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* 2. Fix the height math on tablets/mobile */
+@media (max-width: 991px) {
+    /* Allow the card wrapper to stretch dynamically instead of being locked to 420px */
+    .fanned-card, 
+    .fanned-card-wrapper {
+        height: auto !important; 
+        min-height: 480px !important;
+    }
+    
+    /* Shrink the image slightly on mobile to give text room to breathe */
+    .card-img-wrapper {
+        height: 220px !important; 
+        min-height: 220px !important;
+    }
+}
+
+/* 3. Fix the extreme shrink on small phones */
+@media (max-width: 576px) {
+    .fanned-card, 
+    .fanned-card-wrapper {
+        height: auto !important;
+        min-height: 480px !important;
+    }
+    
+    .card-img-wrapper {
+        height: 200px !important;
+        min-height: 200px !important;
+    }
+}
