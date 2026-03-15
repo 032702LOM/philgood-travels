@@ -103,8 +103,8 @@ export const PreferencesProvider = ({ children }) => {
     en: {
       nav_home: "Home", nav_dest: "Destinations", nav_tours: "Featured Tours", nav_gallery: "Gallery", nav_connect: "Connect", nav_book: "BOOK NOW",
       book_now: "Book Now", view_details: "View Details", select: "Select", per_person: "per person", total: "Total", confirm: "Confirm Booking",
-      pop_dest: "Most Popular Destinations", top_pkg: "Top Packages That Fit You", calc_price: "CALCULATE TOTAL PRICE", hero_island: "ISLAND PARADISE", 
-      hero_adv: "ADVENTURE AWAITS", hero_trail: "FIND YOUR TRAIL", dest_title: "FIND YOUR PLACE", tours_title: "TOUR PACKAGES", gal_title: "VISUAL JOURNEY", conn_title: "GET IN TOUCH", price_summary: "Price Summary"
+      pop_dest: "Most Popular Destinations", top_pkg: "Top Packages That Fit You", calc_price: "CALCULATE TOTAL PRICE", hero_island: "Island Paradise", 
+      hero_adv: "Adventure Awaits", hero_trail: "Find Your Trail", dest_title: "Find Your Place", tours_title: "Tour Packages", gal_title: "Visual Journey", conn_title: "Let us Connect", price_summary: "Price Summary"
     },
     es: {
       nav_home: "Inicio", nav_dest: "Destinos", nav_tours: "Tours Destacados", nav_gallery: "Galería", nav_connect: "Conectar", nav_book: "RESERVAR",
