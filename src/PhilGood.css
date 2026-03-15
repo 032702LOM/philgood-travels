@@ -101,8 +101,8 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 
 /* Logo Enlarged State on Scroll */
 .navbar.scrolled .navbar-logo-img { 
-    height: 75px; 
-    transform: scale(1.05); 
+    height: 95px; 
+    transform: scale(1.1); 
 }
 
 /* Navigation Links */
@@ -143,7 +143,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .social-nav-link:hover { color: var(--primary-color); transform: translateY(-3px); opacity: 1; }
 
 @media (max-width: 991px) {
-    .navbar.scrolled .navbar-logo-img { height: 60px; }
+    .navbar.scrolled .navbar-logo-img { height: 80px; }
     .navbar-collapse { background-color: var(--primary-dark); padding: 20px; margin-top: 10px; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
     .navbar-socials { border-left: none; padding-left: 0; margin-left: 0; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); justify-content: center; }
 }
