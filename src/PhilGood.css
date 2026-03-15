@@ -927,3 +927,25 @@ footer .text-white-50,
 [style*="background-color: #023E8A"] .text-white-50 {
     color: rgba(255, 255, 255, 0.7) !important;
 }
+/* =========================================
+   TOP NAV CUSTOM COLORS & BUTTON FIXES
+   ========================================= */
+
+/* 1. Make PHP, World Icon, and EN pure white */
+.text-pure-white,
+.text-pure-white i {
+    color: #FFFFFF !important;
+}
+
+/* 2. Make LOGIN and SIGN UP orange coral */
+.text-coral {
+    color: #FF7F50 !important; 
+}
+
+/* 3. Remove the line/border around SIGN UP */
+.no-border-btn {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
+}
