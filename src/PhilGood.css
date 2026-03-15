@@ -170,8 +170,14 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 
 /* Inner Page Heroes */
 .destinations-hero, .gallery-hero, .tours-hero, .contact-hero, .booking-hero {
-    background-size: cover; background-position: center 30%;
-    padding: 130px 0 50px 0; margin-top: 0;
+    background-size: cover; 
+    background-position: center center;
+    height: 90vh; /* Makes them fill most of the screen */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 0;
+    padding: 0;
 }
 
 /* ⚡ Removed the smokey gradients from all inner pages, leaving just the clear HD images ⚡ */
@@ -786,8 +792,9 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
    ========================================= */
 @media (max-width: 991px) {
     /* Hero Sections - Prevent text from cramping the background */
-    .destinations-hero, .gallery-hero, .tours-hero, .contact-hero, .booking-hero {
-        padding: 160px 0 80px 0 !important; 
+   .destinations-hero, .gallery-hero, .tours-hero, .contact-hero, .booking-hero {
+        padding: 80px 0 0 0 !important; /* Just enough to clear the top navbar */
+        justify-content: center !important;
     }
     
     .hero-title { font-size: 3.5rem !important; }
@@ -972,4 +979,22 @@ footer .text-white-50,
     outline: none !important;
     box-shadow: none !important;
     background-color: transparent !important;
+}
+/* =========================================
+   21. FIX: MOBILE CAROUSEL & HERO IMAGE SCALING
+   Forces background images with text to fit 
+   entirely on screen without getting chopped.
+   ========================================= */
+@media (max-width: 991px) {
+    .carousel-item,
+    .destinations-hero, 
+    .gallery-hero, 
+    .tours-hero, 
+    .contact-hero, 
+    .booking-hero {
+        background-size: contain !important;
+        background-position: center center !important;
+        background-repeat: no-repeat !important;
+        height: 55vh !important; 
+    }
 }
