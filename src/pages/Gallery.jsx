@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { usePreferences } from '../context/PreferencesContext';
 
+// 1. IMPORT YOUR LOCAL VIDEO HERE
+// Make sure the file is actually in src/assets/video/
+import galleryVideo from '../assets/video/gallery-bg.mp4'; 
+
 // ==========================================
 // GALLERY DATA WITH CUSTOM COVERS
 // ==========================================
@@ -64,7 +68,7 @@ const galleryData = [
         ]
       },
       { 
-        id: 'bohol-loboc', name: 'Loboc River', cover: 'https://gttp.images.tshiftcdn.com/356733/x/0/loboc-river-cruise-in-bohol-island.jpg',
+        id: 'bohol-loboc', name: 'Loboc River', cover: 'https://tshirtcdn.com/356733/x/0/loboc-river-cruise-in-bohol-island.jpg',
         images: [
           { id: 'lo-1', title: 'River Cruise', url: 'https://images.unsplash.com/photo-1579625197446-3b8c000acfac?q=80&w=1000&auto=format&fit=crop' },
           { id: 'lo-2', title: 'Jungle Canopy', url: 'https://images.unsplash.com/photo-1625505826533-5c80aca7d157?q=80&w=1000&auto=format&fit=crop' },
@@ -79,7 +83,7 @@ const galleryData = [
     id: 'Boracay', name: 'Boracay (Aklan)', cover: 'https://www.philippinebeaches.org/wp-content/uploads/2024/05/Boracay-White-Beach.jpg', 
     subcards: [
       { 
-        id: 'boracay-white', name: 'White Beach', cover: 'https://gttp.images.tshiftcdn.com/254251/x/0/guide-to-white-beach-in-boracay-island-activities-station-1-hotels-best-time-to-go-21.jpg?auto=compress%2Cformat&ch=Width%2CDPR&dpr=1&ixlib=php-3.3.0&w=883',
+        id: 'boracay-white', name: 'White Beach', cover: 'https://tshiftcdn.com/254251/x/0/guide-to-white-beach-in-boracay-island-activities-station-1-hotels-best-time-to-go-21.jpg?auto=compress%2Cformat&ch=Width%2CDPR&dpr=1&ixlib=php-3.3.0&w=883',
         images: [
           { id: 'wb-1', title: 'Station 1 Sand', url: 'https://images.unsplash.com/photo-1656521161419-ac6889a753f1?q=80&w=1000&auto=format&fit=crop' },
           { id: 'wb-2', title: 'Paraw Sailing', url: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1000&auto=format&fit=crop' },
@@ -99,7 +103,7 @@ const galleryData = [
         ]
       },
       { 
-        id: 'boracay-diniwid', name: 'Diniwid', cover: 'https://gttp.images.tshiftcdn.com/222327/x/0/15-best-tourist-spots-in-the-philippines-3.jpg?auto=compress%2Cformat&ch=Width%2CDPR&dpr=1&ixlib=php-3.3.0&w=883',
+        id: 'boracay-diniwid', name: 'Diniwid', cover: 'https://tshiftcdn.com/222327/x/0/15-best-tourist-spots-in-the-philippines-3.jpg?auto=compress%2Cformat&ch=Width%2CDPR&dpr=1&ixlib=php-3.3.0&w=883',
         images: [
           { id: 'dw-1', title: 'Cliff Cove', url: 'https://images.unsplash.com/photo-1610411894902-602dc85208f8?q=80&w=1000&auto=format&fit=crop' },
           { id: 'dw-2', title: 'Hidden Beach', url: 'https://images.unsplash.com/photo-1515444743217-1a4cd2a25df5?q=80&w=1000&auto=format&fit=crop' },
@@ -114,7 +118,7 @@ const galleryData = [
     id: 'Cebu', name: 'Cebu', cover: 'https://www.agoda.com/wp-content/uploads/2023/12/Featured-image-Cebu-1244x700.jpg', 
     subcards: [
       { 
-        id: 'cebu-moalboal', name: 'Moalboal', cover: 'https://gttp.images.tshiftcdn.com/224585/x/0/best-travel-guide-to-moalboal-town-on-cebu-island-everything-you-need-to-know-19.jpg?auto=compress%2Cformat&ch=Width%2CDPR&dpr=1&ixlib=php-3.3.0&w=883',
+        id: 'cebu-moalboal', name: 'Moalboal', cover: 'https://tshiftcdn.com/224585/x/0/best-travel-guide-to-moalboal-town-on-cebu-island-everything-you-need-to-know-19.jpg?auto=compress%2Cformat&ch=Width%2CDPR&dpr=1&ixlib=php-3.3.0&w=883',
         images: [
           { id: 'mb-1', title: 'Sardine Run', url: 'https://images.unsplash.com/photo-1573551089778-46a7abc39d9f?q=80&w=1000&auto=format&fit=crop' },
           { id: 'mb-2', title: 'Coral Reefs', url: 'https://images.unsplash.com/photo-1541940989-63309a6fb5e1?q=80&w=1000&auto=format&fit=crop' },
@@ -124,7 +128,7 @@ const galleryData = [
         ]
       },
       { 
-        id: 'cebu-oslob', name: 'Oslob', cover: 'https://gttp.images.tshiftcdn.com/456760/x/0/oslob-cebu.jpg',
+        id: 'cebu-oslob', name: 'Oslob', cover: 'https://tshiftcdn.com/456760/x/0/oslob-cebu.jpg',
         images: [
           { id: 'os-1', title: 'Whale Sharks', url: 'https://images.unsplash.com/photo-1742965635343-d8949a669935?q=80&w=1000&auto=format&fit=crop' },
           { id: 'os-2', title: 'Kawasan Falls', url: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=1000&auto=format&fit=crop' },
@@ -134,7 +138,7 @@ const galleryData = [
         ]
       },
       { 
-        id: 'cebu-bantayan', name: 'Bantayan Island', cover: 'https://gttp.images.tshiftcdn.com/479755/x/0/travel-guide-to-bantayan-island-in-cebu-province-everything-you-need-to-know-3.jpg?auto=compress%2Cformat&ch=Width%2CDPR&dpr=1&ixlib=php-3.3.0&w=883',
+        id: 'cebu-bantayan', name: 'Bantayan Island', cover: 'https://tshiftcdn.com/479755/x/0/travel-guide-to-bantayan-island-in-cebu-province-everything-you-need-to-know-3.jpg?auto=compress%2Cformat&ch=Width%2CDPR&dpr=1&ixlib=php-3.3.0&w=883',
         images: [
           { id: 'bi-1', title: 'Kota Beach', url: 'https://images.unsplash.com/photo-1622396113941-de93c8d17208?q=80&w=1000&auto=format&fit=crop' },
           { id: 'bi-2', title: 'Virgin Island', url: 'https://images.unsplash.com/photo-1591030467554-47e2bfdf2eb5?q=80&w=1000&auto=format&fit=crop' },
@@ -149,7 +153,7 @@ const galleryData = [
     id: 'Manila', name: 'Manila', cover: 'https://www.travel-palawan.com/wp-content/uploads/2023/04/Manila-Intramuros-Kalesa-city-tour-Philippines.jpeg', 
     subcards: [
       { 
-        id: 'manila-intra', name: 'Intramuros', cover: 'https://gttp.images.tshiftcdn.com/253831/x/0/ultimate-travel-guide-to-intramuros-old-town-in-manila-city-everything-you-need-to-know-20.jpg?auto=compress%2Cformat&ch=Width%2CDPR&dpr=1&ixlib=php-3.3.0&w=883',
+        id: 'manila-intra', name: 'Intramuros', cover: 'https://tshiftcdn.com/253831/x/0/ultimate-travel-guide-to-intramuros-old-town-in-manila-city-everything-you-need-to-know-20.jpg?auto=compress%2Cformat&ch=Width%2CDPR&dpr=1&ixlib=php-3.3.0&w=883',
         images: [
           { id: 'in-1', title: 'Walled City', url: 'https://images.unsplash.com/photo-1518439179707-1b0b7531776b?q=80&w=1000&auto=format&fit=crop' },
           { id: 'in-2', title: 'Fort Santiago', url: 'https://images.unsplash.com/photo-1571896349842-6e5a51335022?q=80&w=1000&auto=format&fit=crop' },
@@ -159,7 +163,7 @@ const galleryData = [
         ]
       },
       { 
-        id: 'manila-rizal', name: 'Rizal Park', cover: 'https://gttp.images.tshiftcdn.com/456852/x/0/rizal-park.jpg',
+        id: 'manila-rizal', name: 'Rizal Park', cover: 'https://tshiftcdn.com/456852/x/0/rizal-park.jpg',
         images: [
           { id: 'rp-1', title: 'Park Monument', url: 'https://images.unsplash.com/photo-1561501900-3701fa6a36a6?q=80&w=1000&auto=format&fit=crop' },
           { id: 'rp-2', title: 'Green Spaces', url: 'https://images.unsplash.com/photo-1542314831-c6a420325142?q=80&w=1000&auto=format&fit=crop' },
@@ -169,7 +173,7 @@ const galleryData = [
         ]
       },
       { 
-        id: 'manila-bgc', name: 'BGC', cover: 'https://gttp.images.tshiftcdn.com/377440/x/0/bonifacio-global-city.jpg?crop=1.91%3A1&fit=crop&width=1200',
+        id: 'manila-bgc', name: 'BGC', cover: 'https://tshiftcdn.com/377440/x/0/bonifacio-global-city.jpg?crop=1.91%3A1&fit=crop&width=1200',
         images: [
           { id: 'bgc-1', title: 'Modern Skyline', url: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1000&auto=format&fit=crop' },
           { id: 'bgc-2', title: 'High Street', url: 'https://images.unsplash.com/photo-1513407030348-51e4ec7950fa?q=80&w=1000&auto=format&fit=crop' },
@@ -184,7 +188,7 @@ const galleryData = [
     id: 'Banaue', name: 'Ifugao (Banaue)', cover: 'https://cdn-v2.theculturetrip.com/1220x680/wp-content/uploads/2018/02/shutterstock_634025597-e1730712247519.webp', 
     subcards: [
       { 
-        id: 'banaue-batad', name: 'Batad Terraces', cover: 'https://gttp.images.tshiftcdn.com/225663/x/0/banaue-travel-guide-home-of-rice-terraces-in-the-philippines-3.jpg?auto=compress%2Cformat&ch=Width%2CDPR&dpr=1&ixlib=php-3.3.0&w=883',
+        id: 'banaue-batad', name: 'Batad Terraces', cover: 'https://tshiftcdn.com/225663/x/0/banaue-travel-guide-home-of-rice-terraces-in-the-philippines-3.jpg?auto=compress%2Cformat&ch=Width%2CDPR&dpr=1&ixlib=php-3.3.0&w=883',
         images: [
           { id: 'bt-1', title: 'Amphitheater', url: 'https://images.unsplash.com/photo-1711060169357-ed923c9f2156?q=80&w=1000&auto=format&fit=crop' },
           { id: 'bt-2', title: 'Rice Paddies', url: 'https://images.unsplash.com/photo-1575406811594-da848ffb8a50?q=80&w=1000&auto=format&fit=crop' },
@@ -194,7 +198,7 @@ const galleryData = [
         ]
       },
       { 
-        id: 'banaue-view', name: 'Banaue Viewpoint', cover: 'https://gttp.images.tshiftcdn.com/225663/x/0/banaue-travel-guide-home-of-rice-terraces-in-the-philippines-3.jpg?auto=compress%2Cformat&ch=Width%2CDPR&dpr=1&ixlib=php-3.3.0&w=883',
+        id: 'banaue-view', name: 'Banaue Viewpoint', cover: 'https://tshiftcdn.com/225663/x/0/banaue-travel-guide-home-of-rice-terraces-in-the-philippines-3.jpg?auto=compress%2Cformat&ch=Width%2CDPR&dpr=1&ixlib=php-3.3.0&w=883',
         images: [
           { id: 'vp-1', title: 'Main Viewpoint', url: 'https://images.unsplash.com/photo-1540611025311-01df3cef54b5?q=80&w=1000&auto=format&fit=crop' },
           { id: 'vp-2', title: 'Morning Mist', url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1000&auto=format&fit=crop' },
@@ -246,7 +250,6 @@ const Gallery = () => {
                 <div className="card-img-wrapper" style={{ height: '250px' }}>
                   <img src={region.cover} className="card-img-top w-100 h-100 object-fit-cover" alt={region.name} loading="lazy" />
                   <div className="position-absolute w-100 h-100 top-0 start-0 d-flex align-items-center justify-content-center" style={{ background: 'rgba(0, 119, 182, 0.4)', transition: 'background 0.3s' }}>
-                    {/* ⚡ Changed from text-white to text-pure-white ⚡ */}
                     <h3 className="text-pure-white fw-bold text-uppercase shadow-sm" style={{ letterSpacing: '2px', textShadow: '2px 2px 8px rgba(0,0,0,0.8)' }}>{region.name}</h3>
                   </div>
                 </div>
@@ -320,16 +323,13 @@ const Gallery = () => {
   return (
     <div className="fade-in" style={{ paddingTop: '76px' }}>
       <section className="gallery-hero position-relative overflow-hidden">
-          {/* ⚡ THE BACKGROUND VIDEO ⚡ */}
+          {/* 2. THE BACKGROUND VIDEO FROM YOUR DEVICE */}
           <video autoPlay loop muted playsInline className="hero-video-bg">
-              {/* You can replace this src link with your own MP4 URL later! */}
-              <source src="https://youtu.be/HAmQSDRUuSg" type="video/mp4" />
+              <source src={galleryVideo} type="video/mp4" />
           </video>
           
-          {/* A slight dark overlay to make sure your white text is always readable */}
           <div className="video-overlay"></div>
 
-          {/* ⚡ ADDED position-relative & zIndex so text sits ON TOP of the video ⚡ */}
           <div className="container text-center mb-4 scroll-reveal visible position-relative" style={{ zIndex: 2 }}>
               <h1 className="hero-title transparent-text" style={{ fontSize: '4rem' }}>{t('gal_title', 'Visual Journey')}</h1>
               <p className="section-desc text-white mb-0" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.5)' }}>{t('gal_desc', 'Discover the beauty of the Philippines through our lens')}</p>
