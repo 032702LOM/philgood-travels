@@ -24,12 +24,12 @@ body {
 }
 
 /* =========================================
-   2. TYPOGRAPHY
+   2. TYPOGRAPHY (Original Style Restored)
    ========================================= */
 h1, h2, .section-title, .stat-number, .scene-title, .modal-title {
     font-family: 'Anton', sans-serif !important;
     font-weight: 400;
-    text-transform: uppercase;
+    text-transform: uppercase !important; /* Forces ALL CAPS */
     letter-spacing: 2px;
     color: var(--dark-navy) !important;
 }
@@ -38,9 +38,12 @@ h1, h2, .section-title, .stat-number, .scene-title, .modal-title {
 .hero-title {
     font-family: 'Anton', sans-serif !important;
     font-weight: 400;
-    text-transform: uppercase;
+    text-transform: uppercase !important;
     letter-spacing: 2px;
+    font-size: 5rem !important;
     color: #FFFFFF !important;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.6) !important;
+    -webkit-text-stroke: 0; /* Removes the white logo outline */
 }
 
 h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scene span {
@@ -48,9 +51,10 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 }
 
 .section-header { text-align: center !important; margin-bottom: 50px; max-width: 800px; margin: 0 auto 50px auto; }
-.section-subtitle { color: var(--accent-color) !important; font-family: 'Montserrat', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; font-size: 0.9rem; display: block; margin-bottom: 10px; }
-.section-title { font-size: 3rem; margin-bottom: 15px; }
+.section-subtitle { color: var(--accent-color) !important; font-family: 'Montserrat', sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; font-size: 0.9rem; display: block; margin-bottom: 10px; }
+.section-title { font-size: 3.5rem; margin-bottom: 15px; }
 .section-desc { color: var(--text-grey) !important; font-family: 'Open Sans', sans-serif; font-size: 1.1rem; }
+
 /* Ensure hero description remains visible over images */
 .hero-overlay .section-desc, .destinations-hero .section-desc, .gallery-hero .section-desc, .tours-hero .section-desc, .contact-hero .section-desc { color: rgba(255, 255, 255, 0.9) !important; }
 
@@ -156,7 +160,6 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     display: flex; align-items: center; justify-content: center;
     text-align: center; color: white;
 }
-.hero-title { font-size: 5rem; text-shadow: 2px 2px 6px rgba(0,0,0,0.6); margin-bottom: 20px; }
 
 /* Inner Page Heroes */
 .destinations-hero, .gallery-hero, .tours-hero, .contact-hero, .booking-hero {
@@ -230,7 +233,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 
 /* Clamping text lines prevents overflow and keeps cards uniform */
 .card-title { 
-    color: var(--dark-navy) !important; font-weight: 800; font-size: 1.35rem; margin-bottom: 12px; line-height: 1.2; transition: color 0.2s ease-out; 
+    color: var(--dark-navy) !important; font-family: 'Montserrat', sans-serif !important; font-weight: 800; font-size: 1.35rem; margin-bottom: 12px; line-height: 1.2; transition: color 0.2s ease-out; 
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 3.2rem;
 }
 .card:hover .card-title { color: var(--primary-color) !important; }
@@ -451,10 +454,11 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 }
 
 .stat-number { 
+    font-family: 'Anton', sans-serif !important;
     font-size: 3rem; 
     margin-bottom: 5px; 
-    color: var(--dark-navy); 
-    font-family: 'Anton', sans-serif !important;
+    color: var(--dark-navy) !important; 
+    text-transform: uppercase;
 }
 
 .stat-label { 
@@ -825,8 +829,14 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
         perspective: none !important;
     }
 
-    /* Allow the cards to stretch automatically based on text height */
-    .fanned-card, .fanned-card-wrapper {
+    /* Allow the cards to stretch automatically based on text height and strip 3D positions */
+    .fanned-card, .fanned-card-wrapper,
+    .fanned-card-wrapper.pos-center,
+    .fanned-card-wrapper.pos-left,
+    .fanned-card-wrapper.pos-right,
+    .fanned-card-wrapper.pos-far-left,
+    .fanned-card-wrapper.pos-far-right,
+    .fanned-card-wrapper.pos-hidden {
         position: relative !important;
         top: auto !important;
         left: auto !important;
@@ -839,6 +849,7 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
         opacity: 1 !important;
         filter: none !important;
         pointer-events: auto !important;
+        z-index: 1 !important;
     }
 
     .fanned-card .card, .fanned-card-wrapper .card {
@@ -871,8 +882,9 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
         max-width: 100% !important;
     }
 }
+
 /* =========================================
-   FIX: READABILITY ON LIGHT BACKGROUNDS
+   20. FIX: READABILITY ON LIGHT BACKGROUNDS
    Automatically converts hardcoded white text 
    to dark colors so it is readable on white cards.
    ========================================= */
@@ -911,3 +923,4 @@ footer .text-white-50,
 [style*="background-color: rgb(2, 22, 37)"] .text-white-50,
 [style*="background-color: #023E8A"] .text-white-50 {
     color: rgba(255, 255, 255, 0.7) !important;
+}
