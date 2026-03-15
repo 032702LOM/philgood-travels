@@ -102,7 +102,7 @@ const Booking = () => {
       
       <section className="booking-hero">
           <div className="container text-center mb-4 scroll-reveal visible">
-              <h1 className="hero-title" style={{ fontSize: '4rem' }}>{t('booking_title', 'Secure Your Spot')}</h1>
+              <h1 className="hero-title transparent-text" style={{ fontSize: '4rem' }}>{t('booking_title', 'Secure Your Spot')}</h1>
               <p className="section-desc mb-0 text-white">{t('booking_desc', 'Complete your booking and pack your bags')}</p>
           </div>
       </section>

@@ -228,7 +228,7 @@ const Destinations = () => {
     <div id="destinations-main-view" className="fade-in">
         <section className="destinations-hero">
             <div className="container text-center mb-4 scroll-reveal visible">
-                <h1 className="hero-title" style={{ fontSize: '4rem' }}>{t('dest_title', 'Find Your Place')}</h1>
+                <h1 className="hero-title transparent-text" style={{ fontSize: '4rem' }}>{t('dest_title', 'Find Your Place')}</h1>
                 <p className="section-desc mb-0">Browse the best accommodations in the Philippines</p>
             </div>
             

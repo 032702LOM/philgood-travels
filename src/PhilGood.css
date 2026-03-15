@@ -35,18 +35,21 @@ h1, h2, .section-title, .stat-number, .scene-title, .modal-title {
 }
 
 /* Hero Titles sit over dark image overlays, so they remain white */
-/* Hero Titles - Totally Transparent */
 .hero-title {
     font-family: 'Anton', sans-serif !important;
     font-weight: 400;
     text-transform: uppercase !important;
     letter-spacing: 2px;
     font-size: 5rem !important;
-    
-    /* ⚡ Makes the text completely invisible ⚡ */
-    color: transparent !important; 
-    -webkit-text-stroke: 0 !important; /* Removes any outline */
-    text-shadow: none !important;      /* Removes the drop shadow */
+    color: #FFFFFF !important;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.6) !important;
+    -webkit-text-stroke: 0; /* Removes the white logo outline */
+}
+
+/* Add this helper class to hide specific text */
+.transparent-text {
+    color: transparent !important;
+    text-shadow: none !important;
 }
 
 h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scene span {

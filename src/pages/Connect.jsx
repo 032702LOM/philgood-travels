@@ -18,7 +18,7 @@ const Connect = () => {
       
       <section className="contact-hero">
           <div className="container text-center mb-4 scroll-reveal visible">
-              <h1 className="hero-title" style={{ fontSize: '4rem' }}>{t('conn_title', 'Let us Connect')}</h1>
+              <h1 className="hero-title transparent-text" style={{ fontSize: '4rem' }}>{t('conn_title', 'Let us Connect')}</h1>
               <p className="section-desc mb-0 text-white" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.5)' }}>We're here to help you plan your perfect escape.</p>
           </div>
       </section>
