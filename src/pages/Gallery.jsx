@@ -319,13 +319,23 @@ const Gallery = () => {
 
   return (
     <div className="fade-in" style={{ paddingTop: '76px' }}>
-      <section className="gallery-hero">
-          <div className="container text-center mb-4 scroll-reveal visible">
+      <section className="gallery-hero position-relative overflow-hidden">
+          {/* ⚡ THE BACKGROUND VIDEO ⚡ */}
+          <video autoPlay loop muted playsInline className="hero-video-bg">
+              {/* You can replace this src link with your own MP4 URL later! */}
+              <source src="https://videos.pexels.com/video-files/2169880/2169880-uhd_2560_1440_30fps.mp4" type="video/mp4" />
+          </video>
+          
+          {/* A slight dark overlay to make sure your white text is always readable */}
+          <div className="video-overlay"></div>
+
+          {/* ⚡ ADDED position-relative & zIndex so text sits ON TOP of the video ⚡ */}
+          <div className="container text-center mb-4 scroll-reveal visible position-relative" style={{ zIndex: 2 }}>
               <h1 className="hero-title transparent-text" style={{ fontSize: '4rem' }}>{t('gal_title', 'Visual Journey')}</h1>
               <p className="section-desc text-white mb-0" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.5)' }}>{t('gal_desc', 'Discover the beauty of the Philippines through our lens')}</p>
           </div>
 
-          <div className="container pb-4 scroll-reveal visible delay-1">
+          <div className="container pb-4 scroll-reveal visible delay-1 position-relative" style={{ zIndex: 2 }}>
               <div className="search-filter-bar p-4 rounded-4 mx-auto" style={{ maxWidth: '900px' }}>
                   <div className="row g-3 align-items-center">
                       <div className="col-md-4"><label className="text-primary-dark fw-bold small mb-1">Region</label><div className="input-with-icon"><i className="fa-solid fa-map-location-dot"></i><select className="form-control-dark form-select w-100" value={selectedRegion} onChange={(e) => { setSelectedRegion(e.target.value); setSelectedSubcard('All'); }}><option value="All">All Regions</option>{galleryData.map(r => (<option key={r.id} value={r.id}>{r.name}</option>))}</select></div></div>
