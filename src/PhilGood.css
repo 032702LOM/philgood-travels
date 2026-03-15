@@ -68,13 +68,9 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
    3. NAVIGATION BAR & LOGO ENLARGEMENT
    ========================================= */
 .navbar { 
-    /* Semi-transparent dark navy background */
-    background-color: rgba(2, 62, 138, 0.6) !important; 
-    
-    /* Frosted glass blur effect */
-    backdrop-filter: blur(8px); 
-    -webkit-backdrop-filter: blur(8px);
-    
+    background-color: transparent !important; /* ⚡ 100% Transparent ⚡ */
+    backdrop-filter: none; /* Removes the frosted glass blur */
+    -webkit-backdrop-filter: none;
     padding: 15px 0; 
     position: fixed; 
     top: 0; 
@@ -982,8 +978,7 @@ footer .text-white-50,
 }
 /* =========================================
    21. FIX: MOBILE CAROUSEL & HERO IMAGE SCALING
-   Forces background images with text to fit 
-   entirely on screen without getting chopped.
+   Forces background images to fill the screen
    ========================================= */
 @media (max-width: 991px) {
     .carousel-item,
@@ -992,10 +987,10 @@ footer .text-white-50,
     .tours-hero, 
     .contact-hero, 
     .booking-hero {
-        background-size: contain !important;
+        background-size: cover !important; /* ⚡ Forces the image to fill edge-to-edge ⚡ */
         background-position: center center !important;
         background-repeat: no-repeat !important;
-        height: 55vh !important; 
+        height: 100vh !important; /* ⚡ Stretches the container to 100% of the screen height ⚡ */
     }
 }
 /* =========================================
