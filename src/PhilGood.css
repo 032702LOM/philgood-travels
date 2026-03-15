@@ -788,48 +788,14 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
    19. MOBILE SPACING, STACKING & OVERLAP FIXES 
    ========================================= */
 @media (max-width: 991px) {
-    /* 1. Force the Carousel wrappers to take up the full screen height */
-    #heroCarousel,
-    .carousel-inner {
-        height: 100vh !important; 
-        height: 100dvh !important;
-        width: 100%;
-    }
-
-    /* 2. Style the actual background items WITHOUT breaking Bootstrap's display logic */
+    /* Hero Sections - Force to fill screen and perfectly center text */
     .carousel-item,
-    .destinations-hero, 
-    .gallery-hero, 
-    .tours-hero, 
-    .contact-hero, 
-    .booking-hero {
-        height: 100vh !important; 
-        height: 100dvh !important; 
-        background-size: cover !important; 
+    .destinations-hero, .gallery-hero, .tours-hero, .contact-hero, .booking-hero, .detail-hero {
+        background-size: cover !important; /* ⚡ Fills left-to-right ⚡ */
         background-position: center center !important;
         background-repeat: no-repeat !important;
-        width: 100% !important; 
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-
-    /* 3. Apply Flexbox ONLY to the inner pages so we don't break the Homepage Carousel */
-    .destinations-hero, 
-    .gallery-hero, 
-    .tours-hero, 
-    .contact-hero, 
-    .booking-hero {
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: center !important;
-    }
-
-    /* Forces the text and button to actually center in the new full vertical space */
-    .hero-overlay {
-        height: 100vh !important;
-        height: 100dvh !important;
-        display: flex !important;
-        align-items: center !important;
+        height: 100vh !important; /* ⚡ Fills top-to-bottom ⚡ */
+        padding: 0 !important; /* Removes old spacing so text is perfectly centered */
         justify-content: center !important;
     }
     
@@ -934,6 +900,7 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
         max-width: 100% !important;
     }
 }
+
 /* =========================================
    20. FIX: READABILITY ON LIGHT BACKGROUNDS
    Automatically converts hardcoded white text 
@@ -1015,7 +982,23 @@ footer .text-white-50,
     box-shadow: none !important;
     background-color: transparent !important;
 }
-
+/* =========================================
+   21. FIX: MOBILE CAROUSEL & HERO IMAGE SCALING
+   Forces background images to fill the screen
+   ========================================= */
+@media (max-width: 991px) {
+    .carousel-item,
+    .destinations-hero, 
+    .gallery-hero, 
+    .tours-hero, 
+    .contact-hero, 
+    .booking-hero {
+        background-size: cover !important; /* ⚡ Forces the image to fill edge-to-edge ⚡ */
+        background-position: center center !important;
+        background-repeat: no-repeat !important;
+        height: 100vh !important; /* ⚡ Stretches the container to 100% of the screen height ⚡ */
+    }
+}
 /* =========================================
    22. BACKGROUND VIDEO STYLING
    ========================================= */
