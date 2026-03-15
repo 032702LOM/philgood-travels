@@ -790,12 +790,17 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
 @media (max-width: 991px) {
     /* Hero Sections - Force to fill screen and perfectly center text */
     .carousel-item,
-    .destinations-hero, .gallery-hero, .tours-hero, .contact-hero, .booking-hero, .detail-hero {
-        background-size: cover !important; /* ⚡ Fills left-to-right ⚡ */
+    .destinations-hero, 
+    .gallery-hero, 
+    .tours-hero, 
+    .contact-hero, 
+    .booking-hero {
+        background-size: cover !important; /* ⚡ Forces image to fill the screen beautifully ⚡ */
         background-position: center center !important;
         background-repeat: no-repeat !important;
-        height: 100vh !important; /* ⚡ Fills top-to-bottom ⚡ */
-        padding: 0 !important; /* Removes old spacing so text is perfectly centered */
+        height: 100vh !important; /* ⚡ Stretches the image from the very top to the bottom ⚡ */
+        padding: 0 !important; /* Removes padding so your text is perfectly centered */
+        margin-top: 0 !important;
         justify-content: center !important;
     }
     
@@ -982,23 +987,7 @@ footer .text-white-50,
     box-shadow: none !important;
     background-color: transparent !important;
 }
-/* =========================================
-   21. FIX: MOBILE CAROUSEL & HERO IMAGE SCALING
-   Forces background images to fill the screen
-   ========================================= */
-@media (max-width: 991px) {
-    .carousel-item,
-    .destinations-hero, 
-    .gallery-hero, 
-    .tours-hero, 
-    .contact-hero, 
-    .booking-hero {
-        background-size: cover !important; /* ⚡ Forces the image to fill edge-to-edge ⚡ */
-        background-position: center center !important;
-        background-repeat: no-repeat !important;
-        height: 100vh !important; /* ⚡ Stretches the container to 100% of the screen height ⚡ */
-    }
-}
+
 /* =========================================
    22. BACKGROUND VIDEO STYLING
    ========================================= */
