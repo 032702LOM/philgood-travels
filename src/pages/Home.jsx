@@ -190,7 +190,7 @@ const Home = () => {
                 </div>
 
                 <div className="text-center mt-5 scroll-reveal">
-                    <Link to="/destinations" className="btn-outline-custom">View All Destinations</Link>
+                    <Link to="/destinations" className="hero-btn">View All Destinations</Link>
                 </div>
             </div>
         </section>
