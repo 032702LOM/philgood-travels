@@ -246,7 +246,8 @@ const Gallery = () => {
                 <div className="card-img-wrapper" style={{ height: '250px' }}>
                   <img src={region.cover} className="card-img-top w-100 h-100 object-fit-cover" alt={region.name} loading="lazy" />
                   <div className="position-absolute w-100 h-100 top-0 start-0 d-flex align-items-center justify-content-center" style={{ background: 'rgba(0, 119, 182, 0.4)', transition: 'background 0.3s' }}>
-                    <h3 className="text-white fw-bold text-uppercase shadow-sm" style={{ letterSpacing: '2px', textShadow: '2px 2px 8px rgba(0,0,0,0.8)' }}>{region.name}</h3>
+                    {/* ⚡ Changed from text-white to text-pure-white ⚡ */}
+                    <h3 className="text-pure-white fw-bold text-uppercase shadow-sm" style={{ letterSpacing: '2px', textShadow: '2px 2px 8px rgba(0,0,0,0.8)' }}>{region.name}</h3>
                   </div>
                 </div>
               </div>
