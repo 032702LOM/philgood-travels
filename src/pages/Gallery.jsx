@@ -323,7 +323,7 @@ const Gallery = () => {
           {/* ⚡ THE BACKGROUND VIDEO ⚡ */}
           <video autoPlay loop muted playsInline className="hero-video-bg">
               {/* You can replace this src link with your own MP4 URL later! */}
-              <source src="https://videos.pexels.com/video-files/2169880/2169880-uhd_2560_1440_30fps.mp4" type="video/mp4" />
+              <source src="https://youtu.be/HAmQSDRUuSg" type="video/mp4" />
           </video>
           
           {/* A slight dark overlay to make sure your white text is always readable */}
