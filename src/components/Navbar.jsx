@@ -103,10 +103,10 @@ const Navbar = () => {
                             </button>
 
                             {/* --- CURRENCY & LANGUAGE BUTTONS --- */}
-                            <button className="btn btn-sm btn-outline-secondary text-pure-white border-0 d-flex align-items-center gap-2" onClick={() => openModal('currency')}>
+                            <button className="btn btn-sm btn-outline-secondary nav-action-btn border-0 d-flex align-items-center gap-2" onClick={() => openModal('currency')}>
                                 <span className="fw-bold">{currency}</span>
                             </button>
-                            <button className="btn btn-sm btn-outline-secondary text-pure-white border-0 d-flex align-items-center gap-2" onClick={() => openModal('language')}>
+                            <button className="btn btn-sm btn-outline-secondary nav-action-btn border-0 d-flex align-items-center gap-2" onClick={() => openModal('language')}>
                                 <i className="fa-solid fa-globe"></i>
                                 <span className="text-uppercase">{language}</span>
                             </button>
@@ -125,10 +125,10 @@ const Navbar = () => {
                             </div>
                         ) : (
                             <div className="d-none d-lg-flex align-items-center me-3 gap-2">
-                                <Link to="/login" className="btn text-coral fw-bold" style={{ textDecoration: 'none' }}>
+                                <Link to="/login" className="btn btn-auth fw-bold" style={{ textDecoration: 'none' }}>
                                     LOGIN
                                 </Link>
-                                <Link to="/register" className="btn text-coral fw-bold no-border-btn" style={{ textDecoration: 'none', padding: '6px 16px', borderRadius: '4px' }}>
+                                <Link to="/register" className="btn btn-auth fw-bold no-border-btn" style={{ textDecoration: 'none', padding: '6px 16px', borderRadius: '4px' }}>
                                     SIGN UP
                                 </Link>
                             </div>

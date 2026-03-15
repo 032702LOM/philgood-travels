@@ -68,7 +68,13 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
    3. NAVIGATION BAR & LOGO ENLARGEMENT
    ========================================= */
 .navbar { 
-    background-color: transparent !important; 
+    /* Semi-transparent dark navy background */
+    background-color: rgba(2, 62, 138, 0.6) !important; 
+    
+    /* Frosted glass blur effect */
+    backdrop-filter: blur(8px); 
+    -webkit-backdrop-filter: blur(8px);
+    
     padding: 15px 0; 
     position: fixed; 
     top: 0; 
@@ -931,15 +937,33 @@ footer .text-white-50,
    TOP NAV CUSTOM COLORS & BUTTON FIXES
    ========================================= */
 
-/* 1. Make PHP, World Icon, and EN pure white */
-.text-pure-white,
-.text-pure-white i {
-    color: #FFFFFF !important;
+/* 1. Make Currency and Language match main Nav Links */
+.nav-action-btn {
+    color: rgba(255, 255, 255, 0.9) !important;
+    transition: color 0.3s ease !important;
 }
 
-/* 2. Make LOGIN and SIGN UP orange coral */
-.text-coral {
-    color: #FF7F50 !important; 
+.nav-action-btn:hover {
+    color: var(--accent-hover) !important; /* Coral hover like main links */
+}
+
+.nav-action-btn:active {
+    color: var(--accent-color) !important; /* Orange click like main links */
+}
+
+/* 2. Custom Hover & Click for LOGIN and SIGN UP */
+.btn-auth {
+    color: #FF7F50 !important; /* Coral orange default */
+    transition: color 0.2s ease !important;
+}
+
+.btn-auth:hover {
+    color: #FFFFFF !important; /* White when moused over */
+}
+
+.btn-auth:active,
+.btn-auth:focus {
+    color: #FF7F50 !important; /* Back to coral when clicked */
 }
 
 /* 3. Remove the line/border around SIGN UP */
