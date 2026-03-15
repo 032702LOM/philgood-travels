@@ -788,19 +788,35 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
    19. MOBILE SPACING, STACKING & OVERLAP FIXES 
    ========================================= */
 @media (max-width: 991px) {
-    /* Hero Sections - Force to fill screen and perfectly center text */
+    /* ⚡ FULL SCREEN MOBILE FIX (Forces wrappers to 100% height) ⚡ */
+    #heroCarousel,
+    .carousel-inner,
     .carousel-item,
     .destinations-hero, 
     .gallery-hero, 
     .tours-hero, 
     .contact-hero, 
     .booking-hero {
-        background-size: cover !important; /* ⚡ Forces image to fill the screen beautifully ⚡ */
+        height: 100vh !important; 
+        height: 100dvh !important; /* Uses the true, dynamic mobile screen height */
+        min-height: 100vh !important;
+        background-size: cover !important; 
         background-position: center center !important;
         background-repeat: no-repeat !important;
-        height: 100vh !important; /* ⚡ Stretches the image from the very top to the bottom ⚡ */
-        padding: 0 !important; /* Removes padding so your text is perfectly centered */
-        margin-top: 0 !important;
+        padding: 0 !important; 
+        margin: 0 !important;
+        width: 100% !important; 
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+    }
+
+    /* Forces the text and button to actually center in the new full vertical space */
+    .hero-overlay {
+        height: 100vh !important;
+        height: 100dvh !important;
+        display: flex !important;
+        align-items: center !important;
         justify-content: center !important;
     }
     
