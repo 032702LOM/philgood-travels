@@ -924,3 +924,17 @@ footer .text-white-50,
 [style*="background-color: #023E8A"] .text-white-50 {
     color: rgba(255, 255, 255, 0.7) !important;
 }
+/* =========================================
+   FIX: MOBILE CAROUSEL IMAGE SCALING
+   Forces background images with text to fit 
+   entirely on screen without getting chopped.
+   ========================================= */
+@media (max-width: 991px) {
+    .carousel-item {
+        background-size: contain !important;
+        background-position: center center !important;
+        background-repeat: no-repeat !important;
+        /* We reduce the height slightly so you don't end up with massive empty gaps above and below the newly shrunk image */
+        height: 55vh !important; 
+    }
+}
