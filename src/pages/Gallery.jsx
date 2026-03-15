@@ -12,7 +12,7 @@ const galleryData = [
         id: 'palawan-elnido', name: 'El Nido', cover: 'https://cdn.getyourguide.com/img/location/5a085ec50c581.jpeg/99.jpg',
         images: [
           { id: 'el-1', title: 'Limestone Cliffs', url: 'https://images.unsplash.com/photo-1520626337972-8ee434ee744c?q=80&w=1000&auto=format&fit=crop' },
-          { id: 'el-2', title: 'Clear Waters', url: 'https://www.palawan-divers.org/weather-in-el-nido/' },
+          { id: 'el-2', title: 'Clear Waters', url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMyrWoydKc9UMxjUNrKSz_EMMVvSzO16-0KQ&s' },
           { id: 'el-3', title: 'Hidden Lagoon', url: 'https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?q=80&w=1000&auto=format&fit=crop' },
           { id: 'el-4', title: 'Secret Beach', url: 'https://images.unsplash.com/photo-1544253303-346c19694f6e?q=80&w=1000&auto=format&fit=crop' },
           { id: 'el-5', title: 'Island Boat', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1000&auto=format&fit=crop' }
