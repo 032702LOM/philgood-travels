@@ -36,14 +36,15 @@ h1, h2, .section-title, .scene-title, .hero-title, .modal-title {
     font-weight: 400;
     text-transform: none !important; /* Script fonts look best in Title Case */
     letter-spacing: 1px;
-    color: var(--dark-navy) !important;
+    color: #21807C !important; /* PhilGood Logo Teal */
 }
 
-/* Hero Titles sit over dark image overlays, so they remain white */
+/* Hero Titles mimic the 3D logo sticker effect */
 .hero-title {
     font-size: 5.5rem !important;
-    color: #FFFFFF !important;
-    text-shadow: 3px 3px 0px var(--primary-dark), 6px 6px 15px rgba(0,0,0,0.4) !important;
+    color: #21807C !important; /* PhilGood Logo Teal */
+    -webkit-text-stroke: 2px #FFFFFF; /* White outline around letters */
+    text-shadow: 4px 4px 0px #E86B52, 6px 6px 15px rgba(0,0,0,0.4) !important; /* Coral shadow + soft dark drop shadow */
 }
 
 h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scene span {
