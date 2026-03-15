@@ -69,14 +69,15 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
    ========================================= */
 .navbar { 
     background-color: transparent !important; /* ⚡ 100% Transparent ⚡ */
-    backdrop-filter: none; /* Removes the frosted glass blur */
-    -webkit-backdrop-filter: none;
+    backdrop-filter: none !important; /* Removes frosted glass */
+    -webkit-backdrop-filter: none !important;
     padding: 15px 0; 
     position: fixed; 
     top: 0; 
     width: 100%; 
     z-index: 1030; 
     transition: all 0.4s ease-in-out !important; 
+    box-shadow: none !important; /* Removes any shadow line */
 }
 
 .navbar.scrolled, .navbar.bg-navy { 
@@ -147,7 +148,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 /* =========================================
    4. HERO SECTIONS
    ========================================= */
-.carousel-item { height: 90vh; background-size: cover; background-position: center; }
+.carousel-item { height: 100vh; background-size: cover; background-position: center; }
 
 /* STRICTLY HIDE TEXT AND BUTTON ON MOBILE FOR SLIDE 1 */
 @media (max-width: 991px) {
@@ -164,11 +165,11 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     text-align: center; color: white;
 }
 
-/* Inner Page Heroes */
-.destinations-hero, .gallery-hero, .tours-hero, .contact-hero, .booking-hero {
-    background-size: cover; 
-    background-position: center center;
-    height: 90vh; /* Makes them fill most of the screen */
+/* Inner Page Heroes - Applies to ALL pages (100% full screen) */
+.destinations-hero, .gallery-hero, .tours-hero, .contact-hero, .booking-hero, .detail-hero {
+    background-size: cover !important; 
+    background-position: center center !important;
+    height: 100vh !important; /* ⚡ Forces 100% screen height ⚡ */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -176,12 +177,12 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     padding: 0;
 }
 
-/* ⚡ Removed the smokey gradients from all inner pages, leaving just the clear HD images ⚡ */
+/* ⚡ Clear HD background images for all inner pages ⚡ */
 .destinations-hero { background-image: url('https://i.postimg.cc/65SssHqN/Find-Your-Place.png'); }
 .gallery-hero { background-image: url('https://images.unsplash.com/photo-1531168556467-8053153c361c?q=100&w=2560&auto=format&fit=crop'); }
 .contact-hero { background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=100&w=2560&auto=format&fit=crop'); }
 .booking-hero { background-image: url('https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=100&w=2560&auto=format&fit=crop'); }
-.tours-hero { background-image: url('https://i.postimg.cc/9XytHbpb/Tour-Packages.png'); }
+.tours-hero { background-image: url('https://i.postimg.cc/Rh4Pxt5s/Tour_Packages.png'); }
 
 /* =========================================
    5. MOST POPULAR DESTINATIONS (BACKGROUND)
@@ -787,9 +788,14 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
    19. MOBILE SPACING, STACKING & OVERLAP FIXES 
    ========================================= */
 @media (max-width: 991px) {
-    /* Hero Sections - Prevent text from cramping the background */
-   .destinations-hero, .gallery-hero, .tours-hero, .contact-hero, .booking-hero {
-        padding: 80px 0 0 0 !important; /* Just enough to clear the top navbar */
+    /* Hero Sections - Force to fill screen and perfectly center text */
+    .carousel-item,
+    .destinations-hero, .gallery-hero, .tours-hero, .contact-hero, .booking-hero, .detail-hero {
+        background-size: cover !important; /* ⚡ Fills left-to-right ⚡ */
+        background-position: center center !important;
+        background-repeat: no-repeat !important;
+        height: 100vh !important; /* ⚡ Fills top-to-bottom ⚡ */
+        padding: 0 !important; /* Removes old spacing so text is perfectly centered */
         justify-content: center !important;
     }
     
