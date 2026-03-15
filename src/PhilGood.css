@@ -24,12 +24,12 @@ body {
 }
 
 /* =========================================
-   2. TYPOGRAPHY (Original Style Restored)
+   2. TYPOGRAPHY
    ========================================= */
 h1, h2, .section-title, .stat-number, .scene-title, .modal-title {
     font-family: 'Anton', sans-serif !important;
     font-weight: 400;
-    text-transform: uppercase !important; /* Forces ALL CAPS */
+    text-transform: uppercase !important; 
     letter-spacing: 2px;
     color: var(--dark-navy) !important;
 }
@@ -43,10 +43,9 @@ h1, h2, .section-title, .stat-number, .scene-title, .modal-title {
     font-size: 5rem !important;
     color: #FFFFFF !important;
     text-shadow: 2px 2px 6px rgba(0,0,0,0.6) !important;
-    -webkit-text-stroke: 0; /* Removes the white logo outline */
+    -webkit-text-stroke: 0; 
 }
 
-/* Add this helper class to hide specific text */
 .transparent-text {
     color: transparent !important;
     text-shadow: none !important;
@@ -68,8 +67,8 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
    3. NAVIGATION BAR & LOGO ENLARGEMENT
    ========================================= */
 .navbar { 
-    background-color: transparent !important; /* ⚡ 100% Transparent ⚡ */
-    backdrop-filter: none !important; /* Removes frosted glass */
+    background-color: transparent !important; 
+    backdrop-filter: none !important; 
     -webkit-backdrop-filter: none !important;
     padding: 15px 0; 
     position: fixed; 
@@ -77,7 +76,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     width: 100%; 
     z-index: 1030; 
     transition: all 0.4s ease-in-out !important; 
-    box-shadow: none !important; /* Removes any shadow line */
+    box-shadow: none !important; 
 }
 
 .navbar.scrolled, .navbar.bg-navy { 
@@ -158,18 +157,17 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     }
 }
 
-/* ⚡ Removed the smokey gradient from the Homepage carousel ⚡ */
 .hero-overlay {
     height: 100%;
     display: flex; align-items: center; justify-content: center;
     text-align: center; color: white;
 }
 
-/* Inner Page Heroes - Applies to ALL pages (100% full screen) */
+/* Inner Page Heroes - Applies to ALL pages (100% full screen on Desktop) */
 .destinations-hero, .gallery-hero, .tours-hero, .contact-hero, .booking-hero, .detail-hero {
     background-size: cover !important; 
     background-position: center center !important;
-    height: 100vh !important; /* ⚡ Forces 100% screen height ⚡ */
+    height: 100vh !important; 
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -177,7 +175,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     padding: 0;
 }
 
-/* ⚡ Clear HD background images for all inner pages ⚡ */
+/* HD background images */
 .destinations-hero { background-image: url('https://i.postimg.cc/65SssHqN/Find-Your-Place.png'); }
 .gallery-hero { background-image: url('https://images.unsplash.com/photo-1531168556467-8053153c361c?q=100&w=2560&auto=format&fit=crop'); }
 .contact-hero { background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=100&w=2560&auto=format&fit=crop'); }
@@ -221,7 +219,6 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 }
 .card:hover { transform: translateY(-8px); border-color: var(--primary-color); box-shadow: 0 15px 35px rgba(0, 180, 216, 0.2); }
 
-/* Ensure image is ALWAYS a perfect square */
 .card-img-wrapper { 
     position: relative; 
     width: 100%;
@@ -243,7 +240,6 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .card-location i { color: var(--accent-color); font-size: 0.8rem; transition: color 0.2s ease-out; }
 .card:hover .card-location, .card:hover .card-location i { color: var(--primary-color); }
 
-/* Clamping text lines prevents overflow and keeps cards uniform */
 .card-title { 
     color: var(--dark-navy) !important; font-family: 'Montserrat', sans-serif !important; font-weight: 800; font-size: 1.35rem; margin-bottom: 12px; line-height: 1.2; transition: color 0.2s ease-out; 
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 3.2rem;
@@ -274,9 +270,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .fanned-layout-wrapper, .fanned-stack-container {
     position: relative; 
     width: 100%;
-    /* INCREASED HEIGHT: Gives the cards plenty of room to scale up without bleeding out */
     height: 700px;
-    /* INCREASED MARGIN: Pushes the "Explore All Tours" button down safely */
     margin: 0 auto 80px auto; 
     perspective: 1200px;
 }
@@ -285,7 +279,6 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     position: absolute; 
     top: 50%; 
     left: 50%; 
-    /* Pulled up slightly to stay perfectly centered in the new taller container */
     margin-top: -260px; 
     margin-left: -160px; 
     width: 320px; 
@@ -324,7 +317,6 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .scene-block { margin-bottom: 120px; }
 .scene-block:last-child { margin-bottom: 0; }
 
-/* Force Scene Boxes to match background color perfectly */
 .scene-content {
     background-color: var(--bg-dark) !important;
     box-shadow: none !important;
@@ -334,23 +326,18 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .scene-title { font-size: 3rem; margin-bottom: 20px; color: var(--dark-navy); }
 .scene-text { color: var(--text-grey); font-size: 1.1rem; line-height: 1.8; margin-bottom: 25px; }
 
-/* Ensure backgrounds NEVER tile or repeat */
 .trail-makers-bg, .dive-bg, .sleep-bg {
     background-repeat: no-repeat !important;
 }
 
-/* ⚡ DESKTOP VIEW: Anchored perfectly to the right edge ⚡ */
 @media (min-width: 992px) {
-    /* Unify all 3 sections to sit cleanly on the right side */
     .trail-makers-bg, .dive-bg, .sleep-bg {
         background-position: right center !important;
         background-size: 45% auto !important; 
     }
-
-    /* Force the cliff image to strictly hug the absolute right edge */
     .trail-makers-bg {
         background-position: right 0px center !important;
-        background-size: 55% auto !important; /* Slightly larger so the cliff connects to the screen edge */
+        background-size: 55% auto !important; 
     }
 }
 
@@ -438,7 +425,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 }
 
 .stat-card { 
-    background-color: transparent !important; /* Makes the card body see-through */
+    background-color: transparent !important; 
     padding: 30px; 
     border-radius: 15px; 
     height: 100%; 
@@ -447,18 +434,16 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     justify-content: center; 
     align-items: center; 
     color: var(--dark-navy); 
-    border: none !important; /* Removes the outline */
-    box-shadow: none !important; /* Removes the shadow */
+    border: none !important; 
+    box-shadow: none !important; 
     animation: floatAir 6s ease-in-out infinite; 
     transition: transform 0.4s ease; 
 }
 
-/* Staggered floating animation */
 .stats-container .col-md-4:nth-child(1) .stat-card { animation-delay: 0s; }
 .stats-container .col-md-4:nth-child(2) .stat-card { animation-delay: 1.5s; }
 .stats-container .col-md-4:nth-child(3) .stat-card { animation-delay: 3s; }
 
-/* Keep the icons and numbers sharp */
 .stat-card i { 
     color: var(--accent-color); 
     font-size: 2.5rem; 
@@ -481,10 +466,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     color: var(--text-grey); 
 }
 
-/* Optional: Slight scale up on hover instead of a color change */
-.stat-card:hover {
-    transform: scale(1.05) translateY(-15px) !important;
-}
+.stat-card:hover { transform: scale(1.05) translateY(-15px) !important; }
 
 .testimonial-item { background-color: var(--card-bg); padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(2, 62, 138, 0.08); height: 100%; text-align: left; border: 1px solid rgba(0, 119, 182, 0.1); }
 .testimonial-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; float: left; margin-right: 15px; border: 2px solid var(--primary-color); }
@@ -648,26 +630,19 @@ footer { position: relative; background-color: var(--dark-navy); color: #E0F7FA;
 .platform-icon { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; color: white; }
 
 /* =========================================
-   14. ANIMATIONS & SCROLL REVEALS (SLOW GLIDE UP)
+   14. ANIMATIONS & SCROLL REVEALS
    ========================================= */
 .fade-in { animation: fadeIn 0.8s ease-in; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes slideUpChat { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ⚡ THE SLOW GLIDE UP EFFECT ⚡ */
 .scroll-reveal { 
     opacity: 0; 
-    transform: translateY(80px); /* Starts much lower for a dramatic glide */
-    transition: opacity 1.2s ease-out, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1); /* Slower, ultra-smooth floating effect */
-    will-change: opacity, transform; /* Tells the browser to use hardware acceleration to prevent lag */
+    transform: translateY(80px); 
+    transition: opacity 1.2s ease-out, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1); 
+    will-change: opacity, transform; 
 }
-
-.scroll-reveal.visible { 
-    opacity: 1; 
-    transform: translateY(0); /* Glides into its final resting place */
-}
-
-/* Staggered delays so rows of cards glide up one after the other */
+.scroll-reveal.visible { opacity: 1; transform: translateY(0); }
 .delay-1 { transition-delay: 0.15s; }
 .delay-2 { transition-delay: 0.3s; }
 .delay-3 { transition-delay: 0.45s; }
@@ -788,14 +763,18 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
    19. MOBILE SPACING, STACKING & OVERLAP FIXES 
    ========================================= */
 @media (max-width: 991px) {
-    /* Hero Sections - Force to fill screen and perfectly center text */
+    /* Hero Sections - Responsive Mobile Banner */
     .carousel-item,
     .destinations-hero, .gallery-hero, .tours-hero, .contact-hero, .booking-hero, .detail-hero {
-        background-size: cover !important; /* ⚡ Fills left-to-right ⚡ */
+        background-size: cover !important; 
         background-position: center center !important;
         background-repeat: no-repeat !important;
-        height: 100vh !important; /* ⚡ Fills top-to-bottom ⚡ */
-        padding: 0 !important; /* Removes old spacing so text is perfectly centered */
+        height: 55vh !important; 
+        min-height: 400px !important; 
+        padding: 0 !important; 
+        margin-top: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
         justify-content: center !important;
     }
     
@@ -808,7 +787,7 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
         padding-bottom: 350px !important; 
     }
 
-    /* ⚡ FIX: Force the cliff to stick to the absolute right edge on mobile ⚡ */
+    /* FIX: Force the cliff to stick to the absolute right edge on mobile */
     .trail-makers-bg {
         background-position: bottom right !important;
         background-size: 85% auto !important; 
@@ -825,13 +804,13 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
     
     .scene-block { margin-bottom: 40px !important; }
 
-    /* Airplane Stats Section - Stop airplane from crashing into stat cards */
+    /* Airplane Stats Section */
     .stats-wrapper .d-flex.justify-content-center {
         margin-top: 20px !important; 
         padding-top: 30px;
     }
 
-    /* ⚡ FANNED STACK FIX: Convert 3D desktop fan to a clean vertical stack ⚡ */
+    /* FANNED STACK FIX: Convert 3D desktop fan to a clean vertical stack */
     .fanned-layout-wrapper, .fanned-stack-container {
         height: auto !important;
         min-height: auto !important;
@@ -847,7 +826,7 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
         perspective: none !important;
     }
 
-    /* Allow the cards to stretch automatically based on text height and strip 3D positions */
+    /* Allow the cards to stretch automatically */
     .fanned-card, .fanned-card-wrapper,
     .fanned-card-wrapper.pos-center,
     .fanned-card-wrapper.pos-left,
@@ -876,11 +855,9 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
         flex-direction: column !important;
     }
 
-    /* Hide the 3D navigation arrows on mobile */
     .stack-nav-btn { display: none !important; }
 }
 
-/* Extra tight spacing for smaller phones */
 @media (max-width: 576px) {
     .hero-title { font-size: 2.8rem !important; }
     
@@ -889,7 +866,6 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
         padding-bottom: 300px !important; 
     }
 
-    /* Keep the cliff anchored right on extra small screens */
     .trail-makers-bg {
         background-position: bottom right !important;
         background-size: 100% auto !important;
@@ -903,18 +879,11 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
 
 /* =========================================
    20. FIX: READABILITY ON LIGHT BACKGROUNDS
-   Automatically converts hardcoded white text 
-   to dark colors so it is readable on white cards.
    ========================================= */
 
 /* 1. Globally invert white text to dark navy/grey */
-.text-white {
-    color: var(--dark-navy) !important;
-}
-
-.text-white-50 {
-    color: var(--text-grey) !important;
-}
+.text-white { color: var(--dark-navy) !important; }
+.text-white-50 { color: var(--text-grey) !important; }
 
 /* 2. Protect areas that legitimately have dark backgrounds */
 .hero-overlay .text-white,
@@ -942,63 +911,21 @@ footer .text-white-50,
 [style*="background-color: #023E8A"] .text-white-50 {
     color: rgba(255, 255, 255, 0.7) !important;
 }
+
 /* =========================================
-   TOP NAV CUSTOM COLORS & BUTTON FIXES
+   21. TOP NAV CUSTOM COLORS & BUTTON FIXES
    ========================================= */
 
-/* 1. Make Currency and Language match main Nav Links */
-.nav-action-btn {
-    color: rgba(255, 255, 255, 0.9) !important;
-    transition: color 0.3s ease !important;
-}
+.nav-action-btn { color: rgba(255, 255, 255, 0.9) !important; transition: color 0.3s ease !important; }
+.nav-action-btn:hover { color: var(--accent-hover) !important; }
+.nav-action-btn:active { color: var(--accent-color) !important; }
 
-.nav-action-btn:hover {
-    color: var(--accent-hover) !important; /* Coral hover like main links */
-}
+.btn-auth { color: #FF7F50 !important; transition: color 0.2s ease !important; }
+.btn-auth:hover { color: #FFFFFF !important; }
+.btn-auth:active, .btn-auth:focus { color: #FF7F50 !important; }
 
-.nav-action-btn:active {
-    color: var(--accent-color) !important; /* Orange click like main links */
-}
+.no-border-btn { border: none !important; outline: none !important; box-shadow: none !important; background-color: transparent !important; }
 
-/* 2. Custom Hover & Click for LOGIN and SIGN UP */
-.btn-auth {
-    color: #FF7F50 !important; /* Coral orange default */
-    transition: color 0.2s ease !important;
-}
-
-.btn-auth:hover {
-    color: #FFFFFF !important; /* White when moused over */
-}
-
-.btn-auth:active,
-.btn-auth:focus {
-    color: #FF7F50 !important; /* Back to coral when clicked */
-}
-
-/* 3. Remove the line/border around SIGN UP */
-.no-border-btn {
-    border: none !important;
-    outline: none !important;
-    box-shadow: none !important;
-    background-color: transparent !important;
-}
-/* =========================================
-   21. FIX: MOBILE CAROUSEL & HERO IMAGE SCALING
-   Forces background images to fill the screen
-   ========================================= */
-@media (max-width: 991px) {
-    .carousel-item,
-    .destinations-hero, 
-    .gallery-hero, 
-    .tours-hero, 
-    .contact-hero, 
-    .booking-hero {
-        background-size: cover !important; /* ⚡ Forces the image to fill edge-to-edge ⚡ */
-        background-position: center center !important;
-        background-repeat: no-repeat !important;
-        height: 100vh !important; /* ⚡ Stretches the container to 100% of the screen height ⚡ */
-    }
-}
 /* =========================================
    22. BACKGROUND VIDEO STYLING
    ========================================= */
@@ -1008,7 +935,7 @@ footer .text-white-50,
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Forces video to crop beautifully without stretching */
+    object-fit: cover; 
     z-index: 0;
 }
 
@@ -1018,7 +945,6 @@ footer .text-white-50,
     left: 0;
     width: 100%;
     height: 100%;
-    /* Adds a subtle 20% dark tint so the white text pops */
     background-color: rgba(0, 0, 0, 0.2); 
     z-index: 1;
 }
