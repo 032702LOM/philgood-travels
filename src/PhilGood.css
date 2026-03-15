@@ -152,13 +152,8 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     }
 }
 
-/* Hero Overlay fades into Light Sky Blue */
+/* ⚡ Removed the smokey gradient from the Homepage carousel ⚡ */
 .hero-overlay {
-    background: linear-gradient(to bottom, 
-        rgba(0, 119, 182, 0.3) 0%, 
-        rgba(0, 119, 182, 0.5) 70%, 
-        var(--bg-dark) 100% 
-    );
     height: 100%;
     display: flex; align-items: center; justify-content: center;
     text-align: center; color: white;
@@ -169,11 +164,13 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     background-size: cover; background-position: center 30%;
     padding: 130px 0 50px 0; margin-top: 0;
 }
-.destinations-hero { background-image: linear-gradient(to bottom, rgba(0, 119, 182, 0.4), var(--bg-dark)), url('https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?q=80&w=2000&auto=format&fit=crop'); }
-.gallery-hero { background-image: linear-gradient(to bottom, rgba(0, 119, 182, 0.5), var(--bg-dark)), url('https://images.unsplash.com/photo-1531168556467-8053153c361c?q=80&w=2000&auto=format&fit=crop'); }
-.contact-hero { background-image: linear-gradient(to bottom, rgba(0, 119, 182, 0.5), var(--bg-dark)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2000&auto=format&fit=crop'); }
-.booking-hero { background-image: linear-gradient(to bottom, rgba(0, 119, 182, 0.4), var(--bg-dark)), url('https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=80&w=2000&auto=format&fit=crop'); }
-.tours-hero { background-image: linear-gradient(to bottom, rgba(0, 119, 182, 0.4), var(--bg-dark)), url('https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=2000&auto=format&fit=crop'); }
+
+/* ⚡ Removed the smokey gradients from all inner pages, leaving just the clear HD images ⚡ */
+.destinations-hero { background-image: url('https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?q=100&w=2560&auto=format&fit=crop'); }
+.gallery-hero { background-image: url('https://images.unsplash.com/photo-1531168556467-8053153c361c?q=100&w=2560&auto=format&fit=crop'); }
+.contact-hero { background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=100&w=2560&auto=format&fit=crop'); }
+.booking-hero { background-image: url('https://images.unsplash.com/photo-1588698944583-0498b25350c3?q=100&w=2560&auto=format&fit=crop'); }
+.tours-hero { background-image: url('https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=100&w=2560&auto=format&fit=crop'); }
 
 /* =========================================
    5. MOST POPULAR DESTINATIONS (BACKGROUND)
