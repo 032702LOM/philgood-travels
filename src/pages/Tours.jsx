@@ -37,7 +37,7 @@ const Tours = () => {
     <div className="fade-in" style={{ paddingTop: '76px', backgroundColor: 'var(--bg-dark)' }}>
         <section className="tours-hero" style={{ backgroundImage: "linear-gradient(to bottom, rgba(0, 119, 182, 0.4), var(--bg-dark)), url('https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=2000&auto=format&fit=crop')" }}>
             <div className="container text-center mb-4 scroll-reveal visible">
-                <h1 className="hero-title" style={{ fontSize: '4rem' }}>{t('tours_title', 'TOUR PACKAGES')}</h1>
+                <h1 className="hero-title" style={{ fontSize: '4rem' }}>{t('tours_title', 'Tour Packages')}</h1>
                 <p className="section-desc mb-0 text-white" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.5)' }}>Curated experiences for your perfect vacation</p>
             </div>
         </section>

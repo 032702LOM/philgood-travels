@@ -320,7 +320,7 @@ const Gallery = () => {
     <div className="fade-in" style={{ paddingTop: '76px' }}>
       <section className="gallery-hero">
           <div className="container text-center mb-4 scroll-reveal visible">
-              <h1 className="hero-title" style={{ fontSize: '4rem' }}>{t('gal_title', 'VISUAL JOURNEY')}</h1>
+              <h1 className="hero-title" style={{ fontSize: '4rem' }}>{t('gal_title', 'Visual Journey')}</h1>
               <p className="section-desc text-white mb-0" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.5)' }}>{t('gal_desc', 'Discover the beauty of the Philippines through our lens')}</p>
           </div>
 

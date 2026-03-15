@@ -102,7 +102,7 @@ const Home = () => {
                     <div className="carousel-item active" style={{ backgroundImage: `url(${islandParadiseImg})` }}>
                         <div className="hero-overlay">
                             <div className="container scroll-reveal">
-                                <h1 className="hero-title">ISLAND PARADISE</h1>
+                                <h1 className="hero-title">Island Paradise</h1>
                                 <p className="hero-subtitle text-white fw-bold">Relax on pristine white sand beaches</p>
                                 <Link to="/booking" className="hero-btn">BOOK NOW</Link>
                             </div>
@@ -111,7 +111,7 @@ const Home = () => {
                     <div className="carousel-item" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1707730088436-0e55e78843d8?q=80&w=1310&auto=format&fit=crop')" }}>
                         <div className="hero-overlay">
                             <div className="container">
-                                <h1 className="hero-title">ADVENTURE AWAITS</h1>
+                                <h1 className="hero-title">Adventure Awaits</h1>
                                 <p className="hero-subtitle text-white fw-bold">Experience the Chocolate Hills of Bohol</p>
                                 <Link to="/tours" className="hero-btn">VIEW TOURS</Link>
                             </div>
@@ -120,7 +120,7 @@ const Home = () => {
                     <div className="carousel-item" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1564425230164-1e63b4922d3f?q=80&w=735&auto=format&fit=crop')" }}>
                         <div className="hero-overlay">
                             <div className="container">
-                                <h1 className="hero-title">FIND YOUR TRAIL</h1>
+                                <h1 className="hero-title">Find Your Trail</h1>
                                 <p className="hero-subtitle text-white fw-bold">Discover nature in the Philippines</p>
                                 <Link to="/destinations" className="hero-btn">EXPLORE DESTINATIONS</Link>
                             </div>
