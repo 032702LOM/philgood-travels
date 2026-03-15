@@ -115,11 +115,12 @@ const Navbar = () => {
                       {/* 👉 SMART AUTH BUTTONS (LOGIN / SIGN UP / LOGOUT) */}
                         {isLoggedIn ? (
                             <div className="d-none d-lg-flex align-items-center me-3 gap-3">
-                                {/* 👉 UPDATED: Made the name a clickable link to the Dashboard! */}
-                                <Link to="/profile" className="text-white fw-bold font-montserrat text-decoration-none social-hover" style={{ color: 'var(--accent-color)' }}>
+                                {/* Applied btn-auth for the exact same coral-to-white hover/click effect */}
+                                <Link to="/profile" className="btn-auth fw-bold font-montserrat text-decoration-none">
                                     Hi, {firstName}!
                                 </Link>
-                                <button onClick={handleLogout} className="btn text-white fw-bold" style={{ textDecoration: 'none', border: '1px solid rgba(255,255,255,0.3)', padding: '6px 16px', borderRadius: '4px', background: 'transparent' }}>
+                                {/* Applied btn-auth and no-border-btn to match the SIGN UP button perfectly */}
+                                <button onClick={handleLogout} className="btn btn-auth fw-bold no-border-btn" style={{ textDecoration: 'none', padding: '6px 16px', borderRadius: '4px' }}>
                                     LOGOUT
                                 </button>
                             </div>
