@@ -3,7 +3,7 @@ import { usePreferences } from '../context/PreferencesContext';
 
 // 1. IMPORT YOUR LOCAL VIDEO HERE
 // Make sure the file is actually in src/assets/video/
-import galleryVideo from '../assets/video/gallery-bg.mp4'; 
+import galleryVideo from '../assets/video/PhilGood_vid.mp4'; 
 
 // ==========================================
 // GALLERY DATA WITH CUSTOM COVERS
