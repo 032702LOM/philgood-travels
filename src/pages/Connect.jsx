@@ -14,9 +14,9 @@ const Connect = () => {
   };
 
   return (
-    <div className="fade-in">
+   <div className="fade-in">
       
-      <section className="contact-hero">
+      <section className="contact-hero" style={{ marginTop: 0 }}>
           <div className="container text-center mb-4 scroll-reveal visible">
               <h1 className="hero-title transparent-text" style={{ fontSize: '4rem' }}>{t('conn_title', 'Let us Connect')}</h1>
               <p className="section-desc mb-0 text-white" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.5)' }}>We're here to help you plan your perfect escape.</p>

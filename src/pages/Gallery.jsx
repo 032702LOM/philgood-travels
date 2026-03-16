@@ -165,8 +165,8 @@ const galleryData = [
       { 
         id: 'manila-rizal', name: 'Rizal Park', cover: 'https://tshiftcdn.com/456852/x/0/rizal-park.jpg',
         images: [
-          { id: 'rp-1', title: 'Park Monument', url: 'https://upload.wikimedia.org/wikipedia/commons/7/75/Rizal_Monument_at_Rizal_Park.jpg
-' },
+          { id: 'rp-1', title: 'Park Monument', url: 'https://upload.wikimedia.org/wikipedia/commons/7/75/Rizal_Monument_at_Rizal_Park.jpg' },
+
           { id: 'rp-2', title: 'Green Spaces', url: 'https://worldforestvoices.wordpress.com/wp-content/uploads/2022/03/wfc-johanna-caresse-eusebio-2-featured.png?w=1568' },
           { id: 'rp-3', title: 'City Gardens', url: 'https://thursd.com/storage/media/97017/Rizal-Park-Luneta-by-Apolinario.jpg?1760646138831' },
           { id: 'rp-4', title: 'National Museum', url: 'https://weblinks.nationalmuseum.gov.ph/wp-content/uploads/2021/08/01123638/National-Museum-of-Fine-Arts-Facade-Photo-Banner-1-scaled.jpg' },
@@ -242,7 +242,7 @@ const Gallery = () => {
   const renderRegions = () => {
     const filteredRegions = galleryData.filter(r => r.name.toLowerCase().includes(searchKeyword.toLowerCase()));
     return (
-      <div className="fade-in">
+      <div className="fade-in" style={{ marginTop: '0', paddingTop: '0' }}>
         <div className="d-flex justify-content-between align-items-center mb-4"><h4 className="text-navy font-montserrat fw-bold mb-0">Explore by Region</h4><span className="text-grey fw-bold small">{galleryData.length} Regions</span></div>
         <div className="row g-4">
           {filteredRegions.map((region) => (
@@ -267,7 +267,7 @@ const Gallery = () => {
     if (!region) return null;
     const filteredSubcards = region.subcards.filter(s => s.name.toLowerCase().includes(searchKeyword.toLowerCase()));
     return (
-      <div className="fade-in">
+     <div className="fade-in" style={{ marginTop: '0', paddingTop: '0' }}>
         <button className="btn btn-link text-navy fw-bold text-decoration-none p-0 mb-4 opacity-75" onClick={handleBackToRegions}><i className="fa-solid fa-arrow-left me-2"></i> Back to All Regions</button>
         <div className="d-flex justify-content-between align-items-center mb-4"><h4 className="text-navy font-montserrat fw-bold mb-0">{region.name} Destinations</h4><span className="text-grey fw-bold small">{region.subcards.length} Locations</span></div>
         <div className="row g-4 justify-content-center">
@@ -323,7 +323,7 @@ const Gallery = () => {
 
   return (
    <div className="fade-in">
-      <section className="gallery-hero position-relative overflow-hidden">
+      <section className="gallery-hero position-relative overflow-hidden" style={{ marginTop: 0 }}>
           {/* 2. THE BACKGROUND VIDEO FROM YOUR DEVICE */}
           <video autoPlay loop muted playsInline className="hero-video-bg">
               <source src={galleryVideo} type="video/mp4" />

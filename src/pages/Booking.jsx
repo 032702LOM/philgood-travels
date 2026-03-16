@@ -98,9 +98,9 @@ const Booking = () => {
   };
 
   return (
-    <div className="fade-in">
+  <div className="fade-in">
       
-      <section className="booking-hero">
+      <section className="booking-hero" style={{ marginTop: 0 }}>
           <div className="container text-center mb-4 scroll-reveal visible">
               <h1 className="hero-title transparent-text" style={{ fontSize: '4rem' }}>{t('booking_title', 'Secure Your Spot')}</h1>
               <p className="section-desc mb-0 text-white">{t('booking_desc', 'Complete your booking and pack your bags')}</p>

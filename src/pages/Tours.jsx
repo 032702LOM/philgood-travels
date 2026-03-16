@@ -34,8 +34,8 @@ const Tours = () => {
   const handleSaveItinerary = () => { alert(`Your custom route has been saved!\n\nStops:\n${itinerary.map((item, i) => `${i + 1}. ${item}`).join('\n')}`); };
 
   return (
-    <div className="fade-in">
-        <section className="tours-hero">
+    <div className="fade-in" style={{ backgroundColor: 'var(--bg-dark)' }}>
+        <section className="tours-hero" style={{ marginTop: 0 }}>
             <div className="container text-center mb-4 scroll-reveal visible">
                 <h1 className="hero-title transparent-text" style={{ fontSize: '4rem' }}>{t('tours_title', 'Tour Packages')}</h1>
                 <p className="section-desc mb-0 text-white" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.5)' }}>Curated experiences for your perfect vacation</p>
