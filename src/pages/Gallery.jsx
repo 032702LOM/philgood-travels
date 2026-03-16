@@ -166,7 +166,6 @@ const galleryData = [
         id: 'manila-rizal', name: 'Rizal Park', cover: 'https://tshiftcdn.com/456852/x/0/rizal-park.jpg',
         images: [
           { id: 'rp-1', title: 'Park Monument', url: 'https://upload.wikimedia.org/wikipedia/commons/7/75/Rizal_Monument_at_Rizal_Park.jpg' },
-
           { id: 'rp-2', title: 'Green Spaces', url: 'https://worldforestvoices.wordpress.com/wp-content/uploads/2022/03/wfc-johanna-caresse-eusebio-2-featured.png?w=1568' },
           { id: 'rp-3', title: 'City Gardens', url: 'https://thursd.com/storage/media/97017/Rizal-Park-Luneta-by-Apolinario.jpg?1760646138831' },
           { id: 'rp-4', title: 'National Museum', url: 'https://weblinks.nationalmuseum.gov.ph/wp-content/uploads/2021/08/01123638/National-Museum-of-Fine-Arts-Facade-Photo-Banner-1-scaled.jpg' },
@@ -227,6 +226,9 @@ const Gallery = () => {
   const [selectedRegion, setSelectedRegion] = useState('All');
   const [selectedSubcard, setSelectedSubcard] = useState('All');
   const [searchKeyword, setSearchKeyword] = useState('');
+  
+  // ⚡ NEW: State to track which image is currently enlarged ⚡
+  const [enlargedImage, setEnlargedImage] = useState(null);
 
   const availableSubcards = selectedRegion === 'All' ? [] : galleryData.find(r => r.id === selectedRegion)?.subcards || [];
 
@@ -251,14 +253,13 @@ const Gallery = () => {
                 <div className="card-img-wrapper" style={{ height: '250px' }}>
                   <img src={region.cover} className="card-img-top w-100 h-100 object-fit-cover" alt={region.name} loading="lazy" />
                   
-                  {/* Dark transparent overlay to help the white text pop */}
                   <div className="position-absolute w-100 h-100 top-0 start-0 d-flex align-items-center justify-content-center text-center" style={{ background: 'rgba(0, 0, 0, 0.3)', transition: 'background 0.3s' }}>
                     <h3 className="fw-bold text-uppercase m-0" style={{ 
                         fontFamily: "'Anton', sans-serif", 
-                        color: '#FFFFFF', /* ⚡ Pure White Text ⚡ */
+                        color: '#FFFFFF',
                         letterSpacing: '3px', 
                         fontSize: '2.5rem',
-                        textShadow: '2px 2px 10px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.7)' /* Strong dark shadow */
+                        textShadow: '2px 2px 10px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.7)' 
                     }}>
                       {region.name}
                     </h3>
@@ -319,7 +320,12 @@ const Gallery = () => {
         <div className="row g-3 justify-content-center">
           {filteredImages.map((img) => (
             <div key={img.id} className="col-6 col-md-4 col-lg scroll-reveal visible gallery-item" style={{ minWidth: '20%' }}>
-              <div className="position-relative overflow-hidden rounded-3 shadow-sm h-100 border border-primary border-opacity-10">
+              {/* ⚡ NEW: Added onClick and cursor styling so users know they can click it ⚡ */}
+              <div 
+                className="position-relative overflow-hidden rounded-3 shadow-sm h-100 border border-primary border-opacity-10"
+                onClick={() => setEnlargedImage(img)}
+                style={{ cursor: 'zoom-in' }}
+              >
                 <img src={img.url} alt={img.title} loading="lazy" className="w-100 h-100 object-fit-cover gallery-img" style={{ aspectRatio: '1/1', transition: 'transform 0.4s ease' }} />
                 <div className="position-absolute bottom-0 start-0 w-100 p-2" style={{ background: 'linear-gradient(transparent, rgba(0, 119, 182, 0.9))' }}>
                   <small className="text-white font-montserrat fw-semibold">{img.title}</small>
@@ -365,6 +371,40 @@ const Gallery = () => {
           {selectedRegion !== 'All' && selectedSubcard !== 'All' && renderImages()}
         </div>
       </section>
+
+      {/* ⚡ NEW: The Lightbox Modal that appears when an image is clicked ⚡ */}
+      {enlargedImage && (
+        <div 
+            className="position-fixed top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center fade-in" 
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.92)', zIndex: 2000, cursor: 'zoom-out' }}
+            onClick={() => setEnlargedImage(null)}
+        >
+            {/* Close Button */}
+            <button 
+                className="btn btn-link position-absolute top-0 end-0 m-4 text-white fs-2" 
+                onClick={() => setEnlargedImage(null)}
+                style={{ textDecoration: 'none', opacity: 0.8 }}
+                title="Close"
+            >
+                <i className="fa-solid fa-xmark"></i>
+            </button>
+            
+            {/* Enlarged Image */}
+            <img 
+                src={enlargedImage.url} 
+                alt={enlargedImage.title} 
+                className="shadow-lg rounded"
+                style={{ maxHeight: '85vh', maxWidth: '90vw', objectFit: 'contain', cursor: 'default' }}
+                onClick={(e) => e.stopPropagation()} 
+            />
+            
+            {/* Image Title */}
+            <div className="text-white mt-4 fs-5 font-montserrat fw-bold text-center" style={{ letterSpacing: '1px' }}>
+                {enlargedImage.title}
+            </div>
+        </div>
+      )}
+
     </div>
   );
 };
