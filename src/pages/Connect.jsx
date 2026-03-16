@@ -14,7 +14,7 @@ const Connect = () => {
   };
 
   return (
-    <div className="fade-in" style={{ paddingTop: '76px' }}>
+    <div className="fade-in">
       
       <section className="contact-hero">
           <div className="container text-center mb-4 scroll-reveal visible">

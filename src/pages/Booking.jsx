@@ -98,7 +98,7 @@ const Booking = () => {
   };
 
   return (
-    <div className="fade-in" style={{ paddingTop: '76px' }}>
+    <div className="fade-in">
       
       <section className="booking-hero">
           <div className="container text-center mb-4 scroll-reveal visible">

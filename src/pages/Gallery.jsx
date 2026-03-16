@@ -322,7 +322,7 @@ const Gallery = () => {
   };
 
   return (
-    <div className="fade-in" style={{ paddingTop: '76px' }}>
+   <div className="fade-in">
       <section className="gallery-hero position-relative overflow-hidden">
           {/* 2. THE BACKGROUND VIDEO FROM YOUR DEVICE */}
           <video autoPlay loop muted playsInline className="hero-video-bg">
