@@ -250,17 +250,20 @@ const Gallery = () => {
               <div className="card h-100 border-0 overflow-hidden shadow" style={{ cursor: 'pointer' }} onClick={() => handleRegionClick(region.id)}>
                 <div className="card-img-wrapper" style={{ height: '250px' }}>
                   <img src={region.cover} className="card-img-top w-100 h-100 object-fit-cover" alt={region.name} loading="lazy" />
-                  <div className="position-absolute w-100 h-100 top-0 start-0 d-flex align-items-center justify-content-center" style={{ background: 'rgba(255, 255, 255, 0.2)', transition: 'background 0.3s' }}>
-                    <h3 className="fw-bold text-uppercase shadow-sm" style={{ 
+                  
+                  {/* Dark transparent overlay to help the white text pop */}
+                  <div className="position-absolute w-100 h-100 top-0 start-0 d-flex align-items-center justify-content-center text-center" style={{ background: 'rgba(0, 0, 0, 0.3)', transition: 'background 0.3s' }}>
+                    <h3 className="fw-bold text-uppercase m-0" style={{ 
                         fontFamily: "'Anton', sans-serif", 
-                        color: 'var(--dark-navy)', 
+                        color: '#FFFFFF', /* ⚡ Pure White Text ⚡ */
                         letterSpacing: '3px', 
                         fontSize: '2.5rem',
-                        textShadow: '0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.6)' 
+                        textShadow: '2px 2px 10px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.7)' /* Strong dark shadow */
                     }}>
                       {region.name}
                     </h3>
                   </div>
+
                 </div>
               </div>
             </div>
