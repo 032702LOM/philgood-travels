@@ -381,9 +381,9 @@ const Gallery = () => {
         >
             {/* Close Button */}
             <button 
-                className="btn btn-link position-absolute top-0 end-0 m-4 text-white fs-2" 
+                className="btn btn-link position-absolute top-0 end-0 m-4 fs-2" 
                 onClick={() => setEnlargedImage(null)}
-                style={{ textDecoration: 'none', opacity: 0.8 }}
+                style={{ color: '#FFFFFF', textDecoration: 'none', opacity: 0.9, textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}
                 title="Close"
             >
                 <i className="fa-solid fa-xmark"></i>
@@ -399,7 +399,7 @@ const Gallery = () => {
             />
             
             {/* Image Title */}
-            <div className="text-white mt-4 fs-5 font-montserrat fw-bold text-center" style={{ letterSpacing: '1px' }}>
+            <div className="mt-4 fs-5 font-montserrat fw-bold text-center" style={{ color: '#FFFFFF', letterSpacing: '1px', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>
                 {enlargedImage.title}
             </div>
         </div>
