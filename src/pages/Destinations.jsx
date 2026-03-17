@@ -227,20 +227,25 @@ const Destinations = () => {
 
   return (
     <div id="destinations-main-view" className="fade-in">
-        <section className="destinations-hero" style={{ backgroundImage: `url("${heroImg}")` }}>
+        <section className="destinations-hero" style={{ backgroundImage: `url("${heroImg}")`, marginTop: 0 }}>
+            {/* ⚡ The filter bar was removed from here! ⚡ */}
             <div className="container text-center mb-4 scroll-reveal visible">
                 <h1 className="hero-title transparent-text" style={{ fontSize: '4rem' }}>{t('dest_title', 'Find Your Place')}</h1>
-                <p className="section-desc mb-0">Browse the best accommodations in the Philippines</p>
+                <p className="section-desc mb-0 transparent-text">Browse the best accommodations in the Philippines</p>
             </div>
-            
-            <div className="container pb-4 scroll-reveal visible delay-1">
-                <div className="search-filter-bar p-4 rounded-4 mx-auto" style={{ maxWidth: '900px' }}>
+        </section>
+
+        <section id="destinations" className="fade-in py-5" style={{ minHeight: '500px', backgroundColor: 'var(--bg-dark)' }}>
+            <div className="container">
+                
+                {/* ⚡ THE MOVED SEARCH FILTER BAR ⚡ */}
+                <div className="search-filter-bar p-4 rounded-4 mx-auto mb-5 shadow-sm scroll-reveal visible" style={{ maxWidth: '900px', zIndex: 10, position: 'relative' }}>
                     <div className="row g-3 align-items-center">
                         <div className="col-md-4">
-                            <label className="text-white-50 small mb-1">Region</label>
+                            <label className="text-primary-dark fw-bold small mb-1">Region</label>
                             <div className="input-with-icon">
                                 <i className="fa-solid fa-map-location-dot"></i>
-                                <select className="form-control-dark w-100" value={selectedRegion} onChange={(e) => { setSelectedRegion(e.target.value); setSelectedHotel(''); }}>
+                                <select className="form-control-dark form-select w-100" value={selectedRegion} onChange={(e) => { setSelectedRegion(e.target.value); setSelectedHotel(''); }}>
                                     <option value="All">All Regions</option>
                                     <option value="Bohol">Bohol</option>
                                     <option value="Palawan">Palawan</option>
@@ -252,43 +257,38 @@ const Destinations = () => {
                             </div>
                         </div>
                         <div className="col-md-4">
-                            <label className="text-white-50 small mb-1">Accommodation</label>
+                            <label className="text-primary-dark fw-bold small mb-1">Accommodation</label>
                             <div className="input-with-icon">
                                 <i className="fa-solid fa-hotel"></i>
-                                <select className="form-control-dark w-100" value={selectedHotel} onChange={(e) => setSelectedHotel(e.target.value)}>
+                                <select className="form-control-dark form-select w-100" value={selectedHotel} onChange={(e) => setSelectedHotel(e.target.value)}>
                                     <option value="">All Accommodations</option>
                                     {hotelsForDropdown.map(hotel => (<option key={hotel.id} value={hotel.id}>{hotel.name}</option>))}
                                 </select>
                             </div>
                         </div>
                         <div className="col-md-4">
-                            <label className="text-white-50 small mb-1">Keyword Search</label>
+                            <label className="text-primary-dark fw-bold small mb-1">Keyword Search</label>
                             <div className="input-with-icon">
                                 <i className="fa-solid fa-magnifying-glass"></i>
-                                <input type="text" className="form-control-dark w-100" placeholder="Type to search..." value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)}/>
+                                <input type="text" className="form-control-dark form-control w-100" placeholder="Type to search..." value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)}/>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
 
-        <section id="destinations" className="fade-in mb-5" style={{ marginTop: '40px' }}>
-            <div className="container">
                 <div className="row">
-                    
                     {/* SIDEBAR FILTERS */}
                     <div className="col-lg-4 col-xl-3 mb-4 scroll-reveal visible">
-                        <div className="d-lg-none mb-3"><button className="btn w-100 d-flex justify-content-between align-items-center p-3 rounded-3 shadow-sm text-white" type="button" data-bs-toggle="collapse" data-bs-target="#filterSidebar" style={{ backgroundColor: 'var(--card-bg)' }}><span className="font-montserrat fw-bold"><i className="fa-solid fa-sliders text-accent me-2"></i> Filters {activeCheckboxes.length > 0 ? `(${activeCheckboxes.length})` : ''}</span><i className="fa-solid fa-chevron-down"></i></button></div>
+                        <div className="d-lg-none mb-3"><button className="btn w-100 d-flex justify-content-between align-items-center p-3 rounded-3 shadow-sm text-navy" type="button" data-bs-toggle="collapse" data-bs-target="#filterSidebar" style={{ backgroundColor: 'var(--card-bg)' }}><span className="font-montserrat fw-bold"><i className="fa-solid fa-sliders text-accent me-2"></i> Filters {activeCheckboxes.length > 0 ? `(${activeCheckboxes.length})` : ''}</span><i className="fa-solid fa-chevron-down"></i></button></div>
                         <div className="collapse d-lg-block" id="filterSidebar">
-                            <div className="sidebar-filter-container sticky-top" style={{ top: '100px', maxHeight: '80vh', overflowY: 'auto' }}>
-                                <div className="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary border-opacity-25 pb-3">
-                                    <h5 className="text-white fw-bold font-montserrat m-0 d-none d-lg-block"><i className="fa-solid fa-sliders text-accent me-2"></i> Filters</h5>
-                                    {activeCheckboxes.length > 0 && (<button className="btn btn-sm btn-link text-white-50 p-0 text-decoration-none" onClick={() => setActiveCheckboxes([])}>Clear All</button>)}
+                            <div className="sidebar-filter-container sticky-top bg-card-dark" style={{ top: '100px', maxHeight: '80vh', overflowY: 'auto' }}>
+                                <div className="d-flex justify-content-between align-items-center mb-4 border-bottom border-primary border-opacity-10 pb-3">
+                                    <h5 className="text-navy fw-bold font-montserrat m-0 d-none d-lg-block"><i className="fa-solid fa-sliders text-accent me-2"></i> Filters</h5>
+                                    {activeCheckboxes.length > 0 && (<button className="btn btn-sm btn-link text-grey p-0 text-decoration-none" onClick={() => setActiveCheckboxes([])}>Clear All</button>)}
                                 </div>
                                 {filterCategories.map(category => (
                                     <div className="filter-section mb-4" key={category.title}>
-                                        <h6 className="filter-title">{category.title}</h6>
+                                        <h6 className="filter-title text-navy">{category.title}</h6>
                                         {category.options.map(option => {
                                             const count = getCount(option); 
                                             const isActive = activeCheckboxes.includes(option);
@@ -296,9 +296,9 @@ const Destinations = () => {
                                             return (
                                                 <div className="form-check mb-2" key={option}>
                                                     <input className="form-check-input filter-checkbox" type="checkbox" onChange={() => handleToggleCheckbox(option)} checked={isActive} id={`filter-${option.replace(/[^a-zA-Z0-9]/g, '-')}`} />
-                                                    <label className="form-check-label w-100 d-flex justify-content-between align-items-center text-white-50" htmlFor={`filter-${option.replace(/[^a-zA-Z0-9]/g, '-')}`}>
-                                                        <span className={isActive ? 'text-white fw-bold' : ''}>{option}</span>
-                                                        <span className="badge bg-secondary bg-opacity-25 text-white">{count}</span>
+                                                    <label className="form-check-label w-100 d-flex justify-content-between align-items-center text-grey" htmlFor={`filter-${option.replace(/[^a-zA-Z0-9]/g, '-')}`}>
+                                                        <span className={isActive ? 'text-primary-dark fw-bold' : ''}>{option}</span>
+                                                        <span className="badge bg-primary bg-opacity-10 text-primary-dark">{count}</span>
                                                     </label>
                                                 </div>
                                             );
@@ -313,8 +313,8 @@ const Destinations = () => {
                         {isDefaultView ? (
                             <div className="fade-in">
                                 <div className="d-flex justify-content-between align-items-center mb-3">
-                                    <h4 className="text-white font-montserrat fw-bold mb-0">Explore Regions</h4>
-                                    <span className="text-white-50 small fw-bold">6 Major Regions</span>
+                                    <h4 className="text-navy font-montserrat fw-bold mb-0">Explore Regions</h4>
+                                    <span className="text-grey small fw-bold">6 Major Regions</span>
                                 </div>
                                 
                                 <div className="fanned-stack-container mt-4" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEndDest}>
@@ -339,7 +339,7 @@ const Destinations = () => {
                                                 <div className="card-body">
                                                     <div className="card-location"><i className="fa-solid fa-location-dot"></i> {region.locationLabel}</div>
                                                     <h5 className="card-title"><span className="region-text">{region.name}</span></h5>
-                                                    <p className="card-text text-white-50">{region.desc}</p>
+                                                    <p className="card-text text-grey">{region.desc}</p>
                                                     <div className="mt-auto">
                                                         <span className="btn-text-link m-0" style={{ fontSize: '0.8rem' }}>View Accommodations <i className="fa-solid fa-arrow-right text-accent ms-1"></i></span>
                                                     </div>
@@ -353,18 +353,18 @@ const Destinations = () => {
                         ) : (
                             <div className="fade-in">
                                 <div className="d-flex justify-content-between align-items-center mb-3">
-                                    <h4 className="text-white font-montserrat fw-bold mb-0">
+                                    <h4 className="text-navy font-montserrat fw-bold mb-0">
                                         {selectedRegion === 'All' ? 'Search Results' : 
                                          (selectedRegion.toLowerCase() === 'aklan' || selectedRegion.toLowerCase() === 'boracay' ? 'Aklan (Boracay)' : 
                                          (selectedRegion.toLowerCase() === 'ifugao' || selectedRegion.toLowerCase() === 'banaue' ? 'Ifugao (Banaue)' : selectedRegion))}
                                     </h4>
-                                    <span className="text-white-50 small" id="destCount">{filteredPlaces.length} destination{filteredPlaces.length !== 1 ? 's' : ''} found</span>
+                                    <span className="text-grey small fw-bold" id="destCount">{filteredPlaces.length} destination{filteredPlaces.length !== 1 ? 's' : ''} found</span>
                                 </div>
                                 <div className="row g-4" id="cardsContainer">
                                     {filteredPlaces.length === 0 ? (
-                                        <div className="col-12 text-center text-white-50 py-5">
+                                        <div className="col-12 text-center text-grey py-5">
                                             <i className="fa-solid fa-filter-circle-xmark fs-1 mb-3 opacity-50"></i>
-                                            <h5 className="text-white fw-bold">No matching accommodations</h5>
+                                            <h5 className="text-navy fw-bold">No matching accommodations</h5>
                                             <p className="small mb-0">Try removing some of your active filters from the sidebar.</p>
                                         </div>
                                     ) : (
@@ -379,11 +379,11 @@ const Destinations = () => {
                                                     <div className="card-body">
                                                         <div className="card-location"><i className="fa-solid fa-location-dot"></i> {place.region}</div>
                                                         <h5 className="card-title">{place.name}</h5>
-                                                        <p className="card-text text-white-50 small mb-2">{place.type} • {place.distance || 'Various'}</p>
+                                                        <p className="card-text text-grey small mb-2">{place.type} • {place.distance || 'Various'}</p>
                                                         
                                                         <div className="d-flex flex-wrap gap-2 mb-3">
                                                             {(place.facilities || []).slice(0, 3).map(fac => (
-                                                                <span key={fac} className="badge bg-secondary bg-opacity-25 text-white fw-normal">{fac}</span>
+                                                                <span key={fac} className="badge bg-primary bg-opacity-10 text-primary-dark fw-bold">{fac}</span>
                                                             ))}
                                                         </div>
                                                         
