@@ -341,45 +341,71 @@ const Gallery = () => {
   return (
    <div className="fade-in">
       <section className="gallery-hero position-relative overflow-hidden" style={{ marginTop: 0 }}>
-          {/* 2. THE BACKGROUND VIDEO FROM YOUR DEVICE */}
+          {/* BACKGROUND VIDEO */}
           <video autoPlay loop muted playsInline className="hero-video-bg">
               <source src={galleryVideo} type="video/mp4" />
           </video>
           
           <div className="video-overlay"></div>
 
+          {/* Kept the invisible title for SEO/accessibility, but removed the filter bar from here! */}
           <div className="container text-center mb-4 scroll-reveal visible position-relative" style={{ zIndex: 2 }}>
               <h1 className="hero-title transparent-text" style={{ fontSize: '4rem' }}>{t('gal_title', 'Visual Journey')}</h1>
-              <p className="section-desc text-white mb-0" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.5)' }}>{t('gal_desc', 'Discover the beauty of the Philippines through our lens')}</p>
-          </div>
-
-          <div className="container pb-4 scroll-reveal visible delay-1 position-relative" style={{ zIndex: 2 }}>
-              <div className="search-filter-bar p-4 rounded-4 mx-auto" style={{ maxWidth: '900px' }}>
-                  <div className="row g-3 align-items-center">
-                      <div className="col-md-4"><label className="text-primary-dark fw-bold small mb-1">Region</label><div className="input-with-icon"><i className="fa-solid fa-map-location-dot"></i><select className="form-control-dark form-select w-100" value={selectedRegion} onChange={(e) => { setSelectedRegion(e.target.value); setSelectedSubcard('All'); }}><option value="All">All Regions</option>{galleryData.map(r => (<option key={r.id} value={r.id}>{r.name}</option>))}</select></div></div>
-                      <div className="col-md-4"><label className="text-primary-dark fw-bold small mb-1">Location</label><div className="input-with-icon"><i className="fa-solid fa-camera"></i><select className="form-control-dark form-select w-100" value={selectedSubcard} onChange={(e) => setSelectedSubcard(e.target.value)} disabled={selectedRegion === 'All'}><option value="All">{selectedRegion === 'All' ? 'Select a Region first' : 'All Locations'}</option>{availableSubcards.map(sub => (<option key={sub.id} value={sub.name}>{sub.name}</option>))}</select></div></div>
-                      <div className="col-md-4"><label className="text-primary-dark fw-bold small mb-1">Keyword Search</label><div className="input-with-icon"><i className="fa-solid fa-magnifying-glass"></i><input type="text" className="form-control-dark form-control w-100" placeholder="Type to search..." value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)}/></div></div>
-                  </div>
-              </div>
+              <p className="section-desc transparent-text mb-0">{t('gal_desc', 'Discover the beauty of the Philippines through our lens')}</p>
           </div>
       </section>
 
+      {/* ⚡ THE CONTENT SECTION (Filter bar now lives safely here!) ⚡ */}
       <section className="py-5" style={{ minHeight: '500px', backgroundColor: 'var(--bg-dark)' }}>
         <div className="container">
+          
+          {/* THE SEARCH FILTER BAR */}
+          <div className="search-filter-bar p-4 rounded-4 mx-auto mb-5 shadow-sm scroll-reveal visible" style={{ maxWidth: '900px' }}>
+              <div className="row g-3 align-items-center">
+                  <div className="col-md-4">
+                      <label className="text-primary-dark fw-bold small mb-1">Region</label>
+                      <div className="input-with-icon">
+                          <i className="fa-solid fa-map-location-dot"></i>
+                          <select className="form-control-dark form-select w-100" value={selectedRegion} onChange={(e) => { setSelectedRegion(e.target.value); setSelectedSubcard('All'); }}>
+                              <option value="All">All Regions</option>
+                              {galleryData.map(r => (<option key={r.id} value={r.id}>{r.name}</option>))}
+                          </select>
+                      </div>
+                  </div>
+                  <div className="col-md-4">
+                      <label className="text-primary-dark fw-bold small mb-1">Location</label>
+                      <div className="input-with-icon">
+                          <i className="fa-solid fa-camera"></i>
+                          <select className="form-control-dark form-select w-100" value={selectedSubcard} onChange={(e) => setSelectedSubcard(e.target.value)} disabled={selectedRegion === 'All'}>
+                              <option value="All">{selectedRegion === 'All' ? 'Select a Region first' : 'All Locations'}</option>
+                              {availableSubcards.map(sub => (<option key={sub.id} value={sub.name}>{sub.name}</option>))}
+                          </select>
+                      </div>
+                  </div>
+                  <div className="col-md-4">
+                      <label className="text-primary-dark fw-bold small mb-1">Keyword Search</label>
+                      <div className="input-with-icon">
+                          <i className="fa-solid fa-magnifying-glass"></i>
+                          <input type="text" className="form-control-dark form-control w-100" placeholder="Type to search..." value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)}/>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          {/* THE GALLERY CARDS */}
           {selectedRegion === 'All' && renderRegions()}
           {selectedRegion !== 'All' && selectedSubcard === 'All' && renderSubcards()}
           {selectedRegion !== 'All' && selectedSubcard !== 'All' && renderImages()}
         </div>
       </section>
 
-      {/* ⚡ NEW: The Lightbox Modal that appears when an image is clicked ⚡ */}
+      {/* THE LIGHTBOX MODAL */}
       {enlargedImage && (
         <div 
             className="position-fixed top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center fade-in" 
             style={{ backgroundColor: 'rgba(0, 0, 0, 0.92)', zIndex: 2000, cursor: 'zoom-out' }}
             onClick={() => setEnlargedImage(null)}
         >
-            {/* Close Button */}
             <button 
                 className="btn btn-link position-absolute top-0 end-0 m-4 fs-2" 
                 onClick={() => setEnlargedImage(null)}
@@ -388,8 +414,6 @@ const Gallery = () => {
             >
                 <i className="fa-solid fa-xmark"></i>
             </button>
-            
-            {/* Enlarged Image */}
             <img 
                 src={enlargedImage.url} 
                 alt={enlargedImage.title} 
@@ -397,8 +421,6 @@ const Gallery = () => {
                 style={{ maxHeight: '85vh', maxWidth: '90vw', objectFit: 'contain', cursor: 'default' }}
                 onClick={(e) => e.stopPropagation()} 
             />
-            
-            {/* Image Title */}
             <div className="mt-4 fs-5 font-montserrat fw-bold text-center" style={{ color: '#FFFFFF', letterSpacing: '1px', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>
                 {enlargedImage.title}
             </div>
