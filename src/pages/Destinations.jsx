@@ -176,7 +176,7 @@ const Destinations = () => {
       <div id="destination-detail-view" className="fade-in" style={{ paddingTop: '76px' }}>
         <div className="detail-hero" id="detailHeroBg" style={{ backgroundImage: `linear-gradient(to bottom, rgba(2, 26, 46, 0.4), var(--bg-dark)), url('${selectedPlace.img}')`, backgroundSize: 'cover', backgroundPosition: 'center', padding: '100px 0 50px' }}>
             <div className="container pt-5 pb-5">
-                <a href="#" className="back-link mb-3 d-inline-block text-white-50 text-decoration-none" onClick={(e) => { e.preventDefault(); handleCloseDetail(); }}>← Back to All Places</a>
+                <a href="#" className="back-link mb-3 d-inline-block text-decoration-none fw-bold" style={{ color: '#FF7F50' }} onClick={(e) => { e.preventDefault(); handleCloseDetail(); }}>← Back to All Places</a>
                 <h1 className="hero-title mb-3" id="detailTitle">{selectedPlace.name}</h1>
                 <div className="d-flex gap-3 align-items-center">
                     <span className="badge rounded-pill text-dark" style={{ backgroundColor: '#FF8C73' }} id="detailType">{selectedPlace.type}</span>
