@@ -96,40 +96,17 @@ const Home = () => {
             </div>
         )}
 
-        {/* --- HERO SECTION CAROUSEL --- */}
+        {/* --- STATIC HERO SECTION --- */}
         <section id="home" className="fade-in" style={{ marginTop: 0 }}>
-            <div id="heroCarousel" className="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
-                <div className="carousel-inner">
-                    <div className="carousel-item active" style={{ backgroundImage: `url(${islandParadiseImg})` }}>
-                        <div className="hero-overlay">
-                            <div className="container scroll-reveal">
-                                <h1 className="hero-title transparent-text">Island Paradise</h1>
-                                <p className="hero-subtitle text-white fw-bold">Relax on pristine white sand beaches</p>
-                                <Link to="/booking" className="hero-btn">BOOK NOW</Link>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="carousel-item" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1707730088436-0e55e78843d8?q=80&w=1310&auto=format&fit=crop')" }}>
-                        <div className="hero-overlay">
-                            <div className="container">
-                                <h1 className="hero-title transparent-text">Adventure Awaits</h1>
-                                <p className="hero-subtitle text-white fw-bold">Experience the Chocolate Hills of Bohol</p>
-                                <Link to="/tours" className="hero-btn">VIEW TOURS</Link>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="carousel-item" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1564425230164-1e63b4922d3f?q=80&w=735&auto=format&fit=crop')" }}>
-                        <div className="hero-overlay">
-                            <div className="container">
-                                <h1 className="hero-title transparent-text">Find Your Trail</h1>
-                                <p className="hero-subtitle text-white fw-bold">Discover nature in the Philippines</p>
-                                <Link to="/destinations" className="hero-btn">EXPLORE DESTINATIONS</Link>
-                            </div>
-                        </div>
+            {/* ⚡ Replaced the carousel with a single, full-screen static image ⚡ */}
+            <div className="w-100 position-relative" style={{ backgroundImage: `url(${islandParadiseImg})`, backgroundSize: 'cover', backgroundPosition: 'center', height: '100vh' }}>
+                <div className="hero-overlay w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center">
+                    <div className="container scroll-reveal">
+                        <h1 className="hero-title transparent-text">Island Paradise</h1>
+                        <p className="hero-subtitle text-white fw-bold mb-4">Relax on pristine white sand beaches</p>
+                        <Link to="/booking" className="hero-btn">BOOK NOW</Link>
                     </div>
                 </div>
-                <button className="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev"><span className="carousel-control-prev-icon"></span></button>
-                <button className="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next"><span className="carousel-control-next-icon"></span></button>
             </div>
 
             {/* ⚡ PROMO VIDEO OVERLAP ⚡ */}
