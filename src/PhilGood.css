@@ -10,6 +10,7 @@
     --bg-dark: #E0F7FA;             /* Light Sky Blue Background */
     --card-bg: #FFFFFF;             /* Pure White Cards */
     --text-grey: #4A5568;           /* Slate Grey for body text */
+    --teal-color: #008080;          /* ⚡ NEW: Teal Color ⚡ */
 }
 
 body {
@@ -200,14 +201,10 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
    5. MOST POPULAR DESTINATIONS (BACKGROUND)
    ========================================= */
 .destinations-bg {
-    background-image: 
-        linear-gradient(to bottom, 
-            var(--bg-dark) 0%, 
-            rgba(224, 247, 250, 0.8) 15%, 
-            rgba(224, 247, 250, 0.8) 85%, 
-            var(--bg-dark) 100%
-        ),
-        url('https://i.postimg.cc/652B9tgk/Untitled-design-(10).png');
+    /* ⚡ UPDATED: Fades the image into the teal color from top to bottom ⚡ */
+    background: linear-gradient(rgba(0, 128, 128, 0.4), rgba(0, 128, 128, 1)),
+                url('https://philippineshiddengems.com/wp-content/uploads/2025/01/docked-small-boats-at-palawan-philippines.jpg');
+    background-color: var(--teal-color) !important;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -215,6 +212,14 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     position: relative;
     padding-top: 80px; 
     padding-bottom: 80px;
+}
+
+/* Ensure text in this section is white for readability */
+.destinations-bg h2.section-title,
+.destinations-bg span.section-subtitle,
+.destinations-bg p.section-desc {
+    color: #FFFFFF !important;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
 }
 
 /* =========================================
@@ -985,6 +990,7 @@ footer .text-white-50,
     backdrop-filter: blur(2px); /* A small blur can help blend */
     mix-blend-mode: color; /* Blend the golden color into the image details */
 }
+
 /* =========================================
    24. BULLETPROOF TEXT OVERRIDES
    ========================================= */

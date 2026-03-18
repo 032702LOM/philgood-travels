@@ -98,10 +98,11 @@ const Home = () => {
 
         {/* --- STATIC HERO SECTION --- */}
         <section id="home" className="fade-in" style={{ marginTop: 0 }}>
-            <div className="w-100 position-relative" style={{ backgroundImage: `url(${islandParadiseImg})`, backgroundSize: 'cover', backgroundPosition: 'center', height: '100vh' }}>
+            <div className="home-hero w-100 position-relative" style={{ backgroundImage: `url(${islandParadiseImg})` }}>
                 <div className="hero-overlay w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center">
                     <div className="container scroll-reveal">
-                        <h1 className="hero-title transparent-text">Island Paradise</h1>                    
+                        <h1 className="hero-title transparent-text">Island Paradise</h1>
+                        <p className="hero-subtitle text-white fw-bold mb-4">Relax on pristine white sand beaches</p>
                         <Link to="/booking" className="hero-btn">BOOK NOW</Link>
                     </div>
                 </div>
@@ -139,7 +140,7 @@ const Home = () => {
         <section className="scene-section trail-makers-bg" style={{ backgroundImage: `url("${manOnCliffImg}")` }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal">
-                    <div className="col-lg-6">
+                    <div className="col-lg-6 trail-makers-text-col">
                         <div className="scene-content pe-lg-5">
                             <span className="section-subtitle">PERSPECTIVE</span>
                             <h2 className="scene-title wave-text">The Trail Makers</h2>
@@ -152,18 +153,20 @@ const Home = () => {
             </div>
         </section>
 
-        {/* --- POPULAR DESTINATIONS --- */}
-        {/* ⚡ NEW BACKGROUND IMAGE APPLIED HERE ⚡ */}
-            <section className="py-5 destinations-bg position-relative" style={{ 
-            /* ⚡ FIX: Added the teal gradient directly here so it cannot be overridden ⚡ */
-            backgroundImage: `linear-gradient(rgba(0, 128, 128, 0.85), rgba(0, 128, 128, 0.85)), url("https://philippineshiddengems.com/wp-content/uploads/2025/01/docked-small-boats-at-palawan-philippines.jpg")`, 
+        {/* --- POPULAR DESTINATIONS (UPDATED) --- */}
+        <section className="py-5 destinations-bg position-relative" style={{ 
+            /* ⚡ UPDATED: Achieves top-down blending. High-res image is fully visible and sharp ⚡ */
+            backgroundImage: `linear-gradient(rgba(0, 128, 128, 0.3), rgba(0, 128, 128, 1)), 
+                              url("https://philippineshiddengems.com/wp-content/uploads/2025/01/docked-small-boats-at-palawan-philippines.jpg")`, 
             backgroundSize: 'cover', 
             backgroundPosition: 'center', 
-            backgroundAttachment: 'fixed' 
+            backgroundAttachment: 'fixed', /* ⚡ Parallax effect keeps entire image visible on mobile while scrolling ⚡ */
+            backgroundColor: 'var(--teal-color)' 
         }}> 
             <div className="container py-5 position-relative" style={{ zIndex: 2 }}>
+                
                 <div className="section-header scroll-reveal">
-                    {/* ⚡ FIX: Used our new force-white-text class ⚡ */}
+                    {/* ⚡ UPDATED: Forced white color and text-shadow ensure readability against the new teal background ⚡ */}
                     <span className="section-subtitle force-white-text" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.8)' }}>
                         Regional
                     </span>
@@ -202,23 +205,29 @@ const Home = () => {
             </div>
         </section>
 
-        {/* SCENE 2: SUNBATHING */}
-       <section className="scene-section sleep-bg position-relative" style={{ 
-            backgroundImage: `linear-gradient(to right, rgba(233, 196, 106, 0.8), rgba(244, 162, 97, 0.4)), url("${sunbathingImg}")`,
-            backgroundPosition: 'center',
-            backgroundSize: 'cover'
-        }}>
+        {/* --- SCENE 2: BASK UNDER THE SUN --- */}
+        <section className="scene-section bask-sun-bg bask-sun-layout scroll-reveal visible">
             <div className="container">
-                <div className="row align-items-center scene-block scroll-reveal">
-                    <div className="col-lg-6">
-                        <div className="scene-content pe-lg-5" style={{ backgroundColor: 'rgba(255, 255, 255, 0.85)', padding: '2rem', borderRadius: '1rem', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
-                            <span className="section-subtitle" style={{ color: '#E76F51' }}>RELAXATION</span>
-                            <h2 className="scene-title wave-text" style={{ color: 'var(--dark-navy)' }}>Bask Under the Sun</h2>
-                            <p className="scene-text" style={{ color: '#333' }}>Feel the warmth of the tropical sun on your skin as you unwind on some of the world's most beautiful, powdery white sand beaches.</p>
-                            <p className="scene-text" style={{ color: '#333' }}>Let the gentle rhythm of the waves wash your worries away. Whether you are sipping a fresh coconut under a swaying palm tree or wading into crystal-clear turquoise waters, paradise is waiting.</p>
-                            <Link to="/destinations?search=beach" className="btn-text-link mt-2 d-inline-block" style={{ color: '#E76F51' }}>Book a Beach Resort <i className="fa-solid fa-arrow-right"></i></Link>
+                <div className="row align-items-center">
+                    
+                    {/* LEFT COLUMN: Light Blue background with dark text */}
+                    <div className="col-lg-6 bask-sun-text-col">
+                        <div className="scene-content pe-lg-5">
+                            <span className="section-subtitle">RELAXATION</span>
+                            <h2 className="scene-title wave-text">Bask Under the Sun</h2>
+                            <p className="scene-text">Feel the warmth of the tropical sun on your skin as you unwind on some of the world's most beautiful, powdery white sand beaches.</p>
+                            <p className="scene-text">Let the gentle rhythm of the waves wash your worries away. Whether you are sipping a fresh coconut under a swaying palm tree or wading into crystal-clear turquoise waters, paradise is waiting.</p>
+                            <Link to="/destinations?search=beach" className="btn-text-link">Book a Beach Resort <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
                     </div>
+
+                    {/* RIGHT COLUMN: Warm Golden background with blended image composition */}
+                    <div className="col-lg-6 bask-sun-img-col d-flex align-items-center justify-content-center">
+                        <div className="bask-sun-image-composition position-relative overflow-hidden rounded-4 shadow-lg h-100 w-100" style={{ backgroundImage: `url("${sunbathingImg}")`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '400px' }}>
+                            <div className="bask-sun-golden-overlay position-absolute w-100 h-100 top-0 start-0"></div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </section>
@@ -232,12 +241,12 @@ const Home = () => {
                 </div>
                 
                 <div className="fanned-stack-container scroll-reveal mt-4" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEndPkg}>
-                    <button className="stack-nav-btn prev-btn" onClick={() => rotateStack('pkg', 'prev')}><i className="fa-solid fa-chevron-left"></i></button>
-                    <button className="stack-nav-btn next-btn" onClick={() => rotateStack('pkg', 'next')}><i className="fa-solid fa-chevron-right"></i></button>
+                    <button className="stack-nav-btn prev-btn shadow-lg" onClick={() => rotateStack('pkg', 'prev')}><i className="fa-solid fa-chevron-left"></i></button>
+                    <button className="stack-nav-btn next-btn shadow-lg" onClick={() => rotateStack('pkg', 'next')}><i className="fa-solid fa-chevron-right"></i></button>
                     
                     {tourPackages.slice(0, 6).map((pkg, index) => (
                         <div key={pkg.id} className={`fanned-card-wrapper ${pkgPositions[index]}`}>
-                            <div className="card" onClick={() => handleCardClick(pkgPositions[index], '/tours', 'pkg')} style={{ cursor: 'pointer' }}>
+                            <div className="card shadow" onClick={() => handleCardClick(pkgPositions[index], '/tours', 'pkg')} style={{ cursor: 'pointer' }}>
                                 <div className="card-img-wrapper">
                                     <span className="card-badge">{pkg.duration || '3 Days / 2 Nights'}</span>
                                     <img src={pkg.img} className="card-img-top" alt={pkg.name} />
@@ -257,7 +266,7 @@ const Home = () => {
                 </div>
 
                 <div className="text-center mt-5 scroll-reveal">
-                    <Link to="/tours" className="hero-btn">Explore All Tours</Link>
+                    <Link to="/tours" className="hero-btn shadow-lg">Explore All Tours</Link>
                 </div>
             </div>
         </section>
