@@ -201,15 +201,20 @@ const Home = () => {
         </section>
 
         {/* SCENE 2: SUNBATHING */}
-        <section className="scene-section sleep-bg" style={{ backgroundImage: `url("${sunbathingImg}")` }}>
+       <section className="scene-section sleep-bg position-relative" style={{ 
+            backgroundImage: `linear-gradient(to right, rgba(233, 196, 106, 0.8), rgba(244, 162, 97, 0.4)), url("${sunbathingImg}")`,
+            backgroundPosition: 'center',
+            backgroundSize: 'cover'
+        }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal">
                     <div className="col-lg-6">
-                        <div className="scene-content pe-lg-5">
-                            <span className="section-subtitle">IMMERSION</span>
-                            <h2 className="scene-title wave-text">Sleep Under the Stars</h2>
-                            <p className="scene-text">Disconnect to reconnect. Experience the serenity of a night in the wild, with nothing but the crackle of a campfire and the starry sky above.</p>
-                            <Link to="/destinations?search=beach" className="btn-text-link">Book a Resort Stay <i className="fa-solid fa-arrow-right"></i></Link>
+                        <div className="scene-content pe-lg-5" style={{ backgroundColor: 'rgba(255, 255, 255, 0.85)', padding: '2rem', borderRadius: '1rem', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
+                            <span className="section-subtitle" style={{ color: '#E76F51' }}>RELAXATION</span>
+                            <h2 className="scene-title wave-text" style={{ color: 'var(--dark-navy)' }}>Bask Under the Sun</h2>
+                            <p className="scene-text" style={{ color: '#333' }}>Feel the warmth of the tropical sun on your skin as you unwind on some of the world's most beautiful, powdery white sand beaches.</p>
+                            <p className="scene-text" style={{ color: '#333' }}>Let the gentle rhythm of the waves wash your worries away. Whether you are sipping a fresh coconut under a swaying palm tree or wading into crystal-clear turquoise waters, paradise is waiting.</p>
+                            <Link to="/destinations?search=beach" className="btn-text-link mt-2 d-inline-block" style={{ color: '#E76F51' }}>Book a Beach Resort <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
                     </div>
                 </div>
