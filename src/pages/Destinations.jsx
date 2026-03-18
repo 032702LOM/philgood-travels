@@ -231,7 +231,7 @@ const Destinations = () => {
             {/* ⚡ The filter bar was removed from here! ⚡ */}
             <div className="container text-center mb-4 scroll-reveal visible">
                 <h1 className="hero-title transparent-text" style={{ fontSize: '4rem' }}>{t('dest_title', 'Find Your Place')}</h1>
-                <p className="section-desc mb-0 transparent-text">Browse the best accommodations in the Philippines</p>
+                
             </div>
         </section>
 
