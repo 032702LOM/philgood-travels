@@ -105,7 +105,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 #navbarNav .navbar-nav .nav-link { 
     font-family: 'Montserrat', sans-serif; 
     color: rgba(255,255,255,0.9) !important; 
-    font-weight: 600; 
+    font-weight: 700; 
     margin: 0 15px; 
     text-transform: uppercase;
     font-size: 0.85rem;
@@ -113,22 +113,37 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
     position: relative;
     transition: color 0.3s ease; 
     text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    padding-bottom: 8px; /* Adds space for the underline */
 }
 
-.navbar.scrolled #navbarNav .navbar-nav .nav-link { text-shadow: none; }
+.navbar.scrolled #navbarNav .navbar-nav .nav-link { 
+    text-shadow: none; 
+}
 
-#navbarNav .navbar-nav .nav-link.active { color: var(--accent-color) !important; }
-#navbarNav .navbar-nav .nav-link:hover,
-#navbarNav .navbar-nav .nav-link.active:hover { color: var(--accent-hover) !important; }
+/* Force the exact same Orange color for Hover and Active states */
+#navbarNav .navbar-nav .nav-link.active,
+#navbarNav .navbar-nav .nav-link:hover { 
+    color: var(--accent-color) !important; 
+}
 
-/* Underline Animation */
+/* Unified Underline Animation */
 #navbarNav .navbar-nav .nav-link::after {
-    content: ''; position: absolute; width: 0; height: 2px;
-    bottom: -5px; left: 50%; background-color: var(--accent-hover);
-    transition: all 0.3s ease; transform: translateX(-50%);
+    content: ''; 
+    position: absolute; 
+    width: 0; 
+    height: 2px;
+    bottom: 0px; 
+    left: 50%; 
+    background-color: var(--accent-color);
+    transition: all 0.3s ease; 
+    transform: translateX(-50%);
 }
-#navbarNav .navbar-nav .nav-link.active::after { width: 100%; background-color: var(--accent-color) !important; }
-#navbarNav .navbar-nav .nav-link:hover::after { width: 100%; background-color: var(--accent-hover) !important; }
+
+#navbarNav .navbar-nav .nav-link.active::after,
+#navbarNav .navbar-nav .nav-link:hover::after { 
+    width: 100%; 
+    background-color: var(--accent-color) !important; 
+}
 
 .btn-book-nav { background-color: var(--accent-color); color: var(--dark-navy) !important; border-radius: 4px; padding: 8px 20px; font-weight: 800; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
 .btn-book-nav:hover { background-color: var(--accent-hover); color: #FFF !important; }
@@ -164,7 +179,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 }
 
 /* Inner Page Heroes - Applies to ALL pages (100% full screen on Desktop) */
-.destinations-hero, .gallery-hero, .tours-hero, .contact-hero, .booking-hero, .detail-hero {
+.home-hero, .destinations-hero, .gallery-hero, .tours-hero, .contact-hero, .booking-hero, .detail-hero {
     background-size: cover !important; 
     background-position: center center !important;
     height: 100vh !important; 
@@ -317,7 +332,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .scene-block:last-child { margin-bottom: 0; }
 
 .scene-content {
-    background-color: var(--bg-dark) !important;
+    background-color: transparent !important; 
     box-shadow: none !important;
     border: none !important;
 }
@@ -325,12 +340,12 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .scene-title { font-size: 3rem; margin-bottom: 20px; color: var(--dark-navy); }
 .scene-text { color: var(--text-grey); font-size: 1.1rem; line-height: 1.8; margin-bottom: 25px; }
 
-.trail-makers-bg, .dive-bg, .sleep-bg {
+.trail-makers-bg, .dive-bg, .bask-sun-bg { 
     background-repeat: no-repeat !important;
 }
 
 @media (min-width: 992px) {
-    .trail-makers-bg, .dive-bg, .sleep-bg {
+    .trail-makers-bg, .dive-bg, .bask-sun-bg {
         background-position: right center !important;
         background-size: 45% auto !important; 
     }
@@ -682,13 +697,6 @@ footer { position: relative; background-color: var(--dark-navy); color: #E0F7FA;
 /* =========================================
    16. FRONTEND POLISH & MODAL TABS
    ========================================= */
-.navbar-nav .nav-link { position: relative; transition: color 0.3s ease; }
-.navbar-nav .nav-link.active, .navbar-nav .nav-link:hover { color: var(--accent-color) !important; }
-.navbar-nav .nav-link.active::after {
-    content: ''; position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%);
-    width: 5px; height: 5px; background-color: var(--accent-color); border-radius: 50%;
-}
-
 .social-hover { transition: color 0.3s ease, transform 0.3s ease; }
 .social-hover:hover { color: var(--primary-color) !important; transform: translateY(-2px); }
 
@@ -727,8 +735,6 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
 }
 [data-theme="light"] .navbar.scrolled .nav-link,
 [data-theme="light"] .navbar.scrolled .navbar-brand { color: #333 !important; }
-[data-theme="light"] .navbar.scrolled .nav-link:hover,
-[data-theme="light"] .navbar.scrolled .nav-link.active { color: var(--primary-color) !important; }
 
 [data-theme="light"] [style*="background-color: #021625"],
 [data-theme="light"] [style*="background-color: rgb(2, 22, 37)"],
@@ -763,7 +769,7 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
    ========================================= */
 @media (max-width: 991px) {
     /* Hero Sections - Responsive Mobile Banner */
-    .carousel-item,
+    .home-hero, .carousel-item,
     .destinations-hero, .gallery-hero, .tours-hero, .contact-hero, .booking-hero, .detail-hero {
         background-size: cover !important; 
         background-position: center center !important;
@@ -780,7 +786,7 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
     .hero-title { font-size: 3.5rem !important; }
 
     /* Scene Images - Force to bottom */
-    .dive-bg, .sleep-bg {
+    .dive-bg, .bask-sun-bg { /* Updated classes */
         background-position: bottom center !important;
         background-size: 80% auto !important; 
         padding-bottom: 350px !important; 
@@ -795,7 +801,7 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
     
     /* Scene Text - Perfectly matched to background on mobile */
     .scene-content {
-        background-color: var(--bg-dark) !important;
+        background-color: transparent !important; 
         padding: 0 !important; 
         text-align: center;
         box-shadow: none !important;
@@ -860,7 +866,7 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
 @media (max-width: 576px) {
     .hero-title { font-size: 2.8rem !important; }
     
-    .dive-bg, .sleep-bg { 
+    .dive-bg, .bask-sun-bg { /* Updated classes */
         background-size: 100% auto !important; 
         padding-bottom: 300px !important; 
     }
@@ -946,4 +952,36 @@ footer .text-white-50,
     height: 100%;
     background-color: rgba(0, 0, 0, 0.2); 
     z-index: 1;
+}
+
+/* ⚡ 23. SPLIT SECTION LAYOUT FOR BASK UNDER THE SUN ⚡ */
+.bask-sun-bg {
+    background-color: transparent !important; 
+    padding: 0;
+}
+
+.bask-sun-layout .container {
+    padding-top: 80px;
+    padding-bottom: 80px;
+}
+
+.bask-sun-text-col {
+    background-color: var(--bg-dark); /* Light Sky Blue */
+    padding-right: 5rem !important;
+}
+
+.bask-sun-img-col {
+    padding-left: 0 !important;
+}
+
+/* ⚡ Golden-hour composition for the blended image composition ⚡ */
+.bask-sun-image-composition {
+    background-color: #E9C46A; /* Warm Golden Derived from user image */
+}
+
+.bask-sun-golden-overlay {
+    /* Create a warm, vintage filter that blends the image with the bg color */
+    background-color: rgba(233, 196, 106, 0.6); /* Semi-transparent golden */
+    backdrop-filter: blur(2px); /* A small blur can help blend */
+    mix-blend-mode: color; /* Blend the golden color into the image details */
 }
