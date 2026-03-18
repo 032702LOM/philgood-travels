@@ -88,7 +88,7 @@ export const allPlaces = [
     },
     {
         id: 'Manila-C', region: 'Manila', name: 'Okada Manila', type: 'Resort Hotel / City', price: 16000,
-        img: 'https://www.tigerresort.com/images/okadabanner02.png', panorama: 'https://tours.exsight360.com/okada/index.html', lat: 14.5161, lon: 120.9824, 
+        img: 'https://www.tigerresort.com/images/okadabanner02.png', panorama: 'https://pannellum.org/images/alma.jpg', lat: 14.5161, lon: 120.9824, 
         payment: ['Pay at the hotel', 'Pay now', 'Book now, pay later'], travelStyle: ['Resort Hotel', 'City'], roomOffers: ['Breakfast included', 'Espresso machine with pods', 'Delivery from nearby convenience store'], facilities: ['Swimming pool', 'Internet', 'Gym/fitness', 'Spa/sauna', 'Nightclub', 'Restaurants', 'Front desk [24-hour]'], family: 'Kids stay for free', distance: '>10 km to center', bed: ['King', 'Single/twin'], bedrooms: ['1 bedroom/studio', '3+ bedrooms']
     },
     {
