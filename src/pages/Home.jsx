@@ -155,13 +155,16 @@ const Home = () => {
 
         {/* --- POPULAR DESTINATIONS --- */}
         <section className="py-5 destinations-bg position-relative" style={{ backgroundImage: `url("https://philippineshiddengems.com/wp-content/uploads/2025/01/docked-small-boats-at-palawan-philippines.jpg")`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' }}> 
-            <div className="container py-5 position-relative" style={{ zIndex: 2 }}>
-                <div className="section-header scroll-reveal">
-                    <span className="section-subtitle text-white">Regional</span>
-                    {/* âš¡ 1. TARGET TITLE TEXT IS NOW WHITE âš¡ */}
-                    <h2 className="section-title wave-text text-white">{t('pop_dest', 'Most Popular Destinations')}</h2>
-                    {/* âš¡ TARGET SUBTEXT IS ALREADY WHITE âš¡ */}
-                    <p className="section-desc text-white-50">Discover the key regions and landmarks the Philippines has to offer.</p>
+            <div className="section-header scroll-reveal">
+                    <span className="section-subtitle" style={{ color: '#FFFFFF', textShadow: '1px 1px 4px rgba(0,0,0,0.8)' }}>
+                        Regional
+                    </span>
+                    <h2 className="section-title wave-text" style={{ color: '#FFFFFF', textShadow: '2px 2px 8px rgba(0,0,0,0.9)' }}>
+                        {t('pop_dest', 'Most Popular Destinations')}
+                    </h2>
+                    <p className="section-desc fw-bold" style={{ color: '#FFFFFF', textShadow: '1px 1px 4px rgba(0,0,0,0.8)' }}>
+                        Discover the key regions and landmarks the Philippines has to offer.
+                    </p>
                 </div>
                 
                 <div className="fanned-stack-container scroll-reveal mt-4" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEndDest}>
