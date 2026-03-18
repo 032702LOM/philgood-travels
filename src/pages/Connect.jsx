@@ -14,7 +14,6 @@ const Connect = () => {
   };
 
   return (
-   {/* ⚡ FIX: The image is now the background for the entire page, and fixed in place for a parallax effect ⚡ */}
    <div className="fade-in position-relative" style={{ 
         minHeight: '100vh', 
         backgroundImage: `url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=100&w=2560&auto=format&fit=crop')`, 
@@ -22,6 +21,7 @@ const Connect = () => {
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed'
     }}>
+      {/* ⚡ FIX: Moved the comment inside the parent div so React can render properly ⚡ */}
       
       {/* ⚡ NEW: A subtle dark overlay ensures the text and cards pop against the bright image ⚡ */}
       <div className="position-absolute top-0 start-0 w-100 h-100" style={{ backgroundColor: 'rgba(0, 31, 63, 0.4)', zIndex: 1 }}></div>
