@@ -154,22 +154,30 @@ const Home = () => {
         </section>
 
         {/* --- POPULAR DESTINATIONS --- */}
-        {/* ⚡ NEW BACKGROUND IMAGE APPLIED HERE ⚡ */}
-        <section className="py-5 destinations-bg position-relative" style={{ backgroundImage: `linear-gradient(rgba(2, 26, 46, 0.85), rgba(2, 26, 46, 0.85)), url("https://philippineshiddengems.com/wp-content/uploads/2025/01/docked-small-boats-at-palawan-philippines.jpg")`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' }}> 
+        <section className="py-5 destinations-bg position-relative" style={{ 
+            backgroundImage: `url("https://philippineshiddengems.com/wp-content/uploads/2025/01/docked-small-boats-at-palawan-philippines.jpg")`, 
+            backgroundSize: 'cover', 
+            backgroundPosition: 'center', 
+            backgroundAttachment: 'fixed' 
+        }}> 
             <div className="container py-5 position-relative" style={{ zIndex: 2 }}>
                 <div className="section-header scroll-reveal">
-                    <span className="section-subtitle">Regional</span>
-                    <h2 className="section-title wave-text">{t('pop_dest', 'Most Popular Destinations')}</h2>
-                    <p className="section-desc">Discover the key regions and landmarks the Philippines has to offer.</p>
+                    <span className="section-subtitle" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.8)' }}>Regional</span>
+                    <h2 className="section-title wave-text text-white" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.9)' }}>
+                        {t('pop_dest', 'Most Popular Destinations')}
+                    </h2>
+                    <p className="section-desc text-white fw-bold" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.8)' }}>
+                        Discover the key regions and landmarks the Philippines has to offer.
+                    </p>
                 </div>
                 
                 <div className="fanned-stack-container scroll-reveal mt-4" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEndDest}>
-                    <button className="stack-nav-btn prev-btn" onClick={() => rotateStack('dest', 'prev')}><i className="fa-solid fa-chevron-left"></i></button>
-                    <button className="stack-nav-btn next-btn" onClick={() => rotateStack('dest', 'next')}><i className="fa-solid fa-chevron-right"></i></button>
+                    <button className="stack-nav-btn prev-btn shadow-lg" onClick={() => rotateStack('dest', 'prev')}><i className="fa-solid fa-chevron-left"></i></button>
+                    <button className="stack-nav-btn next-btn shadow-lg" onClick={() => rotateStack('dest', 'next')}><i className="fa-solid fa-chevron-right"></i></button>
                     
                     {regions.slice(0, 6).map((region, index) => (
                         <div key={region.id} className={`fanned-card-wrapper ${destPositions[index]}`}>
-                            <div className="card" onClick={() => handleCardClick(destPositions[index], `/destinations?region=${region.id}`, 'dest')} style={{ cursor: 'pointer' }}>
+                            <div className="card shadow" onClick={() => handleCardClick(destPositions[index], `/destinations?region=${region.id}`, 'dest')} style={{ cursor: 'pointer' }}>
                                 <div className="card-img-wrapper">
                                     <span className="card-badge">{region.typeBadge || 'View'}</span>
                                     <img src={region.image} className="card-img-top" alt={region.name} />
@@ -185,21 +193,26 @@ const Home = () => {
                 </div>
 
                 <div className="text-center mt-5 scroll-reveal">
-                    <Link to="/destinations" className="hero-btn">View All Destinations</Link>
+                    <Link to="/destinations" className="hero-btn shadow-lg">View All Destinations</Link>
                 </div>
             </div>
         </section>
 
         {/* SCENE 2: SUNBATHING */}
-        <section className="scene-section sleep-bg" style={{ backgroundImage: `url("${sunbathingImg}")` }}>
+        <section className="scene-section sleep-bg position-relative" style={{ 
+            backgroundImage: `linear-gradient(to right, rgba(233, 196, 106, 0.8), rgba(244, 162, 97, 0.4)), url("${sunbathingImg}")`,
+            backgroundPosition: 'center',
+            backgroundSize: 'cover'
+        }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal">
                     <div className="col-lg-6">
-                        <div className="scene-content pe-lg-5">
-                            <span className="section-subtitle">IMMERSION</span>
-                            <h2 className="scene-title wave-text">Sleep Under the Stars</h2>
-                            <p className="scene-text">Disconnect to reconnect. Experience the serenity of a night in the wild, with nothing but the crackle of a campfire and the starry sky above.</p>
-                            <Link to="/destinations?search=beach" className="btn-text-link">Book a Resort Stay <i className="fa-solid fa-arrow-right"></i></Link>
+                        <div className="scene-content pe-lg-5" style={{ backgroundColor: 'rgba(255, 255, 255, 0.85)', padding: '2rem', borderRadius: '1rem', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
+                            <span className="section-subtitle" style={{ color: '#E76F51' }}>RELAXATION</span>
+                            <h2 className="scene-title wave-text" style={{ color: 'var(--dark-navy)' }}>Bask Under the Sun</h2>
+                            <p className="scene-text" style={{ color: '#333' }}>Feel the warmth of the tropical sun on your skin as you unwind on some of the world's most beautiful, powdery white sand beaches.</p>
+                            <p className="scene-text" style={{ color: '#333' }}>Let the gentle rhythm of the waves wash your worries away. Whether you are sipping a fresh coconut under a swaying palm tree or wading into crystal-clear turquoise waters, paradise is waiting.</p>
+                            <Link to="/destinations?search=beach" className="btn-text-link mt-2 d-inline-block" style={{ color: '#E76F51' }}>Book a Beach Resort <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
                     </div>
                 </div>
