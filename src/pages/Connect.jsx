@@ -19,14 +19,16 @@ const Connect = () => {
         backgroundImage: `url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=100&w=2560&auto=format&fit=crop')`, 
         backgroundSize: 'cover', 
         backgroundPosition: 'center',
-        backgroundAttachment: 'fixed'
+        backgroundAttachment: 'fixed',
+        /* ⚡ FIX: This pulls the footer up so the waves overlap the background image seamlessly! ⚡ */
+        marginBottom: '-100px',
+        paddingBottom: '100px'
     }}>
-      {/* ⚡ FIX: Moved the comment inside the parent div so React can render properly ⚡ */}
       
-      {/* ⚡ NEW: A subtle dark overlay ensures the text and cards pop against the bright image ⚡ */}
+      {/* A subtle dark overlay ensures the text and cards pop against the bright image */}
       <div className="position-absolute top-0 start-0 w-100 h-100" style={{ backgroundColor: 'rgba(0, 31, 63, 0.4)', zIndex: 1 }}></div>
 
-      {/* ⚡ NEW: Container pushes content safely below the navbar and gives it room to breathe ⚡ */}
+      {/* Container pushes content safely below the navbar and gives it room to breathe */}
       <div className="container position-relative" style={{ zIndex: 10, paddingTop: '150px', paddingBottom: '100px' }}>
           
           <div className="text-center mb-5 scroll-reveal visible">
@@ -37,7 +39,7 @@ const Connect = () => {
           <div className="row g-5 justify-content-center">
             
             <div className="col-lg-5 scroll-reveal visible">
-              {/* ⚡ ADDED: backdropFilter adds a frosted glass effect to the cards so they blend beautifully with the bg image ⚡ */}
+              {/* backdropFilter adds a frosted glass effect to the cards so they blend beautifully with the bg image */}
               <div className="bg-card-dark p-5 rounded-4 shadow-lg h-100 border border-primary border-opacity-25" style={{ backdropFilter: 'blur(8px)', backgroundColor: 'var(--card-bg)' }}>
                 <h3 className="text-navy font-montserrat fw-bold mb-4">Contact Information</h3>
                 <p className="text-grey mb-5">Our travel experts are ready to assist you. Reach out to us via email, phone, or visit our office.</p>
@@ -75,7 +77,6 @@ const Connect = () => {
             </div>
 
             <div className="col-lg-7 scroll-reveal visible delay-1">
-              {/* ⚡ ADDED: backdropFilter here as well for symmetry ⚡ */}
               <div className="bg-card-dark p-5 rounded-4 shadow-lg border border-primary border-opacity-25" style={{ backdropFilter: 'blur(8px)', backgroundColor: 'var(--card-bg)' }}>
                 <h3 className="text-navy font-montserrat fw-bold mb-4">Send Us a Message</h3>
                 <form onSubmit={handleSubmit}>
