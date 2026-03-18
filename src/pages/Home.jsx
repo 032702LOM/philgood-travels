@@ -7,7 +7,7 @@ import islandParadiseImg from '../assets/img/island_paradise.png';
 import manOnCliffImg from '../assets/img/man on cliff.png'; 
 import sunbathingImg from '../assets/img/sunbathing.png'; 
 import swimImg from '../assets/img/swim.png';
-import promoVideo from '../assets/video/PhilGood_vid.mp4'; 
+import promoVideo from '../assets/video/home.mp4.mp4'; 
 
 const Home = () => {
   const navigate = useNavigate();
