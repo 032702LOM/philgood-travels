@@ -102,7 +102,7 @@ const Home = () => {
                 <div className="hero-overlay w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center">
                     <div className="container scroll-reveal">
                         <h1 className="hero-title transparent-text">Island Paradise</h1>
-                    
+                        <p className="hero-subtitle text-white fw-bold mb-4">Relax on pristine white sand beaches</p>
                         <Link to="/booking" className="hero-btn">BOOK NOW</Link>
                     </div>
                 </div>
@@ -153,21 +153,18 @@ const Home = () => {
             </div>
         </section>
 
-        {/* --- POPULAR DESTINATIONS (UPDATED) --- */}
+        {/* --- POPULAR DESTINATIONS --- */}
         <section className="py-5 destinations-bg position-relative" style={{ 
-            /* ⚡ UPDATED: Achieves top-down blending. High-res image is fully visible and sharp ⚡ */
-            backgroundImage: `linear-gradient(rgba(0, 128, 128, 0.3), rgba(0, 128, 128, 1)), 
-                              url("https://philippineshiddengems.com/wp-content/uploads/2025/01/docked-small-boats-at-palawan-philippines.jpg")`, 
+            backgroundImage: `linear-gradient(to bottom, transparent, var(--bg-dark)), url("https://philippineshiddengems.com/wp-content/uploads/2025/01/docked-small-boats-at-palawan-philippines.jpg")`, 
             backgroundSize: 'cover', 
             backgroundPosition: 'center', 
-            backgroundAttachment: 'fixed', /* ⚡ Parallax effect keeps entire image visible on mobile while scrolling ⚡ */
-            backgroundColor: 'var(--teal-color)' 
+            backgroundAttachment: 'fixed' 
         }}> 
             <div className="container py-5 position-relative" style={{ zIndex: 2 }}>
-                
                 <div className="section-header scroll-reveal">
-                    {/* ⚡ UPDATED: Forced white color and text-shadow ensure readability against the new teal background ⚡ */}
-                    <span className="section-subtitle">REGIONAL</span>
+                    <span className="section-subtitle force-white-text" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.8)' }}>
+                        Regional
+                    </span>
                     <h2 className="section-title wave-text force-white-text" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.9)' }}>
                         {t('pop_dest', 'Most Popular Destinations')}
                     </h2>
@@ -203,17 +200,10 @@ const Home = () => {
             </div>
         </section>
 
-      
-        {/* --- SCENE 2: BASK UNDER THE SUN --- */}
-        <section className="scene-section bask-sun-bg" style={{ 
-            backgroundImage: `url("${sunbathingImg}")`,
-            paddingTop: '150px',    /* ⚡ FIX: Pushes text away from the top edge */
-            paddingBottom: '150px', /* ⚡ FIX: Adds breathing room at the bottom */
-            minHeight: '650px'      /* ⚡ FIX: Forces container to be tall enough on 22-inch screens */
-        }}>
+        {/* --- SCENE 2: BASK UNDER THE SUN (MIMICS DIVE SECTION) --- */}
+        <section className="scene-section bask-sun-bg" style={{ backgroundImage: `url("${sunbathingImg}")` }}>
             <div className="container">
-                {/* Added inline marginBottom: 0 to prevent excessive empty space below the text */}
-                <div className="row align-items-center scene-block scroll-reveal" style={{ marginBottom: 0 }}>
+                <div className="row align-items-center scene-block scroll-reveal">
                     <div className="col-lg-6">
                         <div className="scene-content pe-lg-5">
                             <span className="section-subtitle">RELAXATION</span>
@@ -250,7 +240,7 @@ const Home = () => {
                                     <div className="card-location"><i className="fa-solid fa-location-dot"></i> {pkg.locationLabel || pkg.region || 'Philippines'}</div>
                                     <h5 className="card-title"><span className="region-text">{pkg.name}</span></h5>
                                     <p className="card-text text-white-50">{pkg.desc || pkg.type || 'Experience the beauty of the Philippines.'}</p>
-                                    <div className="d-flex justify-content-between align-items-center mt-3 border-top pt-3" style={{borderColor: 'rgba(0,0,0,0.1)'}}>
+                                    <div className="d-flex justify-content-between align-items-center mt-3 border-top pt-3" style={{borderColor: 'var(--border-color)'}}>
                                         <span className="fw-bold fs-5" style={{ color: '#2A9D8F' }}>{formatPrice(pkg.price)}</span>
                                         <Link to="/tours" className="btn btn-view-details" onClick={(e) => e.stopPropagation()}>{t('view_details', 'View')}</Link>
                                     </div>
