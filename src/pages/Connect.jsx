@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { usePreferences } from '../context/PreferencesContext';
+/* ⚡ FIX: Imported the local image from your assets folder ⚡ */
+import connectBgImg from '../assets/img/Letsconnect.png';
 
 const Connect = () => {
   const { t } = usePreferences();
@@ -16,7 +18,8 @@ const Connect = () => {
   return (
    <div className="fade-in position-relative" style={{ 
         minHeight: '100vh', 
-        backgroundImage: `url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=100&w=2560&auto=format&fit=crop')`, 
+        /* ⚡ FIX: Replaced the Unsplash URL with the imported local image variable ⚡ */
+        backgroundImage: `url(${connectBgImg})`, 
         backgroundSize: 'cover', 
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
@@ -24,12 +27,9 @@ const Connect = () => {
         paddingBottom: '100px'
     }}>
       
-      {/* ⚡ FIX: The dark overlay div has been completely removed so the image is 100% clear! ⚡ */}
-
       <div className="container position-relative" style={{ zIndex: 10, paddingTop: '150px', paddingBottom: '100px' }}>
           
           <div className="text-center mb-5 scroll-reveal visible">
-              {/* The text-shadows here will keep the text readable against the bright, clear sky */}
               <h1 className="hero-title transparent-text" style={{ fontSize: '4rem', textShadow: '2px 2px 10px rgba(0,0,0,0.8)' }}>{t('conn_title', 'Let us Connect')}</h1>
               <p className="section-desc mb-0 force-white-text fw-bold" style={{ textShadow: '1px 1px 6px rgba(0,0,0,0.9)' }}>We're here to help you plan your perfect escape.</p>
           </div>
