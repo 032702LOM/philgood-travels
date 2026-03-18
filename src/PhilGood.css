@@ -985,3 +985,9 @@ footer .text-white-50,
     backdrop-filter: blur(2px); /* A small blur can help blend */
     mix-blend-mode: color; /* Blend the golden color into the image details */
 }
+/* =========================================
+   24. BULLETPROOF TEXT OVERRIDES
+   ========================================= */
+.force-white-text {
+    color: #FFFFFF !important;
+}
