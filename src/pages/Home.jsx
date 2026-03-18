@@ -7,6 +7,7 @@ import islandParadiseImg from '../assets/img/island_paradise.png';
 import manOnCliffImg from '../assets/img/man on cliff.png'; 
 import sunbathingImg from '../assets/img/sunbathing.png'; 
 import swimImg from '../assets/img/swim.png';
+import promoVideo from '../assets/video/PhilGood_vid.mp4'; 
 
 const Home = () => {
   const navigate = useNavigate();
@@ -131,8 +132,26 @@ const Home = () => {
                 <button className="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next"><span className="carousel-control-next-icon"></span></button>
             </div>
 
+            {/* ⚡ PROMO VIDEO OVERLAP ⚡ */}
+            <div className="container position-relative text-center scroll-reveal" style={{ zIndex: 10, marginTop: '-150px', marginBottom: '80px' }}>
+                <div className="shadow-lg rounded-4 overflow-hidden mx-auto" style={{ maxWidth: '800px', border: '6px solid white', backgroundColor: '#000' }}>
+                    <video 
+                        autoPlay 
+                        loop 
+                        muted 
+                        playsInline 
+                        controls
+                        className="w-100 h-auto" 
+                        style={{ display: 'block', maxHeight: '450px', objectFit: 'cover' }}
+                    >
+                        <source src={promoVideo} type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+
             {/* ⚡ STATS SECTION ⚡ */}
-            <div className="container py-5">
+            <div className="container pb-5">
                 <div className="stats-container row text-center g-4">
                     <div className="col-md-4"><div className="stat-card scroll-reveal"><i className="fa-solid fa-user-group"></i><h3 className="stat-number">12,000+</h3><span className="stat-label">SATISFIED CLIENTS</span></div></div>
                     <div className="col-md-4"><div className="stat-card scroll-reveal delay-1"><i className="fa-regular fa-calendar-check"></i><h3 className="stat-number">3,500+</h3><span className="stat-label">TOURS ORGANIZED</span></div></div>
