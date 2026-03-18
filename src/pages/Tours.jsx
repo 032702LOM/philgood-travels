@@ -118,7 +118,7 @@ const Tours = () => {
         </section>
 
         {showModal && selectedTour && (
-            <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'var(--dark-navy)', backdropFilter: 'blur(5px)', zIndex: 1060 }}>
+            <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'transparent', backdropFilter: 'blur(5px)', zIndex: 1060 }}>
                 <div className="modal-dialog modal-dialog-centered calculate-modal-dialog"> 
                     <div className="modal-content calculate-modal-content border-0 shadow-lg" style={{ backgroundColor: 'var(--card-bg)' }}>
                         <div className="modal-header border-0 pb-1"><h4 className="modal-title text-navy fw-bold" id="calculateModalLabel">{t('calc_price', 'CALCULATE TOTAL PRICE')}</h4></div>
