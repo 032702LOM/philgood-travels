@@ -20,26 +20,23 @@ const Connect = () => {
         backgroundSize: 'cover', 
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
-        /* ⚡ FIX: This pulls the footer up so the waves overlap the background image seamlessly! ⚡ */
         marginBottom: '-100px',
         paddingBottom: '100px'
     }}>
       
-      {/* A subtle dark overlay ensures the text and cards pop against the bright image */}
-      <div className="position-absolute top-0 start-0 w-100 h-100" style={{ backgroundColor: 'rgba(0, 31, 63, 0.4)', zIndex: 1 }}></div>
+      {/* ⚡ FIX: The dark overlay div has been completely removed so the image is 100% clear! ⚡ */}
 
-      {/* Container pushes content safely below the navbar and gives it room to breathe */}
       <div className="container position-relative" style={{ zIndex: 10, paddingTop: '150px', paddingBottom: '100px' }}>
           
           <div className="text-center mb-5 scroll-reveal visible">
-              <h1 className="hero-title transparent-text" style={{ fontSize: '4rem', textShadow: '2px 2px 10px rgba(0,0,0,0.6)' }}>{t('conn_title', 'Let us Connect')}</h1>
-              <p className="section-desc mb-0 force-white-text fw-bold" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.9)' }}>We're here to help you plan your perfect escape.</p>
+              {/* The text-shadows here will keep the text readable against the bright, clear sky */}
+              <h1 className="hero-title transparent-text" style={{ fontSize: '4rem', textShadow: '2px 2px 10px rgba(0,0,0,0.8)' }}>{t('conn_title', 'Let us Connect')}</h1>
+              <p className="section-desc mb-0 force-white-text fw-bold" style={{ textShadow: '1px 1px 6px rgba(0,0,0,0.9)' }}>We're here to help you plan your perfect escape.</p>
           </div>
 
           <div className="row g-5 justify-content-center">
             
             <div className="col-lg-5 scroll-reveal visible">
-              {/* backdropFilter adds a frosted glass effect to the cards so they blend beautifully with the bg image */}
               <div className="bg-card-dark p-5 rounded-4 shadow-lg h-100 border border-primary border-opacity-25" style={{ backdropFilter: 'blur(8px)', backgroundColor: 'var(--card-bg)' }}>
                 <h3 className="text-navy font-montserrat fw-bold mb-4">Contact Information</h3>
                 <p className="text-grey mb-5">Our travel experts are ready to assist you. Reach out to us via email, phone, or visit our office.</p>
