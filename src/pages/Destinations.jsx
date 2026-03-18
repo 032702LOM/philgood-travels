@@ -330,7 +330,7 @@ const Destinations = () => {
                                                     <input className="form-check-input filter-checkbox" type="checkbox" onChange={() => handleToggleCheckbox(option)} checked={isActive} id={`filter-${option.replace(/[^a-zA-Z0-9]/g, '-')}`} />
                                                     <label className="form-check-label w-100 d-flex justify-content-between align-items-center text-grey" htmlFor={`filter-${option.replace(/[^a-zA-Z0-9]/g, '-')}`}>
                                                         <span className={isActive ? 'text-primary-dark fw-bold' : ''}>{option}</span>
-                                                        <span className="badge bg-primary bg-opacity-10 text-primary-dark">{count}</span>
+                                                        <span className="badge" style={{ backgroundColor: 'var(--primary-dark)', color: '#FFFFFF' }}>{count}</span>
                                                     </label>
                                                 </div>
                                             );
