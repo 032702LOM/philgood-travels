@@ -34,14 +34,12 @@ const Destinations = () => {
     { title: 'Beach Access', field: 'beachAccess', options: ['Public beach', 'Private beach'] }
   ];
 
-  // Safely grab hotel names for the Accommodation dropdown based on the Region Dropdown
   const hotelsForDropdown = selectedRegion === 'All' 
     ? allPlaces 
     : allPlaces.filter(p => p.region.toLowerCase().trim() === selectedRegion.toLowerCase().trim());
 
   const isDefaultView = selectedRegion === 'All' && selectedHotel === '' && searchKeyword === '' && activeCheckboxes.length === 0;
 
-  // --- MOBILE SWIPE LOGIC ---
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
   const minSwipeDistance = 50; 
@@ -58,7 +56,6 @@ const Destinations = () => {
     if (distance < -minSwipeDistance) rotateRegionStack('prev'); 
   };
 
-  // ⚡ URL TRANSLATOR: Instantly converts old Boracay/Banaue links to Aklan/Ifugao
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const searchParam = params.get('search');
@@ -71,7 +68,6 @@ const Destinations = () => {
     
     if (regionParam) {
       let mappedRegion = regionParam;
-      // Force exact matches so the filter doesn't fail
       if (regionParam.toLowerCase() === 'boracay') mappedRegion = 'Aklan';
       if (regionParam.toLowerCase() === 'banaue') mappedRegion = 'Ifugao';
       
@@ -91,7 +87,6 @@ const Destinations = () => {
     });
   };
 
-  // ⚡ BULLETPROOF FILTER: Ignores spaces and capitalization
   const baseFilteredPlaces = allPlaces.filter(p => {
     let match = true;
     
@@ -128,8 +123,11 @@ const Destinations = () => {
     }).length;
   };
 
+  // ⚡ UPDATED: Check for Okada or external tours to bypass Pannellum
   useEffect(() => {
-    if (view === 'detail' && selectedPlace && selectedPlace.panorama) {
+    const isExternalTour = selectedPlace?.virtualTourUrl || (selectedPlace?.name && selectedPlace.name.includes('Okada'));
+
+    if (view === 'detail' && selectedPlace && selectedPlace.panorama && !isExternalTour) {
       if (window.myPannellumViewer) window.myPannellumViewer.destroy();
       setTimeout(() => {
         if (document.getElementById('panorama') && window.pannellum) {
@@ -198,7 +196,21 @@ const Destinations = () => {
                     </div>
                     <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box">
                         <h6 className="text-accent fw-bold mb-3 font-montserrat">360° VIEW</h6>
-                        <div id="panorama" className="rounded-3 border border-secondary border-opacity-25 shadow" style={{ width: '100%', height: '400px', backgroundColor: '#000' }}></div>
+                        
+                        {/* ⚡ UPDATED: Renders iframe for Okada, otherwise uses Pannellum ⚡ */}
+                        {selectedPlace.virtualTourUrl || (selectedPlace.name && selectedPlace.name.includes('Okada')) ? (
+                            <iframe 
+                                src={selectedPlace.virtualTourUrl || 'https://tours.exsight360.com/okada/index.html'} 
+                                className="rounded-3 border border-secondary border-opacity-25 shadow" 
+                                style={{ width: '100%', height: '400px', border: 'none', backgroundColor: '#000' }} 
+                                allow="xr-spatial-tracking; vr; gyroscope; accelerometer; fullscreen"
+                                allowFullScreen 
+                                title={`${selectedPlace.name} 360 Tour`}
+                            ></iframe>
+                        ) : (
+                            <div id="panorama" className="rounded-3 border border-secondary border-opacity-25 shadow" style={{ width: '100%', height: '400px', backgroundColor: '#000' }}></div>
+                        )}
+
                     </div>
                 </div>
 
@@ -228,17 +240,14 @@ const Destinations = () => {
   return (
     <div id="destinations-main-view" className="fade-in">
         <section className="destinations-hero" style={{ backgroundImage: `url("${heroImg}")`, marginTop: 0 }}>
-            {/* ⚡ The filter bar was removed from here! ⚡ */}
             <div className="container text-center mb-4 scroll-reveal visible">
                 <h1 className="hero-title transparent-text" style={{ fontSize: '4rem' }}>{t('dest_title', 'Find Your Place')}</h1>
-                
             </div>
         </section>
 
         <section id="destinations" className="fade-in py-5" style={{ minHeight: '500px', backgroundColor: 'var(--bg-dark)' }}>
             <div className="container">
                 
-                {/* ⚡ THE MOVED SEARCH FILTER BAR ⚡ */}
                 <div className="search-filter-bar p-4 rounded-4 mx-auto mb-5 shadow-sm scroll-reveal visible" style={{ maxWidth: '900px', zIndex: 10, position: 'relative' }}>
                     <div className="row g-3 align-items-center">
                         <div className="col-md-4">
@@ -277,7 +286,6 @@ const Destinations = () => {
                 </div>
 
                 <div className="row">
-                    {/* SIDEBAR FILTERS */}
                     <div className="col-lg-4 col-xl-3 mb-4 scroll-reveal visible">
                         <div className="d-lg-none mb-3"><button className="btn w-100 d-flex justify-content-between align-items-center p-3 rounded-3 shadow-sm text-navy" type="button" data-bs-toggle="collapse" data-bs-target="#filterSidebar" style={{ backgroundColor: 'var(--card-bg)' }}><span className="font-montserrat fw-bold"><i className="fa-solid fa-sliders text-accent me-2"></i> Filters {activeCheckboxes.length > 0 ? `(${activeCheckboxes.length})` : ''}</span><i className="fa-solid fa-chevron-down"></i></button></div>
                         <div className="collapse d-lg-block" id="filterSidebar">
