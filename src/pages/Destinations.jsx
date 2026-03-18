@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { allPlaces, regions } from '../data/placesData';
 import { usePreferences } from '../context/PreferencesContext';
@@ -21,6 +21,9 @@ const Destinations = () => {
 
   const initialPositions = ['pos-hidden', 'pos-far-left', 'pos-left', 'pos-center', 'pos-right', 'pos-far-right'];
   const [regionPositions, setRegionPositions] = useState(initialPositions);
+
+  // ⚡ NEW: Ref to target the 360 viewer for full screen ⚡
+  const tourRef = useRef(null);
 
   const filterCategories = [
     { title: 'Payment Options', field: 'payment', options: ['Free cancellation', 'Pay at the hotel', 'Book now, pay later', 'Pay now', 'Book without credit card'] },
@@ -123,7 +126,6 @@ const Destinations = () => {
     }).length;
   };
 
-  // ⚡ UPDATED: Check for Okada or external tours to bypass Pannellum
   useEffect(() => {
     const isExternalTour = selectedPlace?.virtualTourUrl || (selectedPlace?.name && selectedPlace.name.includes('Okada'));
 
@@ -154,6 +156,20 @@ const Destinations = () => {
   const handleRefreshWeather = async () => { if (selectedPlace && selectedPlace.lat) { setIsRefreshing(true); await fetchWeather(selectedPlace.lat, selectedPlace.lon); setTimeout(() => setIsRefreshing(false), 800); } };
   const handleOpenDetail = (place) => { setSelectedPlace(place); setView('detail'); if (place.lat && place.lon) fetchWeather(place.lat, place.lon); window.scrollTo(0, 0); };
   const handleCloseDetail = () => { setView('main'); window.scrollTo(0, 0); };
+
+  // ⚡ NEW: Function to trigger the browser's Full Screen API ⚡
+  const handleFullScreen = () => {
+    const elem = tourRef.current;
+    if (!elem) return;
+    
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) { /* Safari */
+        elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { /* IE11 */
+        elem.msRequestFullscreen();
+    }
+  };
 
   if (view === 'detail' && selectedPlace) {
     return (
@@ -194,12 +210,20 @@ const Destinations = () => {
                             {selectedPlace.family && <li className="mb-2"><strong>Family:</strong> {selectedPlace.family}</li>}
                         </ul>
                     </div>
+                    
                     <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box">
-                        <h6 className="text-accent fw-bold mb-3 font-montserrat">360° VIEW</h6>
+                        {/* ⚡ NEW: Header row with the Full Screen button ⚡ */}
+                        <div className="d-flex justify-content-between align-items-center mb-3">
+                            <h6 className="text-accent fw-bold m-0 font-montserrat">360° VIEW</h6>
+                            <button className="btn btn-sm btn-outline-custom" style={{ padding: '4px 12px', fontSize: '0.8rem' }} onClick={handleFullScreen}>
+                                <i className="fa-solid fa-expand me-1"></i> Full Screen
+                            </button>
+                        </div>
                         
-                        {/* ⚡ UPDATED: Renders iframe for Okada, otherwise uses Pannellum ⚡ */}
+                        {/* ⚡ NEW: Added ref={tourRef} to both elements so the button knows what to expand ⚡ */}
                         {selectedPlace.virtualTourUrl || (selectedPlace.name && selectedPlace.name.includes('Okada')) ? (
                             <iframe 
+                                ref={tourRef}
                                 src={selectedPlace.virtualTourUrl || 'https://tours.exsight360.com/okada/index.html'} 
                                 className="rounded-3 border border-secondary border-opacity-25 shadow" 
                                 style={{ width: '100%', height: '400px', border: 'none', backgroundColor: '#000' }} 
@@ -208,7 +232,7 @@ const Destinations = () => {
                                 title={`${selectedPlace.name} 360 Tour`}
                             ></iframe>
                         ) : (
-                            <div id="panorama" className="rounded-3 border border-secondary border-opacity-25 shadow" style={{ width: '100%', height: '400px', backgroundColor: '#000' }}></div>
+                            <div ref={tourRef} id="panorama" className="rounded-3 border border-secondary border-opacity-25 shadow" style={{ width: '100%', height: '400px', backgroundColor: '#000' }}></div>
                         )}
 
                     </div>
