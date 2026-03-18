@@ -14,26 +14,31 @@ const Connect = () => {
   };
 
   return (
-   <div className="fade-in">
+   {/* ⚡ FIX: The image is now the background for the entire page, and fixed in place for a parallax effect ⚡ */}
+   <div className="fade-in position-relative" style={{ 
+        minHeight: '100vh', 
+        backgroundImage: `url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=100&w=2560&auto=format&fit=crop')`, 
+        backgroundSize: 'cover', 
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+    }}>
       
-      <section className="contact-hero position-relative" style={{ marginTop: 0 }}>
-          <div className="hero-overlay w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center">
-              {/* ⚡ FIX: Added translateY to bump the text up slightly, making room for the floating cards below ⚡ */}
-              <div className="container mb-4 scroll-reveal visible" style={{ transform: 'translateY(-50px)' }}>
-                  <h1 className="hero-title transparent-text" style={{ fontSize: '4rem' }}>{t('conn_title', 'Let us Connect')}</h1>
-                  {/* ⚡ FIX: Used the force-white-text class from earlier to guarantee readability ⚡ */}
-                  <p className="section-desc mb-0 force-white-text" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.5)' }}>We're here to help you plan your perfect escape.</p>
-              </div>
-          </div>
-      </section>
+      {/* ⚡ NEW: A subtle dark overlay ensures the text and cards pop against the bright image ⚡ */}
+      <div className="position-absolute top-0 start-0 w-100 h-100" style={{ backgroundColor: 'rgba(0, 31, 63, 0.4)', zIndex: 1 }}></div>
 
-      <section className="pb-5" style={{ backgroundColor: 'var(--bg-dark)', minHeight: '600px' }}>
-        {/* ⚡ FIX: Added negative marginTop (-200px) and relative positioning to pull the cards up over the image ⚡ */}
-        <div className="container position-relative" style={{ zIndex: 10, marginTop: '-200px' }}>
+      {/* ⚡ NEW: Container pushes content safely below the navbar and gives it room to breathe ⚡ */}
+      <div className="container position-relative" style={{ zIndex: 10, paddingTop: '150px', paddingBottom: '100px' }}>
+          
+          <div className="text-center mb-5 scroll-reveal visible">
+              <h1 className="hero-title transparent-text" style={{ fontSize: '4rem', textShadow: '2px 2px 10px rgba(0,0,0,0.6)' }}>{t('conn_title', 'Let us Connect')}</h1>
+              <p className="section-desc mb-0 force-white-text fw-bold" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.9)' }}>We're here to help you plan your perfect escape.</p>
+          </div>
+
           <div className="row g-5 justify-content-center">
             
             <div className="col-lg-5 scroll-reveal visible">
-              <div className="bg-card-dark p-5 rounded-4 shadow-lg h-100 border border-primary border-opacity-10">
+              {/* ⚡ ADDED: backdropFilter adds a frosted glass effect to the cards so they blend beautifully with the bg image ⚡ */}
+              <div className="bg-card-dark p-5 rounded-4 shadow-lg h-100 border border-primary border-opacity-25" style={{ backdropFilter: 'blur(8px)', backgroundColor: 'var(--card-bg)' }}>
                 <h3 className="text-navy font-montserrat fw-bold mb-4">Contact Information</h3>
                 <p className="text-grey mb-5">Our travel experts are ready to assist you. Reach out to us via email, phone, or visit our office.</p>
                 
@@ -70,7 +75,8 @@ const Connect = () => {
             </div>
 
             <div className="col-lg-7 scroll-reveal visible delay-1">
-              <div className="bg-card-dark p-5 rounded-4 shadow-lg border border-primary border-opacity-10">
+              {/* ⚡ ADDED: backdropFilter here as well for symmetry ⚡ */}
+              <div className="bg-card-dark p-5 rounded-4 shadow-lg border border-primary border-opacity-25" style={{ backdropFilter: 'blur(8px)', backgroundColor: 'var(--card-bg)' }}>
                 <h3 className="text-navy font-montserrat fw-bold mb-4">Send Us a Message</h3>
                 <form onSubmit={handleSubmit}>
                   <div className="row g-4">
@@ -86,7 +92,6 @@ const Connect = () => {
 
           </div>
         </div>
-      </section>
     </div>
   );
 };
