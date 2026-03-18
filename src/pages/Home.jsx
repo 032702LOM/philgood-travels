@@ -102,7 +102,7 @@ const Home = () => {
                 <div className="hero-overlay w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center">
                     <div className="container scroll-reveal">
                         <h1 className="hero-title transparent-text">Island Paradise</h1>
-                        <p className="hero-subtitle text-white fw-bold mb-4">Relax on pristine white sand beaches</p>
+                    
                         <Link to="/booking" className="hero-btn">BOOK NOW</Link>
                     </div>
                 </div>
@@ -167,9 +167,7 @@ const Home = () => {
                 
                 <div className="section-header scroll-reveal">
                     {/* ⚡ UPDATED: Forced white color and text-shadow ensure readability against the new teal background ⚡ */}
-                    <span className="section-subtitle force-white-text" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.8)' }}>
-                        Regional
-                    </span>
+                    <span className="section-subtitle">REGIONAL</span>
                     <h2 className="section-title wave-text force-white-text" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.9)' }}>
                         {t('pop_dest', 'Most Popular Destinations')}
                     </h2>
