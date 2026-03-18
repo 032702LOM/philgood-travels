@@ -39,7 +39,7 @@ const Tours = () => {
        <section className="tours-hero" style={{ marginTop: 0, backgroundImage: `url("${heroImg}")` }}>
             <div className="container text-center mb-4 scroll-reveal visible">
                 <h1 className="hero-title transparent-text" style={{ fontSize: '4rem' }}>{t('tours_title', 'Tour Packages')}</h1>
-                <p className="section-desc mb-0 text-white" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.5)' }}>Curated experiences for your perfect vacation</p>
+                
             </div>
         </section>
 
