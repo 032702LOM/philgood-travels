@@ -1,23 +1,24 @@
 const express = require('express');
 const router = express.Router();
 const Booking = require('../models/Booking');
+const User = require('../models/User'); // ⚡ NEW: Added to look up the Lead Booker's name
 const nodemailer = require('nodemailer'); 
 
 // 1. Initialize Stripe using your Secret Key
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-// 2. Set up Nodemailer Transport (Updated for Port 587/Render compatibility)
+// 2. Set up Nodemailer Transport (Updated for Render/Gmail compatibility)
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
-    secure: false, // Port 587 requires this to be false
+    secure: false, 
     requireTLS: true, 
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
     },
     tls: {
-        rejectUnauthorized: false // Helps avoid handshake errors on Render
+        rejectUnauthorized: false 
     }
 });
 
@@ -28,20 +29,27 @@ router.post('/create', async (req, res) => {
     try {
         const { userId, packageName, travelDate, guests, totalPrice, paymentMethod, splitBetween = 1, friendEmails = [] } = req.body;
 
+        // ⚡ NEW: Find the lead user to personalize the invitation email
+        const leadUser = await User.findById(userId);
+        const leadName = leadUser ? leadUser.name : "A friend";
+
         const amountDue = totalPrice / splitBetween;
         let paymentsArray = [];
 
-        // Generate Stripe links for everyone
+        // Generate individual Stripe links for everyone in the group
         for (let i = 0; i < splitBetween; i++) {
             const payerEmail = friendEmails[i] || `guest${i+1}@pending.com`;
 
             const session = await stripe.checkout.sessions.create({
                 payment_method_types: ['card'],
-                customer_email: payerEmail,
+                customer_email: payerEmail.includes('@pending.com') ? undefined : payerEmail,
                 line_items: [{
                     price_data: {
                         currency: 'php',
-                        product_data: { name: `${packageName} - Split Share (${i + 1} of ${splitBetween})` },
+                        product_data: { 
+                            name: `${packageName} - Split Share`,
+                            description: `Payment ${i + 1} of ${splitBetween} for trip on ${travelDate}`
+                        },
                         unit_amount: Math.round(amountDue * 100), 
                     },
                     quantity: 1,
@@ -60,7 +68,7 @@ router.post('/create', async (req, res) => {
             });
         }
 
-        // Save to Database
+        // Save the booking to the Database
         const newBooking = new Booking({
             userId, packageName, travelDate, guests, totalPrice, paymentMethod,
             bookingStatus: 'Pending', splitBetween, payments: paymentsArray
@@ -68,48 +76,55 @@ router.post('/create', async (req, res) => {
 
         await newBooking.save();
 
-        // ⚡ SEND AUTOMATED EMAILS ⚡
+        // ⚡ SEND AUTOMATED EMAILS TO PAYEES ⚡
         try {
-    for (const payment of paymentsArray) {
-        if (!payment.payerEmail.includes('@pending.com')) {
-            const mailOptions = {
-                from: `"PhilGood Travels" <${process.env.EMAIL_USER}>`,
-                to: payment.payerEmail,
-                subject: `Your Invoice & Payment Link for ${packageName}`,
-                html: `
-                    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #E0F7FA; border-radius: 16px; background-color: #FFFFFF;">
-                        <h2 style="color: #023E8A; text-align: center; text-transform: uppercase; letter-spacing: 2px;">PhilGood Travels</h2>
-                        <p style="font-size: 16px; color: #4A5568;">Hello!</p>
-                        <p style="font-size: 16px; color: #4A5568;">You have a pending invoice for the upcoming trip to <strong style="color: #00B4D8;">${packageName}</strong> on <strong>${travelDate}</strong>.</p>
-                        
-                        <div style="background-color: #F4FAFC; padding: 20px; border-radius: 12px; margin: 20px 0; border-left: 5px solid #00B4D8;">
-                            <h3 style="margin-top: 0; color: #023E8A; font-size: 18px;">Invoice Details:</h3>
-                            <p style="margin: 8px 0; color: #4A5568;"><strong>Total Amount Due:</strong> ₱${payment.amountDue.toLocaleString()}</p>
-                            <p style="margin: 8px 0; color: #4A5568;"><strong>Status:</strong> <span style="color: #FF9F1C; font-weight: bold; text-transform: uppercase;">Pending</span></p>
-                        </div>
+            for (const payment of paymentsArray) {
+                // Only send to real email addresses (skip placeholders)
+                if (!payment.payerEmail.includes('@pending.com')) {
+                    await transporter.sendMail({
+                        from: `"PhilGood Travels" <${process.env.EMAIL_USER}>`,
+                        to: payment.payerEmail,
+                        subject: `Action Required: Join ${leadName} on a trip to ${packageName}!`,
+                        html: `
+                            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; padding: 30px; border: 1px solid #E0F7FA; border-radius: 16px; background-color: #FFFFFF;">
+                                <div style="text-align: center; margin-bottom: 20px;">
+                                    <h2 style="color: #023E8A; text-transform: uppercase; letter-spacing: 2px; margin: 0;">PhilGood Travels</h2>
+                                </div>
+                                <p style="font-size: 16px; color: #4A5568;">Hi there!</p>
+                                <p style="font-size: 16px; color: #4A5568;"><strong>${leadName}</strong> is planning an adventure to <strong style="color: #00B4D8;">${packageName}</strong> on <strong>${travelDate}</strong> and has invited you to join!</p>
+                                
+                                <div style="background-color: #F4FAFC; padding: 25px; border-radius: 12px; margin: 25px 0; border-left: 5px solid #FF9F1C;">
+                                    <h3 style="margin-top: 0; color: #023E8A; font-size: 18px;">Your Payment Details:</h3>
+                                    <p style="margin: 8px 0; color: #4A5568; font-size: 20px;"><strong>Amount Due:</strong> ₱${payment.amountDue.toLocaleString()}</p>
+                                    <p style="margin: 8px 0; color: #4A5568;"><strong>Status:</strong> <span style="color: #FF9F1C; font-weight: bold;">PENDING</span></p>
+                                </div>
 
-                        <p style="font-size: 16px; color: #4A5568; text-align: center;">To secure your spot, please click the secure link below to pay your share:</p>
-                        <div style="text-align: center; margin: 30px 0;">
-                            <a href="${payment.paymentUrl}" style="background-color: #FF9F1C; color: #023E8A; padding: 16px 32px; text-decoration: none; font-size: 16px; font-weight: bold; border-radius: 50px; display: inline-block; box-shadow: 0 4px 10px rgba(255, 159, 28, 0.3);">Pay My Share</a>
-                        </div>
-                        <hr style="border: none; border-top: 1px solid #E0F7FA; margin-top: 30px;" />
-                        <p style="font-size: 12px; color: #A0AEC0; text-align: center;">If you did not request this booking, please ignore this email.</p>
-                    </div>
-                `
-            };
-            await transporter.sendMail(mailOptions);
-            console.log(`✅ Invoice email sent to: ${payment.payerEmail}`);
+                                <p style="font-size: 16px; color: #4A5568; text-align: center;">To secure your spot and confirm the group booking, please pay your share via our secure Stripe link:</p>
+                                
+                                <div style="text-align: center; margin: 35px 0;">
+                                    <a href="${payment.paymentUrl}" style="background-color: #FF9F1C; color: #023E8A; padding: 18px 40px; text-decoration: none; font-size: 16px; font-weight: bold; border-radius: 50px; display: inline-block; box-shadow: 0 4px 15px rgba(255, 159, 28, 0.4);">PAY MY SHARE NOW</a>
+                                </div>
+
+                                <p style="font-size: 14px; color: #A0AEC0; text-align: center; line-height: 1.5;">
+                                    This is a group booking. The entire trip will be officially confirmed once all members have completed their individual payments.
+                                </p>
+                                <hr style="border: none; border-top: 1px solid #E0F7FA; margin-top: 30px;" />
+                                <p style="font-size: 11px; color: #CBD5E0; text-align: center;">If you did not expect this invitation, you can safely ignore this email.</p>
+                            </div>
+                        `
+                    });
+                }
+            }
+            console.log("✅ All payee emails processed.");
+        } catch (emailError) {
+            console.error("⚠️ Booking saved, but email sending encountered an error:", emailError);
         }
-    }
-} catch (emailError) {
-    console.error("⚠️ Booking saved, but email sending failed:", emailError);
-}
         
         res.status(201).json({ message: "✅ Booking created and emails sent!", booking: newBooking });
         
     } catch (error) {
         console.error("Booking Error:", error);
-        res.status(500).json({ error: "Failed to save booking with Stripe." });
+        res.status(500).json({ error: "Failed to process booking with Stripe." });
     }
 });
 
