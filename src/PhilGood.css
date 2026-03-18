@@ -894,3 +894,22 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
 .force-white-text {
     color: #FFFFFF !important;
 }
+/* =========================================
+   25. CONNECT PAGE MOBILE RESPONSIVENESS
+   ========================================= */
+.connect-page-bg {
+    min-height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    margin-bottom: -100px;
+    padding-bottom: 100px;
+}
+
+/* ⚡ FIX: Turn off 'fixed' attachment on tablets and phones to stop the extreme zooming/cropping bug ⚡ */
+@media (max-width: 991px) {
+    .connect-page-bg {
+        background-attachment: scroll !important;
+        background-position: center top !important; 
+    }
+}
