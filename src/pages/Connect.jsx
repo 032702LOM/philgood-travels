@@ -31,7 +31,7 @@ const Connect = () => {
           
           <div className="text-center mb-5 scroll-reveal visible">
               <h1 className="hero-title transparent-text" style={{ fontSize: '4rem', textShadow: '2px 2px 10px rgba(0,0,0,0.8)' }}>{t('conn_title', 'Let us Connect')}</h1>
-              <p className="section-desc mb-0 force-white-text fw-bold" style={{ textShadow: '1px 1px 6px rgba(0,0,0,0.9)' }}>We're here to help you plan your perfect escape.</p>
+              
           </div>
 
           <div className="row g-5 justify-content-center">
