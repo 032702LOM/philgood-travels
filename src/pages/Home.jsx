@@ -101,8 +101,7 @@ const Home = () => {
             <div className="w-100 position-relative" style={{ backgroundImage: `url(${islandParadiseImg})`, backgroundSize: 'cover', backgroundPosition: 'center', height: '100vh' }}>
                 <div className="hero-overlay w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center">
                     <div className="container scroll-reveal">
-                        <h1 className="hero-title transparent-text">Island Paradise</h1>
-                        <p className="hero-subtitle text-white fw-bold mb-4">Relax on pristine white sand beaches</p>
+                        <h1 className="hero-title transparent-text">Island Paradise</h1>                    
                         <Link to="/booking" className="hero-btn">BOOK NOW</Link>
                     </div>
                 </div>
