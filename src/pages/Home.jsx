@@ -98,7 +98,6 @@ const Home = () => {
 
         {/* --- STATIC HERO SECTION --- */}
         <section id="home" className="fade-in" style={{ marginTop: 0 }}>
-            {/* ⚡ Replaced the carousel with a single, full-screen static image ⚡ */}
             <div className="w-100 position-relative" style={{ backgroundImage: `url(${islandParadiseImg})`, backgroundSize: 'cover', backgroundPosition: 'center', height: '100vh' }}>
                 <div className="hero-overlay w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center">
                     <div className="container scroll-reveal">
@@ -109,7 +108,7 @@ const Home = () => {
                 </div>
             </div>
 
-            {/* ⚡ PROMO VIDEO OVERLAP ⚡ */}
+            {/* PROMO VIDEO OVERLAP */}
             <div className="container position-relative text-center scroll-reveal" style={{ zIndex: 10, marginTop: '-150px', marginBottom: '80px' }}>
                 <div className="shadow-lg rounded-4 overflow-hidden mx-auto" style={{ maxWidth: '800px', border: '6px solid white', backgroundColor: '#000' }}>
                     <video 
@@ -127,7 +126,7 @@ const Home = () => {
                 </div>
             </div>
 
-            {/* ⚡ STATS SECTION ⚡ */}
+            {/* STATS SECTION */}
             <div className="container pb-5">
                 <div className="stats-container row text-center g-4">
                     <div className="col-md-4"><div className="stat-card scroll-reveal"><i className="fa-solid fa-user-group"></i><h3 className="stat-number">12,000+</h3><span className="stat-label">SATISFIED CLIENTS</span></div></div>
@@ -137,7 +136,7 @@ const Home = () => {
             </div>
         </section>
 
-        {/* ⚡ SCENE 1: MAN ON CLIFF ⚡ */}
+        {/* SCENE 1: MAN ON CLIFF */}
         <section className="scene-section trail-makers-bg" style={{ backgroundImage: `url("${manOnCliffImg}")` }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal">
@@ -155,15 +154,15 @@ const Home = () => {
         </section>
 
         {/* --- POPULAR DESTINATIONS --- */}
-        <section className="py-5 destinations-bg"> 
-            <div className="container py-5">
+        {/* ⚡ NEW BACKGROUND IMAGE APPLIED HERE ⚡ */}
+        <section className="py-5 destinations-bg position-relative" style={{ backgroundImage: `linear-gradient(rgba(2, 26, 46, 0.85), rgba(2, 26, 46, 0.85)), url("https://philippineshiddengems.com/wp-content/uploads/2025/01/docked-small-boats-at-palawan-philippines.jpg")`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' }}> 
+            <div className="container py-5 position-relative" style={{ zIndex: 2 }}>
                 <div className="section-header scroll-reveal">
                     <span className="section-subtitle">Regional</span>
                     <h2 className="section-title wave-text">{t('pop_dest', 'Most Popular Destinations')}</h2>
                     <p className="section-desc">Discover the key regions and landmarks the Philippines has to offer.</p>
                 </div>
                 
-                {/* ⚡ ONE UNIFIED BLOCK: 6 CARDS ONLY ⚡ */}
                 <div className="fanned-stack-container scroll-reveal mt-4" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEndDest}>
                     <button className="stack-nav-btn prev-btn" onClick={() => rotateStack('dest', 'prev')}><i className="fa-solid fa-chevron-left"></i></button>
                     <button className="stack-nav-btn next-btn" onClick={() => rotateStack('dest', 'next')}><i className="fa-solid fa-chevron-right"></i></button>
@@ -191,7 +190,7 @@ const Home = () => {
             </div>
         </section>
 
-        {/* ⚡ SCENE 2: SUNBATHING ⚡ */}
+        {/* SCENE 2: SUNBATHING */}
         <section className="scene-section sleep-bg" style={{ backgroundImage: `url("${sunbathingImg}")` }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal">
@@ -215,7 +214,6 @@ const Home = () => {
                     <h2 className="section-title wave-text">Top Packages That Fit You</h2>
                 </div>
                 
-                {/* ⚡ ONE UNIFIED BLOCK: 6 CARDS ONLY ⚡ */}
                 <div className="fanned-stack-container scroll-reveal mt-4" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEndPkg}>
                     <button className="stack-nav-btn prev-btn" onClick={() => rotateStack('pkg', 'prev')}><i className="fa-solid fa-chevron-left"></i></button>
                     <button className="stack-nav-btn next-btn" onClick={() => rotateStack('pkg', 'next')}><i className="fa-solid fa-chevron-right"></i></button>
@@ -271,7 +269,7 @@ const Home = () => {
             </div>
         </section>
 
-        {/* ⚡ SCENE 3: READY FOR YOUR NEXT DIVE ⚡ */}
+        {/* SCENE 3: READY FOR YOUR NEXT DIVE */}
         <section className="scene-section dive-bg" style={{ backgroundImage: `url("${swimImg}")`}}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal">
