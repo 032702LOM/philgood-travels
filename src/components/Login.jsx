@@ -21,7 +21,7 @@ const Login = () => {
       // 3. Save basic user info to display their name later
       localStorage.setItem('user', JSON.stringify(response.data.user));
 
-      // 4. ⚡ THE FIX: Force a hard refresh to the homepage so the Navbar updates instantly!
+      // 4. Force a hard refresh to the homepage so the Navbar updates instantly!
       setTimeout(() => {
         window.location.href = '/'; 
       }, 1500);
@@ -35,7 +35,16 @@ const Login = () => {
   return (
     <div className="fade-in d-flex align-items-center justify-content-center" style={{ minHeight: '80vh', paddingTop: '76px', backgroundColor: 'var(--bg-dark)' }}>
       <div className="bg-card-dark p-5 rounded-4 shadow-lg border border-primary border-opacity-10" style={{ maxWidth: '400px', width: '100%', backgroundColor: 'var(--card-bg)' }}>
-        <h2 className="text-navy font-montserrat fw-bold text-center mb-4">Welcome Back</h2>
+        
+        {/* ⚡ FIX: Replaced "Welcome Back" with "Sign in to" + Transparent Logo ⚡ */}
+        <div className="text-center mb-4">
+            <div className="text-navy font-montserrat fw-bold mb-2" style={{ fontSize: '1.2rem' }}>Sign in to</div>
+            <img 
+              src="https://i.postimg.cc/CLfdcctP/Untitled-design-(3).png" 
+              alt="PhilGood Travels Logo" 
+              style={{ height: '75px', width: 'auto', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))' }} 
+            />
+        </div>
         
         <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
           <div>

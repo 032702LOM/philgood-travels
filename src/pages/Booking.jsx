@@ -22,6 +22,9 @@ const Booking = () => {
   const [splitBetween, setSplitBetween] = useState(1);
   const [payerEmails, setPayerEmails] = useState(['']);
 
+  // ⚡ FIX: Added a loading state so the user knows the action was taken immediately ⚡
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const accClassRates = { Standard: 0, Deluxe: 2500, Luxury: 5000 };
   const addonPrices = { airportTransfer: 1500, insurance: 950, romanticDinner: 2500, carbonOffset: 500 };
 
@@ -72,6 +75,10 @@ const Booking = () => {
         navigate('/login');
         return;
     }
+    
+    // ⚡ FIX: Lock the button instantly to prevent double-clicks ⚡
+    setIsSubmitting(true);
+    
     const user = JSON.parse(userStr);
 
     const bookingData = {
@@ -87,13 +94,21 @@ const Booking = () => {
 
     try {
         await axios.post('https://philgood-travels.onrender.com/api/bookings/create', bookingData);
-        alert(splitBetween > 1 
-            ? `✅ Group Booking Created!\n\nYour split payment links have been generated and saved to your dashboard.` 
-            : `✅ Payment processed securely via ${paymentMethod}!\n\nYour booking has been saved to your dashboard.`);
+        
+        if (splitBetween > 1) {
+            alert("Booking successful!\n\nYour split payment links have been generated and saved to your dashboard.");
+        } else {
+            alert("Booking successful!");
+        }
+        
         navigate('/profile');
+        
     } catch (err) {
         console.error(err);
         alert("❌ Failed to process booking.");
+    } finally {
+        // ⚡ FIX: Unlock the button when the server responds ⚡
+        setIsSubmitting(false);
     }
   };
 
@@ -102,10 +117,9 @@ const Booking = () => {
       <section className="py-5" style={{ minHeight: '500px', backgroundColor: 'var(--bg-dark)', paddingTop: '100px' }}>
         <div className="container">
           
-          {/* ⚡ A simple text header since the hero image is gone ⚡ */}
           <div className="text-center mb-5 mt-4 scroll-reveal visible">
-              <h1 className="hero-title text-navy font-montserrat" style={{ fontSize: '3rem' }}>{t('booking_title', 'Secure Your Spot')}</h1>
-              <p className="text-grey">{t('booking_desc', 'Complete your booking and pack your bags')}</p>
+              <h1 className="section-title wave-text" style={{ fontSize: '3.5rem' }}>{t('booking_title', 'Secure Your Spot')}</h1>
+              <p className="section-desc fw-bold">{t('booking_desc', 'Complete your booking and pack your bags')}</p>
           </div>
 
           <form onSubmit={handleSubmit} className="row g-5">
@@ -281,7 +295,15 @@ const Booking = () => {
 
                 <div className="text-grey small mb-3 text-center">Payment Method: <strong className="text-navy">{paymentMethod}</strong></div>
 
-                <button type="submit" className="btn btn-proceed w-100 py-3 text-uppercase font-montserrat fw-bold shadow">{t('confirm', 'Confirm Booking')} <i className="fa-solid fa-arrow-right ms-2"></i></button>
+                {/* ⚡ FIX: The button now locks and changes text to "Processing..." while sending data ⚡ */}
+                <button type="submit" className="btn btn-proceed w-100 py-3 text-uppercase font-montserrat fw-bold shadow" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                        <><i className="fa-solid fa-spinner fa-spin me-2"></i> Processing...</>
+                    ) : (
+                        <>{t('confirm', 'Confirm Booking')} <i className="fa-solid fa-arrow-right ms-2"></i></>
+                    )}
+                </button>
+
                 <p className="text-center text-grey small mt-3 mb-0"><i className="fa-solid fa-lock text-primary-dark me-1"></i> Secure Encrypted Payment</p>
               </div>
             </div>
