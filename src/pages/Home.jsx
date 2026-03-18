@@ -206,28 +206,18 @@ const Home = () => {
         </section>
 
         {/* --- SCENE 2: BASK UNDER THE SUN --- */}
-        <section className="scene-section bask-sun-bg bask-sun-layout scroll-reveal visible">
+        <section className="scene-section bask-sun-bg" style={{ backgroundImage: `url("${sunbathingImg}")` }}>
             <div className="container">
-                <div className="row align-items-center">
-                    
-                    {/* LEFT COLUMN: Light Blue background with dark text */}
-                    <div className="col-lg-6 bask-sun-text-col">
+                <div className="row align-items-center scene-block scroll-reveal">
+                    <div className="col-lg-6">
                         <div className="scene-content pe-lg-5">
                             <span className="section-subtitle">RELAXATION</span>
                             <h2 className="scene-title wave-text">Bask Under the Sun</h2>
                             <p className="scene-text">Feel the warmth of the tropical sun on your skin as you unwind on some of the world's most beautiful, powdery white sand beaches.</p>
                             <p className="scene-text">Let the gentle rhythm of the waves wash your worries away. Whether you are sipping a fresh coconut under a swaying palm tree or wading into crystal-clear turquoise waters, paradise is waiting.</p>
-                            <Link to="/destinations?search=beach" className="btn-text-link">Book a Beach Resort <i className="fa-solid fa-arrow-right"></i></Link>
+                            <Link to="/destinations?search=beach" className="btn-text-link mt-3 d-inline-block">Book a Beach Resort <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
                     </div>
-
-                    {/* RIGHT COLUMN: Warm Golden background with blended image composition */}
-                    <div className="col-lg-6 bask-sun-img-col d-flex align-items-center justify-content-center">
-                        <div className="bask-sun-image-composition position-relative overflow-hidden rounded-4 shadow-lg h-100 w-100" style={{ backgroundImage: `url("${sunbathingImg}")`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '400px' }}>
-                            <div className="bask-sun-golden-overlay position-absolute w-100 h-100 top-0 start-0"></div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </section>
