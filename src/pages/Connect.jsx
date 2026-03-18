@@ -15,8 +15,8 @@ const Connect = () => {
   };
 
   return (
-   {/* ⚡ FIX: Replaced the inline styles with the new "connect-page-bg" responsive CSS class ⚡ */}
-   <div className="fade-in position-relative connect-page-bg" style={{ backgroundImage: `url(${connectBgImg})` }}>
+    <div className="fade-in position-relative connect-page-bg" style={{ backgroundImage: `url(${connectBgImg})` }}>
+      {/* ⚡ FIX: The comment is now inside the main div so React can render properly ⚡ */}
       
       <div className="container position-relative" style={{ zIndex: 10, paddingTop: '150px', paddingBottom: '100px' }}>
           
