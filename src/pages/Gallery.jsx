@@ -351,7 +351,7 @@ const Gallery = () => {
           {/* Kept the invisible title for SEO/accessibility, but removed the filter bar from here! */}
           <div className="container text-center mb-4 scroll-reveal visible position-relative" style={{ zIndex: 2 }}>
               <h1 className="hero-title transparent-text" style={{ fontSize: '4rem' }}>{t('gal_title', 'Visual Journey')}</h1>
-              <p className="section-desc transparent-text mb-0">{t('gal_desc', 'Discover the beauty of the Philippines through our lens')}</p>
+              
           </div>
       </section>
 
