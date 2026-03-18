@@ -205,10 +205,17 @@ const Home = () => {
             </div>
         </section>
 
+      
         {/* --- SCENE 2: BASK UNDER THE SUN --- */}
-        <section className="scene-section bask-sun-bg" style={{ backgroundImage: `url("${sunbathingImg}")` }}>
+        <section className="scene-section bask-sun-bg" style={{ 
+            backgroundImage: `url("${sunbathingImg}")`,
+            paddingTop: '150px',    /* ⚡ FIX: Pushes text away from the top edge */
+            paddingBottom: '150px', /* ⚡ FIX: Adds breathing room at the bottom */
+            minHeight: '650px'      /* ⚡ FIX: Forces container to be tall enough on 22-inch screens */
+        }}>
             <div className="container">
-                <div className="row align-items-center scene-block scroll-reveal">
+                {/* Added inline marginBottom: 0 to prevent excessive empty space below the text */}
+                <div className="row align-items-center scene-block scroll-reveal" style={{ marginBottom: 0 }}>
                     <div className="col-lg-6">
                         <div className="scene-content pe-lg-5">
                             <span className="section-subtitle">RELAXATION</span>

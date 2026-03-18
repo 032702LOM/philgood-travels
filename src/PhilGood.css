@@ -350,10 +350,18 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 }
 
 @media (min-width: 992px) {
-    .trail-makers-bg, .dive-bg, .bask-sun-bg {
+    .trail-makers-bg, .dive-bg {
         background-position: right center !important;
         background-size: 45% auto !important; 
     }
+    
+    /* ⚡ FIX: 'contain' ensures the faded image NEVER cuts on wide monitors ⚡ */
+    .bask-sun-bg {
+        background-position: right center !important;
+        background-size: contain !important; 
+        background-repeat: no-repeat !important;
+    }
+
     .trail-makers-bg {
         background-position: right 0px center !important;
         background-size: 55% auto !important; 
