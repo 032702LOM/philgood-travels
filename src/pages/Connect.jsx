@@ -16,15 +16,20 @@ const Connect = () => {
   return (
    <div className="fade-in">
       
-      <section className="contact-hero" style={{ marginTop: 0 }}>
-          <div className="container text-center mb-4 scroll-reveal visible">
-              <h1 className="hero-title transparent-text" style={{ fontSize: '4rem' }}>{t('conn_title', 'Let us Connect')}</h1>
-              <p className="section-desc mb-0 text-white" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.5)' }}>We're here to help you plan your perfect escape.</p>
+      <section className="contact-hero position-relative" style={{ marginTop: 0 }}>
+          <div className="hero-overlay w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center">
+              {/* ⚡ FIX: Added translateY to bump the text up slightly, making room for the floating cards below ⚡ */}
+              <div className="container mb-4 scroll-reveal visible" style={{ transform: 'translateY(-50px)' }}>
+                  <h1 className="hero-title transparent-text" style={{ fontSize: '4rem' }}>{t('conn_title', 'Let us Connect')}</h1>
+                  {/* ⚡ FIX: Used the force-white-text class from earlier to guarantee readability ⚡ */}
+                  <p className="section-desc mb-0 force-white-text" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.5)' }}>We're here to help you plan your perfect escape.</p>
+              </div>
           </div>
       </section>
 
-      <section className="py-5" style={{ backgroundColor: 'var(--bg-dark)', minHeight: '600px' }}>
-        <div className="container">
+      <section className="pb-5" style={{ backgroundColor: 'var(--bg-dark)', minHeight: '600px' }}>
+        {/* ⚡ FIX: Added negative marginTop (-200px) and relative positioning to pull the cards up over the image ⚡ */}
+        <div className="container position-relative" style={{ zIndex: 10, marginTop: '-200px' }}>
           <div className="row g-5 justify-content-center">
             
             <div className="col-lg-5 scroll-reveal visible">

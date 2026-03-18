@@ -102,7 +102,7 @@ const Home = () => {
                 <div className="hero-overlay w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center">
                     <div className="container scroll-reveal">
                         <h1 className="hero-title transparent-text">Island Paradise</h1>
-                        <p className="hero-subtitle text-white fw-bold mb-4">Relax on pristine white sand beaches</p>
+                        <p className="hero-subtitle transparent-text">Relax on pristine white sand beaches</p>
                         <Link to="/booking" className="hero-btn">BOOK NOW</Link>
                     </div>
                 </div>
