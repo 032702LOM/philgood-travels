@@ -317,7 +317,7 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .scene-block:last-child { margin-bottom: 0; }
 
 .scene-content {
-    background-color: var(--bg-dark) !important;
+    background-color: transparent !important; /* âš¡ Removed previous contentment box styling âš¡ */
     box-shadow: none !important;
     border: none !important;
 }
@@ -325,12 +325,12 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 .scene-title { font-size: 3rem; margin-bottom: 20px; color: var(--dark-navy); }
 .scene-text { color: var(--text-grey); font-size: 1.1rem; line-height: 1.8; margin-bottom: 25px; }
 
-.trail-makers-bg, .dive-bg, .sleep-bg {
+.trail-makers-bg, .dive-bg, .bask-sun-bg { /* Renamed and updated classes */
     background-repeat: no-repeat !important;
 }
 
 @media (min-width: 992px) {
-    .trail-makers-bg, .dive-bg, .sleep-bg {
+    .trail-makers-bg, .dive-bg, .bask-sun-bg {
         background-position: right center !important;
         background-size: 45% auto !important; 
     }
@@ -780,7 +780,7 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
     .hero-title { font-size: 3.5rem !important; }
 
     /* Scene Images - Force to bottom */
-    .dive-bg, .sleep-bg {
+    .dive-bg, .bask-sun-bg { /* Updated classes */
         background-position: bottom center !important;
         background-size: 80% auto !important; 
         padding-bottom: 350px !important; 
@@ -795,7 +795,7 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
     
     /* Scene Text - Perfectly matched to background on mobile */
     .scene-content {
-        background-color: var(--bg-dark) !important;
+        background-color: transparent !important; /* âš¡ Content box styling removed âš¡ */
         padding: 0 !important; 
         text-align: center;
         box-shadow: none !important;
@@ -860,7 +860,7 @@ footer input[type="email"]:hover, footer input[type="email"]:focus { border-colo
 @media (max-width: 576px) {
     .hero-title { font-size: 2.8rem !important; }
     
-    .dive-bg, .sleep-bg { 
+    .dive-bg, .bask-sun-bg { /* Updated classes */
         background-size: 100% auto !important; 
         padding-bottom: 300px !important; 
     }
@@ -946,4 +946,36 @@ footer .text-white-50,
     height: 100%;
     background-color: rgba(0, 0, 0, 0.2); 
     z-index: 1;
+}
+
+/* âš¡ 23. SPLIT SECTION LAYOUT FOR BASK UNDER THE SUN âš¡ */
+.bask-sun-bg {
+    background-color: transparent !important; 
+    padding: 0;
+}
+
+.bask-sun-layout .container {
+    padding-top: 80px;
+    padding-bottom: 80px;
+}
+
+.bask-sun-text-col {
+    background-color: var(--bg-dark); /* Light Sky Blue */
+    padding-right: 5rem !important;
+}
+
+.bask-sun-img-col {
+    padding-left: 0 !important;
+}
+
+/* âš¡ Golden-hour composition for the blended image composition âš¡ */
+.bask-sun-image-composition {
+    background-color: #E9C46A; /* Warm Golden Derived from user image */
+}
+
+.bask-sun-golden-overlay {
+    /* Create a warm, vintage filter that blends the image with the bg color */
+    background-color: rgba(233, 196, 106, 0.6); /* Semi-transparent golden */
+    backdrop-filter: blur(2px); /* A small blur can help blend */
+    mix-blend-mode: color; /* Blend the golden color into the image details */
 }
