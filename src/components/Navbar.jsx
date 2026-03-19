@@ -103,18 +103,16 @@ const Navbar = () => {
                     filter: brightness(0) saturate(100%) invert(18%) sepia(50%) saturate(3015%) hue-rotate(193deg) brightness(97%) contrast(98%) !important;
                 }
 
-                /* ⚡ NEW: Makes the Hamburger Icon Bigger and Adds a Crisp Border ⚡ */
                 .navbar-toggler {
                     padding: 0.4rem 0.6rem !important;
-                    border: 2px solid rgba(255, 255, 255, 0.6) !important; /* Visible white border */
+                    border: 2px solid rgba(255, 255, 255, 0.6) !important;
                     border-radius: 8px !important;
                 }
                 
                 .navbar-toggler-icon {
-                    transform: scale(1.3) !important; /* Makes the 3 lines 30% larger */
+                    transform: scale(1.3) !important; 
                 }
 
-                /* ⚡ NEW: Switches the border to Navy when on a light background ⚡ */
                 nav#mainNav.light-nav-mode .navbar-toggler {
                     border: 2px solid rgba(2, 62, 138, 0.5) !important;
                 }
@@ -139,11 +137,13 @@ const Navbar = () => {
                     box-shadow: none !important;
                 }
                 
+                /* ⚡ FIX: Shrunk the Book Now button on mobile so it doesn't stretch 100% ⚡ */
                 @media (max-width: 991px) {
                     .btn-book-nav {
-                        width: 100%;
-                        text-align: center;
-                        margin-top: 0.5rem;
+                        width: fit-content; /* Hugs the text instead of stretching */
+                        padding-left: 2.5rem;
+                        padding-right: 2.5rem;
+                        margin-top: 1rem;
                         margin-bottom: 1rem;
                     }
                 }
@@ -188,7 +188,6 @@ const Navbar = () => {
 
                     <div className="d-flex flex-column flex-lg-row align-items-center gap-3 mt-3 mt-lg-0">
                         <div className="d-flex gap-2">
-                            {/* --- THEME TOGGLE BUTTON --- */}
                             <button 
                                 className="btn btn-sm btn-outline-secondary border-0 d-flex align-items-center justify-content-center" 
                                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
@@ -198,7 +197,6 @@ const Navbar = () => {
                                 <i className={`fa-solid ${theme === 'dark' ? 'fa-sun text-warning' : `fa-moon ${isLightNav ? 'text-navy' : 'text-white'}`}`}></i>
                             </button>
 
-                            {/* --- CURRENCY & LANGUAGE BUTTONS --- */}
                             <button className="btn btn-sm btn-outline-secondary nav-action-btn border-0 d-flex align-items-center gap-2" onClick={() => openModal('currency')}>
                                 <span className="fw-bold">{currency}</span>
                             </button>
@@ -208,7 +206,6 @@ const Navbar = () => {
                             </button>
                         </div>
 
-                        {/* 👉 SMART AUTH BUTTONS (LOGIN / SIGN UP / LOGOUT) */}
                         {isLoggedIn ? (
                             <div className="d-flex align-items-center gap-3">
                                 <Link to="/profile" className="btn-auth fw-bold font-montserrat text-decoration-none" onClick={handleNavLinkClick}>

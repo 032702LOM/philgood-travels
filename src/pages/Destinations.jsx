@@ -22,7 +22,6 @@ const Destinations = () => {
   const initialPositions = ['pos-hidden', 'pos-far-left', 'pos-left', 'pos-center', 'pos-right', 'pos-far-right'];
   const [regionPositions, setRegionPositions] = useState(initialPositions);
 
-  // ⚡ NEW: Ref to target the 360 viewer for full screen ⚡
   const tourRef = useRef(null);
 
   const filterCategories = [
@@ -157,16 +156,15 @@ const Destinations = () => {
   const handleOpenDetail = (place) => { setSelectedPlace(place); setView('detail'); if (place.lat && place.lon) fetchWeather(place.lat, place.lon); window.scrollTo(0, 0); };
   const handleCloseDetail = () => { setView('main'); window.scrollTo(0, 0); };
 
-  // ⚡ NEW: Function to trigger the browser's Full Screen API ⚡
   const handleFullScreen = () => {
     const elem = tourRef.current;
     if (!elem) return;
     
     if (elem.requestFullscreen) {
         elem.requestFullscreen();
-    } else if (elem.webkitRequestFullscreen) { /* Safari */
+    } else if (elem.webkitRequestFullscreen) { 
         elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) { /* IE11 */
+    } else if (elem.msRequestFullscreen) { 
         elem.msRequestFullscreen();
     }
   };
@@ -212,7 +210,6 @@ const Destinations = () => {
                     </div>
                     
                     <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box">
-                        {/* ⚡ NEW: Header row with the Full Screen button ⚡ */}
                         <div className="d-flex justify-content-between align-items-center mb-3">
                             <h6 className="text-accent fw-bold m-0 font-montserrat">360° VIEW</h6>
                             <button className="btn btn-sm btn-outline-custom" style={{ padding: '4px 12px', fontSize: '0.8rem' }} onClick={handleFullScreen}>
@@ -220,7 +217,6 @@ const Destinations = () => {
                             </button>
                         </div>
                         
-                        {/* ⚡ NEW: Added ref={tourRef} to both elements so the button knows what to expand ⚡ */}
                         {selectedPlace.virtualTourUrl || (selectedPlace.name && selectedPlace.name.includes('Okada')) ? (
                             <iframe 
                                 ref={tourRef}
@@ -414,8 +410,9 @@ const Destinations = () => {
                                                         <p className="card-text text-grey small mb-2">{place.type} • {place.distance || 'Various'}</p>
                                                         
                                                         <div className="d-flex flex-wrap gap-2 mb-3">
+                                                            {/* ⚡ FIX: Added inline styling to force dark navy text on the light blue background ⚡ */}
                                                             {(place.facilities || []).slice(0, 3).map(fac => (
-                                                                <span key={fac} className="badge bg-primary bg-opacity-10 text-primary-dark fw-bold">{fac}</span>
+                                                                <span key={fac} className="badge bg-primary bg-opacity-10 fw-bold" style={{ color: '#023E8A' }}>{fac}</span>
                                                             ))}
                                                         </div>
                                                         
