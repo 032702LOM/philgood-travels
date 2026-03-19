@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useLocation } from 'react-router-dom'; // ⚡ NEW: Imported useLocation
 import { usePreferences } from '../context/PreferencesContext';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation(); // ⚡ NEW: Gets the current page URL
   
   // Modal State
   const [showPrefModal, setShowPrefModal] = useState(false);
-  const [activeTab, setActiveTab] = useState('language'); // 'language' or 'currency'
+  const [activeTab, setActiveTab] = useState('language');
 
   const { 
       language, setLanguage, currency, setCurrency, 
@@ -21,7 +22,6 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [firstName, setFirstName] = useState('');
 
-  // Check if the user has a VIP Wristband when the Navbar loads
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userStr = localStorage.getItem('user');
@@ -29,16 +29,15 @@ const Navbar = () => {
     if (token && userStr) {
       setIsLoggedIn(true);
       const userObj = JSON.parse(userStr);
-      setFirstName(userObj.name.split(' ')[0]); // Grab just their first name
+      setFirstName(userObj.name.split(' ')[0]); 
     }
   }, []);
 
-  // Function to securely log out
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setIsLoggedIn(false);
-    window.location.href = '/'; // Refresh the page to clear everything
+    window.location.href = '/'; 
   };
   // ==========================================
 
@@ -59,9 +58,32 @@ const Navbar = () => {
       setShowPrefModal(true);
   };
 
+  // ⚡ NEW: Determine if we are on a page with a light background at the very top
+  const lightBgPages = ['/connect', '/booking', '/login', '/register'];
+  // If we are on a light page AND haven't scrolled down yet, activate the dark text mode!
+  const isLightNav = lightBgPages.includes(location.pathname) && !scrolled;
+
   return (
     <>
-        <nav className={`navbar navbar-expand-lg fixed-top navbar-dark ${scrolled ? 'scrolled' : ''}`} id="mainNav">
+        {/* ⚡ NEW: Injected a small stylesheet that forces Navy text when isLightNav is true ⚡ */}
+        <style>
+            {`
+                .light-nav-mode .nav-link,
+                .light-nav-mode .nav-action-btn,
+                .light-nav-mode .nav-action-btn i,
+                .light-nav-mode .btn-auth {
+                    color: var(--dark-navy) !important;
+                    text-shadow: none !important;
+                    font-weight: 700 !important;
+                }
+                .light-nav-mode .navbar-toggler-icon {
+                    filter: invert(1);
+                }
+            `}
+        </style>
+
+        {/* ⚡ UPDATED: Dynamically adds 'light-nav-mode' based on the page ⚡ */}
+        <nav className={`navbar navbar-expand-lg fixed-top ${isLightNav ? 'navbar-light light-nav-mode' : 'navbar-dark'} ${scrolled ? 'scrolled' : ''}`} id="mainNav">
             <div className="container">
                 <Link className="navbar-brand" to="/">
                     <img src="https://i.postimg.cc/CLfdcctP/Untitled-design-(3).png" alt="PhilGood Logo" className="navbar-logo-img" />
@@ -94,12 +116,13 @@ const Navbar = () => {
                         <div className="d-flex gap-2">
                             {/* --- THEME TOGGLE BUTTON --- */}
                             <button 
-                                className="btn btn-sm btn-outline-secondary text-white border-0 d-flex align-items-center justify-content-center" 
+                                className="btn btn-sm btn-outline-secondary border-0 d-flex align-items-center justify-content-center" 
                                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                                 style={{ width: '35px', height: '35px', borderRadius: '50%' }}
                                 title="Toggle Theme"
                             >
-                                <i className={`fa-solid ${theme === 'dark' ? 'fa-sun text-warning' : 'fa-moon text-white'}`}></i>
+                                {/* ⚡ FIX: The moon icon switches to Navy on light pages ⚡ */}
+                                <i className={`fa-solid ${theme === 'dark' ? 'fa-sun text-warning' : `fa-moon ${isLightNav ? 'text-navy' : 'text-white'}`}`}></i>
                             </button>
 
                             {/* --- CURRENCY & LANGUAGE BUTTONS --- */}
@@ -112,14 +135,12 @@ const Navbar = () => {
                             </button>
                         </div>
 
-                      {/* 👉 SMART AUTH BUTTONS (LOGIN / SIGN UP / LOGOUT) */}
+                        {/* 👉 SMART AUTH BUTTONS (LOGIN / SIGN UP / LOGOUT) */}
                         {isLoggedIn ? (
                             <div className="d-none d-lg-flex align-items-center me-3 gap-3">
-                                {/* Applied btn-auth for the exact same coral-to-white hover/click effect */}
                                 <Link to="/profile" className="btn-auth fw-bold font-montserrat text-decoration-none">
                                     Hi, {firstName}!
                                 </Link>
-                                {/* Applied btn-auth and no-border-btn to match the SIGN UP button perfectly */}
                                 <button onClick={handleLogout} className="btn btn-auth fw-bold no-border-btn" style={{ textDecoration: 'none', padding: '6px 16px', borderRadius: '4px' }}>
                                     LOGOUT
                                 </button>
@@ -142,10 +163,10 @@ const Navbar = () => {
         </nav>
 
         {/* ==========================================
-            GLOBAL PREFERENCES MODAL (Light Tropical Theme)
+            GLOBAL PREFERENCES MODAL
             ========================================== */}
         {showPrefModal && (
-            <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(2, 62, 138, 0.7)', backdropFilter: 'blur(5px)', zIndex: 1060 }}>
+            <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0, 31, 63, 0.7)', backdropFilter: 'blur(5px)', zIndex: 1060 }}>
                 <div className="modal-dialog modal-dialog-centered modal-lg"> 
                     <div className="modal-content border-0 shadow-lg" style={{ backgroundColor: 'var(--card-bg)', borderRadius: '16px' }}>
                         
@@ -155,7 +176,6 @@ const Navbar = () => {
                         </div>
 
                         <div className="modal-body p-0">
-                            {/* TABS */}
                             <div className="d-flex border-bottom border-primary border-opacity-10 bg-primary bg-opacity-10">
                                 <button className={`pref-tab flex-grow-1 ${activeTab === 'language' ? 'active' : ''}`} onClick={() => setActiveTab('language')}>
                                     <i className="fa-solid fa-language me-2"></i> Language
@@ -165,7 +185,6 @@ const Navbar = () => {
                                 </button>
                             </div>
 
-                            {/* GRID CONTENT */}
                             <div className="p-4" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
                                 <div className="row g-3">
                                     
