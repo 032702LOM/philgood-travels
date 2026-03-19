@@ -89,12 +89,19 @@ const Navbar = () => {
                     filter: brightness(0) saturate(100%) invert(18%) sepia(50%) saturate(3015%) hue-rotate(193deg) brightness(97%) contrast(98%) !important;
                 }
 
-                /* ⚡ NEW: Fixes the blinking cursor and blue focus box on mobile hamburger menu ⚡ */
-                .navbar-toggler {
+                /* ⚡ NEW: Forces the blinking cursor and blue boxes to hide on ALL navbar elements ⚡ */
+                nav#mainNav a, 
+                nav#mainNav button, 
+                nav#mainNav .nav-link, 
+                nav#mainNav .navbar-toggler {
                     caret-color: transparent !important; 
                     user-select: none !important;
+                    -webkit-user-select: none !important; /* For Safari */
                 }
-                .navbar-toggler:focus {
+                
+                nav#mainNav a:focus, 
+                nav#mainNav button:focus,
+                nav#mainNav .navbar-toggler:focus {
                     outline: none !important;
                     box-shadow: none !important;
                 }
