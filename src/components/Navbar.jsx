@@ -58,6 +58,15 @@ const Navbar = () => {
       setShowPrefModal(true);
   };
 
+  const handleNavLinkClick = () => {
+      const navbarCollapse = document.getElementById('navbarNav');
+      const navbarToggler = document.querySelector('.navbar-toggler');
+      
+      if (navbarCollapse && navbarCollapse.classList.contains('show') && navbarToggler) {
+          navbarToggler.click();
+      }
+  };
+
   const currentPath = location.pathname.toLowerCase();
   
   const isLightPage = currentPath.includes('/booking') || 
@@ -80,7 +89,6 @@ const Navbar = () => {
                     font-weight: 800 !important;
                 }
 
-                /* ⚡ NEW: Ensures the mobile brand text turns Navy on light backgrounds ⚡ */
                 nav#mainNav.light-nav-mode .navbar-brand-text {
                     color: #023E8A !important;
                     text-shadow: none !important;
@@ -93,6 +101,26 @@ const Navbar = () => {
 
                 nav#mainNav.light-nav-mode .navbar-toggler-icon {
                     filter: brightness(0) saturate(100%) invert(18%) sepia(50%) saturate(3015%) hue-rotate(193deg) brightness(97%) contrast(98%) !important;
+                }
+
+                /* ⚡ NEW: Makes the Hamburger Icon Bigger and Adds a Crisp Border ⚡ */
+                .navbar-toggler {
+                    padding: 0.4rem 0.6rem !important;
+                    border: 2px solid rgba(255, 255, 255, 0.6) !important; /* Visible white border */
+                    border-radius: 8px !important;
+                }
+                
+                .navbar-toggler-icon {
+                    transform: scale(1.3) !important; /* Makes the 3 lines 30% larger */
+                }
+
+                /* ⚡ NEW: Switches the border to Navy when on a light background ⚡ */
+                nav#mainNav.light-nav-mode .navbar-toggler {
+                    border: 2px solid rgba(2, 62, 138, 0.5) !important;
+                }
+
+                .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
+                    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") !important;
                 }
 
                 nav#mainNav a, 
@@ -110,16 +138,23 @@ const Navbar = () => {
                     outline: none !important;
                     box-shadow: none !important;
                 }
+                
+                @media (max-width: 991px) {
+                    .btn-book-nav {
+                        width: 100%;
+                        text-align: center;
+                        margin-top: 0.5rem;
+                        margin-bottom: 1rem;
+                    }
+                }
             `}
         </style>
 
         <nav className={`navbar navbar-expand-lg fixed-top ${isLightNav ? 'navbar-light light-nav-mode' : 'navbar-dark'} ${scrolled ? 'scrolled' : ''}`} id="mainNav">
             <div className="container">
-                {/* ⚡ FIX: Added d-flex to align the logo and text side-by-side ⚡ */}
-                <Link className="navbar-brand d-flex align-items-center gap-2" to="/">
+                <Link className="navbar-brand d-flex align-items-center gap-2" to="/" onClick={handleNavLinkClick}>
                     <img src="https://i.postimg.cc/CLfdcctP/Untitled-design-(3).png" alt="PhilGood Logo" className="navbar-logo-img" />
                     
-                    {/* ⚡ NEW: The brand text. 'd-lg-none' hides it on desktop, shows it on mobile/tablet ⚡ */}
                     <span 
                         className="navbar-brand-text text-white fw-bold font-montserrat d-lg-none" 
                         style={{ fontSize: '1.25rem', margin: 0, textShadow: '1px 1px 4px rgba(0,0,0,0.6)' }}
@@ -135,23 +170,23 @@ const Navbar = () => {
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav mx-auto align-items-center">
                         <li className="nav-item">
-                            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/" end>{t('nav_home', 'Home')}</NavLink>
+                            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/" end onClick={handleNavLinkClick}>{t('nav_home', 'Home')}</NavLink>
                         </li>
                         <li className="nav-item">
-                            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/destinations">{t('nav_dest', 'Destinations')}</NavLink>
+                            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/destinations" onClick={handleNavLinkClick}>{t('nav_dest', 'Destinations')}</NavLink>
                         </li>
                         <li className="nav-item">
-                            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/tours">{t('nav_tours', 'Tour Packages')}</NavLink>
+                            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/tours" onClick={handleNavLinkClick}>{t('nav_tours', 'Tour Packages')}</NavLink>
                         </li>
                         <li className="nav-item">
-                            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/gallery">{t('nav_gallery', 'Gallery')}</NavLink>
+                            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/gallery" onClick={handleNavLinkClick}>{t('nav_gallery', 'Gallery')}</NavLink>
                         </li>
                         <li className="nav-item">
-                            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/connect">{t('nav_connect', 'Connect')}</NavLink>
+                            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/connect" onClick={handleNavLinkClick}>{t('nav_connect', 'Connect')}</NavLink>
                         </li>
                     </ul>
 
-                    <div className="d-flex align-items-center gap-3">
+                    <div className="d-flex flex-column flex-lg-row align-items-center gap-3 mt-3 mt-lg-0">
                         <div className="d-flex gap-2">
                             {/* --- THEME TOGGLE BUTTON --- */}
                             <button 
@@ -175,8 +210,8 @@ const Navbar = () => {
 
                         {/* 👉 SMART AUTH BUTTONS (LOGIN / SIGN UP / LOGOUT) */}
                         {isLoggedIn ? (
-                            <div className="d-none d-lg-flex align-items-center me-3 gap-3">
-                                <Link to="/profile" className="btn-auth fw-bold font-montserrat text-decoration-none">
+                            <div className="d-flex align-items-center gap-3">
+                                <Link to="/profile" className="btn-auth fw-bold font-montserrat text-decoration-none" onClick={handleNavLinkClick}>
                                     Hi, {firstName}!
                                 </Link>
                                 <button onClick={handleLogout} className="btn btn-auth fw-bold no-border-btn" style={{ textDecoration: 'none', padding: '6px 16px', borderRadius: '4px' }}>
@@ -184,17 +219,17 @@ const Navbar = () => {
                                 </button>
                             </div>
                         ) : (
-                            <div className="d-none d-lg-flex align-items-center me-3 gap-2">
-                                <Link to="/login" className="btn btn-auth fw-bold" style={{ textDecoration: 'none' }}>
+                            <div className="d-flex align-items-center gap-2">
+                                <Link to="/login" className="btn btn-auth fw-bold" style={{ textDecoration: 'none' }} onClick={handleNavLinkClick}>
                                     LOGIN
                                 </Link>
-                                <Link to="/register" className="btn btn-auth fw-bold no-border-btn" style={{ textDecoration: 'none', padding: '6px 16px', borderRadius: '4px' }}>
+                                <Link to="/register" className="btn btn-auth fw-bold no-border-btn" style={{ textDecoration: 'none', padding: '6px 16px', borderRadius: '4px' }} onClick={handleNavLinkClick}>
                                     SIGN UP
                                 </Link>
                             </div>
                         )}
 
-                        <Link to="/booking" className="btn-book-nav d-none d-lg-block">{t('nav_book', 'BOOK NOW')}</Link>
+                        <Link to="/booking" className="btn-book-nav" onClick={handleNavLinkClick}>{t('nav_book', 'BOOK NOW')}</Link>
                     </div>
                 </div>
             </div>
