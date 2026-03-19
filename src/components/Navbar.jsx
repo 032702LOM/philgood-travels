@@ -58,18 +58,19 @@ const Navbar = () => {
       setShowPrefModal(true);
   };
 
-  // ⚡ FIX: Flexible URL checking so it works even with query parameters like ?package=... ⚡
   const currentPath = location.pathname.toLowerCase();
   
-  // You can add any other light pages to this list if needed!
-  const isLightPage = currentPath.includes('/booking') || currentPath.includes('/connect') || currentPath.includes('/login') || currentPath.includes('/register');
+  // ⚡ FIX: Removed '/connect' from this list so it stays white! ⚡
+  const isLightPage = currentPath.includes('/booking') || 
+                      currentPath.includes('/login') || 
+                      currentPath.includes('/register') || 
+                      currentPath.includes('/profile');
   
   // Only apply the dark text if we are on a light page AND haven't scrolled down yet
   const isLightNav = isLightPage && !scrolled;
 
   return (
     <>
-        {/* ⚡ FIX: Bulletproof CSS specificity so Bootstrap can't override it ⚡ */}
         <style>
             {`
                 nav#mainNav.light-nav-mode .navbar-nav .nav-link,
@@ -92,7 +93,6 @@ const Navbar = () => {
             `}
         </style>
 
-        {/* The 'light-nav-mode' class is conditionally added here */}
         <nav className={`navbar navbar-expand-lg fixed-top ${isLightNav ? 'navbar-light light-nav-mode' : 'navbar-dark'} ${scrolled ? 'scrolled' : ''}`} id="mainNav">
             <div className="container">
                 <Link className="navbar-brand" to="/">
