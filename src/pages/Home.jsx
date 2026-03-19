@@ -91,12 +91,37 @@ const Home = () => {
         
         <style>
             {`
-                @media (max-width: 768px) {
+                /* ⚡ NEW MOBILE STYLES FOR SCENE SECTIONS ⚡ */
+                @media (max-width: 991px) {
                     .scene-section {
-                        background-size: cover !important;
-                        background-position: center center !important;
-                        background-attachment: scroll !important; 
-                        min-height: 60vh; 
+                        /* Remove background image on mobile */
+                        background-image: none !important;
+                        background-color: var(--bg-dark); 
+                        padding: 2rem 0 !important;
+                        min-height: auto;
+                    }
+                    
+                    /* The container for the image on mobile */
+                    .mobile-scene-img {
+                        display: block !important;
+                        width: 100%;
+                        height: 300px; /* Adjust height as needed */
+                        background-size: cover;
+                        background-position: center;
+                        border-radius: 12px;
+                        margin-top: 2rem;
+                        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+                    }
+
+                    .scene-content {
+                        padding-right: 0 !important;
+                    }
+                }
+
+                /* Hide the mobile image containers on desktop */
+                @media (min-width: 992px) {
+                    .mobile-scene-img {
+                        display: none !important;
                     }
                 }
             `}
@@ -157,13 +182,14 @@ const Home = () => {
                             <p className="scene-text">A breathtaking panoramic view from a mountain summit at sunset. A lone hiker is sitting on a rocky ledge, silhouette against a vibrant orange and purple sky, looking out over a sea of clouds and distant peaks.</p>             
                             <Link to="/destinations" className="btn-text-link">Explore Mountains <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
+                        {/* ⚡ NEW: Mobile Image Block ⚡ */}
+                        <div className="mobile-scene-img" style={{ backgroundImage: `url("${manOnCliffImg}")` }}></div>
                     </div>
                 </div>
             </div>
         </section>
 
         {/* --- POPULAR DESTINATIONS --- */}
-        {/* ⚡ FIX: Removed the linear-gradient from the backgroundImage here ⚡ */}
         <section className="py-5 destinations-bg position-relative" style={{ 
             backgroundImage: `url("https://philippineshiddengems.com/wp-content/uploads/2025/01/docked-small-boats-at-palawan-philippines.jpg")`, 
             backgroundSize: 'cover', 
@@ -210,7 +236,7 @@ const Home = () => {
             </div>
         </section>
 
-        {/* --- SCENE 2: BASK UNDER THE SUN (MIMICS DIVE SECTION) --- */}
+        {/* --- SCENE 2: BASK UNDER THE SUN --- */}
         <section className="scene-section bask-sun-bg" style={{ backgroundImage: `url("${sunbathingImg}")`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal">
@@ -222,6 +248,8 @@ const Home = () => {
                             <p className="scene-text">Let the gentle rhythm of the waves wash your worries away. Whether you are sipping a fresh coconut under a swaying palm tree or wading into crystal-clear turquoise waters, paradise is waiting.</p>
                             <Link to="/destinations?search=beach" className="btn-text-link mt-3 d-inline-block">Book a Beach Resort <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
+                        {/* ⚡ NEW: Mobile Image Block ⚡ */}
+                        <div className="mobile-scene-img" style={{ backgroundImage: `url("${sunbathingImg}")` }}></div>
                     </div>
                 </div>
             </div>
@@ -302,6 +330,8 @@ const Home = () => {
                             <p className="scene-text">Beyond the technicolor gardens of coral lies a world frozen in time. Navigate through haunting shipwrecks and silent underwater caverns where history rests beneath the tides.</p>
                             <Link to="/tours?search=diving" className="btn-text-link mt-3 d-inline-block">View Diving Packages <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
+                        {/* ⚡ NEW: Mobile Image Block ⚡ */}
+                        <div className="mobile-scene-img" style={{ backgroundImage: `url("${swimImg}")` }}></div>
                     </div>
                 </div>
             </div>
