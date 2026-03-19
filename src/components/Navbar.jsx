@@ -60,13 +60,11 @@ const Navbar = () => {
 
   const currentPath = location.pathname.toLowerCase();
   
-  // ⚡ FIX: Removed '/connect' from this list so it stays white! ⚡
   const isLightPage = currentPath.includes('/booking') || 
                       currentPath.includes('/login') || 
                       currentPath.includes('/register') || 
                       currentPath.includes('/profile');
   
-  // Only apply the dark text if we are on a light page AND haven't scrolled down yet
   const isLightNav = isLightPage && !scrolled;
 
   return (
@@ -89,6 +87,16 @@ const Navbar = () => {
 
                 nav#mainNav.light-nav-mode .navbar-toggler-icon {
                     filter: brightness(0) saturate(100%) invert(18%) sepia(50%) saturate(3015%) hue-rotate(193deg) brightness(97%) contrast(98%) !important;
+                }
+
+                /* ⚡ NEW: Fixes the blinking cursor and blue focus box on mobile hamburger menu ⚡ */
+                .navbar-toggler {
+                    caret-color: transparent !important; 
+                    user-select: none !important;
+                }
+                .navbar-toggler:focus {
+                    outline: none !important;
+                    box-shadow: none !important;
                 }
             `}
         </style>
