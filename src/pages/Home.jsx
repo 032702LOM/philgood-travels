@@ -89,6 +89,19 @@ const Home = () => {
   return (
     <div className="fade-in">
         
+        <style>
+            {`
+                @media (max-width: 768px) {
+                    .scene-section {
+                        background-size: cover !important;
+                        background-position: center center !important;
+                        background-attachment: scroll !important; 
+                        min-height: 60vh; 
+                    }
+                }
+            `}
+        </style>
+
         {showPromo && (
             <div className="top-alert" id="specialOfferBanner">
                 <span><i className="fa-solid fa-sun me-2"></i> MONSOON SPECIAL: 30% OFF on all Palawan packages!</span>
@@ -98,13 +111,9 @@ const Home = () => {
 
         {/* --- STATIC HERO SECTION --- */}
         <section id="home" className="fade-in" style={{ marginTop: 0 }}>
-            <div className="home-hero w-100 position-relative" style={{ backgroundImage: `url(${islandParadiseImg})` }}>
+            <div className="home-hero w-100 position-relative" style={{ backgroundImage: `url(${islandParadiseImg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
                 <div className="hero-overlay w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center">
-                    <div className="container scroll-reveal">
-                        <h1 className="hero-title transparent-text">Island Paradise</h1>
-                        <p className="hero-subtitle transparent-text">Relax on pristine white sand beaches</p>
-                        <Link to="/booking" className="hero-btn">BOOK NOW</Link>
-                    </div>
+                    {/* The text and Book Now button have been completely removed from here */}
                 </div>
             </div>
 
@@ -137,7 +146,7 @@ const Home = () => {
         </section>
 
         {/* SCENE 1: MAN ON CLIFF */}
-        <section className="scene-section trail-makers-bg" style={{ backgroundImage: `url("${manOnCliffImg}")` }}>
+        <section className="scene-section trail-makers-bg" style={{ backgroundImage: `url("${manOnCliffImg}")`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal">
                     <div className="col-lg-6 trail-makers-text-col">
@@ -154,15 +163,16 @@ const Home = () => {
         </section>
 
         {/* --- POPULAR DESTINATIONS --- */}
+        {/* ⚡ FIX: Removed the linear-gradient from the backgroundImage here ⚡ */}
         <section className="py-5 destinations-bg position-relative" style={{ 
-            backgroundImage: `linear-gradient(to bottom, transparent, var(--bg-dark)), url("https://philippineshiddengems.com/wp-content/uploads/2025/01/docked-small-boats-at-palawan-philippines.jpg")`, 
+            backgroundImage: `url("https://philippineshiddengems.com/wp-content/uploads/2025/01/docked-small-boats-at-palawan-philippines.jpg")`, 
             backgroundSize: 'cover', 
             backgroundPosition: 'center', 
             backgroundAttachment: 'fixed' 
         }}> 
             <div className="container py-5 position-relative" style={{ zIndex: 2 }}>
                 <div className="section-header scroll-reveal">
-                    <span className="section-subtitle force-white-text" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.8)' }}>
+                    <span className="section-subtitle" style={{ color: '#FF9F1C', textShadow: '1px 1px 4px rgba(0,0,0,0.8)' }}>
                         Regional
                     </span>
                     <h2 className="section-title wave-text force-white-text" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.9)' }}>
@@ -201,7 +211,7 @@ const Home = () => {
         </section>
 
         {/* --- SCENE 2: BASK UNDER THE SUN (MIMICS DIVE SECTION) --- */}
-        <section className="scene-section bask-sun-bg" style={{ backgroundImage: `url("${sunbathingImg}")` }}>
+        <section className="scene-section bask-sun-bg" style={{ backgroundImage: `url("${sunbathingImg}")`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal">
                     <div className="col-lg-6">
@@ -281,7 +291,7 @@ const Home = () => {
         </section>
 
         {/* SCENE 3: READY FOR YOUR NEXT DIVE */}
-        <section className="scene-section dive-bg" style={{ backgroundImage: `url("${swimImg}")`}}>
+        <section className="scene-section dive-bg" style={{ backgroundImage: `url("${swimImg}")`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal">
                     <div className="col-lg-6">
