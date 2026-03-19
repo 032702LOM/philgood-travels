@@ -79,6 +79,12 @@ const Navbar = () => {
                     text-shadow: none !important;
                     font-weight: 800 !important;
                 }
+
+                /* ⚡ NEW: Ensures the mobile brand text turns Navy on light backgrounds ⚡ */
+                nav#mainNav.light-nav-mode .navbar-brand-text {
+                    color: #023E8A !important;
+                    text-shadow: none !important;
+                }
                 
                 nav#mainNav.light-nav-mode .navbar-nav .nav-link:hover,
                 nav#mainNav.light-nav-mode .navbar-nav .nav-link.active {
@@ -89,14 +95,13 @@ const Navbar = () => {
                     filter: brightness(0) saturate(100%) invert(18%) sepia(50%) saturate(3015%) hue-rotate(193deg) brightness(97%) contrast(98%) !important;
                 }
 
-                /* ⚡ NEW: Forces the blinking cursor and blue boxes to hide on ALL navbar elements ⚡ */
                 nav#mainNav a, 
                 nav#mainNav button, 
                 nav#mainNav .nav-link, 
                 nav#mainNav .navbar-toggler {
                     caret-color: transparent !important; 
                     user-select: none !important;
-                    -webkit-user-select: none !important; /* For Safari */
+                    -webkit-user-select: none !important; 
                 }
                 
                 nav#mainNav a:focus, 
@@ -110,8 +115,17 @@ const Navbar = () => {
 
         <nav className={`navbar navbar-expand-lg fixed-top ${isLightNav ? 'navbar-light light-nav-mode' : 'navbar-dark'} ${scrolled ? 'scrolled' : ''}`} id="mainNav">
             <div className="container">
-                <Link className="navbar-brand" to="/">
+                {/* ⚡ FIX: Added d-flex to align the logo and text side-by-side ⚡ */}
+                <Link className="navbar-brand d-flex align-items-center gap-2" to="/">
                     <img src="https://i.postimg.cc/CLfdcctP/Untitled-design-(3).png" alt="PhilGood Logo" className="navbar-logo-img" />
+                    
+                    {/* ⚡ NEW: The brand text. 'd-lg-none' hides it on desktop, shows it on mobile/tablet ⚡ */}
+                    <span 
+                        className="navbar-brand-text text-white fw-bold font-montserrat d-lg-none" 
+                        style={{ fontSize: '1.25rem', margin: 0, textShadow: '1px 1px 4px rgba(0,0,0,0.6)' }}
+                    >
+                        PhilGood Travels
+                    </span>
                 </Link>
                 
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
