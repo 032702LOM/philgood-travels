@@ -178,7 +178,8 @@ const Destinations = () => {
                 <h1 className="hero-title mb-3" id="detailTitle">{selectedPlace.name}</h1>
                 <div className="d-flex gap-3 align-items-center">
                     <span className="badge rounded-pill text-dark" style={{ backgroundColor: '#FF8C73' }} id="detailType">{selectedPlace.type}</span>
-                    <span className="text-white-50 font-montserrat"><i className="fa-solid fa-location-dot me-1"></i> <span id="detailRegion">{selectedPlace.region}</span></span>
+                    {/* ⚡ FIX: Removed text-white-50 so the region is visible */}
+                    <span className="text-grey font-montserrat"><i className="fa-solid fa-location-dot me-1"></i> <span id="detailRegion">{selectedPlace.region}</span></span>
                 </div>
             </div>
         </div>
@@ -187,19 +188,22 @@ const Destinations = () => {
                 <div className="col-lg-8">
                     <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box">
                         <h6 className="text-accent fw-bold mb-3 font-montserrat">PAYMENT & OFFERS</h6>
-                        <ul className="row list-unstyled text-white-50 m-0">
+                        {/* ⚡ FIX: Replaced text-white-50 with text-grey */}
+                        <ul className="row list-unstyled text-grey m-0">
                             {[...(selectedPlace.payment || []), ...(selectedPlace.roomOffers || [])].map((item, idx) => (<li key={idx} className="col-md-6 mb-2"><i className="fa-solid fa-check text-accent me-2"></i>{item}</li>))}
                         </ul>
                     </div>
                     <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box">
                         <h6 className="text-accent fw-bold mb-3 font-montserrat">FACILITIES</h6>
-                        <ul className="row list-unstyled text-white-50 m-0">
+                        {/* ⚡ FIX: Replaced text-white-50 with text-grey */}
+                        <ul className="row list-unstyled text-grey m-0">
                             {(selectedPlace.facilities || []).map((fac, idx) => (<li key={idx} className="col-md-6 mb-2"><i className="fa-solid fa-check text-accent me-2"></i>{fac}</li>))}
                         </ul>
                     </div>
                     <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box">
                         <h6 className="text-accent fw-bold mb-3 font-montserrat">DETAILS</h6>
-                        <ul className="list-unstyled text-white-50 m-0">
+                        {/* ⚡ FIX: Replaced text-white-50 with text-grey */}
+                        <ul className="list-unstyled text-grey m-0">
                             {selectedPlace.bed && <li className="mb-2"><strong>Bed Type:</strong> {selectedPlace.bed.join(', ')}</li>}
                             {selectedPlace.bedrooms && <li className="mb-2"><strong>Bedrooms:</strong> {selectedPlace.bedrooms.join(', ')}</li>}
                             {selectedPlace.beachAccess && <li className="mb-2"><strong>Beach Access:</strong> {selectedPlace.beachAccess}</li>}
@@ -236,16 +240,21 @@ const Destinations = () => {
 
                 <div className="col-lg-4">
                     <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box text-center">
-                        <h6 className="text-white-50 small mb-2">Starting at</h6>
+                        {/* ⚡ FIX: Replaced text-white-50 with text-grey */}
+                        <h6 className="text-grey small mb-2">Starting at</h6>
                         <h2 className="fw-bold mb-0 text-accent">{formatPrice(selectedPlace.price)}</h2>
-                        <small className="text-white-50">/ night</small>
+                        {/* ⚡ FIX: Replaced text-white-50 with text-grey */}
+                        <small className="text-grey">/ night</small>
                     </div>
 
                     <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box text-center">
                         <div className="d-flex align-items-center justify-content-center gap-2 mb-3">
-                            <i className="fa-solid fa-cloud text-white-50"></i>
-                            <h6 className="text-white font-montserrat fw-bold m-0">Weather</h6>
-                            <button className="btn btn-sm btn-link p-0 ms-2 text-white-50" onClick={handleRefreshWeather} title="Refresh Weather"><i className={`fa-solid fa-rotate-right ${isRefreshing ? 'fa-spin' : ''}`}></i></button>
+                            {/* ⚡ FIX: Replaced text-white-50 with text-grey */}
+                            <i className="fa-solid fa-cloud text-grey"></i>
+                            {/* ⚡ FIX: Replaced text-white with text-navy */}
+                            <h6 className="text-navy font-montserrat fw-bold m-0">Weather</h6>
+                            {/* ⚡ FIX: Replaced text-white-50 with text-grey */}
+                            <button className="btn btn-sm btn-link p-0 ms-2 text-grey" onClick={handleRefreshWeather} title="Refresh Weather"><i className={`fa-solid fa-rotate-right ${isRefreshing ? 'fa-spin' : ''}`}></i></button>
                         </div>
                         <h1 className="fw-bold mb-1" style={{ fontSize: '3.5rem', color: '#FF8C73' }} id="weatherTemp">{weather}</h1>
                     </div>
@@ -410,7 +419,6 @@ const Destinations = () => {
                                                         <p className="card-text text-grey small mb-2">{place.type} • {place.distance || 'Various'}</p>
                                                         
                                                         <div className="d-flex flex-wrap gap-2 mb-3">
-                                                            {/* ⚡ FIX: Added inline styling to force dark navy text on the light blue background ⚡ */}
                                                             {(place.facilities || []).slice(0, 3).map(fac => (
                                                                 <span key={fac} className="badge bg-primary bg-opacity-10 fw-bold" style={{ color: '#023E8A' }}>{fac}</span>
                                                             ))}
