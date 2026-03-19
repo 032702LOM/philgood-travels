@@ -21,8 +21,6 @@ const Booking = () => {
   
   const [splitBetween, setSplitBetween] = useState(1);
   const [payerEmails, setPayerEmails] = useState(['']);
-
-  // ⚡ FIX: Added a loading state so the user knows the action was taken immediately ⚡
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const accClassRates = { Standard: 0, Deluxe: 2500, Luxury: 5000 };
@@ -44,6 +42,9 @@ const Booking = () => {
     });
   };
 
+  // ==========================================
+  // ⚡ PRICING & TAX MATH (LOCAL ONLY) ⚡
+  // ==========================================
   const currentItem = allBookableItems.find(item => item.name === selectedPackage);
   const basePrice = currentItem?.price || 0; 
   
@@ -58,9 +59,18 @@ const Booking = () => {
   const transferTotal = addons.airportTransfer ? addonPrices.airportTransfer : 0;
   const insuranceTotal = addons.insurance ? (addonPrices.insurance * totalHeads) : 0; 
   const dinnerTotal = addons.romanticDinner ? addonPrices.romanticDinner : 0;
-  const carbonTotal = addons.carbonOffset ? addonPrices.carbonOffset : 0;
+  const carbonTotal = addons.carbonOffset ? (addonPrices.carbonOffset * totalHeads) : 0;
   
-  const grandTotal = packageTotal + accClassTotal + transferTotal + insuranceTotal + dinnerTotal + carbonTotal;
+  // 1. Calculate the Subtotal (Everything before taxes)
+  const subTotal = packageTotal + accClassTotal + transferTotal + insuranceTotal + dinnerTotal + carbonTotal;
+
+  // 2. Calculate 12% VAT
+  const vatTotal = subTotal * 0.12;
+
+  // 3. Grand Total (No Travel Tax for domestic bookings)
+  const grandTotal = subTotal + vatTotal;
+
+  // ==========================================
 
   const handleInfoChange = (e) => setPersonalInfo({ ...personalInfo, [e.target.name]: e.target.value });
   const toggleAddon = (addonName) => setAddons({ ...addons, [addonName]: !addons[addonName] });
@@ -76,9 +86,7 @@ const Booking = () => {
         return;
     }
     
-    // ⚡ FIX: Lock the button instantly to prevent double-clicks ⚡
     setIsSubmitting(true);
-    
     const user = JSON.parse(userStr);
 
     const bookingData = {
@@ -107,7 +115,6 @@ const Booking = () => {
         console.error(err);
         alert("❌ Failed to process booking.");
     } finally {
-        // ⚡ FIX: Unlock the button when the server responds ⚡
         setIsSubmitting(false);
     }
   };
@@ -125,6 +132,7 @@ const Booking = () => {
           <form onSubmit={handleSubmit} className="row g-5">
             
             <div className="col-lg-8 scroll-reveal visible">
+              {/* === TRIP DETAILS === */}
               <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 mb-4 teal-hover-box">
                 <h4 className="fw-bold mb-4 font-montserrat text-navy"><i className="fa-solid fa-suitcase-rolling text-accent me-2"></i> {t('trip_details', 'Trip Details')}</h4>
                 <div className="row g-4">
@@ -166,6 +174,7 @@ const Booking = () => {
                 </div>
               </div>
 
+              {/* === ACCOMMODATION CLASS === */}
               <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 mb-4 teal-hover-box">
                 <h4 className="fw-bold mb-4 font-montserrat text-navy"><i className="fa-solid fa-bed text-accent me-2"></i> Accommodation Class</h4>
                 <div className="row g-3">
@@ -175,6 +184,7 @@ const Booking = () => {
                 </div>
               </div>
 
+              {/* === LEAD GUEST DETAILS === */}
               <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 mb-4 teal-hover-box">
                 <h4 className="fw-bold mb-4 font-montserrat text-navy"><i className="fa-solid fa-address-card text-accent me-2"></i> Lead Guest Details</h4>
                 <div className="row g-3">
@@ -184,14 +194,23 @@ const Booking = () => {
                 </div>
               </div>
 
+              {/* === CARBON FOOTPRINT === */}
               <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 mb-4 teal-hover-box" style={{ borderLeft: '4px solid #4CAF50 !important' }}>
                 <h4 className="fw-bold mb-2 font-montserrat text-navy"><i className="fa-solid fa-leaf text-success me-2"></i> Carbon Footprint</h4>
                 <p className="text-grey small mb-3">Air travel and ground transport generate emissions. The estimated footprint for {totalHeads} traveler(s) is <strong className="text-navy">{totalHeads * 150}kg CO₂</strong>. Help us offset this by contributing to local Philippine reforestation projects.</p>
                 <div className={`p-3 rounded-3 border ${addons.carbonOffset ? 'border-success' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: addons.carbonOffset ? 'rgba(76, 175, 80, 0.1)' : '#F4FAFC', cursor: 'pointer', transition: 'all 0.3s' }} onClick={() => toggleAddon('carbonOffset')}>
-                    <div className="form-check d-flex justify-content-between align-items-center m-0 p-0"><div><input className="form-check-input me-3 ms-0 mt-0" type="checkbox" checked={addons.carbonOffset} readOnly style={{ cursor: 'pointer', accentColor: '#4CAF50' }} /><label className="form-check-label text-navy fw-bold d-inline" style={{ cursor: 'pointer' }}>Offset My Carbon Footprint</label></div><span className="text-success fw-bold">+{formatPrice(500)}</span></div>
+                    <div className="form-check d-flex justify-content-between align-items-center m-0 p-0">
+                        <div>
+                            <input className="form-check-input me-3 ms-0 mt-0" type="checkbox" checked={addons.carbonOffset} readOnly style={{ cursor: 'pointer', accentColor: '#4CAF50' }} />
+                            <label className="form-check-label text-navy fw-bold d-inline" style={{ cursor: 'pointer' }}>Offset My Carbon Footprint</label>
+                            <p className="text-grey small m-0 ms-4 ps-2">{formatPrice(500)} per person</p>
+                        </div>
+                        <span className="text-success fw-bold">+{formatPrice(addonPrices.carbonOffset * totalHeads)}</span>
+                    </div>
                 </div>
               </div>
 
+              {/* === OPTIONAL ADD-ONS === */}
               <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 mb-4 teal-hover-box">
                 <h4 className="fw-bold mb-4 font-montserrat text-navy"><i className="fa-solid fa-puzzle-piece text-accent me-2"></i> Optional Add-ons</h4>
                 <div className={`p-3 rounded-3 mb-3 border ${addons.airportTransfer ? 'border-primary' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: addons.airportTransfer ? 'rgba(0, 180, 216, 0.1)' : '#F4FAFC', cursor: 'pointer', transition: 'all 0.3s' }} onClick={() => toggleAddon('airportTransfer')}><div className="form-check d-flex justify-content-between align-items-center m-0 p-0"><div><input className="form-check-input me-3 ms-0 mt-0" type="checkbox" checked={addons.airportTransfer} readOnly style={{ cursor: 'pointer' }} /><label className="form-check-label text-navy fw-bold d-inline" style={{ cursor: 'pointer' }}>Roundtrip Airport Transfer</label><p className="text-grey small m-0 ms-4 ps-2">Hassle-free pick up and drop off.</p></div><span className="text-accent fw-bold">+{formatPrice(1500)}</span></div></div>
@@ -199,6 +218,7 @@ const Booking = () => {
                 <div className={`p-3 rounded-3 border ${addons.romanticDinner ? 'border-primary' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: addons.romanticDinner ? 'rgba(0, 180, 216, 0.1)' : '#F4FAFC', cursor: 'pointer', transition: 'all 0.3s' }} onClick={() => toggleAddon('romanticDinner')}><div className="form-check d-flex justify-content-between align-items-center m-0 p-0"><div><input className="form-check-input me-3 ms-0 mt-0" type="checkbox" checked={addons.romanticDinner} readOnly style={{ cursor: 'pointer' }} /><label className="form-check-label text-navy fw-bold d-inline" style={{ cursor: 'pointer' }}>Romantic Dinner Setup</label><p className="text-grey small m-0 ms-4 ps-2">Candlelit dinner by the beach.</p></div><span className="text-accent fw-bold">+{formatPrice(2500)}</span></div></div>
               </div>
 
+              {/* === PAYMENT DETAILS === */}
               <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 mb-4 teal-hover-box">
                 <h4 className="fw-bold mb-4 font-montserrat text-navy"><i className="fa-solid fa-people-arrows text-accent me-2"></i> Payment Details</h4>
                 <div className="row g-3">
@@ -249,6 +269,7 @@ const Booking = () => {
                 </div>
               </div>
 
+              {/* === PAYMENT METHOD === */}
               <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 teal-hover-box">
                 <h4 className="fw-bold mb-4 font-montserrat text-navy"><i className="fa-solid fa-wallet text-accent me-2"></i> Payment Method</h4>
                 <div className="d-flex flex-wrap gap-3">
@@ -271,20 +292,28 @@ const Booking = () => {
                         <h6 className="text-primary-dark fw-bold mb-1">{selectedPackage}</h6>
                         <p className="text-grey small mb-4">{guests.adults} Adult{guests.adults > 1 ? 's' : ''}{guests.children > 0 && `, ${guests.children} Child${guests.children > 1 ? 'ren' : ''}`}{guests.infants > 0 && `, ${guests.infants} Infant${guests.infants > 1 ? 's' : ''}`}{date && ` • ${date}`}</p>
                         
+                        {/* SUBTOTAL ITEMS */}
                         <div className="d-flex justify-content-between mb-2"><span className="text-grey small">Base Price (x{guests.adults})</span><span className="text-navy fw-bold">{formatPrice(adultTotal)}</span></div>
                         {guests.children > 0 && (<div className="d-flex justify-content-between mb-2"><span className="text-accent small">Children (50% Off)</span><span className="text-navy fw-bold">{formatPrice(childTotal)}</span></div>)}
-                        {guests.infants > 0 && (<div className="d-flex justify-content-between mb-2"><span className="text-success small">Infants (Free)</span><span className="text-navy fw-bold">{formatPrice(0)}</span></div>)}
                         {accClass !== 'Standard' && (<div className="d-flex justify-content-between mb-2"><span className="text-accent small">{accClass} Class (x{chargeablePax})</span><span className="text-navy fw-bold">{formatPrice(accClassTotal)}</span></div>)}
                         {addons.airportTransfer && (<div className="d-flex justify-content-between mb-2"><span className="text-grey small">Airport Transfer</span><span className="text-navy fw-bold">{formatPrice(transferTotal)}</span></div>)}
                         {addons.insurance && (<div className="d-flex justify-content-between mb-2"><span className="text-grey small">Insurance (x{totalHeads})</span><span className="text-navy fw-bold">{formatPrice(insuranceTotal)}</span></div>)}
                         {addons.romanticDinner && (<div className="d-flex justify-content-between mb-2"><span className="text-grey small">Romantic Dinner</span><span className="text-navy fw-bold">{formatPrice(dinnerTotal)}</span></div>)}
-                        {addons.carbonOffset && (<div className="d-flex justify-content-between mb-2"><span className="text-success small">Carbon Offset</span><span className="text-navy fw-bold">{formatPrice(carbonTotal)}</span></div>)}
+                        {addons.carbonOffset && (<div className="d-flex justify-content-between mb-2"><span className="text-success small">Carbon Offset (x{totalHeads})</span><span className="text-navy fw-bold">{formatPrice(carbonTotal)}</span></div>)}
+                        
+                        {/* ⚡ TAXES SECTION (12% VAT ONLY) ⚡ */}
+                        <div className="border-top border-primary border-opacity-10 mt-3 pt-3">
+                            <div className="d-flex justify-content-between mb-2">
+                                <span className="text-grey small">VAT (12%)</span>
+                                <span className="text-navy fw-bold">{formatPrice(vatTotal)}</span>
+                            </div>
+                        </div>
                     </>
                 ) : (
                     <div className="text-center text-grey py-4 border border-primary border-opacity-25 border-dashed rounded-3 mb-4"><small>Select a package to see summary</small></div>
                 )}
 
-                <div className="border-top border-primary border-opacity-10 mt-4 pt-3 d-flex justify-content-between align-items-center mb-4"><span className="text-navy fw-bold fs-5">{t('total', 'Total')}</span><span className="fw-bold fs-3 text-accent">{formatPrice(grandTotal)}</span></div>
+                <div className="border-top border-primary border-opacity-10 mt-3 pt-3 d-flex justify-content-between align-items-center mb-4"><span className="text-navy fw-bold fs-5">{t('total', 'Total')}</span><span className="fw-bold fs-3 text-accent">{formatPrice(grandTotal)}</span></div>
                 
                 {splitBetween > 1 && (
                     <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-primary border-opacity-10">
@@ -295,7 +324,6 @@ const Booking = () => {
 
                 <div className="text-grey small mb-3 text-center">Payment Method: <strong className="text-navy">{paymentMethod}</strong></div>
 
-                {/* ⚡ FIX: The button now locks and changes text to "Processing..." while sending data ⚡ */}
                 <button type="submit" className="btn btn-proceed w-100 py-3 text-uppercase font-montserrat fw-bold shadow" disabled={isSubmitting}>
                     {isSubmitting ? (
                         <><i className="fa-solid fa-spinner fa-spin me-2"></i> Processing...</>
