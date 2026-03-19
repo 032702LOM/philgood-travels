@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, Link, useLocation } from 'react-router-dom'; // ⚡ NEW: Imported useLocation
+import { NavLink, Link, useLocation } from 'react-router-dom';
 import { usePreferences } from '../context/PreferencesContext';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
-  const location = useLocation(); // ⚡ NEW: Gets the current page URL
+  const location = useLocation(); 
   
   // Modal State
   const [showPrefModal, setShowPrefModal] = useState(false);
@@ -58,31 +58,41 @@ const Navbar = () => {
       setShowPrefModal(true);
   };
 
-  // ⚡ NEW: Determine if we are on a page with a light background at the very top
-  const lightBgPages = ['/connect', '/booking', '/login', '/register'];
-  // If we are on a light page AND haven't scrolled down yet, activate the dark text mode!
-  const isLightNav = lightBgPages.includes(location.pathname) && !scrolled;
+  // ⚡ FIX: Flexible URL checking so it works even with query parameters like ?package=... ⚡
+  const currentPath = location.pathname.toLowerCase();
+  
+  // You can add any other light pages to this list if needed!
+  const isLightPage = currentPath.includes('/booking') || currentPath.includes('/connect') || currentPath.includes('/login') || currentPath.includes('/register');
+  
+  // Only apply the dark text if we are on a light page AND haven't scrolled down yet
+  const isLightNav = isLightPage && !scrolled;
 
   return (
     <>
-        {/* ⚡ NEW: Injected a small stylesheet that forces Navy text when isLightNav is true ⚡ */}
+        {/* ⚡ FIX: Bulletproof CSS specificity so Bootstrap can't override it ⚡ */}
         <style>
             {`
-                .light-nav-mode .nav-link,
-                .light-nav-mode .nav-action-btn,
-                .light-nav-mode .nav-action-btn i,
-                .light-nav-mode .btn-auth {
-                    color: var(--dark-navy) !important;
+                nav#mainNav.light-nav-mode .navbar-nav .nav-link,
+                nav#mainNav.light-nav-mode .nav-action-btn,
+                nav#mainNav.light-nav-mode .nav-action-btn i,
+                nav#mainNav.light-nav-mode .btn-auth {
+                    color: #023E8A !important; 
                     text-shadow: none !important;
-                    font-weight: 700 !important;
+                    font-weight: 800 !important;
                 }
-                .light-nav-mode .navbar-toggler-icon {
-                    filter: invert(1);
+                
+                nav#mainNav.light-nav-mode .navbar-nav .nav-link:hover,
+                nav#mainNav.light-nav-mode .navbar-nav .nav-link.active {
+                    color: #FF9F1C !important; 
+                }
+
+                nav#mainNav.light-nav-mode .navbar-toggler-icon {
+                    filter: brightness(0) saturate(100%) invert(18%) sepia(50%) saturate(3015%) hue-rotate(193deg) brightness(97%) contrast(98%) !important;
                 }
             `}
         </style>
 
-        {/* ⚡ UPDATED: Dynamically adds 'light-nav-mode' based on the page ⚡ */}
+        {/* The 'light-nav-mode' class is conditionally added here */}
         <nav className={`navbar navbar-expand-lg fixed-top ${isLightNav ? 'navbar-light light-nav-mode' : 'navbar-dark'} ${scrolled ? 'scrolled' : ''}`} id="mainNav">
             <div className="container">
                 <Link className="navbar-brand" to="/">
@@ -121,7 +131,6 @@ const Navbar = () => {
                                 style={{ width: '35px', height: '35px', borderRadius: '50%' }}
                                 title="Toggle Theme"
                             >
-                                {/* ⚡ FIX: The moon icon switches to Navy on light pages ⚡ */}
                                 <i className={`fa-solid ${theme === 'dark' ? 'fa-sun text-warning' : `fa-moon ${isLightNav ? 'text-navy' : 'text-white'}`}`}></i>
                             </button>
 
