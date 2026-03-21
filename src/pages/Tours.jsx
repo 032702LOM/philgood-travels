@@ -4,6 +4,61 @@ import { tourPackages, regions } from '../data/placesData';
 import { usePreferences } from '../context/PreferencesContext';
 import heroImg from '../assets/img/Tours__Packages.png';
 
+// ⚡ NEW: Leaflet Map Imports ⚡
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+// ⚡ EXPANDED: GPS Coordinates for every region and tour package
+const regionCoords = {
+  'Manila': [14.5995, 120.9842],
+  'Metro Manila': [14.5995, 120.9842],
+  'Palawan': [9.8349, 118.7384],
+  'Bohol': [9.8500, 124.1435],
+  'Boracay': [11.9674, 121.9248],
+  'Boracay (Aklan)': [11.9674, 121.9248],
+  'Aklan': [11.9674, 121.9248],
+  'Aklan (Boracay)': [11.9674, 121.9248],
+  'Cebu': [10.3157, 123.8854],
+  'Ifugao': [16.9140, 121.0564],
+  'Banaue': [16.9140, 121.0564],
+  'Ifugao (Banaue)': [16.9140, 121.0564],
+  'El Nido': [11.1795, 119.3941],
+  'Coron': [11.9997, 120.2030],
+  'Puerto Princesa': [9.7392, 118.7353],
+  'Palawan Island Hopping': [11.1795, 119.3941],
+  'Chocolate Hills': [9.8296, 124.1654],
+  'Panglao Island': [9.5855, 123.7744],
+  'Loboc River': [9.6384, 124.0202],
+  'Bohol Countryside Tour': [9.8296, 124.1654],
+  'White Beach': [11.9546, 121.9240],
+  'Puka Shell Beach': [11.9754, 121.9168],
+  'Diniwid': [11.9701, 121.9137],
+  'Boracay Sunset Cruise': [11.9674, 121.9248],
+  'Moalboal': [9.9324, 123.4005],
+  'Oslob': [9.5204, 123.3768],
+  'Bantayan Island': [11.2144, 123.7380],
+  'Cebu South Adventure': [9.5204, 123.3768],
+  'Intramuros': [14.5896, 120.9747],
+  'Rizal Park': [14.5826, 120.9787],
+  'BGC': [14.5492, 121.0476],
+  'Manila Historical Walk': [14.5896, 120.9747],
+  'Batad Terraces': [16.9333, 121.1340],
+  'Banaue Viewpoint': [16.9248, 121.0567],
+  'Tappiya Falls': [16.9287, 121.1354],
+  'Banaue Heritage Tour': [16.9140, 121.0564]
+};
+
+// ⚡ NEW: Custom map marker function to generate blue numbered circles
+const createCustomIcon = (number) => {
+  return L.divIcon({
+      className: 'custom-map-marker',
+      html: `<div style="background-color: var(--primary-color, #00B4D8); color: white; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold; border: 2px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-family: Montserrat, sans-serif;">${number}</div>`,
+      iconSize: [30, 30],
+      iconAnchor: [15, 15]
+  });
+};
+
 const Tours = () => {
   const location = useLocation();
   const { t, formatPrice } = usePreferences();
@@ -33,6 +88,12 @@ const Tours = () => {
   const moveItem = (index, direction) => { const newItinerary = [...itinerary]; const targetIndex = index + direction; const temp = newItinerary[targetIndex]; newItinerary[targetIndex] = newItinerary[index]; newItinerary[index] = temp; setItinerary(newItinerary); };
   const removeItem = (index) => { setItinerary(itinerary.filter((_, i) => i !== index)); };
   const handleSaveItinerary = () => { alert(`Your custom route has been saved!\n\nStops:\n${itinerary.map((item, i) => `${i + 1}. ${item}`).join('\n')}`); };
+
+  // ⚡ COMBINED OPTIONS: Flatten regions and tour packages so users can add EVERYTHING to their map
+  const itineraryOptions = Array.from(new Set([
+      ...regions.map(r => r.name),
+      ...tourPackages.map(t => t.name)
+  ])).sort();
 
   return (
     <div className="fade-in" style={{ backgroundColor: 'var(--bg-dark)' }}>
@@ -78,12 +139,27 @@ const Tours = () => {
                     )}
                 </div>
 
+                {/* --- BUILD YOUR OWN ITINERARY SECTION --- */}
                 <div className="bg-card-dark p-5 rounded-4 border border-primary border-opacity-10 shadow-sm scroll-reveal visible" style={{ backgroundColor: 'var(--card-bg)' }}>
                     <div className="row g-5">
+                        
+                        {/* LEFT COLUMN: The List Builder */}
                         <div className="col-md-6">
                             <h3 className="fw-bold mb-3 text-navy font-montserrat"><i className="fa-solid fa-map-location-dot text-accent me-2"></i> {t('build_itinerary', 'Build Your Own Itinerary')}</h3>
                             <p className="text-grey small mb-4">{t('build_desc', 'Select destinations to create your perfect custom route across the Philippines.')}</p>
-                            <div className="d-flex gap-2 mb-4"><select className="form-control-dark form-select form-select-lg w-100" value={selectedDest} onChange={(e) => setSelectedDest(e.target.value)}><option value="">{t('choose_dest', '-- Choose a destination --')}</option>{regions.map(r => (<option key={r.id} value={r.name} disabled={itinerary.includes(r.name)}>{r.name} {itinerary.includes(r.name) ? t('added', '(Added)') : ''}</option>))}</select><button className="btn btn-proceed px-4" onClick={addToItinerary} disabled={!selectedDest}>{t('add_btn', 'Add')}</button></div>
+                            
+                            <div className="d-flex gap-2 mb-4">
+                                <select className="form-control-dark form-select form-select-lg w-100" value={selectedDest} onChange={(e) => setSelectedDest(e.target.value)}>
+                                    <option value="">{t('choose_dest', '-- Choose a destination --')}</option>
+                                    {itineraryOptions.map(optionName => (
+                                        <option key={optionName} value={optionName} disabled={itinerary.includes(optionName)}>
+                                            {optionName} {itinerary.includes(optionName) ? t('added', '(Added)') : ''}
+                                        </option>
+                                    ))}
+                                </select>
+                                <button className="btn btn-proceed px-4" onClick={addToItinerary} disabled={!selectedDest}>{t('add_btn', 'Add')}</button>
+                            </div>
+                            
                             <div className="itinerary-list mb-4">
                                 {itinerary.length === 0 ? (
                                     <div className="text-center p-4 rounded-3 border border-2 border-primary border-opacity-25 text-grey" style={{ borderStyle: 'dashed !important', backgroundColor: '#F4FAFC' }}><i className="fa-solid fa-route fs-3 mb-2 opacity-50 text-primary"></i><p className="mb-0 fw-bold">{t('itinerary_empty', 'Your itinerary is empty. Add your first stop above!')}</p></div>
@@ -97,54 +173,48 @@ const Tours = () => {
                             </div>
                             <button className="btn btn-outline-custom w-100" onClick={handleSaveItinerary} disabled={itinerary.length === 0}><i className="fa-solid fa-floppy-disk me-2"></i> {t('save_itinerary', 'Save Itinerary')}</button>
                         </div>
+                        
+                        {/* RIGHT COLUMN: Interactive Leaflet Map */}
                         <div className="col-md-6 d-none d-md-block">
-    <div 
-        className="position-relative h-100 overflow-hidden shadow-sm border border-primary border-opacity-10" 
-        style={{ 
-            minHeight: '500px', 
-            backgroundColor: '#F4FAFC', 
-            borderRadius: '16px', 
-            // ⚡ NEW: Reliable map URL and proper containment sizing
-            backgroundImage: "url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Philippines_location_map.svg/800px-Philippines_location_map.svg.png')", 
-            backgroundSize: 'contain', 
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center' 
-        }}
-    >
-        <div className="position-absolute top-0 start-0 m-3 z-3">
-            <span className="badge bg-primary text-white px-3 py-2 shadow">
-                <i className="fa-solid fa-map me-1"></i> {t('live_preview', 'Live Preview')}
-            </span>
-        </div>
-        
-        {/* ⚡ NEW: Reduced the blur and opacity so the map is clearly visible */}
-        <div 
-            className="position-absolute w-100 h-100 top-0 start-0 d-flex flex-column align-items-center justify-content-center gap-2 p-4" 
-            style={{ backgroundColor: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(1px)' }}
-        >
-            {itinerary.length === 0 ? (
-                <span className="text-navy fw-bold bg-white px-4 py-2 rounded-pill shadow-sm border border-primary border-opacity-10">
-                    {t('map_blank', 'Map is blank')}
-                </span>
-            ) : (
-                itinerary.map((item, index) => (
-                    <div 
-                        key={index} 
-                        className="badge bg-white text-navy shadow px-3 py-2 border border-primary border-opacity-25 d-flex align-items-center gap-2" 
-                        style={{ animation: 'fadeIn 0.3s ease-in' }}
-                    >
-                        <span className="badge rounded-circle text-white shadow-sm" style={{ backgroundColor: 'var(--primary-color)' }}>
-                            {index + 1}
-                        </span> 
-                        <span className="fw-bold font-montserrat text-navy">{item}</span>
+                            <div className="position-relative h-100 overflow-hidden shadow-sm border border-primary border-opacity-10" style={{ minHeight: '500px', backgroundColor: '#F4FAFC', borderRadius: '16px' }}>
+                                <div className="position-absolute top-0 start-0 m-3" style={{ zIndex: 1000 }}>
+                                    <span className="badge bg-primary text-white px-3 py-2 shadow">
+                                        <i className="fa-solid fa-map me-1"></i> {t('live_preview', 'Live Preview')}
+                                    </span>
+                                </div>
+                                
+                                <MapContainer 
+                                    center={[12.8797, 121.7740]} 
+                                    zoom={5} 
+                                    scrollWheelZoom={true} 
+                                    style={{ height: '100%', width: '100%', minHeight: '500px', zIndex: 1 }}
+                                >
+                                    <TileLayer
+                                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                    />
+                                    
+                                    {itinerary.map((item, index) => {
+                                        const coords = regionCoords[item] || [12.8797, 121.7740]; // Safe fallback if place isn't in dictionary
+                                        return (
+                                            <Marker key={index} position={coords} icon={createCustomIcon(index + 1)}>
+                                                <Popup>
+                                                    <strong>Stop {index + 1}:</strong> {item}
+                                                </Popup>
+                                            </Marker>
+                                        );
+                                    })}
+                                </MapContainer>
+
+                            </div>
+                        </div>
+
                     </div>
-                ))
-            )}
-        </div>
-    </div>
-</div>
+                </div>
+            </div>
         </section>
 
+        {/* MODAL FOR PRICE CALCULATION */}
         {showModal && selectedTour && (
             <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'transparent', backdropFilter: 'blur(5px)', zIndex: 1060 }}>
                 <div className="modal-dialog modal-dialog-centered calculate-modal-dialog"> 
