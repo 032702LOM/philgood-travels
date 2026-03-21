@@ -11,6 +11,7 @@ import L from 'leaflet';
 
 // ⚡ GPS Coordinates for every region and tour package
 const regionCoords = {
+  // --- MAIN REGIONS ---
   'Manila': [14.5995, 120.9842],
   'Metro Manila': [14.5995, 120.9842],
   'Palawan': [9.8349, 118.7384],
@@ -23,32 +24,35 @@ const regionCoords = {
   'Ifugao': [16.9140, 121.0564],
   'Banaue': [16.9140, 121.0564],
   'Ifugao (Banaue)': [16.9140, 121.0564],
+
+  // --- SPECIFIC SPOTS ---
   'El Nido': [11.1795, 119.3941],
   'Coron': [11.9997, 120.2030],
   'Puerto Princesa': [9.7392, 118.7353],
-  'Palawan Island Hopping': [11.1795, 119.3941],
   'Chocolate Hills': [9.8296, 124.1654],
   'Panglao Island': [9.5855, 123.7744],
   'Loboc River': [9.6384, 124.0202],
-  'Bohol Countryside Tour': [9.8296, 124.1654],
   'White Beach': [11.9546, 121.9240],
   'Puka Shell Beach': [11.9754, 121.9168],
   'Diniwid': [11.9701, 121.9137],
-  'Boracay Sunset Cruise': [11.9674, 121.9248],
   'Moalboal': [9.9324, 123.4005],
   'Oslob': [9.5204, 123.3768],
   'Bantayan Island': [11.2144, 123.7380],
-  'Cebu South Adventure': [9.5204, 123.3768],
   'Intramuros': [14.5896, 120.9747],
   'Rizal Park': [14.5826, 120.9787],
   'BGC': [14.5492, 121.0476],
-  'Manila Historical Walk': [14.5896, 120.9747],
   'Batad Terraces': [16.9333, 121.1340],
   'Banaue Viewpoint': [16.9248, 121.0567],
   'Tappiya Falls': [16.9287, 121.1354],
-  'Banaue Heritage Tour': [16.9140, 121.0564]
-};
 
+  // --- TOUR PACKAGES ---
+  'Bohol Adventure Package': [9.8296, 124.1654], // Drops on Chocolate Hills
+  'El Nido Island Paradise': [11.1795, 119.3941], // Drops on El Nido
+  'Boracay Beach Escape': [11.9546, 121.9240], // Drops on White Beach
+  'Manila City Escape': [14.5896, 120.9747], // Drops on Intramuros
+  'Cebu Canyoneering': [9.8130, 123.3756], // Drops near Badian/South Cebu
+  'Banaue Heritage Tour': [16.9333, 121.1340] // Drops on Batad
+};
 // ⚡ Custom map marker function to generate blue numbered circles
 const createCustomIcon = (number) => {
   return L.divIcon({
