@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { usePreferences } from '../context/PreferencesContext';
-
-// 1. IMPORT YOUR LOCAL VIDEO HERE
-// Make sure the file is actually in src/assets/video/
 import galleryVideo from '../assets/video/PhilGood_vid.mp4'; 
 
 // ==========================================
@@ -227,7 +224,6 @@ const Gallery = () => {
   const [selectedSubcard, setSelectedSubcard] = useState('All');
   const [searchKeyword, setSearchKeyword] = useState('');
   
-  // ⚡ NEW: State to track which image is currently enlarged ⚡
   const [enlargedImage, setEnlargedImage] = useState(null);
 
   const availableSubcards = selectedRegion === 'All' ? [] : galleryData.find(r => r.id === selectedRegion)?.subcards || [];
@@ -245,26 +241,16 @@ const Gallery = () => {
     const filteredRegions = galleryData.filter(r => r.name.toLowerCase().includes(searchKeyword.toLowerCase()));
     return (
       <div className="fade-in" style={{ marginTop: '0', paddingTop: '0' }}>
-        <div className="d-flex justify-content-between align-items-center mb-4"><h4 className="text-navy font-montserrat fw-bold mb-0">Explore by Region</h4><span className="text-grey fw-bold small">{galleryData.length} Regions</span></div>
+        <div className="d-flex justify-content-between align-items-center mb-4"><h4 className="text-navy font-montserrat fw-bold mb-0">{t('explore_by_region', 'Explore by Region')}</h4><span className="text-grey fw-bold small">{galleryData.length} {t('regions_count', 'Regions')}</span></div>
         <div className="row g-4">
           {filteredRegions.map((region) => (
             <div key={region.id} className="col-md-6 col-lg-4 scroll-reveal visible">
               <div className="card h-100 border-0 overflow-hidden shadow" style={{ cursor: 'pointer' }} onClick={() => handleRegionClick(region.id)}>
                 <div className="card-img-wrapper" style={{ height: '250px' }}>
                   <img src={region.cover} className="card-img-top w-100 h-100 object-fit-cover" alt={region.name} loading="lazy" />
-                  
                   <div className="position-absolute w-100 h-100 top-0 start-0 d-flex align-items-center justify-content-center text-center" style={{ background: 'rgba(0, 0, 0, 0.3)', transition: 'background 0.3s' }}>
-                    <h3 className="fw-bold text-uppercase m-0" style={{ 
-                        fontFamily: "'Anton', sans-serif", 
-                        color: '#FFFFFF',
-                        letterSpacing: '3px', 
-                        fontSize: '2.5rem',
-                        textShadow: '2px 2px 10px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.7)' 
-                    }}>
-                      {region.name}
-                    </h3>
+                    <h3 className="fw-bold text-uppercase m-0" style={{ fontFamily: "'Anton', sans-serif", color: '#FFFFFF', letterSpacing: '3px', fontSize: '2.5rem', textShadow: '2px 2px 10px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.7)' }}>{region.name}</h3>
                   </div>
-
                 </div>
               </div>
             </div>
@@ -280,19 +266,17 @@ const Gallery = () => {
     const filteredSubcards = region.subcards.filter(s => s.name.toLowerCase().includes(searchKeyword.toLowerCase()));
     return (
      <div className="fade-in" style={{ marginTop: '0', paddingTop: '0' }}>
-        <button className="btn btn-link text-navy fw-bold text-decoration-none p-0 mb-4 opacity-75" onClick={handleBackToRegions}><i className="fa-solid fa-arrow-left me-2"></i> Back to All Regions</button>
-        <div className="d-flex justify-content-between align-items-center mb-4"><h4 className="text-navy font-montserrat fw-bold mb-0">{region.name} Destinations</h4><span className="text-grey fw-bold small">{region.subcards.length} Locations</span></div>
+        <button className="btn btn-link text-navy fw-bold text-decoration-none p-0 mb-4 opacity-75" onClick={handleBackToRegions}><i className="fa-solid fa-arrow-left me-2"></i> {t('back_to_regions', 'Back to All Regions')}</button>
+        <div className="d-flex justify-content-between align-items-center mb-4"><h4 className="text-navy font-montserrat fw-bold mb-0">{region.name} {t('destinations', 'Destinations')}</h4><span className="text-grey fw-bold small">{region.subcards.length} {t('locations_count', 'Locations')}</span></div>
         <div className="row g-4 justify-content-center">
           {filteredSubcards.map((sub) => (
             <div key={sub.id} className="col-md-6 col-lg-4 scroll-reveal visible">
               <div className="card h-100 border-0 shadow" style={{ cursor: 'pointer', backgroundColor: 'var(--card-bg)' }} onClick={() => handleSubcardClick(sub.name)}>
                 <div className="card-img-wrapper" style={{ height: '220px' }}>
-                  <span className="card-badge" style={{ top: '10px', right: '10px', fontSize: '0.65rem' }}>{sub.images.length} Images</span>
+                  <span className="card-badge" style={{ top: '10px', right: '10px', fontSize: '0.65rem' }}>{sub.images.length} {t('photos_count', 'Photos')}</span>
                   <img src={sub.cover} className="card-img-top w-100 h-100 object-fit-cover" alt={sub.name} loading="lazy" />
                 </div>
-                <div className="card-body p-3 text-center border-top border-primary border-opacity-10">
-                  <h6 className="card-title mb-0 fs-5 text-navy">{sub.name}</h6>
-                </div>
+                <div className="card-body p-3 text-center border-top border-primary border-opacity-10"><h6 className="card-title mb-0 fs-5 text-navy">{sub.name}</h6></div>
               </div>
             </div>
           ))}
@@ -309,27 +293,14 @@ const Gallery = () => {
     
     return (
       <div className="fade-in">
-        <button className="btn btn-link text-navy fw-bold text-decoration-none p-0 mb-4 opacity-75" onClick={handleBackToSubcards}>
-            <i className="fa-solid fa-arrow-left me-2"></i> Back to {region.name} Destinations
-        </button>
-        <div className="d-flex justify-content-between align-items-center mb-4">
-            <h4 className="text-navy font-montserrat fw-bold mb-0">{subcard.name} Gallery</h4>
-            <span className="text-grey fw-bold small">{subcard.images.length} Photos</span>
-        </div>
-        
+        <button className="btn btn-link text-navy fw-bold text-decoration-none p-0 mb-4 opacity-75" onClick={handleBackToSubcards}><i className="fa-solid fa-arrow-left me-2"></i> {t('back_to', 'Back to')} {region.name} {t('destinations', 'Destinations')}</button>
+        <div className="d-flex justify-content-between align-items-center mb-4"><h4 className="text-navy font-montserrat fw-bold mb-0">{subcard.name} {t('gallery', 'Gallery')}</h4><span className="text-grey fw-bold small">{subcard.images.length} {t('photos_count', 'Photos')}</span></div>
         <div className="row g-3 justify-content-center">
           {filteredImages.map((img) => (
             <div key={img.id} className="col-6 col-md-4 col-lg scroll-reveal visible gallery-item" style={{ minWidth: '20%' }}>
-              {/* ⚡ NEW: Added onClick and cursor styling so users know they can click it ⚡ */}
-              <div 
-                className="position-relative overflow-hidden rounded-3 shadow-sm h-100 border border-primary border-opacity-10"
-                onClick={() => setEnlargedImage(img)}
-                style={{ cursor: 'zoom-in' }}
-              >
+              <div className="position-relative overflow-hidden rounded-3 shadow-sm h-100 border border-primary border-opacity-10" onClick={() => setEnlargedImage(img)} style={{ cursor: 'zoom-in' }}>
                 <img src={img.url} alt={img.title} loading="lazy" className="w-100 h-100 object-fit-cover gallery-img" style={{ aspectRatio: '1/1', transition: 'transform 0.4s ease' }} />
-                <div className="position-absolute bottom-0 start-0 w-100 p-2" style={{ background: 'linear-gradient(transparent, rgba(0, 119, 182, 0.9))' }}>
-                  <small className="text-white font-montserrat fw-semibold">{img.title}</small>
-                </div>
+                <div className="position-absolute bottom-0 start-0 w-100 p-2" style={{ background: 'linear-gradient(transparent, rgba(0, 119, 182, 0.9))' }}><small className="text-white font-montserrat fw-semibold">{img.title}</small></div>
               </div>
             </div>
           ))}
@@ -341,89 +312,57 @@ const Gallery = () => {
   return (
    <div className="fade-in">
       <section className="gallery-hero position-relative overflow-hidden" style={{ marginTop: 0 }}>
-          {/* BACKGROUND VIDEO */}
-          <video autoPlay loop muted playsInline className="hero-video-bg">
-              <source src={galleryVideo} type="video/mp4" />
-          </video>
-          
+          <video autoPlay loop muted playsInline className="hero-video-bg"><source src={galleryVideo} type="video/mp4" /></video>
           <div className="video-overlay"></div>
-
-          {/* Kept the invisible title for SEO/accessibility, but removed the filter bar from here! */}
-          <div className="container text-center mb-4 scroll-reveal visible position-relative" style={{ zIndex: 2 }}>
-              <h1 className="hero-title transparent-text" style={{ fontSize: '4rem' }}>{t('gal_title', 'Visual Journey')}</h1>
-              
-          </div>
+          <div className="container text-center mb-4 scroll-reveal visible position-relative" style={{ zIndex: 2 }}><h1 className="hero-title transparent-text" style={{ fontSize: '4rem' }}>{t('gal_title', 'Visual Journey')}</h1></div>
       </section>
 
-      {/* ⚡ THE CONTENT SECTION (Filter bar now lives safely here!) ⚡ */}
       <section className="py-5" style={{ minHeight: '500px', backgroundColor: 'var(--bg-dark)' }}>
         <div className="container">
           
-          {/* THE SEARCH FILTER BAR */}
           <div className="search-filter-bar p-4 rounded-4 mx-auto mb-5 shadow-sm scroll-reveal visible" style={{ maxWidth: '900px' }}>
               <div className="row g-3 align-items-center">
                   <div className="col-md-4">
-                      <label className="text-primary-dark fw-bold small mb-1">Region</label>
+                      <label className="text-primary-dark fw-bold small mb-1">{t('region', 'Region')}</label>
                       <div className="input-with-icon">
                           <i className="fa-solid fa-map-location-dot"></i>
                           <select className="form-control-dark form-select w-100" value={selectedRegion} onChange={(e) => { setSelectedRegion(e.target.value); setSelectedSubcard('All'); }}>
-                              <option value="All">All Regions</option>
+                              <option value="All">{t('all_regions', 'All Regions')}</option>
                               {galleryData.map(r => (<option key={r.id} value={r.id}>{r.name}</option>))}
                           </select>
                       </div>
                   </div>
                   <div className="col-md-4">
-                      <label className="text-primary-dark fw-bold small mb-1">Location</label>
+                      <label className="text-primary-dark fw-bold small mb-1">{t('location', 'Location')}</label>
                       <div className="input-with-icon">
                           <i className="fa-solid fa-camera"></i>
                           <select className="form-control-dark form-select w-100" value={selectedSubcard} onChange={(e) => setSelectedSubcard(e.target.value)} disabled={selectedRegion === 'All'}>
-                              <option value="All">{selectedRegion === 'All' ? 'Select a Region first' : 'All Locations'}</option>
+                              <option value="All">{selectedRegion === 'All' ? t('select_region_first', 'Select a Region first') : t('all_locations', 'All Locations')}</option>
                               {availableSubcards.map(sub => (<option key={sub.id} value={sub.name}>{sub.name}</option>))}
                           </select>
                       </div>
                   </div>
                   <div className="col-md-4">
-                      <label className="text-primary-dark fw-bold small mb-1">Keyword Search</label>
+                      <label className="text-primary-dark fw-bold small mb-1">{t('keyword_search', 'Keyword Search')}</label>
                       <div className="input-with-icon">
                           <i className="fa-solid fa-magnifying-glass"></i>
-                          <input type="text" className="form-control-dark form-control w-100" placeholder="Type to search..." value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)}/>
+                          <input type="text" className="form-control-dark form-control w-100" placeholder={t('search_placeholder', 'Type to search...')} value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)}/>
                       </div>
                   </div>
               </div>
           </div>
 
-          {/* THE GALLERY CARDS */}
           {selectedRegion === 'All' && renderRegions()}
           {selectedRegion !== 'All' && selectedSubcard === 'All' && renderSubcards()}
           {selectedRegion !== 'All' && selectedSubcard !== 'All' && renderImages()}
         </div>
       </section>
 
-      {/* THE LIGHTBOX MODAL */}
       {enlargedImage && (
-        <div 
-            className="position-fixed top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center fade-in" 
-            style={{ backgroundColor: 'rgba(0, 0, 0, 0.92)', zIndex: 2000, cursor: 'zoom-out' }}
-            onClick={() => setEnlargedImage(null)}
-        >
-            <button 
-                className="btn btn-link position-absolute top-0 end-0 m-4 fs-2" 
-                onClick={() => setEnlargedImage(null)}
-                style={{ color: '#FFFFFF', textDecoration: 'none', opacity: 0.9, textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}
-                title="Close"
-            >
-                <i className="fa-solid fa-xmark"></i>
-            </button>
-            <img 
-                src={enlargedImage.url} 
-                alt={enlargedImage.title} 
-                className="shadow-lg rounded"
-                style={{ maxHeight: '85vh', maxWidth: '90vw', objectFit: 'contain', cursor: 'default' }}
-                onClick={(e) => e.stopPropagation()} 
-            />
-            <div className="mt-4 fs-5 font-montserrat fw-bold text-center" style={{ color: '#FFFFFF', letterSpacing: '1px', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>
-                {enlargedImage.title}
-            </div>
+        <div className="position-fixed top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center fade-in" style={{ backgroundColor: 'rgba(0, 0, 0, 0.92)', zIndex: 2000, cursor: 'zoom-out' }} onClick={() => setEnlargedImage(null)}>
+            <button className="btn btn-link position-absolute top-0 end-0 m-4 fs-2" onClick={() => setEnlargedImage(null)} style={{ color: '#FFFFFF', textDecoration: 'none', opacity: 0.9, textShadow: '0 2px 4px rgba(0,0,0,0.5)' }} title="Close"><i className="fa-solid fa-xmark"></i></button>
+            <img src={enlargedImage.url} alt={enlargedImage.title} className="shadow-lg rounded" style={{ maxHeight: '85vh', maxWidth: '90vw', objectFit: 'contain', cursor: 'default' }} onClick={(e) => e.stopPropagation()} />
+            <div className="mt-4 fs-5 font-montserrat fw-bold text-center" style={{ color: '#FFFFFF', letterSpacing: '1px', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>{enlargedImage.title}</div>
         </div>
       )}
 

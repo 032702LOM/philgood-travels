@@ -122,7 +122,11 @@ export const PreferencesProvider = ({ children }) => {
       filters: "Filters", clear_all: "Clear All", explore_regions: "Explore Regions", major_regions: "6 Major Regions", view_acc: "View Accommodations",
       search_results: "Search Results", dest_found: "destination(s) found", no_match: "No matching accommodations", no_match_desc: "Try removing some of your active filters from the sidebar.",
       back_places: "← Back to All Places", pay_offers: "PAYMENT & OFFERS", facilities: "FACILITIES", details: "DETAILS", bed_type: "Bed Type", num_bedrooms: "Bedrooms", beach_access: "Beach Access",
-      hiking: "Hiking", distance: "Distance", family: "Family", view_360: "360° VIEW", full_screen: "Full Screen", starting_at: "Starting at", per_night: "/ night", weather: "Weather"
+      hiking: "Hiking", distance: "Distance", family: "Family", view_360: "360° VIEW", full_screen: "Full Screen", starting_at: "Starting at", per_night: "/ night", weather: "Weather",
+      // --- GALLERY PAGE ---
+      location: "Location", select_region_first: "Select a Region first", all_locations: "All Locations",
+      explore_by_region: "Explore by Region", regions_count: "Regions", destinations: "Destinations", locations_count: "Locations", gallery: "Gallery", photos_count: "Photos",
+      back_to_regions: "Back to All Regions", back_to: "Back to"
     },
     es: {
       nav_home: "Inicio", nav_dest: "Destinos", nav_tours: "Tours Destacados", nav_gallery: "Galería", nav_connect: "Conectar", nav_book: "RESERVAR",
@@ -146,7 +150,11 @@ export const PreferencesProvider = ({ children }) => {
       filters: "Filtros", clear_all: "Borrar todo", explore_regions: "Explorar Regiones", major_regions: "6 Regiones Principales", view_acc: "Ver Alojamientos",
       search_results: "Resultados", dest_found: "destino(s) encontrado(s)", no_match: "No hay alojamientos", no_match_desc: "Intenta eliminar algunos filtros.",
       back_places: "← Volver a Todos los Lugares", pay_offers: "PAGO Y OFERTAS", facilities: "INSTALACIONES", details: "DETALLES", bed_type: "Tipo de Cama", num_bedrooms: "Dormitorios", beach_access: "Acceso a la playa",
-      hiking: "Senderismo", distance: "Distancia", family: "Familia", view_360: "VISTA 360°", full_screen: "Pantalla Completa", starting_at: "Desde", per_night: "/ noche", weather: "Clima"
+      hiking: "Senderismo", distance: "Distancia", family: "Familia", view_360: "VISTA 360°", full_screen: "Pantalla Completa", starting_at: "Desde", per_night: "/ noche", weather: "Clima",
+      // --- GALLERY PAGE ---
+      location: "Ubicación", select_region_first: "Selecciona una región primero", all_locations: "Todas las ubicaciones",
+      explore_by_region: "Explorar por Región", regions_count: "Regiones", destinations: "Destinos", locations_count: "Ubicaciones", gallery: "Galería", photos_count: "Fotos",
+      back_to_regions: "Volver a Todas las Regiones", back_to: "Volver a"
     },
     tl: {
       nav_home: "Bahay", nav_dest: "Destinasyon", nav_tours: "Sikat na Tours", nav_gallery: "Gallerio", nav_connect: "Kumonekta", nav_book: "MAG-BOOK NA",
@@ -170,7 +178,11 @@ export const PreferencesProvider = ({ children }) => {
       filters: "Mga Filter", clear_all: "I-clear Lahat", explore_regions: "Tuklasin ang mga Rehiyon", major_regions: "6 Pangunahing Rehiyon", view_acc: "Tingnan ang Akomodasyon",
       search_results: "Resulta ng Paghahanap", dest_found: "nahanap na destinasyon", no_match: "Walang tugmang akomodasyon", no_match_desc: "Subukang alisin ang ilang filter sa gilid.",
       back_places: "← Bumalik sa Lahat ng Lugar", pay_offers: "PAGBABAYAD AT MGA ALOK", facilities: "MGA PASILIDAD", details: "DETALYE", bed_type: "Uri ng Kama", num_bedrooms: "Kwarto", beach_access: "Access sa Dagat",
-      hiking: "Hiking", distance: "Distansya", family: "Pamilya", view_360: "360° NA TINGIN", full_screen: "Buong Screen", starting_at: "Nagsisimula sa", per_night: "/ gabi", weather: "Panahon"
+      hiking: "Hiking", distance: "Distansya", family: "Pamilya", view_360: "360° NA TINGIN", full_screen: "Buong Screen", starting_at: "Nagsisimula sa", per_night: "/ gabi", weather: "Panahon",
+      // --- GALLERY PAGE ---
+      location: "Lokasyon", select_region_first: "Pumili muna ng Rehiyon", all_locations: "Lahat ng Lokasyon",
+      explore_by_region: "Tuklasin bawat Rehiyon", regions_count: "Mga Rehiyon", destinations: "Mga Destinasyon", locations_count: "Mga Lokasyon", gallery: "Gallerio", photos_count: "Mga Litrato",
+      back_to_regions: "Bumalik sa Lahat ng Rehiyon", back_to: "Bumalik sa"
     },
     fr: {
       nav_home: "Accueil", nav_dest: "Destinations", nav_tours: "Circuits", nav_gallery: "Galerie", nav_connect: "Contact", nav_book: "RÉSERVER",
@@ -194,7 +206,11 @@ export const PreferencesProvider = ({ children }) => {
       filters: "Filtres", clear_all: "Tout effacer", explore_regions: "Explorer les Régions", major_regions: "6 Régions Principales", view_acc: "Voir les Hébergements",
       search_results: "Résultats de recherche", dest_found: "destination(s) trouvée(s)", no_match: "Aucun hébergement", no_match_desc: "Essayez de supprimer des filtres.",
       back_places: "← Retour à Tous les Lieux", pay_offers: "PAIEMENT ET OFFRES", facilities: "INSTALLATIONS", details: "DÉTAILS", bed_type: "Type de Lit", num_bedrooms: "Chambres", beach_access: "Accès à la plage",
-      hiking: "Randonnée", distance: "Distance", family: "Famille", view_360: "VUE 360°", full_screen: "Plein Écran", starting_at: "À partir de", per_night: "/ nuit", weather: "Météo"
+      hiking: "Randonnée", distance: "Distance", family: "Famille", view_360: "VUE 360°", full_screen: "Plein Écran", starting_at: "À partir de", per_night: "/ nuit", weather: "Météo",
+      // --- GALLERY PAGE ---
+      location: "Lieu", select_region_first: "Sélectionnez d'abord une région", all_locations: "Tous les lieux",
+      explore_by_region: "Explorer par région", regions_count: "Régions", destinations: "Destinations", locations_count: "Lieux", gallery: "Galerie", photos_count: "Photos",
+      back_to_regions: "Retour à toutes les régions", back_to: "Retour à"
     },
     pt: {
       nav_home: "Início", nav_dest: "Destinos", nav_tours: "Tours Populares", nav_gallery: "Galeria", nav_connect: "Conectar", nav_book: "RESERVAR",
@@ -218,7 +234,11 @@ export const PreferencesProvider = ({ children }) => {
       filters: "Filtros", clear_all: "Limpar tudo", explore_regions: "Explorar Regiões", major_regions: "6 Regiões Principais", view_acc: "Ver Acomodações",
       search_results: "Resultados da Pesquisa", dest_found: "destino(s) encontrado(s)", no_match: "Sem acomodações", no_match_desc: "Tente remover alguns filtros.",
       back_places: "← Voltar para Todos os Lugares", pay_offers: "PAGAMENTO E OFERTAS", facilities: "INSTALAÇÕES", details: "DETALHES", bed_type: "Tipo de Cama", num_bedrooms: "Quartos", beach_access: "Acesso à praia",
-      hiking: "Caminhada", distance: "Distância", family: "Família", view_360: "VISTA 360°", full_screen: "Tela Cheia", starting_at: "A partir de", per_night: "/ noite", weather: "Clima"
+      hiking: "Caminhada", distance: "Distância", family: "Família", view_360: "VISTA 360°", full_screen: "Tela Cheia", starting_at: "A partir de", per_night: "/ noite", weather: "Clima",
+      // --- GALLERY PAGE ---
+      location: "Localização", select_region_first: "Selecione uma região primeiro", all_locations: "Todos os locais",
+      explore_by_region: "Explorar por Região", regions_count: "Regiões", destinations: "Destinos", locations_count: "Locais", gallery: "Galeria", photos_count: "Fotos",
+      back_to_regions: "Voltar para Todas as Regiões", back_to: "Voltar para"
     },
     ja: {
       nav_home: "ホーム", nav_dest: "目的地", nav_tours: "ツアー", nav_gallery: "ギャラリー", nav_connect: "連絡先", nav_book: "予約する",
@@ -242,7 +262,11 @@ export const PreferencesProvider = ({ children }) => {
       filters: "フィルター", clear_all: "すべてクリア", explore_regions: "地域を探索する", major_regions: "6つの主要地域", view_acc: "宿泊施設を見る",
       search_results: "検索結果", dest_found: "件の目的地が見つかりました", no_match: "一致する宿泊施設がありません", no_match_desc: "フィルターを解除してみてください。",
       back_places: "← すべての場所に戻る", pay_offers: "支払いとオファー", facilities: "設備", details: "詳細", bed_type: "ベッドタイプ", num_bedrooms: "ベッドルーム数", beach_access: "ビーチアクセス",
-      hiking: "ハイキング", distance: "距離", family: "家族", view_360: "360°ビュー", full_screen: "全画面表示", starting_at: "最低価格", per_night: "/ 泊", weather: "天気"
+      hiking: "ハイキング", distance: "距離", family: "家族", view_360: "360°ビュー", full_screen: "全画面表示", starting_at: "最低価格", per_night: "/ 泊", weather: "天気",
+      // --- GALLERY PAGE ---
+      location: "場所", select_region_first: "最初に地域を選択してください", all_locations: "すべての場所",
+      explore_by_region: "地域別に探索", regions_count: "地域", destinations: "目的地", locations_count: "場所", gallery: "ギャラリー", photos_count: "写真",
+      back_to_regions: "すべての地域に戻る", back_to: "戻る"
     },
     zh: {
       nav_home: "首页", nav_dest: "目的地", nav_tours: "特色行程", nav_gallery: "画廊", nav_connect: "联系我们", nav_book: "立即预订",
@@ -266,7 +290,11 @@ export const PreferencesProvider = ({ children }) => {
       filters: "筛选", clear_all: "全部清除", explore_regions: "探索地区", major_regions: "6大主要地区", view_acc: "查看住宿",
       search_results: "搜索结果", dest_found: "个目的地找到", no_match: "没有符合的住宿", no_match_desc: "请尝试移除一些筛选条件。",
       back_places: "← 返回所有地点", pay_offers: "付款与优惠", facilities: "设施", details: "详情", bed_type: "床型", num_bedrooms: "卧室数量", beach_access: "海滩通道",
-      hiking: "徒步旅行", distance: "距离", family: "家庭", view_360: "360° 全景", full_screen: "全屏", starting_at: "起价", per_night: "/ 晚", weather: "天气"
+      hiking: "徒步旅行", distance: "距离", family: "家庭", view_360: "360° 全景", full_screen: "全屏", starting_at: "起价", per_night: "/ 晚", weather: "天气",
+      // --- GALLERY PAGE ---
+      location: "位置", select_region_first: "请先选择一个地区", all_locations: "所有位置",
+      explore_by_region: "按地区探索", regions_count: "个地区", destinations: "目的地", locations_count: "个位置", gallery: "画廊", photos_count: "张照片",
+      back_to_regions: "返回所有地区", back_to: "返回"
     },
     ar: {
       nav_home: "الرئيسية", nav_dest: "الوجهات", nav_tours: "جولات", nav_gallery: "المعرض", nav_connect: "تواصل", nav_book: "احجز الآن",
@@ -290,7 +318,11 @@ export const PreferencesProvider = ({ children }) => {
       filters: "الفلاتر", clear_all: "مسح الكل", explore_regions: "استكشاف المناطق", major_regions: "6 مناطق رئيسية", view_acc: "عرض أماكن الإقامة",
       search_results: "نتائج البحث", dest_found: "وجهة وجدت", no_match: "لا توجد أماكن إقامة مطابقة", no_match_desc: "حاول إزالة بعض الفلاتر.",
       back_places: "← العودة إلى جميع الأماكن", pay_offers: "الدفع والعروض", facilities: "المرافق", details: "التفاصيل", bed_type: "نوع السرير", num_bedrooms: "غرف النوم", beach_access: "الوصول إلى الشاطئ",
-      hiking: "المشي لمسافات طويلة", distance: "المسافة", family: "عائلة", view_360: "عرض 360 درجة", full_screen: "ملء الشاشة", starting_at: "يبدأ من", per_night: "/ ليلة", weather: "الطقس"
+      hiking: "المشي لمسافات طويلة", distance: "المسافة", family: "عائلة", view_360: "عرض 360 درجة", full_screen: "ملء الشاشة", starting_at: "يبدأ من", per_night: "/ ليلة", weather: "الطقس",
+      // --- GALLERY PAGE ---
+      location: "الموقع", select_region_first: "حدد منطقة أولاً", all_locations: "جميع المواقع",
+      explore_by_region: "استكشف حسب المنطقة", regions_count: "مناطق", destinations: "وجهات", locations_count: "مواقع", gallery: "معرض", photos_count: "صور",
+      back_to_regions: "العودة إلى جميع المناطق", back_to: "العودة إلى"
     },
     th: {
       nav_home: "หน้าแรก", nav_dest: "จุดหมายปลายทาง", nav_tours: "ทัวร์แนะนำ", nav_gallery: "แกลเลอรี", nav_connect: "ติดต่อเรา", nav_book: "จองเลย",
@@ -314,7 +346,11 @@ export const PreferencesProvider = ({ children }) => {
       filters: "ตัวกรอง", clear_all: "ล้างทั้งหมด", explore_regions: "สำรวจภูมิภาค", major_regions: "6 ภูมิภาคหลัก", view_acc: "ดูที่พัก",
       search_results: "ผลการค้นหา", dest_found: "พบจุดหมายปลายทาง", no_match: "ไม่พบที่พักที่ตรงกัน", no_match_desc: "ลองนำตัวกรองบางตัวออก",
       back_places: "← กลับไปที่สถานที่ทั้งหมด", pay_offers: "การชำระเงินและข้อเสนอ", facilities: "สิ่งอำนวยความสะดวก", details: "รายละเอียด", bed_type: "ประเภทเตียง", num_bedrooms: "ห้องนอน", beach_access: "ทางลงหาด",
-      hiking: "การเดินป่า", distance: "ระยะทาง", family: "ครอบครัว", view_360: "มุมมอง 360°", full_screen: "เต็มหน้าจอ", starting_at: "เริ่มต้นที่", per_night: "/ คืน", weather: "สภาพอากาศ"
+      hiking: "การเดินป่า", distance: "ระยะทาง", family: "ครอบครัว", view_360: "มุมมอง 360°", full_screen: "เต็มหน้าจอ", starting_at: "เริ่มต้นที่", per_night: "/ คืน", weather: "สภาพอากาศ",
+      // --- GALLERY PAGE ---
+      location: "สถานที่", select_region_first: "เลือกภูมิภาคก่อน", all_locations: "สถานที่ทั้งหมด",
+      explore_by_region: "สำรวจตามภูมิภาค", regions_count: "ภูมิภาค", destinations: "จุดหมายปลายทาง", locations_count: "สถานที่", gallery: "แกลเลอรี", photos_count: "รูปภาพ",
+      back_to_regions: "กลับไปที่ภูมิภาคทั้งหมด", back_to: "กลับไปที่"
     },
     ms: {
       nav_home: "Utama", nav_dest: "Destinasi", nav_tours: "Lawatan Pilihan", nav_gallery: "Galeri", nav_connect: "Hubungi", nav_book: "TEMPAH SEKARANG",
@@ -338,7 +374,11 @@ export const PreferencesProvider = ({ children }) => {
       filters: "Penapis", clear_all: "Kosongkan Semua", explore_regions: "Terokai Wilayah", major_regions: "6 Wilayah Utama", view_acc: "Lihat Penginapan",
       search_results: "Hasil Carian", dest_found: "destinasi ditemui", no_match: "Tiada penginapan sepadan", no_match_desc: "Cuba buang beberapa penapis.",
       back_places: "← Kembali ke Semua Tempat", pay_offers: "PEMBAYARAN & TAWARAN", facilities: "KEMUDAHAN", details: "BUTIRAN", bed_type: "Jenis Katil", num_bedrooms: "Bilik Tidur", beach_access: "Akses Pantai",
-      hiking: "Mendaki", distance: "Jarak", family: "Keluarga", view_360: "PANDANGAN 360°", full_screen: "Skrin Penuh", starting_at: "Bermula dari", per_night: "/ malam", weather: "Cuaca"
+      hiking: "Mendaki", distance: "Jarak", family: "Keluarga", view_360: "PANDANGAN 360°", full_screen: "Skrin Penuh", starting_at: "Bermula dari", per_night: "/ malam", weather: "Cuaca",
+      // --- GALLERY PAGE ---
+      location: "Lokasi", select_region_first: "Pilih Wilayah dahulu", all_locations: "Semua Lokasi",
+      explore_by_region: "Teroka mengikut Wilayah", regions_count: "Wilayah", destinations: "Destinasi", locations_count: "Lokasi", gallery: "Galeri", photos_count: "Foto",
+      back_to_regions: "Kembali ke Semua Wilayah", back_to: "Kembali ke"
     },
     id: {
       nav_home: "Beranda", nav_dest: "Destinasi", nav_tours: "Tur Pilihan", nav_gallery: "Galeri", nav_connect: "Kontak", nav_book: "PESAN SEKARANG",
@@ -362,7 +402,11 @@ export const PreferencesProvider = ({ children }) => {
       filters: "Filter", clear_all: "Hapus Semua", explore_regions: "Jelajahi Wilayah", major_regions: "6 Wilayah Utama", view_acc: "Lihat Akomodasi",
       search_results: "Hasil Pencarian", dest_found: "destinasi ditemukan", no_match: "Tidak ada akomodasi yang cocok", no_match_desc: "Cobalah menghapus beberapa filter.",
       back_places: "← Kembali ke Semua Tempat", pay_offers: "PEMBAYARAN & PENAWARAN", facilities: "FASILITAS", details: "DETAIL", bed_type: "Tipe Tempat Tidur", num_bedrooms: "Kamar Tidur", beach_access: "Akses Pantai",
-      hiking: "Mendaki", distance: "Jarak", family: "Keluarga", view_360: "TAMPILAN 360°", full_screen: "Layar Penuh", starting_at: "Mulai dari", per_night: "/ malam", weather: "Cuaca"
+      hiking: "Mendaki", distance: "Jarak", family: "Keluarga", view_360: "TAMPILAN 360°", full_screen: "Layar Penuh", starting_at: "Mulai dari", per_night: "/ malam", weather: "Cuaca",
+      // --- GALLERY PAGE ---
+      location: "Lokasi", select_region_first: "Pilih Wilayah terlebih dahulu", all_locations: "Semua Lokasi",
+      explore_by_region: "Jelajahi Berdasarkan Wilayah", regions_count: "Wilayah", destinations: "Destinasi", locations_count: "Lokasi", gallery: "Galeri", photos_count: "Foto",
+      back_to_regions: "Kembali ke Semua Wilayah", back_to: "Kembali ke"
     }
   };
 
