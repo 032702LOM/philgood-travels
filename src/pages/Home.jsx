@@ -105,7 +105,7 @@ const Home = () => {
                     .mobile-scene-img {
                         display: block !important;
                         width: 100%;
-                        height: 300px; /* Adjust height as needed */
+                        height: 300px;
                         background-size: cover;
                         background-position: center;
                         border-radius: 12px;
@@ -129,7 +129,7 @@ const Home = () => {
 
         {showPromo && (
             <div className="top-alert" id="specialOfferBanner">
-                <span><i className="fa-solid fa-sun me-2"></i> MONSOON SPECIAL: 30% OFF on all Palawan packages!</span>
+                <span><i className="fa-solid fa-sun me-2"></i> {t('promo_banner', 'MONSOON SPECIAL: 30% OFF on all Palawan packages!')}</span>
                 <i className="fa-solid fa-xmark close-alert" onClick={() => setShowPromo(false)}></i>
             </div>
         )}
@@ -137,9 +137,7 @@ const Home = () => {
         {/* --- STATIC HERO SECTION --- */}
         <section id="home" className="fade-in" style={{ marginTop: 0 }}>
             <div className="home-hero w-100 position-relative" style={{ backgroundImage: `url(${islandParadiseImg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-                <div className="hero-overlay w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center">
-                    {/* The text and Book Now button have been completely removed from here */}
-                </div>
+                <div className="hero-overlay w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center"></div>
             </div>
 
             {/* PROMO VIDEO OVERLAP */}
@@ -163,9 +161,27 @@ const Home = () => {
             {/* STATS SECTION */}
             <div className="container pb-5">
                 <div className="stats-container row text-center g-4">
-                    <div className="col-md-4"><div className="stat-card scroll-reveal"><i className="fa-solid fa-user-group"></i><h3 className="stat-number">12,000+</h3><span className="stat-label">SATISFIED CLIENTS</span></div></div>
-                    <div className="col-md-4"><div className="stat-card scroll-reveal delay-1"><i className="fa-regular fa-calendar-check"></i><h3 className="stat-number">3,500+</h3><span className="stat-label">TOURS ORGANIZED</span></div></div>
-                    <div className="col-md-4"><div className="stat-card scroll-reveal delay-2"><i className="fa-solid fa-location-dot"></i><h3 className="stat-number">50+</h3><span className="stat-label">DESTINATIONS</span></div></div>
+                    <div className="col-md-4">
+                        <div className="stat-card scroll-reveal">
+                            <i className="fa-solid fa-user-group"></i>
+                            <h3 className="stat-number">12,000+</h3>
+                            <span className="stat-label">{t('stats_clients', 'SATISFIED CLIENTS')}</span>
+                        </div>
+                    </div>
+                    <div className="col-md-4">
+                        <div className="stat-card scroll-reveal delay-1">
+                            <i className="fa-regular fa-calendar-check"></i>
+                            <h3 className="stat-number">3,500+</h3>
+                            <span className="stat-label">{t('stats_tours', 'TOURS ORGANIZED')}</span>
+                        </div>
+                    </div>
+                    <div className="col-md-4">
+                        <div className="stat-card scroll-reveal delay-2">
+                            <i className="fa-solid fa-location-dot"></i>
+                            <h3 className="stat-number">50+</h3>
+                            <span className="stat-label">{t('stats_dest', 'DESTINATIONS')}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -176,13 +192,12 @@ const Home = () => {
                 <div className="row align-items-center scene-block scroll-reveal">
                     <div className="col-lg-6 trail-makers-text-col">
                         <div className="scene-content pe-lg-5">
-                            <span className="section-subtitle">PERSPECTIVE</span>
-                            <h2 className="scene-title wave-text">The Trail Makers</h2>
-                            <p className="scene-text">Sometimes the best view comes after the hardest climb. Take a moment to sit, breathe, and appreciate the world from a new perspective.</p>     
-                            <p className="scene-text">A breathtaking panoramic view from a mountain summit at sunset. A lone hiker is sitting on a rocky ledge, silhouette against a vibrant orange and purple sky, looking out over a sea of clouds and distant peaks.</p>             
-                            <Link to="/destinations" className="btn-text-link">Explore Mountains <i className="fa-solid fa-arrow-right"></i></Link>
+                            <span className="section-subtitle">{t('perspective', 'PERSPECTIVE')}</span>
+                            <h2 className="scene-title wave-text">{t('trail_makers', 'The Trail Makers')}</h2>
+                            <p className="scene-text">{t('trail_desc1', 'Sometimes the best view comes after the hardest climb. Take a moment to sit, breathe, and appreciate the world from a new perspective.')}</p>     
+                            <p className="scene-text">{t('trail_desc2', 'A breathtaking panoramic view from a mountain summit at sunset. A lone hiker is sitting on a rocky ledge, silhouette against a vibrant orange and purple sky, looking out over a sea of clouds and distant peaks.')}</p>             
+                            <Link to="/destinations" className="btn-text-link">{t('explore_mountains', 'Explore Mountains')} <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
-                        {/* ⚡ NEW: Mobile Image Block ⚡ */}
                         <div className="mobile-scene-img" style={{ backgroundImage: `url("${manOnCliffImg}")` }}></div>
                     </div>
                 </div>
@@ -199,13 +214,13 @@ const Home = () => {
             <div className="container py-5 position-relative" style={{ zIndex: 2 }}>
                 <div className="section-header scroll-reveal">
                     <span className="section-subtitle" style={{ color: '#FF9F1C', textShadow: '1px 1px 4px rgba(0,0,0,0.8)' }}>
-                        Regional
+                        {t('regional', 'Regional')}
                     </span>
                     <h2 className="section-title wave-text force-white-text" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.9)' }}>
                         {t('pop_dest', 'Most Popular Destinations')}
                     </h2>
                     <p className="section-desc fw-bold force-white-text" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.8)' }}>
-                        Discover the key regions and landmarks the Philippines has to offer.
+                        {t('pop_dest_desc', 'Discover the key regions and landmarks the Philippines has to offer.')}
                     </p>
                 </div>
                 
@@ -231,7 +246,7 @@ const Home = () => {
                 </div>
 
                 <div className="text-center mt-5 scroll-reveal">
-                    <Link to="/destinations" className="hero-btn shadow-lg">View All Destinations</Link>
+                    <Link to="/destinations" className="hero-btn shadow-lg">{t('view_all_dest', 'View All Destinations')}</Link>
                 </div>
             </div>
         </section>
@@ -242,13 +257,12 @@ const Home = () => {
                 <div className="row align-items-center scene-block scroll-reveal">
                     <div className="col-lg-6">
                         <div className="scene-content pe-lg-5">
-                            <span className="section-subtitle">RELAXATION</span>
-                            <h2 className="scene-title wave-text">Bask Under the Sun</h2>
-                            <p className="scene-text">Feel the warmth of the tropical sun on your skin as you unwind on some of the world's most beautiful, powdery white sand beaches.</p>
-                            <p className="scene-text">Let the gentle rhythm of the waves wash your worries away. Whether you are sipping a fresh coconut under a swaying palm tree or wading into crystal-clear turquoise waters, paradise is waiting.</p>
-                            <Link to="/destinations?search=beach" className="btn-text-link mt-3 d-inline-block">Book a Beach Resort <i className="fa-solid fa-arrow-right"></i></Link>
+                            <span className="section-subtitle">{t('relaxation', 'RELAXATION')}</span>
+                            <h2 className="scene-title wave-text">{t('bask_sun', 'Bask Under the Sun')}</h2>
+                            <p className="scene-text">{t('sun_desc1', "Feel the warmth of the tropical sun on your skin as you unwind on some of the world's most beautiful, powdery white sand beaches.")}</p>
+                            <p className="scene-text">{t('sun_desc2', 'Let the gentle rhythm of the waves wash your worries away. Whether you are sipping a fresh coconut under a swaying palm tree or wading into crystal-clear turquoise waters, paradise is waiting.')}</p>
+                            <Link to="/destinations?search=beach" className="btn-text-link mt-3 d-inline-block">{t('book_beach', 'Book a Beach Resort')} <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
-                        {/* ⚡ NEW: Mobile Image Block ⚡ */}
                         <div className="mobile-scene-img" style={{ backgroundImage: `url("${sunbathingImg}")` }}></div>
                     </div>
                 </div>
@@ -259,8 +273,8 @@ const Home = () => {
         <section className="py-5" style={{ backgroundColor: 'var(--bg-dark)' }}>
             <div className="container py-5">
                 <div className="section-header scroll-reveal">
-                    <span className="section-subtitle">Packages</span>
-                    <h2 className="section-title wave-text">Top Packages That Fit You</h2>
+                    <span className="section-subtitle">{t('packages', 'Packages')}</span>
+                    <h2 className="section-title wave-text">{t('top_pkg', 'Top Packages That Fit You')}</h2>
                 </div>
                 
                 <div className="fanned-stack-container scroll-reveal mt-4" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEndPkg}>
@@ -280,7 +294,7 @@ const Home = () => {
                                     <p className="card-text text-white-50">{pkg.desc || pkg.type || 'Experience the beauty of the Philippines.'}</p>
                                     <div className="d-flex justify-content-between align-items-center mt-3 border-top pt-3" style={{borderColor: 'var(--border-color)'}}>
                                         <span className="fw-bold fs-5" style={{ color: '#2A9D8F' }}>{formatPrice(pkg.price)}</span>
-                                        <Link to="/tours" className="btn btn-view-details" onClick={(e) => e.stopPropagation()}>{t('view_details', 'View')}</Link>
+                                        <Link to="/tours" className="btn btn-view-details" onClick={(e) => e.stopPropagation()}>{t('view_details', 'View Details')}</Link>
                                     </div>
                                 </div>
                             </div>
@@ -289,7 +303,7 @@ const Home = () => {
                 </div>
 
                 <div className="text-center mt-5 scroll-reveal">
-                    <Link to="/tours" className="hero-btn shadow-lg">Explore All Tours</Link>
+                    <Link to="/tours" className="hero-btn shadow-lg">{t('explore_all_tours', 'Explore All Tours')}</Link>
                 </div>
             </div>
         </section>
@@ -298,13 +312,43 @@ const Home = () => {
         <section className="py-5" style={{ backgroundColor: 'var(--bg-dark)' }}>
             <div className="container py-5">
                 <div className="section-header scroll-reveal">
-                    <span className="section-subtitle">Testimonials</span>
-                    <h2 className="section-title wave-text">What Our Clients Say</h2>
+                    <span className="section-subtitle">{t('testimonials', 'Testimonials')}</span>
+                    <h2 className="section-title wave-text">{t('what_clients_say', 'What Our Clients Say')}</h2>
                 </div>
                 <div className="row g-4">
-                    <div className="col-md-4 scroll-reveal"><div className="testimonial-item"><img src="https://randomuser.me/api/portraits/men/32.jpg" className="testimonial-img" alt="Client" /><h5 className="client-name">Mario Santos</h5><p className="client-loc">Manila</p><div className="stars"><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i></div><p className="quote">"PhilGood Travels made our El Nido trip absolutely unforgettable! The team was professional and the experiences were beyond amazing."</p></div></div>
-                    <div className="col-md-4 scroll-reveal delay-1"><div className="testimonial-item"><img src="https://randomuser.me/api/portraits/men/45.jpg" className="testimonial-img" alt="Client" /><h5 className="client-name">John Reyes</h5><p className="client-loc">Cebu</p><div className="stars"><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star-half-stroke"></i></div><p className="quote">"The Chocolate Hills tour was breathtaking! Everything was well-organized and our guide was incredibly knowledgeable."</p></div></div>
-                    <div className="col-md-4 scroll-reveal delay-2"><div className="testimonial-item"><img src="https://randomuser.me/api/portraits/women/44.jpg" className="testimonial-img" alt="Client" /><h5 className="client-name">Sarah Chen</h5><p className="client-loc">Singapore</p><div className="stars"><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i></div><p className="quote">"As a first-time visitor to the Philippines, I was impressed by the service and beautiful destinations. Highly recommend!"</p></div></div>
+                    <div className="col-md-4 scroll-reveal">
+                        <div className="testimonial-item">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" className="testimonial-img" alt="Client" />
+                            <h5 className="client-name">Mario Santos</h5>
+                            <p className="client-loc">Manila</p>
+                            <div className="stars">
+                                <i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i>
+                            </div>
+                            <p className="quote">{t('quote1', '"PhilGood Travels made our El Nido trip absolutely unforgettable! The team was professional and the experiences were beyond amazing."')}</p>
+                        </div>
+                    </div>
+                    <div className="col-md-4 scroll-reveal delay-1">
+                        <div className="testimonial-item">
+                            <img src="https://randomuser.me/api/portraits/men/45.jpg" className="testimonial-img" alt="Client" />
+                            <h5 className="client-name">John Reyes</h5>
+                            <p className="client-loc">Cebu</p>
+                            <div className="stars">
+                                <i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star-half-stroke"></i>
+                            </div>
+                            <p className="quote">{t('quote2', '"The Chocolate Hills tour was breathtaking! Everything was well-organized and our guide was incredibly knowledgeable."')}</p>
+                        </div>
+                    </div>
+                    <div className="col-md-4 scroll-reveal delay-2">
+                        <div className="testimonial-item">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" className="testimonial-img" alt="Client" />
+                            <h5 className="client-name">Sarah Chen</h5>
+                            <p className="client-loc">Singapore</p>
+                            <div className="stars">
+                                <i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i>
+                            </div>
+                            <p className="quote">{t('quote3', '"As a first-time visitor to the Philippines, I was impressed by the service and beautiful destinations. Highly recommend!"')}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -312,9 +356,9 @@ const Home = () => {
         {/* --- CTA --- */}
         <section className="cta-section scroll-reveal">
             <div className="container text-center py-5">
-                <h2 className="section-title mb-3 wave-text">Ready for Your Next Adventure?</h2>
-                <p className="section-desc mb-4">Book your dream Philippine vacation today and create memories that will last a lifetime.</p>
-                <Link to="/booking" className="hero-btn">START YOUR JOURNEY</Link>
+                <h2 className="section-title mb-3 wave-text">{t('ready_adventure', 'Ready for Your Next Adventure?')}</h2>
+                <p className="section-desc mb-4">{t('ready_desc', 'Book your dream Philippine vacation today and create memories that will last a lifetime.')}</p>
+                <Link to="/booking" className="hero-btn">{t('start_journey', 'START YOUR JOURNEY')}</Link>
             </div>
         </section>
 
@@ -324,13 +368,12 @@ const Home = () => {
                 <div className="row align-items-center scene-block scroll-reveal">
                     <div className="col-lg-6">
                         <div className="scene-content pe-lg-5">
-                            <span className="section-subtitle">UNDERWATER</span>
-                            <h2 className="scene-title wave-text">Ready for Your Next Dive?</h2>
-                            <p className="scene-text">Descend into the deep blue. Discover vibrant coral reefs, swim alongside majestic sea turtles, and explore the mysteries of the ocean floor.</p>
-                            <p className="scene-text">Beyond the technicolor gardens of coral lies a world frozen in time. Navigate through haunting shipwrecks and silent underwater caverns where history rests beneath the tides.</p>
-                            <Link to="/tours?search=diving" className="btn-text-link mt-3 d-inline-block">View Diving Packages <i className="fa-solid fa-arrow-right"></i></Link>
+                            <span className="section-subtitle">{t('underwater', 'UNDERWATER')}</span>
+                            <h2 className="scene-title wave-text">{t('next_dive', 'Ready for Your Next Dive?')}</h2>
+                            <p className="scene-text">{t('dive_desc1', 'Descend into the deep blue. Discover vibrant coral reefs, swim alongside majestic sea turtles, and explore the mysteries of the ocean floor.')}</p>
+                            <p className="scene-text">{t('dive_desc2', 'Beyond the technicolor gardens of coral lies a world frozen in time. Navigate through haunting shipwrecks and silent underwater caverns where history rests beneath the tides.')}</p>
+                            <Link to="/tours?search=diving" className="btn-text-link mt-3 d-inline-block">{t('view_diving', 'View Diving Packages')} <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
-                        {/* ⚡ NEW: Mobile Image Block ⚡ */}
                         <div className="mobile-scene-img" style={{ backgroundImage: `url("${swimImg}")` }}></div>
                     </div>
                 </div>
