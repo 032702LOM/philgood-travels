@@ -116,7 +116,13 @@ export const PreferencesProvider = ({ children }) => {
       optional_addons: "Optional Add-ons", transfer: "Roundtrip Airport Transfer", transfer_desc: "Hassle-free pick up and drop off.", insurance: "Travel Insurance", insurance_desc: "Full coverage per guest.", dinner: "Romantic Dinner Setup", dinner_desc: "Candlelit dinner by the beach.",
       payment_details: "Payment Details", how_paying: "How are we paying?", split_1: "Just me (Pay in full)", split_ways: "Split", split_ways2: "ways", invoice_emails: "Email Addresses for Invoices:", lead_email: "Lead Booker's Email", friend_email: "Friend", friend_email2: "'s Email",
       each_pays: "Each person will pay", invoices_tied: "Invoices will be tied to the emails above.", payment_method: "Payment Method",
-      select_summary: "Select a package to see summary", split: "Split", ways: "ways", per_person2: "/person", secure_payment: "Secure Encrypted Payment", processing: "Processing..."
+      select_summary: "Select a package to see summary", split: "Split", ways: "ways", per_person2: "/person", secure_payment: "Secure Encrypted Payment", processing: "Processing...",
+      // --- DESTINATIONS PAGE ---
+      region: "Region", all_regions: "All Regions", accommodation: "Accommodation", all_acc: "All Accommodations", keyword_search: "Keyword Search", search_placeholder: "Type to search...",
+      filters: "Filters", clear_all: "Clear All", explore_regions: "Explore Regions", major_regions: "6 Major Regions", view_acc: "View Accommodations",
+      search_results: "Search Results", dest_found: "destination(s) found", no_match: "No matching accommodations", no_match_desc: "Try removing some of your active filters from the sidebar.",
+      back_places: "← Back to All Places", pay_offers: "PAYMENT & OFFERS", facilities: "FACILITIES", details: "DETAILS", bed_type: "Bed Type", num_bedrooms: "Bedrooms", beach_access: "Beach Access",
+      hiking: "Hiking", distance: "Distance", family: "Family", view_360: "360° VIEW", full_screen: "Full Screen", starting_at: "Starting at", per_night: "/ night", weather: "Weather"
     },
     es: {
       nav_home: "Inicio", nav_dest: "Destinos", nav_tours: "Tours Destacados", nav_gallery: "Galería", nav_connect: "Conectar", nav_book: "RESERVAR",
@@ -134,7 +140,13 @@ export const PreferencesProvider = ({ children }) => {
       optional_addons: "Complementos Opcionales", transfer: "Traslado al aeropuerto", transfer_desc: "Recogida sin complicaciones.", insurance: "Seguro de viaje", insurance_desc: "Cobertura total.", dinner: "Cena Romántica", dinner_desc: "Cena a la luz de las velas.",
       payment_details: "Detalles de pago", how_paying: "¿Cómo pagaremos?", split_1: "Solo yo (Pago total)", split_ways: "Dividir en", split_ways2: "partes", invoice_emails: "Correos para facturas:", lead_email: "Correo del titular", friend_email: "Correo del amigo", friend_email2: "",
       each_pays: "Cada persona pagará", invoices_tied: "Las facturas se vincularán a estos correos.", payment_method: "Método de pago",
-      select_summary: "Selecciona un paquete para ver el resumen", split: "Dividido en", ways: "partes", per_person2: "/persona", secure_payment: "Pago Seguro Encriptado", processing: "Procesando..."
+      select_summary: "Selecciona un paquete para ver el resumen", split: "Dividido en", ways: "partes", per_person2: "/persona", secure_payment: "Pago Seguro Encriptado", processing: "Procesando...",
+      // --- DESTINATIONS PAGE ---
+      region: "Región", all_regions: "Todas las Regiones", accommodation: "Alojamiento", all_acc: "Todos los Alojamientos", keyword_search: "Búsqueda", search_placeholder: "Escribe para buscar...",
+      filters: "Filtros", clear_all: "Borrar todo", explore_regions: "Explorar Regiones", major_regions: "6 Regiones Principales", view_acc: "Ver Alojamientos",
+      search_results: "Resultados", dest_found: "destino(s) encontrado(s)", no_match: "No hay alojamientos", no_match_desc: "Intenta eliminar algunos filtros.",
+      back_places: "← Volver a Todos los Lugares", pay_offers: "PAGO Y OFERTAS", facilities: "INSTALACIONES", details: "DETALLES", bed_type: "Tipo de Cama", num_bedrooms: "Dormitorios", beach_access: "Acceso a la playa",
+      hiking: "Senderismo", distance: "Distancia", family: "Familia", view_360: "VISTA 360°", full_screen: "Pantalla Completa", starting_at: "Desde", per_night: "/ noche", weather: "Clima"
     },
     tl: {
       nav_home: "Bahay", nav_dest: "Destinasyon", nav_tours: "Sikat na Tours", nav_gallery: "Gallerio", nav_connect: "Kumonekta", nav_book: "MAG-BOOK NA",
@@ -152,7 +164,13 @@ export const PreferencesProvider = ({ children }) => {
       optional_addons: "Mga Opsyonal na Add-on", transfer: "Hatid-Sundo sa Airport", transfer_desc: "Walang hassle na byahe.", insurance: "Travel Insurance", insurance_desc: "Buong saklaw bawat bisita.", dinner: "Romantic na Hapunan", dinner_desc: "Hapunan sa tabing-dagat.",
       payment_details: "Detalye ng Pagbabayad", how_paying: "Paano tayo magbabayad?", split_1: "Ako lang (Buong bayad)", split_ways: "Hatiin sa", split_ways2: "tao", invoice_emails: "Mga Email para sa Invoice:", lead_email: "Email ng Pangunahing Booker", friend_email: "Email ng Kaibigan", friend_email2: "",
       each_pays: "Ang bawat isa ay magbabayad ng", invoices_tied: "Ang mga invoice ay ipadadala sa mga email sa itaas.", payment_method: "Paraan ng Pagbabayad",
-      select_summary: "Pumili ng package para makita ang buod", split: "Hati sa", ways: "tao", per_person2: "/tao", secure_payment: "Ligtas na Pagbabayad", processing: "Pinoproseso..."
+      select_summary: "Pumili ng package para makita ang buod", split: "Hati sa", ways: "tao", per_person2: "/tao", secure_payment: "Ligtas na Pagbabayad", processing: "Pinoproseso...",
+      // --- DESTINATIONS PAGE ---
+      region: "Rehiyon", all_regions: "Lahat ng Rehiyon", accommodation: "Akomodasyon", all_acc: "Lahat ng Akomodasyon", keyword_search: "Paghahanap", search_placeholder: "Mag-type para maghanap...",
+      filters: "Mga Filter", clear_all: "I-clear Lahat", explore_regions: "Tuklasin ang mga Rehiyon", major_regions: "6 Pangunahing Rehiyon", view_acc: "Tingnan ang Akomodasyon",
+      search_results: "Resulta ng Paghahanap", dest_found: "nahanap na destinasyon", no_match: "Walang tugmang akomodasyon", no_match_desc: "Subukang alisin ang ilang filter sa gilid.",
+      back_places: "← Bumalik sa Lahat ng Lugar", pay_offers: "PAGBABAYAD AT MGA ALOK", facilities: "MGA PASILIDAD", details: "DETALYE", bed_type: "Uri ng Kama", num_bedrooms: "Kwarto", beach_access: "Access sa Dagat",
+      hiking: "Hiking", distance: "Distansya", family: "Pamilya", view_360: "360° NA TINGIN", full_screen: "Buong Screen", starting_at: "Nagsisimula sa", per_night: "/ gabi", weather: "Panahon"
     },
     fr: {
       nav_home: "Accueil", nav_dest: "Destinations", nav_tours: "Circuits", nav_gallery: "Galerie", nav_connect: "Contact", nav_book: "RÉSERVER",
@@ -170,7 +188,13 @@ export const PreferencesProvider = ({ children }) => {
       optional_addons: "Options supplémentaires", transfer: "Transfert aéroport", transfer_desc: "Prise en charge sans tracas.", insurance: "Assurance voyage", insurance_desc: "Couverture totale.", dinner: "Dîner Romantique", dinner_desc: "Dîner aux chandelles.",
       payment_details: "Détails de paiement", how_paying: "Comment payons-nous?", split_1: "Seulement moi (Paiement total)", split_ways: "Diviser en", split_ways2: "", invoice_emails: "E-mails pour les factures:", lead_email: "E-mail principal", friend_email: "E-mail de l'ami", friend_email2: "",
       each_pays: "Chaque personne paiera", invoices_tied: "Les factures seront liées à ces e-mails.", payment_method: "Mode de paiement",
-      select_summary: "Sélectionnez un forfait pour voir le résumé", split: "Divisé par", ways: "", per_person2: "/pers", secure_payment: "Paiement Sécurisé", processing: "Traitement en cours..."
+      select_summary: "Sélectionnez un forfait pour voir le résumé", split: "Divisé par", ways: "", per_person2: "/pers", secure_payment: "Paiement Sécurisé", processing: "Traitement en cours...",
+      // --- DESTINATIONS PAGE ---
+      region: "Région", all_regions: "Toutes les Régions", accommodation: "Hébergement", all_acc: "Tous les Hébergements", keyword_search: "Recherche", search_placeholder: "Taper pour rechercher...",
+      filters: "Filtres", clear_all: "Tout effacer", explore_regions: "Explorer les Régions", major_regions: "6 Régions Principales", view_acc: "Voir les Hébergements",
+      search_results: "Résultats de recherche", dest_found: "destination(s) trouvée(s)", no_match: "Aucun hébergement", no_match_desc: "Essayez de supprimer des filtres.",
+      back_places: "← Retour à Tous les Lieux", pay_offers: "PAIEMENT ET OFFRES", facilities: "INSTALLATIONS", details: "DÉTAILS", bed_type: "Type de Lit", num_bedrooms: "Chambres", beach_access: "Accès à la plage",
+      hiking: "Randonnée", distance: "Distance", family: "Famille", view_360: "VUE 360°", full_screen: "Plein Écran", starting_at: "À partir de", per_night: "/ nuit", weather: "Météo"
     },
     pt: {
       nav_home: "Início", nav_dest: "Destinos", nav_tours: "Tours Populares", nav_gallery: "Galeria", nav_connect: "Conectar", nav_book: "RESERVAR",
@@ -188,7 +212,13 @@ export const PreferencesProvider = ({ children }) => {
       optional_addons: "Complementos Opcionais", transfer: "Traslado ao aeroporto", transfer_desc: "Recolha sem problemas.", insurance: "Seguro de viagem", insurance_desc: "Cobertura total.", dinner: "Jantar Romântico", dinner_desc: "Jantar à luz de velas.",
       payment_details: "Detalhes de pagamento", how_paying: "Como vamos pagar?", split_1: "Só eu (Pagamento total)", split_ways: "Dividir em", split_ways2: "partes", invoice_emails: "E-mails para faturas:", lead_email: "E-mail principal", friend_email: "E-mail do amigo", friend_email2: "",
       each_pays: "Cada pessoa pagará", invoices_tied: "As faturas serão vinculadas a estes e-mails.", payment_method: "Método de pagamento",
-      select_summary: "Selecione um pacote para ver o resumo", split: "Dividido por", ways: "", per_person2: "/pessoa", secure_payment: "Pagamento Seguro", processing: "Processando..."
+      select_summary: "Selecione um pacote para ver o resumo", split: "Dividido por", ways: "", per_person2: "/pessoa", secure_payment: "Pagamento Seguro", processing: "Processando...",
+      // --- DESTINATIONS PAGE ---
+      region: "Região", all_regions: "Todas as Regiões", accommodation: "Acomodação", all_acc: "Todas as Acomodações", keyword_search: "Pesquisa", search_placeholder: "Digite para pesquisar...",
+      filters: "Filtros", clear_all: "Limpar tudo", explore_regions: "Explorar Regiões", major_regions: "6 Regiões Principais", view_acc: "Ver Acomodações",
+      search_results: "Resultados da Pesquisa", dest_found: "destino(s) encontrado(s)", no_match: "Sem acomodações", no_match_desc: "Tente remover alguns filtros.",
+      back_places: "← Voltar para Todos os Lugares", pay_offers: "PAGAMENTO E OFERTAS", facilities: "INSTALAÇÕES", details: "DETALHES", bed_type: "Tipo de Cama", num_bedrooms: "Quartos", beach_access: "Acesso à praia",
+      hiking: "Caminhada", distance: "Distância", family: "Família", view_360: "VISTA 360°", full_screen: "Tela Cheia", starting_at: "A partir de", per_night: "/ noite", weather: "Clima"
     },
     ja: {
       nav_home: "ホーム", nav_dest: "目的地", nav_tours: "ツアー", nav_gallery: "ギャラリー", nav_connect: "連絡先", nav_book: "予約する",
@@ -206,7 +236,13 @@ export const PreferencesProvider = ({ children }) => {
       optional_addons: "オプション", transfer: "空港送迎", transfer_desc: "手間のかからない送迎。", insurance: "旅行保険", insurance_desc: "完全な補償。", dinner: "ロマンチックなディナー", dinner_desc: "キャンドルライトディナー。",
       payment_details: "支払い詳細", how_paying: "支払い方法は？", split_1: "全額支払い", split_ways: "分割:", split_ways2: "人", invoice_emails: "請求書用メール:", lead_email: "代表者のメール", friend_email: "友人のメール", friend_email2: "",
       each_pays: "各人の支払い:", invoices_tied: "請求書はこれらのメールにリンクされます。", payment_method: "支払い方法",
-      select_summary: "パッケージを選択して概要を表示", split: "分割", ways: "人", per_person2: "/人", secure_payment: "安全な支払い", processing: "処理中..."
+      select_summary: "パッケージを選択して概要を表示", split: "分割", ways: "人", per_person2: "/人", secure_payment: "安全な支払い", processing: "処理中...",
+      // --- DESTINATIONS PAGE ---
+      region: "地域", all_regions: "すべての地域", accommodation: "宿泊施設", all_acc: "すべての宿泊施設", keyword_search: "キーワード検索", search_placeholder: "検索する...",
+      filters: "フィルター", clear_all: "すべてクリア", explore_regions: "地域を探索する", major_regions: "6つの主要地域", view_acc: "宿泊施設を見る",
+      search_results: "検索結果", dest_found: "件の目的地が見つかりました", no_match: "一致する宿泊施設がありません", no_match_desc: "フィルターを解除してみてください。",
+      back_places: "← すべての場所に戻る", pay_offers: "支払いとオファー", facilities: "設備", details: "詳細", bed_type: "ベッドタイプ", num_bedrooms: "ベッドルーム数", beach_access: "ビーチアクセス",
+      hiking: "ハイキング", distance: "距離", family: "家族", view_360: "360°ビュー", full_screen: "全画面表示", starting_at: "最低価格", per_night: "/ 泊", weather: "天気"
     },
     zh: {
       nav_home: "首页", nav_dest: "目的地", nav_tours: "特色行程", nav_gallery: "画廊", nav_connect: "联系我们", nav_book: "立即预订",
@@ -224,7 +260,13 @@ export const PreferencesProvider = ({ children }) => {
       optional_addons: "可选附加项", transfer: "机场接送", transfer_desc: "无忧接送。", insurance: "旅行保险", insurance_desc: "全面保障。", dinner: "浪漫晚餐", dinner_desc: "海滩烛光晚餐。",
       payment_details: "付款详情", how_paying: "我们如何付款？", split_1: "只有我（全额付款）", split_ways: "平分给", split_ways2: "人", invoice_emails: "发票邮箱：", lead_email: "主要预订人邮箱", friend_email: "朋友的邮箱", friend_email2: "",
       each_pays: "每人将支付", invoices_tied: "发票将与上述邮箱绑定。", payment_method: "付款方式",
-      select_summary: "选择套餐以查看摘要", split: "平分给", ways: "人", per_person2: "/人", secure_payment: "安全加密付款", processing: "处理中..."
+      select_summary: "选择套餐以查看摘要", split: "平分给", ways: "人", per_person2: "/人", secure_payment: "安全加密付款", processing: "处理中...",
+      // --- DESTINATIONS PAGE ---
+      region: "地区", all_regions: "所有地区", accommodation: "住宿", all_acc: "所有住宿", keyword_search: "关键字搜索", search_placeholder: "输入以搜索...",
+      filters: "筛选", clear_all: "全部清除", explore_regions: "探索地区", major_regions: "6大主要地区", view_acc: "查看住宿",
+      search_results: "搜索结果", dest_found: "个目的地找到", no_match: "没有符合的住宿", no_match_desc: "请尝试移除一些筛选条件。",
+      back_places: "← 返回所有地点", pay_offers: "付款与优惠", facilities: "设施", details: "详情", bed_type: "床型", num_bedrooms: "卧室数量", beach_access: "海滩通道",
+      hiking: "徒步旅行", distance: "距离", family: "家庭", view_360: "360° 全景", full_screen: "全屏", starting_at: "起价", per_night: "/ 晚", weather: "天气"
     },
     ar: {
       nav_home: "الرئيسية", nav_dest: "الوجهات", nav_tours: "جولات", nav_gallery: "المعرض", nav_connect: "تواصل", nav_book: "احجز الآن",
@@ -242,7 +284,13 @@ export const PreferencesProvider = ({ children }) => {
       optional_addons: "إضافات اختيارية", transfer: "نقل المطار", transfer_desc: "استقبال وتوديع مريح.", insurance: "تأمين السفر", insurance_desc: "تغطية كاملة.", dinner: "عشاء رومانسي", dinner_desc: "عشاء على ضوء الشموع.",
       payment_details: "تفاصيل الدفع", how_paying: "كيف سندفع؟", split_1: "أنا فقط (دفع كامل)", split_ways: "تقسيم على", split_ways2: "أشخاص", invoice_emails: "رسائل البريد للفواتير:", lead_email: "البريد الرئيسي", friend_email: "بريد الصديق", friend_email2: "",
       each_pays: "سيدفع كل شخص", invoices_tied: "سيتم ربط الفواتير بهذه العناوين.", payment_method: "طريقة الدفع",
-      select_summary: "اختر باقة لرؤية الملخص", split: "تقسيم", ways: "أشخاص", per_person2: "/شخص", secure_payment: "دفع آمن", processing: "جاري المعالجة..."
+      select_summary: "اختر باقة لرؤية الملخص", split: "تقسيم", ways: "أشخاص", per_person2: "/شخص", secure_payment: "دفع آمن", processing: "جاري المعالجة...",
+      // --- DESTINATIONS PAGE ---
+      region: "المنطقة", all_regions: "جميع المناطق", accommodation: "الإقامة", all_acc: "جميع أماكن الإقامة", keyword_search: "البحث بكلمة رئيسية", search_placeholder: "اكتب للبحث...",
+      filters: "الفلاتر", clear_all: "مسح الكل", explore_regions: "استكشاف المناطق", major_regions: "6 مناطق رئيسية", view_acc: "عرض أماكن الإقامة",
+      search_results: "نتائج البحث", dest_found: "وجهة وجدت", no_match: "لا توجد أماكن إقامة مطابقة", no_match_desc: "حاول إزالة بعض الفلاتر.",
+      back_places: "← العودة إلى جميع الأماكن", pay_offers: "الدفع والعروض", facilities: "المرافق", details: "التفاصيل", bed_type: "نوع السرير", num_bedrooms: "غرف النوم", beach_access: "الوصول إلى الشاطئ",
+      hiking: "المشي لمسافات طويلة", distance: "المسافة", family: "عائلة", view_360: "عرض 360 درجة", full_screen: "ملء الشاشة", starting_at: "يبدأ من", per_night: "/ ليلة", weather: "الطقس"
     },
     th: {
       nav_home: "หน้าแรก", nav_dest: "จุดหมายปลายทาง", nav_tours: "ทัวร์แนะนำ", nav_gallery: "แกลเลอรี", nav_connect: "ติดต่อเรา", nav_book: "จองเลย",
@@ -260,7 +308,13 @@ export const PreferencesProvider = ({ children }) => {
       optional_addons: "ส่วนเสริมทางเลือก", transfer: "รถรับส่งสนามบิน", transfer_desc: "รับส่งสะดวกสบาย", insurance: "ประกันการเดินทาง", insurance_desc: "คุ้มครองเต็มรูปแบบ", dinner: "ดินเนอร์สุดโรแมนติก", dinner_desc: "ดินเนอร์ใต้แสงเทียน",
       payment_details: "รายละเอียดการชำระเงิน", how_paying: "เราจะจ่ายเงินอย่างไร?", split_1: "ฉันเท่านั้น (จ่ายเต็มจำนวน)", split_ways: "แบ่งปันให้", split_ways2: "คน", invoice_emails: "อีเมลสำหรับใบแจ้งหนี้:", lead_email: "อีเมลผู้จองหลัก", friend_email: "อีเมลของเพื่อน", friend_email2: "",
       each_pays: "แต่ละคนจะจ่าย", invoices_tied: "ใบแจ้งหนี้จะเชื่อมโยงกับอีเมลเหล่านี้", payment_method: "วิธีการชำระเงิน",
-      select_summary: "เลือกแพ็คเกจเพื่อดูสรุป", split: "แบ่ง", ways: "คน", per_person2: "/คน", secure_payment: "การชำระเงินที่ปลอดภัย", processing: "กำลังประมวลผล..."
+      select_summary: "เลือกแพ็คเกจเพื่อดูสรุป", split: "แบ่ง", ways: "คน", per_person2: "/คน", secure_payment: "การชำระเงินที่ปลอดภัย", processing: "กำลังประมวลผล...",
+      // --- DESTINATIONS PAGE ---
+      region: "ภูมิภาค", all_regions: "ทุกภูมิภาค", accommodation: "ที่พัก", all_acc: "ที่พักทั้งหมด", keyword_search: "ค้นหาคำสำคัญ", search_placeholder: "พิมพ์เพื่อค้นหา...",
+      filters: "ตัวกรอง", clear_all: "ล้างทั้งหมด", explore_regions: "สำรวจภูมิภาค", major_regions: "6 ภูมิภาคหลัก", view_acc: "ดูที่พัก",
+      search_results: "ผลการค้นหา", dest_found: "พบจุดหมายปลายทาง", no_match: "ไม่พบที่พักที่ตรงกัน", no_match_desc: "ลองนำตัวกรองบางตัวออก",
+      back_places: "← กลับไปที่สถานที่ทั้งหมด", pay_offers: "การชำระเงินและข้อเสนอ", facilities: "สิ่งอำนวยความสะดวก", details: "รายละเอียด", bed_type: "ประเภทเตียง", num_bedrooms: "ห้องนอน", beach_access: "ทางลงหาด",
+      hiking: "การเดินป่า", distance: "ระยะทาง", family: "ครอบครัว", view_360: "มุมมอง 360°", full_screen: "เต็มหน้าจอ", starting_at: "เริ่มต้นที่", per_night: "/ คืน", weather: "สภาพอากาศ"
     },
     ms: {
       nav_home: "Utama", nav_dest: "Destinasi", nav_tours: "Lawatan Pilihan", nav_gallery: "Galeri", nav_connect: "Hubungi", nav_book: "TEMPAH SEKARANG",
@@ -278,7 +332,13 @@ export const PreferencesProvider = ({ children }) => {
       optional_addons: "Tambahan Pilihan", transfer: "Pemindahan Lapangan Terbang", transfer_desc: "Pengambilan tanpa masalah.", insurance: "Insurans Perjalanan", insurance_desc: "Perlindungan penuh.", dinner: "Makan Malam Romantik", dinner_desc: "Makan malam cahaya lilin.",
       payment_details: "Butiran Pembayaran", how_paying: "Bagaimana kita membayar?", split_1: "Hanya saya (Bayar penuh)", split_ways: "Bahagikan kepada", split_ways2: "orang", invoice_emails: "E-mel untuk Invois:", lead_email: "E-mel Pengepah Utama", friend_email: "E-mel Rakan", friend_email2: "",
       each_pays: "Setiap orang akan membayar", invoices_tied: "Invois akan diikat pada e-mel ini.", payment_method: "Kaedah Pembayaran",
-      select_summary: "Pilih pakej untuk melihat ringkasan", split: "Bahagi", ways: "orang", per_person2: "/orang", secure_payment: "Pembayaran Selamat", processing: "Memproses..."
+      select_summary: "Pilih pakej untuk melihat ringkasan", split: "Bahagi", ways: "orang", per_person2: "/orang", secure_payment: "Pembayaran Selamat", processing: "Memproses...",
+      // --- DESTINATIONS PAGE ---
+      region: "Wilayah", all_regions: "Semua Wilayah", accommodation: "Penginapan", all_acc: "Semua Penginapan", keyword_search: "Carian Kata Kunci", search_placeholder: "Taip untuk mencari...",
+      filters: "Penapis", clear_all: "Kosongkan Semua", explore_regions: "Terokai Wilayah", major_regions: "6 Wilayah Utama", view_acc: "Lihat Penginapan",
+      search_results: "Hasil Carian", dest_found: "destinasi ditemui", no_match: "Tiada penginapan sepadan", no_match_desc: "Cuba buang beberapa penapis.",
+      back_places: "← Kembali ke Semua Tempat", pay_offers: "PEMBAYARAN & TAWARAN", facilities: "KEMUDAHAN", details: "BUTIRAN", bed_type: "Jenis Katil", num_bedrooms: "Bilik Tidur", beach_access: "Akses Pantai",
+      hiking: "Mendaki", distance: "Jarak", family: "Keluarga", view_360: "PANDANGAN 360°", full_screen: "Skrin Penuh", starting_at: "Bermula dari", per_night: "/ malam", weather: "Cuaca"
     },
     id: {
       nav_home: "Beranda", nav_dest: "Destinasi", nav_tours: "Tur Pilihan", nav_gallery: "Galeri", nav_connect: "Kontak", nav_book: "PESAN SEKARANG",
@@ -296,7 +356,13 @@ export const PreferencesProvider = ({ children }) => {
       optional_addons: "Tambahan Opsional", transfer: "Transfer Bandara", transfer_desc: "Penjemputan tanpa repot.", insurance: "Asuransi Perjalanan", insurance_desc: "Cakupan penuh.", dinner: "Makan Malam Romantis", dinner_desc: "Makan malam dengan cahaya lilin.",
       payment_details: "Detail Pembayaran", how_paying: "Bagaimana kita membayar?", split_1: "Hanya saya (Bayar penuh)", split_ways: "Bagi", split_ways2: "orang", invoice_emails: "Email untuk Faktur:", lead_email: "Email Pemesan Utama", friend_email: "Email Teman", friend_email2: "",
       each_pays: "Setiap orang akan membayar", invoices_tied: "Faktur akan dikaitkan dengan email ini.", payment_method: "Metode Pembayaran",
-      select_summary: "Pilih paket untuk melihat ringkasan", split: "Bagi", ways: "orang", per_person2: "/orang", secure_payment: "Pembayaran Aman", processing: "Memproses..."
+      select_summary: "Pilih paket untuk melihat ringkasan", split: "Bagi", ways: "orang", per_person2: "/orang", secure_payment: "Pembayaran Aman", processing: "Memproses...",
+      // --- DESTINATIONS PAGE ---
+      region: "Wilayah", all_regions: "Semua Wilayah", accommodation: "Akomodasi", all_acc: "Semua Akomodasi", keyword_search: "Pencarian", search_placeholder: "Ketik untuk mencari...",
+      filters: "Filter", clear_all: "Hapus Semua", explore_regions: "Jelajahi Wilayah", major_regions: "6 Wilayah Utama", view_acc: "Lihat Akomodasi",
+      search_results: "Hasil Pencarian", dest_found: "destinasi ditemukan", no_match: "Tidak ada akomodasi yang cocok", no_match_desc: "Cobalah menghapus beberapa filter.",
+      back_places: "← Kembali ke Semua Tempat", pay_offers: "PEMBAYARAN & PENAWARAN", facilities: "FASILITAS", details: "DETAIL", bed_type: "Tipe Tempat Tidur", num_bedrooms: "Kamar Tidur", beach_access: "Akses Pantai",
+      hiking: "Mendaki", distance: "Jarak", family: "Keluarga", view_360: "TAMPILAN 360°", full_screen: "Layar Penuh", starting_at: "Mulai dari", per_night: "/ malam", weather: "Cuaca"
     }
   };
 
