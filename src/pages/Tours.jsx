@@ -92,7 +92,14 @@ const Tours = () => {
   // Flatten regions and tour packages so users can add EVERYTHING to their map
   const itineraryOptions = Array.from(new Set([
       ...regions.map(r => r.name),
-      ...tourPackages.map(t => t.name)
+      ...tourPackages.map(t => t.name),
+      // Adding all the specific tourist spots we mapped out:
+      'El Nido', 'Coron', 'Puerto Princesa',
+      'Chocolate Hills', 'Panglao Island', 'Loboc River',
+      'White Beach', 'Puka Shell Beach', 'Diniwid',
+      'Moalboal', 'Oslob', 'Bantayan Island',
+      'Intramuros', 'Rizal Park', 'BGC',
+      'Batad Terraces', 'Banaue Viewpoint', 'Tappiya Falls'
   ])).sort();
 
   return (
