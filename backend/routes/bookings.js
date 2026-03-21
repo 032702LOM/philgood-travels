@@ -25,7 +25,6 @@ const transporter = nodemailer.createTransport({
 // ==========================================
 router.post('/create', async (req, res) => {
     try {
-        // ⚡ NEW: We now accept invoiceDetails from the frontend request
         const { userId, packageName, travelDate, guests, totalPrice, paymentMethod, splitBetween = 1, friendEmails = [], invoiceDetails } = req.body;
 
         const leadUser = await User.findById(userId);
@@ -65,9 +64,12 @@ router.post('/create', async (req, res) => {
             });
         }
 
-        // ⚡ NEW: Save the invoiceDetails to the Database
+        // ⚡ Ensure invoiceDetails is never completely undefined ⚡
+        const safeInvoice = invoiceDetails || {};
+
         const newBooking = new Booking({
-            userId, packageName, travelDate, guests, totalPrice, paymentMethod, invoiceDetails,
+            userId, packageName, travelDate, guests, totalPrice, paymentMethod, 
+            invoiceDetails: safeInvoice,
             bookingStatus: 'Pending', splitBetween, payments: paymentsArray
         });
 
@@ -75,9 +77,16 @@ router.post('/create', async (req, res) => {
 
         // ⚡ SEND AUTOMATED EMAILS TO PAYEES ⚡
         try {
-            // Helper function to format numbers as PHP currency safely
-            const formatPHP = (num) => num ? `₱${num.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '₱0.00';
-            const totalHeads = (guests.adults || 0) + (guests.children || 0) + (guests.infants || 0);
+            // ⚡ BULLETPROOF FORMATTER: Falls back safely if num is undefined/null ⚡
+            const formatPHP = (num) => {
+                const validNum = Number(num) || 0;
+                return `₱${validNum.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            };
+            
+            const adultCount = guests?.adults || 1;
+            const childCount = guests?.children || 0;
+            const infantCount = guests?.infants || 0;
+            const totalHeads = adultCount + childCount + infantCount;
 
             for (const payment of paymentsArray) {
                 if (!payment.payerEmail.includes('@pending.com')) {
@@ -98,37 +107,37 @@ router.post('/create', async (req, res) => {
                                     
                                     <table style="width: 100%; border-collapse: collapse; font-size: 14px; color: #4A5568;">
                                         <tr>
-                                            <td style="padding: 8px 0;">Base Price (x${guests.adults || 1})</td>
-                                            <td style="padding: 8px 0; text-align: right; font-weight: bold;">${formatPHP(invoiceDetails?.basePriceTotal)}</td>
+                                            <td style="padding: 8px 0;">Base Price (x${adultCount})</td>
+                                            <td style="padding: 8px 0; text-align: right; font-weight: bold;">${formatPHP(safeInvoice.basePriceTotal)}</td>
                                         </tr>
-                                        ${invoiceDetails?.accClassTotal > 0 ? `
+                                        ${Number(safeInvoice.accClassTotal) > 0 ? `
                                         <tr>
-                                            <td style="padding: 8px 0;">${invoiceDetails?.accClassText}</td>
-                                            <td style="padding: 8px 0; text-align: right; font-weight: bold;">${formatPHP(invoiceDetails?.accClassTotal)}</td>
+                                            <td style="padding: 8px 0;">${safeInvoice.accClassText || 'Room Upgrade'}</td>
+                                            <td style="padding: 8px 0; text-align: right; font-weight: bold;">${formatPHP(safeInvoice.accClassTotal)}</td>
                                         </tr>` : ''}
-                                        ${invoiceDetails?.transferTotal > 0 ? `
+                                        ${Number(safeInvoice.transferTotal) > 0 ? `
                                         <tr>
                                             <td style="padding: 8px 0;">Airport Transfer</td>
-                                            <td style="padding: 8px 0; text-align: right; font-weight: bold;">${formatPHP(invoiceDetails?.transferTotal)}</td>
+                                            <td style="padding: 8px 0; text-align: right; font-weight: bold;">${formatPHP(safeInvoice.transferTotal)}</td>
                                         </tr>` : ''}
-                                        ${invoiceDetails?.insuranceTotal > 0 ? `
+                                        ${Number(safeInvoice.insuranceTotal) > 0 ? `
                                         <tr>
                                             <td style="padding: 8px 0;">Insurance (x${totalHeads})</td>
-                                            <td style="padding: 8px 0; text-align: right; font-weight: bold;">${formatPHP(invoiceDetails?.insuranceTotal)}</td>
+                                            <td style="padding: 8px 0; text-align: right; font-weight: bold;">${formatPHP(safeInvoice.insuranceTotal)}</td>
                                         </tr>` : ''}
-                                        ${invoiceDetails?.dinnerTotal > 0 ? `
+                                        ${Number(safeInvoice.dinnerTotal) > 0 ? `
                                         <tr>
                                             <td style="padding: 8px 0;">Romantic Dinner</td>
-                                            <td style="padding: 8px 0; text-align: right; font-weight: bold;">${formatPHP(invoiceDetails?.dinnerTotal)}</td>
+                                            <td style="padding: 8px 0; text-align: right; font-weight: bold;">${formatPHP(safeInvoice.dinnerTotal)}</td>
                                         </tr>` : ''}
-                                        ${invoiceDetails?.carbonTotal > 0 ? `
+                                        ${Number(safeInvoice.carbonTotal) > 0 ? `
                                         <tr>
                                             <td style="padding: 8px 0; color: #4CAF50;">Carbon Offset (x${totalHeads})</td>
-                                            <td style="padding: 8px 0; text-align: right; font-weight: bold; color: #4CAF50;">${formatPHP(invoiceDetails?.carbonTotal)}</td>
+                                            <td style="padding: 8px 0; text-align: right; font-weight: bold; color: #4CAF50;">${formatPHP(safeInvoice.carbonTotal)}</td>
                                         </tr>` : ''}
                                         <tr>
                                             <td style="padding: 8px 0; border-top: 1px solid rgba(0, 180, 216, 0.2); padding-top: 15px;">VAT (12%)</td>
-                                            <td style="padding: 8px 0; border-top: 1px solid rgba(0, 180, 216, 0.2); padding-top: 15px; text-align: right; font-weight: bold;">${formatPHP(invoiceDetails?.vatTotal)}</td>
+                                            <td style="padding: 8px 0; border-top: 1px solid rgba(0, 180, 216, 0.2); padding-top: 15px; text-align: right; font-weight: bold;">${formatPHP(safeInvoice.vatTotal)}</td>
                                         </tr>
                                         <tr>
                                             <td style="padding: 15px 0 5px 0; font-size: 18px; color: #023E8A; font-weight: bold;">Grand Total</td>
