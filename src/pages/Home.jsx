@@ -135,23 +135,9 @@ const Home = () => {
         )}
 
         {/* --- STATIC HERO SECTION --- */}
-       <section id="home" className="fade-in" style={{ marginTop: 0 }}>
+        <section id="home" className="fade-in" style={{ marginTop: 0 }}>
             <div className="home-hero w-100 position-relative" style={{ backgroundImage: `url(${islandParadiseImg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-                <div className="hero-overlay w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center p-4">
-                    
-                    {/* ⚡ NEW: Hero Text added here ⚡ */}
-                    <span className="text-accent fw-bold fs-5 mb-2 text-uppercase" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.8)', letterSpacing: '3px' }}>
-                        {t('hero_adv', 'Adventure Awaits')}
-                    </span>
-                    <h1 className="text-white display-1 fw-bold font-montserrat text-uppercase mb-3" style={{ textShadow: '2px 2px 10px rgba(0,0,0,0.9)' }}>
-                        {t('hero_island', 'Island Paradise')}
-                    </h1>
-                    {/* Added pb-5 (padding-bottom) so the text doesn't hide behind the overlapping video! */}
-                    <p className="text-white fs-5 mb-5 pb-5" style={{ textShadow: '1px 1px 5px rgba(0,0,0,0.9)', maxWidth: '700px' }}>
-                        {t('ready_desc', 'Book your dream Philippine vacation today and create memories that will last a lifetime.')}
-                    </p>
-
-                </div>
+                <div className="hero-overlay w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center"></div>
             </div>
 
             {/* PROMO VIDEO OVERLAP */}
