@@ -104,70 +104,91 @@ export const PreferencesProvider = ({ children }) => {
       nav_home: "Home", nav_dest: "Destinations", nav_tours: "Featured Tours", nav_gallery: "Gallery", nav_connect: "Connect", nav_book: "BOOK NOW",
       book_now: "Book Now", view_details: "View Details", select: "Select", per_person: "per person", total: "Total", confirm: "Confirm Booking",
       pop_dest: "Most Popular Destinations", top_pkg: "Top Packages That Fit You", calc_price: "CALCULATE TOTAL PRICE", hero_island: "Island Paradise", 
-      hero_adv: "Adventure Awaits", hero_trail: "Find Your Trail", dest_title: "Find Your Place", tours_title: "Tour Packages", gal_title: "Visual Journey", conn_title: "Let us Connect", price_summary: "Price Summary"
+      hero_adv: "Adventure Awaits", hero_trail: "Find Your Trail", dest_title: "Find Your Place", tours_title: "Tour Packages", gal_title: "Visual Journey", conn_title: "Let us Connect", price_summary: "Price Summary",
+      // --- CONTACT PAGE ---
+      contact_info: "Contact Information", contact_desc: "Our travel experts are ready to assist you. Reach out to us via email, phone, or visit our office.", head_office: "Head Office", phone: "Phone Number", email_addr: "Email Address", send_msg: "Send Us a Message", your_name: "Your Name", your_email: "Your Email", subject: "Subject", message: "Message", placeholder_help: "How can we help?", placeholder_msg: "Write your message here...", btn_send: "SEND MESSAGE"
     },
     es: {
       nav_home: "Inicio", nav_dest: "Destinos", nav_tours: "Tours Destacados", nav_gallery: "Galería", nav_connect: "Conectar", nav_book: "RESERVAR",
       book_now: "Reservar Ahora", view_details: "Ver Detalles", select: "Seleccionar", per_person: "por persona", total: "Total", confirm: "Confirmar Reserva",
       pop_dest: "Destinos Más Populares", top_pkg: "Los Mejores Paquetes", calc_price: "CALCULAR PRECIO TOTAL", hero_island: "PARAÍSO ISLEÑO", 
-      hero_adv: "LA AVENTURA ESPERA", hero_trail: "ENCUENTRA TU RUTA", dest_title: "ENCUENTRA TU LUGAR", tours_title: "PAQUETES TURÍSTICOS", gal_title: "VIAJE VISUAL", conn_title: "CONTÁCTANOS", price_summary: "Resumen de Precios"
+      hero_adv: "LA AVENTURA ESPERA", hero_trail: "ENCUENTRA TU RUTA", dest_title: "ENCUENTRA TU LUGAR", tours_title: "PAQUETES TURÍSTICOS", gal_title: "VIAJE VISUAL", conn_title: "CONTÁCTANOS", price_summary: "Resumen de Precios",
+      // --- CONTACT PAGE ---
+      contact_info: "Información de Contacto", contact_desc: "Nuestros expertos en viajes están listos para ayudarle. Contáctenos por correo, teléfono o visite nuestra oficina.", head_office: "Sede Principal", phone: "Número de Teléfono", email_addr: "Correo Electrónico", send_msg: "Envíenos un Mensaje", your_name: "Su Nombre", your_email: "Su Correo", subject: "Asunto", message: "Mensaje", placeholder_help: "¿Cómo podemos ayudar?", placeholder_msg: "Escriba su mensaje aquí...", btn_send: "ENVIAR MENSAJE"
     },
     tl: {
       nav_home: "Bahay", nav_dest: "Destinasyon", nav_tours: "Sikat na Tours", nav_gallery: "Gallerio", nav_connect: "Kumonekta", nav_book: "MAG-BOOK NA",
       book_now: "Mag-book Na", view_details: "Tingnan ang Detalye", select: "Piliin", per_person: "bawat tao", total: "Kabuuan", confirm: "Kumpirmahin",
       pop_dest: "Mga Sikat na Destinasyon", top_pkg: "Mga Nangungunang Packages", calc_price: "KALKULAHIN ANG KABUUAN", hero_island: "PARAISO NG ISLA", 
-      hero_adv: "NAGHIHINTAY ANG ADVENTURE", hero_trail: "HANAPIN ANG IYONG LANDAS", dest_title: "HANAPIN ANG IYONG LUGAR", tours_title: "MGA TOUR PACKAGES", gal_title: "BISWAL NA PAGLALAKBAY", conn_title: "MAKIPAG-UGNAYAN", price_summary: "Buod ng Presyo"
+      hero_adv: "NAGHIHINTAY ANG ADVENTURE", hero_trail: "HANAPIN ANG IYONG LANDAS", dest_title: "HANAPIN ANG IYONG LUGAR", tours_title: "MGA TOUR PACKAGES", gal_title: "BISWAL NA PAGLALAKBAY", conn_title: "MAKIPAG-UGNAYAN", price_summary: "Buod ng Presyo",
+      // --- CONTACT PAGE ---
+      contact_info: "Impormasyon sa Pakikipag-ugnayan", contact_desc: "Handang tumulong ang aming mga eksperto sa paglalakbay. Makipag-ugnayan sa amin via email, telepono, o bisitahin ang aming opisina.", head_office: "Pangunahing Tanggapan", phone: "Numero ng Telepono", email_addr: "Email Address", send_msg: "Magpadala ng Mensahe", your_name: "Iyong Pangalan", your_email: "Iyong Email", subject: "Paksa", message: "Mensahe", placeholder_help: "Paano kami makakatulong?", placeholder_msg: "Isulat ang iyong mensahe rito...", btn_send: "IPADALA ANG MENSAHE"
     },
     fr: {
       nav_home: "Accueil", nav_dest: "Destinations", nav_tours: "Circuits", nav_gallery: "Galerie", nav_connect: "Contact", nav_book: "RÉSERVER",
       book_now: "Réserver", view_details: "Détails", select: "Sélectionner", per_person: "par personne", total: "Total", confirm: "Confirmer",
       pop_dest: "Destinations Populaires", top_pkg: "Meilleurs Forfaits", calc_price: "CALCULER LE PRIX", hero_island: "PARADIS INSULAIRE", 
-      hero_adv: "L'AVENTURE ATTEND", hero_trail: "TROUVEZ VOTRE VOIE", dest_title: "VOTRE PLACE", tours_title: "FORFAITS", gal_title: "VOYAGE VISUEL", conn_title: "CONTACTEZ-NOUS", price_summary: "Résumé des prix"
+      hero_adv: "L'AVENTURE ATTEND", hero_trail: "TROUVEZ VOTRE VOIE", dest_title: "VOTRE PLACE", tours_title: "FORFAITS", gal_title: "VOYAGE VISUEL", conn_title: "CONTACTEZ-NOUS", price_summary: "Résumé des prix",
+      // --- CONTACT PAGE ---
+      contact_info: "Coordonnées", contact_desc: "Nos experts en voyages sont prêts à vous aider. Contactez-nous par e-mail, téléphone ou visitez notre bureau.", head_office: "Siège Social", phone: "Numéro de Téléphone", email_addr: "Adresse E-mail", send_msg: "Envoyez-nous un message", your_name: "Votre Nom", your_email: "Votre E-mail", subject: "Sujet", message: "Message", placeholder_help: "Comment pouvons-nous vous aider?", placeholder_msg: "Écrivez votre message ici...", btn_send: "ENVOYER LE MESSAGE"
     },
     pt: {
       nav_home: "Início", nav_dest: "Destinos", nav_tours: "Tours Populares", nav_gallery: "Galeria", nav_connect: "Conectar", nav_book: "RESERVAR",
       book_now: "Reservar Agora", view_details: "Ver Detalhes", select: "Selecionar", per_person: "por pessoa", total: "Total", confirm: "Confirmar",
       pop_dest: "Destinos Populares", top_pkg: "Melhores Pacotes", calc_price: "CALCULAR PREÇO", hero_island: "PARAÍSO ILHÉU", 
-      hero_adv: "AVENTURA AGUARDA", hero_trail: "ENCONTRE SUA TRILHA", dest_title: "SEU LUGAR", tours_title: "PACOTES", gal_title: "JORNADA VISUAL", conn_title: "CONTATO", price_summary: "Resumo do Preço"
+      hero_adv: "AVENTURA AGUARDA", hero_trail: "ENCONTRE SUA TRILHA", dest_title: "SEU LUGAR", tours_title: "PACOTES", gal_title: "JORNADA VISUAL", conn_title: "CONTATO", price_summary: "Resumo do Preço",
+      // --- CONTACT PAGE ---
+      contact_info: "Informações de Contato", contact_desc: "Nossos especialistas em viagens estão prontos para ajudar. Entre em contato por e-mail, telefone ou visite nosso escritório.", head_office: "Sede", phone: "Número de Telefone", email_addr: "Endereço de E-mail", send_msg: "Envie-nos uma Mensagem", your_name: "Seu Nome", your_email: "Seu E-mail", subject: "Assunto", message: "Mensagem", placeholder_help: "Como podemos ajudar?", placeholder_msg: "Escreva sua mensagem aqui...", btn_send: "ENVIAR MENSAGEM"
     },
     ja: {
       nav_home: "ホーム", nav_dest: "目的地", nav_tours: "ツアー", nav_gallery: "ギャラリー", nav_connect: "連絡先", nav_book: "予約する",
       book_now: "今すぐ予約", view_details: "詳細を見る", select: "選択", per_person: "1人あたり", total: "合計", confirm: "予約を確定する",
       pop_dest: "人気の目的地", top_pkg: "おすすめパッケージ", calc_price: "合計料金", hero_island: "島の楽園", 
-      hero_adv: "冒険が待っている", hero_trail: "道を見つける", dest_title: "場所を見つける", tours_title: "パッケージ", gal_title: "ビジュアル", conn_title: "お問い合わせ", price_summary: "料金概要"
+      hero_adv: "冒険が待っている", hero_trail: "道を見つける", dest_title: "場所を見つける", tours_title: "パッケージ", gal_title: "ビジュアル", conn_title: "お問い合わせ", price_summary: "料金概要",
+      // --- CONTACT PAGE ---
+      contact_info: "連絡先情報", contact_desc: "旅行の専門家がお手伝いします。メール、電話、またはオフィスまでご連絡ください。", head_office: "本社", phone: "電話番号", email_addr: "メールアドレス", send_msg: "メッセージを送る", your_name: "お名前", your_email: "メール", subject: "件名", message: "メッセージ", placeholder_help: "どのようにお手伝いできますか？", placeholder_msg: "ここにメッセージを書いてください...", btn_send: "送信する"
     },
     zh: {
       nav_home: "首页", nav_dest: "目的地", nav_tours: "特色行程", nav_gallery: "画廊", nav_connect: "联系我们", nav_book: "立即预订",
       book_now: "立即预订", view_details: "查看详情", select: "选择", per_person: "每人", total: "总计", confirm: "确认预订",
       pop_dest: "热门目的地", top_pkg: "热门套餐", calc_price: "计算总价", hero_island: "海岛天堂", 
-      hero_adv: "冒险在召唤", hero_trail: "寻找路线", dest_title: "寻找地点", tours_title: "旅游套餐", gal_title: "视觉之旅", conn_title: "联系我们", price_summary: "价格汇总"
+      hero_adv: "冒险在召唤", hero_trail: "寻找路线", dest_title: "寻找地点", tours_title: "旅游套餐", gal_title: "视觉之旅", conn_title: "联系我们", price_summary: "价格汇总",
+      // --- CONTACT PAGE ---
+      contact_info: "联系信息", contact_desc: "我们的旅行专家随时准备为您提供帮助。请通过电子邮件、电话或访问我们的办公室与我们联系。", head_office: "总部", phone: "电话号码", email_addr: "电子邮件地址", send_msg: "给我们发信息", your_name: "您的姓名", your_email: "您的邮箱", subject: "主题", message: "留言", placeholder_help: "我们能帮您什么？", placeholder_msg: "在此写下您的留言...", btn_send: "发送信息"
     },
     ar: {
       nav_home: "الرئيسية", nav_dest: "الوجهات", nav_tours: "جولات", nav_gallery: "المعرض", nav_connect: "تواصل", nav_book: "احجز الآن",
       book_now: "احجز الآن", view_details: "عرض التفاصيل", select: "اختر", per_person: "للشخص الواحد", total: "المجموع", confirm: "تأكيد الحجز",
       pop_dest: "الوجهات الشعبية", top_pkg: "أفضل الباقات", calc_price: "السعر الإجمالي", hero_island: "جنة الجزيرة", 
-      hero_adv: "المغامرة تنتظر", hero_trail: "اكتشف مسارك", dest_title: "وجهتك", tours_title: "باقات الجولات", gal_title: "رحلة بصرية", conn_title: "تواصل معنا", price_summary: "ملخص السعر"
+      hero_adv: "المغامرة تنتظر", hero_trail: "اكتشف مسارك", dest_title: "وجهتك", tours_title: "باقات الجولات", gal_title: "رحلة بصرية", conn_title: "تواصل معنا", price_summary: "ملخص السعر",
+      // --- CONTACT PAGE ---
+      contact_info: "معلومات الاتصال", contact_desc: "خبراء السفر لدينا مستعدون لمساعدتك. تواصل معنا عبر البريد الإلكتروني أو الهاتف أو قم بزيارة مكتبنا.", head_office: "المكتب الرئيسي", phone: "رقم الهاتف", email_addr: "البريد الإلكتروني", send_msg: "أرسل لنا رسالة", your_name: "اسمك", your_email: "بريدك الإلكتروني", subject: "الموضوع", message: "الرسالة", placeholder_help: "كيف يمكننا المساعدة؟", placeholder_msg: "اكتب رسالتك هنا...", btn_send: "إرسال الرسالة"
     },
     th: {
       nav_home: "หน้าแรก", nav_dest: "จุดหมายปลายทาง", nav_tours: "ทัวร์แนะนำ", nav_gallery: "แกลเลอรี", nav_connect: "ติดต่อเรา", nav_book: "จองเลย",
       book_now: "จองเลย", view_details: "ดูรายละเอียด", select: "เลือก", per_person: "ต่อท่าน", total: "รวม", confirm: "ยืนยันการจอง",
       pop_dest: "จุดหมายปลายทางยอดนิยม", top_pkg: "แพ็คเกจยอดนิยม", calc_price: "คำนวณราคารวม", hero_island: "เกาะสวรรค์", 
-      hero_adv: "การผจญภัยรออยู่", hero_trail: "ค้นหาเส้นทางของคุณ", dest_title: "ค้นหาสถานที่ของคุณ", tours_title: "แพ็คเกจทัวร์", gal_title: "การเดินทางด้วยภาพ", conn_title: "ติดต่อเรา", price_summary: "สรุปราคา"
+      hero_adv: "การผจญภัยรออยู่", hero_trail: "ค้นหาเส้นทางของคุณ", dest_title: "ค้นหาสถานที่ของคุณ", tours_title: "แพ็คเกจทัวร์", gal_title: "การเดินทางด้วยภาพ", conn_title: "ติดต่อเรา", price_summary: "สรุปราคา",
+      // --- CONTACT PAGE ---
+      contact_info: "ข้อมูลการติดต่อ", contact_desc: "ผู้เชี่ยวชาญด้านการเดินทางของเราพร้อมที่จะช่วยเหลือคุณ ติดต่อเราผ่านทางอีเมล โทรศัพท์ หรือเยี่ยมชมสำนักงานของเรา", head_office: "สำนักงานใหญ่", phone: "หมายเลขโทรศัพท์", email_addr: "ที่อยู่อีเมล", send_msg: "ส่งข้อความถึงเรา", your_name: "ชื่อของคุณ", your_email: "อีเมลของคุณ", subject: "หัวข้อ", message: "ข้อความ", placeholder_help: "เราจะช่วยคุณได้อย่างไร?", placeholder_msg: "เขียนข้อความของคุณที่นี่...", btn_send: "ส่งข้อความ"
     },
     ms: {
       nav_home: "Utama", nav_dest: "Destinasi", nav_tours: "Lawatan Pilihan", nav_gallery: "Galeri", nav_connect: "Hubungi", nav_book: "TEMPAH SEKARANG",
       book_now: "Tempah Sekarang", view_details: "Lihat Butiran", select: "Pilih", per_person: "seorang", total: "Jumlah", confirm: "Sahkan Tempahan",
       pop_dest: "Destinasi Paling Popular", top_pkg: "Pakej Terbaik Untuk Anda", calc_price: "KIRA JUMLAH HARGA", hero_island: "PULAU PARADISE", 
-      hero_adv: "PENGEMBARAAN MENANTI", hero_trail: "CARI LALUAN ANDA", dest_title: "CARI TEMPAT ANDA", tours_title: "PAKEJ LAWATAN", gal_title: "PERJALANAN VISUAL", conn_title: "HUBUNGI KAMI", price_summary: "Ringkasan Harga"
+      hero_adv: "PENGEMBARAAN MENANTI", hero_trail: "CARI LALUAN ANDA", dest_title: "CARI TEMPAT ANDA", tours_title: "PAKEJ LAWATAN", gal_title: "PERJALANAN VISUAL", conn_title: "HUBUNGI KAMI", price_summary: "Ringkasan Harga",
+      // --- CONTACT PAGE ---
+      contact_info: "Maklumat Hubungan", contact_desc: "Pakar pelancongan kami sedia membantu anda. Hubungi kami melalui e-mel, telefon, atau lawati pejabat kami.", head_office: "Ibu Pejabat", phone: "Nombor Telefon", email_addr: "Alamat E-mel", send_msg: "Hantar Mesej", your_name: "Nama Anda", your_email: "E-mel Anda", subject: "Subjek", message: "Mesej", placeholder_help: "Bagaimana kami boleh membantu?", placeholder_msg: "Tulis mesej anda di sini...", btn_send: "HANTAR MESEJ"
     },
     id: {
       nav_home: "Beranda", nav_dest: "Destinasi", nav_tours: "Tur Pilihan", nav_gallery: "Galeri", nav_connect: "Kontak", nav_book: "PESAN SEKARANG",
       book_now: "Pesan Sekarang", view_details: "Lihat Detail", select: "Pilih", per_person: "per orang", total: "Total", confirm: "Konfirmasi Pemesanan",
       pop_dest: "Destinasi Paling Populer", top_pkg: "Paket Terbaik Untuk Anda", calc_price: "HITUNG TOTAL HARGA", hero_island: "PULAU SURGA", 
-      hero_adv: "PETUALANGAN MENANTI", hero_trail: "TEMUKAN JALUR ANDA", dest_title: "TEMUKAN TEMPAT ANDA", tours_title: "PAKET TUR", gal_title: "PERJALANAN VISUAL", conn_title: "HUBUNGI KAMI", price_summary: "Ringkasan Harga"
+      hero_adv: "PETUALANGAN MENANTI", hero_trail: "TEMUKAN JALUR ANDA", dest_title: "TEMUKAN TEMPAT ANDA", tours_title: "PAKET TUR", gal_title: "PERJALANAN VISUAL", conn_title: "HUBUNGI KAMI", price_summary: "Ringkasan Harga",
+      // --- CONTACT PAGE ---
+      contact_info: "Informasi Kontak", contact_desc: "Pakar perjalanan kami siap membantu Anda. Hubungi kami melalui email, telepon, atau kunjungi kantor kami.", head_office: "Kantor Pusat", phone: "Nombor Telepon", email_addr: "Alamat Email", send_msg: "Kirim Pesan", your_name: "Nama Anda", your_email: "Email Anda", subject: "Subjek", message: "Pesan", placeholder_help: "Bagaimana kami bisa membantu?", placeholder_msg: "Tulis pesan Anda di sini...", btn_send: "KIRIM PESAN"
     }
   };
-
   const t = (key, defaultText) => translations[language]?.[key] || translations['en'][key] || defaultText;
 
   const formatPrice = (phpAmount) => {
