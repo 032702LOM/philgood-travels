@@ -4,10 +4,12 @@ import { tourPackages, regions } from '../data/placesData';
 import { usePreferences } from '../context/PreferencesContext';
 import heroImg from '../assets/img/Tours__Packages.png';
 
-// ⚡ NEW: Official Google Maps Imports ⚡
-import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
+// ⚡ BACK TO LEAFLET: 100% Free, no watermarks! ⚡
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
 
-// ⚡ EXPANDED: GPS Coordinates for every region and tour package
+// ⚡ GPS Coordinates for every region and tour package
 const regionCoords = {
   'Manila': [14.5995, 120.9842],
   'Metro Manila': [14.5995, 120.9842],
@@ -47,6 +49,16 @@ const regionCoords = {
   'Banaue Heritage Tour': [16.9140, 121.0564]
 };
 
+// ⚡ Custom map marker function to generate blue numbered circles
+const createCustomIcon = (number) => {
+  return L.divIcon({
+      className: 'custom-map-marker',
+      html: `<div style="background-color: var(--primary-color, #00B4D8); color: white; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold; border: 2px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-family: Montserrat, sans-serif;">${number}</div>`,
+      iconSize: [30, 30],
+      iconAnchor: [15, 15]
+  });
+};
+
 const Tours = () => {
   const location = useLocation();
   const { t, formatPrice } = usePreferences();
@@ -57,12 +69,6 @@ const Tours = () => {
   const [pax, setPax] = useState(1);
   const [itinerary, setItinerary] = useState([]);
   const [selectedDest, setSelectedDest] = useState('');
-
-  // ⚡ NEW: Connect to Google Maps using your .env API Key ⚡
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY
-  });
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -83,7 +89,7 @@ const Tours = () => {
   const removeItem = (index) => { setItinerary(itinerary.filter((_, i) => i !== index)); };
   const handleSaveItinerary = () => { alert(`Your custom route has been saved!\n\nStops:\n${itinerary.map((item, i) => `${i + 1}. ${item}`).join('\n')}`); };
 
-  // COMBINED OPTIONS: Flatten regions and tour packages so users can add EVERYTHING to their map
+  // Flatten regions and tour packages so users can add EVERYTHING to their map
   const itineraryOptions = Array.from(new Set([
       ...regions.map(r => r.name),
       ...tourPackages.map(t => t.name)
@@ -195,51 +201,43 @@ const Tours = () => {
                             </button>
                         </div>
                         
-                        {/* RIGHT COLUMN: Interactive Google Map */}
+                        {/* RIGHT COLUMN: Interactive Leaflet Map */}
                         <div className="col-md-6 d-none d-md-block">
                             <div className="position-relative h-100 overflow-hidden shadow-sm border border-primary border-opacity-10" style={{ minHeight: '500px', backgroundColor: '#F4FAFC', borderRadius: '16px' }}>
                                 <div className="position-absolute top-0 start-0 m-3" style={{ zIndex: 1000 }}>
                                     <span className="badge bg-primary text-white px-3 py-2 shadow">
-                                        <i className="fa-brands fa-google me-1"></i> {t('live_preview', 'Live Preview')}
+                                        <i className="fa-solid fa-map me-1"></i> {t('live_preview', 'Live Preview')}
                                     </span>
                                 </div>
                                 
-                                {!isLoaded ? (
-                                    <div className="w-100 h-100 d-flex justify-content-center align-items-center">
-                                        <div className="spinner-border text-primary" role="status"></div>
-                                    </div>
-                                ) : (
-                                    <GoogleMap 
-                                        mapContainerStyle={{ height: '100%', width: '100%', minHeight: '500px' }}
-                                        center={{ lat: 12.8797, lng: 121.7740 }} 
-                                        zoom={5}
-                                        options={{
-                                            // ⚡ NEW: Restricts the map to the Philippines only!
-                                            restriction: {
-                                                latLngBounds: { north: 22.0, south: 4.0, east: 127.0, west: 116.0 },
-                                                strictBounds: true,
-                                            },
-                                            minZoom: 5,
-                                            streetViewControl: false, 
-                                            mapTypeControl: false     
-                                        }}
-                                    >
-                                        {itinerary.map((item, index) => {
-                                            // Convert existing array coordinates to {lat, lng} for Google
-                                            const coordsArray = regionCoords[item] || [12.8797, 121.7740];
-                                            const position = { lat: coordsArray[0], lng: coordsArray[1] };
-
-                                            return (
-                                                <Marker 
-                                                    key={index} 
-                                                    position={position} 
-                                                    title={item}
-                                                    label={{ text: (index + 1).toString(), color: 'white', fontWeight: 'bold' }} 
-                                                />
-                                            );
-                                        })}
-                                    </GoogleMap>
-                                )}
+                                <MapContainer 
+                                    center={[12.8797, 121.7740]} 
+                                    zoom={5} 
+                                    minZoom={5} 
+                                    maxBounds={[
+                                        [4.0, 116.0], // South-West boundary limit
+                                        [22.0, 127.0] // North-East boundary limit
+                                    ]} 
+                                    maxBoundsViscosity={1.0} // Creates a solid "bounce back" wall
+                                    scrollWheelZoom={true} 
+                                    style={{ height: '100%', width: '100%', minHeight: '500px', zIndex: 1 }}
+                                >
+                                    <TileLayer
+                                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                    />
+                                    
+                                    {itinerary.map((item, index) => {
+                                        const coords = regionCoords[item] || [12.8797, 121.7740]; 
+                                        return (
+                                            <Marker key={index} position={coords} icon={createCustomIcon(index + 1)}>
+                                                <Popup>
+                                                    <strong>Stop {index + 1}:</strong> {item}
+                                                </Popup>
+                                            </Marker>
+                                        );
+                                    })}
+                                </MapContainer>
 
                             </div>
                         </div>
