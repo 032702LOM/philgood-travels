@@ -39,7 +39,6 @@ const Tours = () => {
        <section className="tours-hero" style={{ marginTop: 0, backgroundImage: `url("${heroImg}")` }}>
             <div className="container text-center mb-4 scroll-reveal visible">
                 <h1 className="hero-title transparent-text" style={{ fontSize: '4rem' }}>{t('tours_title', 'Tour Packages')}</h1>
-                
             </div>
         </section>
 
@@ -47,14 +46,14 @@ const Tours = () => {
             <div className="container">
                 {searchQuery && (
                     <div className="d-flex justify-content-between align-items-center mb-4 bg-card-dark p-3 rounded-3 border border-primary border-opacity-25" style={{ backgroundColor: 'var(--card-bg)' }}>
-                        <h5 className="text-navy font-montserrat fw-bold m-0">Showing results for: <span className="text-accent">"{searchQuery}"</span></h5>
-                        <Link to="/tours" className="btn btn-outline-custom btn-sm rounded-pill px-3">Clear Filter</Link>
+                        <h5 className="text-navy font-montserrat fw-bold m-0">{t('showing_results', 'Showing results for:')} <span className="text-accent">"{searchQuery}"</span></h5>
+                        <Link to="/tours" className="btn btn-outline-custom btn-sm rounded-pill px-3">{t('clear_filter', 'Clear Filter')}</Link>
                     </div>
                 )}
 
                 <div className="row g-4 mb-5">
                     {filteredTours.length === 0 ? (
-                        <div className="col-12 text-center text-grey py-5 fw-bold">No tour packages match your search. Try clearing the filter!</div>
+                        <div className="col-12 text-center text-grey py-5 fw-bold">{t('no_tours', 'No tour packages match your search. Try clearing the filter!')}</div>
                     ) : (
                         filteredTours.map((pkg) => (
                             <div key={pkg.id} className="col-md-6 col-lg-4 scroll-reveal visible">
@@ -62,9 +61,9 @@ const Tours = () => {
                                     <div className="card-img-wrapper"><div className="card-badges-container"><span className="badge-item"><i className="fa-regular fa-clock text-accent"></i> {pkg.duration}</span><span className="badge-item"><i className="fa-solid fa-tag text-accent"></i> {pkg.type || 'Guided'}</span></div><img src={pkg.img} className="card-img-top" alt={pkg.name} /></div>
                                     <div className="card-body">
                                         <h5 className="card-title text-navy">{pkg.name}</h5>
-                                        <p className="card-text text-grey mb-3 small">Explore the breathtaking sights, immersive culture, and hidden gems of this destination.</p>
-                                        <div className="includes-label">INCLUDES:</div>
-                                        <ul className="includes-list"><li><i className="fa-solid fa-check text-accent"></i> Hotel Accommodation</li><li><i className="fa-solid fa-check text-accent"></i> Guided Tours</li><li><i className="fa-solid fa-check text-accent"></i> Selected Meals</li></ul>
+                                        <p className="card-text text-grey mb-3 small">{t('explore_sights', 'Explore the breathtaking sights, immersive culture, and hidden gems of this destination.')}</p>
+                                        <div className="includes-label">{t('includes', 'INCLUDES:')}</div>
+                                        <ul className="includes-list"><li><i className="fa-solid fa-check text-accent"></i> {t('hotel_acc', 'Hotel Accommodation')}</li><li><i className="fa-solid fa-check text-accent"></i> {t('guided_tours', 'Guided Tours')}</li><li><i className="fa-solid fa-check text-accent"></i> {t('selected_meals', 'Selected Meals')}</li></ul>
                                         <div className="price-section border-top border-primary border-opacity-10 pt-3">
                                             <div>
                                                 <span className="price-large text-accent">{formatPrice(pkg.price)}</span>
@@ -82,28 +81,28 @@ const Tours = () => {
                 <div className="bg-card-dark p-5 rounded-4 border border-primary border-opacity-10 shadow-sm scroll-reveal visible" style={{ backgroundColor: 'var(--card-bg)' }}>
                     <div className="row g-5">
                         <div className="col-md-6">
-                            <h3 className="fw-bold mb-3 text-navy font-montserrat"><i className="fa-solid fa-map-location-dot text-accent me-2"></i> Build Your Own Itinerary</h3>
-                            <p className="text-grey small mb-4">Select destinations to create your perfect custom route across the Philippines.</p>
-                            <div className="d-flex gap-2 mb-4"><select className="form-control-dark form-select form-select-lg w-100" value={selectedDest} onChange={(e) => setSelectedDest(e.target.value)}><option value="">-- Choose a destination --</option>{regions.map(r => (<option key={r.id} value={r.name} disabled={itinerary.includes(r.name)}>{r.name} {itinerary.includes(r.name) ? '(Added)' : ''}</option>))}</select><button className="btn btn-proceed px-4" onClick={addToItinerary} disabled={!selectedDest}>Add</button></div>
+                            <h3 className="fw-bold mb-3 text-navy font-montserrat"><i className="fa-solid fa-map-location-dot text-accent me-2"></i> {t('build_itinerary', 'Build Your Own Itinerary')}</h3>
+                            <p className="text-grey small mb-4">{t('build_desc', 'Select destinations to create your perfect custom route across the Philippines.')}</p>
+                            <div className="d-flex gap-2 mb-4"><select className="form-control-dark form-select form-select-lg w-100" value={selectedDest} onChange={(e) => setSelectedDest(e.target.value)}><option value="">{t('choose_dest', '-- Choose a destination --')}</option>{regions.map(r => (<option key={r.id} value={r.name} disabled={itinerary.includes(r.name)}>{r.name} {itinerary.includes(r.name) ? t('added', '(Added)') : ''}</option>))}</select><button className="btn btn-proceed px-4" onClick={addToItinerary} disabled={!selectedDest}>{t('add_btn', 'Add')}</button></div>
                             <div className="itinerary-list mb-4">
                                 {itinerary.length === 0 ? (
-                                    <div className="text-center p-4 rounded-3 border border-2 border-primary border-opacity-25 text-grey" style={{ borderStyle: 'dashed !important', backgroundColor: '#F4FAFC' }}><i className="fa-solid fa-route fs-3 mb-2 opacity-50 text-primary"></i><p className="mb-0 fw-bold">Your itinerary is empty. Add your first stop above!</p></div>
+                                    <div className="text-center p-4 rounded-3 border border-2 border-primary border-opacity-25 text-grey" style={{ borderStyle: 'dashed !important', backgroundColor: '#F4FAFC' }}><i className="fa-solid fa-route fs-3 mb-2 opacity-50 text-primary"></i><p className="mb-0 fw-bold">{t('itinerary_empty', 'Your itinerary is empty. Add your first stop above!')}</p></div>
                                 ) : (
                                     <ul className="list-group shadow-sm">
                                         {itinerary.map((item, index) => (
-                                            <li key={index} className="list-group-item d-flex justify-content-between align-items-center p-3 border-primary border-opacity-25" style={{ backgroundColor: '#F4FAFC' }}><div className="d-flex align-items-center gap-3"><span className="badge rounded-pill text-navy fw-bold shadow-sm" style={{ backgroundColor: 'var(--primary-color)', color: 'white', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{index + 1}</span><span className="fw-bold text-navy font-montserrat">{item}</span></div><div className="btn-group btn-group-sm"><button className="btn btn-outline-primary" onClick={() => moveItem(index, -1)} disabled={index === 0} title="Move Up"><i className="fa-solid fa-arrow-up"></i></button><button className="btn btn-outline-primary" onClick={() => moveItem(index, 1)} disabled={index === itinerary.length - 1} title="Move Down"><i className="fa-solid fa-arrow-down"></i></button><button className="btn btn-outline-danger" onClick={() => removeItem(index)} title="Remove"><i className="fa-solid fa-trash"></i></button></div></li>
+                                            <li key={index} className="list-group-item d-flex justify-content-between align-items-center p-3 border-primary border-opacity-25" style={{ backgroundColor: '#F4FAFC' }}><div className="d-flex align-items-center gap-3"><span className="badge rounded-pill text-navy fw-bold shadow-sm" style={{ backgroundColor: 'var(--primary-color)', color: 'white', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{index + 1}</span><span className="fw-bold text-navy font-montserrat">{item}</span></div><div className="btn-group btn-group-sm"><button className="btn btn-outline-primary" onClick={() => moveItem(index, -1)} disabled={index === 0} title={t('move_up', 'Move Up')}><i className="fa-solid fa-arrow-up"></i></button><button className="btn btn-outline-primary" onClick={() => moveItem(index, 1)} disabled={index === itinerary.length - 1} title={t('move_down', 'Move Down')}><i className="fa-solid fa-arrow-down"></i></button><button className="btn btn-outline-danger" onClick={() => removeItem(index)} title={t('remove', 'Remove')}><i className="fa-solid fa-trash"></i></button></div></li>
                                         ))}
                                     </ul>
                                 )}
                             </div>
-                            <button className="btn btn-outline-custom w-100" onClick={handleSaveItinerary} disabled={itinerary.length === 0}><i className="fa-solid fa-floppy-disk me-2"></i> Save Itinerary</button>
+                            <button className="btn btn-outline-custom w-100" onClick={handleSaveItinerary} disabled={itinerary.length === 0}><i className="fa-solid fa-floppy-disk me-2"></i> {t('save_itinerary', 'Save Itinerary')}</button>
                         </div>
                         <div className="col-md-6 d-none d-md-block">
                             <div className="position-relative h-100 min-vh-100 overflow-hidden shadow-sm border border-primary border-opacity-10" style={{ minHeight: '400px', backgroundColor: '#F4FAFC', borderRadius: '16px', backgroundImage: "url('https://upload.wikimedia.org/wikipedia/commons/8/87/Relief_Map_of_the_Philippines.png')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
-                                <div className="position-absolute top-0 start-0 m-3 z-3"><span className="badge bg-primary text-white px-3 py-2 shadow"><i className="fa-solid fa-map me-1"></i> Live Preview</span></div>
+                                <div className="position-absolute top-0 start-0 m-3 z-3"><span className="badge bg-primary text-white px-3 py-2 shadow"><i className="fa-solid fa-map me-1"></i> {t('live_preview', 'Live Preview')}</span></div>
                                 <div className="position-absolute w-100 h-100 top-0 start-0 d-flex flex-column align-items-center justify-content-center gap-2 p-4" style={{ backgroundColor: 'rgba(255,255,255,0.6)', backdropFilter: 'blur(3px)' }}>
                                     {itinerary.length === 0 ? (
-                                        <span className="text-navy fw-bold bg-white px-4 py-2 rounded-pill shadow-sm border border-primary border-opacity-10">Map is blank</span>
+                                        <span className="text-navy fw-bold bg-white px-4 py-2 rounded-pill shadow-sm border border-primary border-opacity-10">{t('map_blank', 'Map is blank')}</span>
                                     ) : (
                                         itinerary.map((item, index) => (
                                             <div key={index} className="badge bg-white text-navy shadow px-3 py-2 border border-primary border-opacity-25 d-flex align-items-center gap-2" style={{ animation: 'fadeIn 0.3s ease-in' }}><span className="badge rounded-circle text-white shadow-sm" style={{ backgroundColor: 'var(--primary-color)' }}>{index + 1}</span> <span className="fw-bold font-montserrat text-navy">{item}</span></div>
@@ -125,14 +124,14 @@ const Tours = () => {
                         <div className="modal-body pt-1">
                             <h5 id="modalPackageName" className="text-primary-dark fw-bold mb-1 font-montserrat text-uppercase">{selectedTour.name}</h5>
                             <p id="modalDuration" className="text-grey fw-bold small mb-4">{selectedTour.duration}</p>
-                            <div className="mb-4"><label className="text-navy fw-bold small mb-2 d-block">Number of People</label><input type="number" className="form-control-dark w-100 border-primary border-opacity-25" value={pax} min="1" onChange={(e) => setPax(parseInt(e.target.value) || 1)} /></div>
-                            <div className="d-flex justify-content-between align-items-center mb-2"><div className="text-grey fw-bold small">Price per person</div><div className="text-navy fw-bold">{formatPrice(selectedTour.price)}</div></div>
-                            <div className="d-flex justify-content-between align-items-center mb-4 pb-4 border-bottom border-primary border-opacity-10"><div className="text-grey fw-bold small">Number of people</div><div className="text-navy fw-bold">× {pax}</div></div>
-                            <div className="d-flex justify-content-between align-items-center mb-4"><div className="text-navy fw-bold fs-5">{t('total', 'Total Price')}</div><div className="fw-bold fs-2 text-accent" id="modalTotalPrice">{formatPrice(selectedTour.price * pax)}</div></div>
+                            <div className="mb-4"><label className="text-navy fw-bold small mb-2 d-block">{t('num_people', 'Number of People')}</label><input type="number" className="form-control-dark w-100 border-primary border-opacity-25" value={pax} min="1" onChange={(e) => setPax(parseInt(e.target.value) || 1)} /></div>
+                            <div className="d-flex justify-content-between align-items-center mb-2"><div className="text-grey fw-bold small">{t('price_per_person', 'Price per person')}</div><div className="text-navy fw-bold">{formatPrice(selectedTour.price)}</div></div>
+                            <div className="d-flex justify-content-between align-items-center mb-4 pb-4 border-bottom border-primary border-opacity-10"><div className="text-grey fw-bold small">{t('num_people', 'Number of People')}</div><div className="text-navy fw-bold">× {pax}</div></div>
+                            <div className="d-flex justify-content-between align-items-center mb-4"><div className="text-navy fw-bold fs-5">{t('total_price', 'Total Price')}</div><div className="fw-bold fs-2 text-accent" id="modalTotalPrice">{formatPrice(selectedTour.price * pax)}</div></div>
                         </div>
                         <div className="modal-footer border-0 pt-0 d-flex gap-3">
-                            <button type="button" className="btn-cancel flex-grow-1" onClick={handleCloseModal}>Cancel</button>
-                            <button type="button" className="btn-proceed flex-grow-1" onClick={() => window.location.href=`/booking?package=${encodeURIComponent(selectedTour.name)}&pax=${pax}`}>Proceed to Booking</button>
+                            <button type="button" className="btn-cancel flex-grow-1" onClick={handleCloseModal}>{t('cancel', 'Cancel')}</button>
+                            <button type="button" className="btn-proceed flex-grow-1" onClick={() => window.location.href=`/booking?package=${encodeURIComponent(selectedTour.name)}&pax=${pax}`}>{t('proceed_booking', 'Proceed to Booking')}</button>
                         </div>
                     </div>
                 </div>
