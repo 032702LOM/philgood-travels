@@ -184,27 +184,33 @@ const Tours = () => {
                                 </div>
                                 
                                 <MapContainer 
-                                    center={[12.8797, 121.7740]} 
-                                    zoom={5} 
-                                    scrollWheelZoom={true} 
-                                    style={{ height: '100%', width: '100%', minHeight: '500px', zIndex: 1 }}
-                                >
-                                    <TileLayer
-                                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                    />
-                                    
-                                    {itinerary.map((item, index) => {
-                                        const coords = regionCoords[item] || [12.8797, 121.7740]; // Safe fallback if place isn't in dictionary
-                                        return (
-                                            <Marker key={index} position={coords} icon={createCustomIcon(index + 1)}>
-                                                <Popup>
-                                                    <strong>Stop {index + 1}:</strong> {item}
-                                                </Popup>
-                                            </Marker>
-                                        );
-                                    })}
-                                </MapContainer>
+    center={[12.8797, 121.7740]} 
+    zoom={5} 
+    minZoom={5} /* ⚡ NEW: Prevents zooming out too far */
+    maxBounds={[
+        [4.0, 116.0], /* ⚡ NEW: South-West boundary limit */
+        [22.0, 127.0] /* ⚡ NEW: North-East boundary limit */
+    ]} 
+    maxBoundsViscosity={1.0} /* ⚡ NEW: Creates a solid "bounce back" wall when panning */
+    scrollWheelZoom={true} 
+    style={{ height: '100%', width: '100%', minHeight: '500px', zIndex: 1 }}
+>
+    <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    />
+    
+    {itinerary.map((item, index) => {
+        const coords = regionCoords[item] || [12.8797, 121.7740]; 
+        return (
+            <Marker key={index} position={coords} icon={createCustomIcon(index + 1)}>
+                <Popup>
+                    <strong>Stop {index + 1}:</strong> {item}
+                </Popup>
+            </Marker>
+        );
+    })}
+</MapContainer>
 
                             </div>
                         </div>
