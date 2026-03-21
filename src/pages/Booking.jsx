@@ -42,9 +42,6 @@ const Booking = () => {
     });
   };
 
-  // ==========================================
-  // ⚡ PRICING & TAX MATH (LOCAL ONLY) ⚡
-  // ==========================================
   const currentItem = allBookableItems.find(item => item.name === selectedPackage);
   const basePrice = currentItem?.price || 0; 
   
@@ -61,16 +58,9 @@ const Booking = () => {
   const dinnerTotal = addons.romanticDinner ? addonPrices.romanticDinner : 0;
   const carbonTotal = addons.carbonOffset ? (addonPrices.carbonOffset * totalHeads) : 0;
   
-  // 1. Calculate the Subtotal (Everything before taxes)
   const subTotal = packageTotal + accClassTotal + transferTotal + insuranceTotal + dinnerTotal + carbonTotal;
-
-  // 2. Calculate 12% VAT
   const vatTotal = subTotal * 0.12;
-
-  // 3. Grand Total (No Travel Tax for domestic bookings)
   const grandTotal = subTotal + vatTotal;
-
-  // ==========================================
 
   const handleInfoChange = (e) => setPersonalInfo({ ...personalInfo, [e.target.name]: e.target.value });
   const toggleAddon = (addonName) => setAddons({ ...addons, [addonName]: !addons[addonName] });
@@ -89,7 +79,6 @@ const Booking = () => {
     setIsSubmitting(true);
     const user = JSON.parse(userStr);
 
-    // ⚡ NEW: Package up the exact itemized pricing to send to the backend
     const invoiceDetails = {
         basePriceTotal: adultTotal + childTotal,
         accClassText: `${accClass} Class (x${chargeablePax})`,
@@ -110,7 +99,7 @@ const Booking = () => {
         paymentMethod: paymentMethod,
         splitBetween: parseInt(splitBetween), 
         friendEmails: payerEmails,
-        invoiceDetails: invoiceDetails // ⚡ Successfully added to the backend payload
+        invoiceDetails: invoiceDetails
     };
 
     try {
@@ -145,41 +134,40 @@ const Booking = () => {
           <form onSubmit={handleSubmit} className="row g-5">
             
             <div className="col-lg-8 scroll-reveal visible">
-              {/* === TRIP DETAILS === */}
               <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 mb-4 teal-hover-box">
                 <h4 className="fw-bold mb-4 font-montserrat text-navy"><i className="fa-solid fa-suitcase-rolling text-accent me-2"></i> {t('trip_details', 'Trip Details')}</h4>
                 <div className="row g-4">
                   <div className="col-md-12">
-                    <label className="text-grey fw-bold small mb-2">Destination / Package</label>
+                    <label className="text-grey fw-bold small mb-2">{t('dest_pkg', 'Destination / Package')}</label>
                     <div className="input-with-icon position-relative">
                         <i className="fa-solid fa-map-location-dot position-absolute" style={{ left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'var(--primary-color)', zIndex: 1 }}></i>
                         <select className="form-control-dark w-100" value={selectedPackage} onChange={(e) => setSelectedPackage(e.target.value)} style={{ paddingLeft: '45px' }} required>
-                            <option value="">-- Select a Package --</option>
+                            <option value="">{t('select_pkg', '-- Select a Package --')}</option>
                             <optgroup label="Tour Packages">{tourPackages.map(pkg => <option key={pkg.id} value={pkg.name}>{pkg.name}</option>)}</optgroup>
                             <optgroup label="Accommodations">{allPlaces.map(place => <option key={place.id} value={place.name}>{place.name}</option>)}</optgroup>
                         </select>
                     </div>
                   </div>
                   <div className="col-md-12">
-                    <label className="text-grey fw-bold small mb-2">Travel Date</label>
+                    <label className="text-grey fw-bold small mb-2">{t('travel_date', 'Travel Date')}</label>
                     <div className="input-with-icon position-relative">
                         <i className="fa-solid fa-calendar-days position-absolute" style={{ left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'var(--primary-color)', zIndex: 1 }}></i>
                         <input type="date" className="form-control-dark w-100" value={date} onChange={(e) => setDate(e.target.value)} style={{ paddingLeft: '45px' }} required />
                     </div>
                   </div>
                   <div className="col-md-12">
-                    <label className="text-grey fw-bold small mb-2">Number of Guests</label>
+                    <label className="text-grey fw-bold small mb-2">{t('num_guests', 'Number of Guests')}</label>
                     <div className="d-flex flex-wrap gap-3">
                         <div className="d-flex align-items-center rounded-3 px-3 py-2 border border-primary border-opacity-25 flex-grow-1" style={{ backgroundColor: '#F4FAFC' }}>
-                            <div className="me-auto"><span className="d-block text-navy fw-bold">Adults</span><small className="text-grey" style={{ fontSize: '0.75rem' }}>12+ years</small></div>
+                            <div className="me-auto"><span className="d-block text-navy fw-bold">{t('adults', 'Adults')}</span><small className="text-grey" style={{ fontSize: '0.75rem' }}>{t('adults_desc', '12+ years')}</small></div>
                             <div className="d-flex align-items-center gap-3"><button type="button" className="btn btn-sm btn-outline-primary rounded-circle" style={{ width: '30px', height: '30px', padding: 0 }} onClick={() => handleGuestChange('adults', 'sub')}><i className="fa-solid fa-minus"></i></button><span className="text-navy fw-bold fs-5" style={{ minWidth: '20px', textAlign: 'center' }}>{guests.adults}</span><button type="button" className="btn btn-sm btn-outline-primary rounded-circle" style={{ width: '30px', height: '30px', padding: 0 }} onClick={() => handleGuestChange('adults', 'add')}><i className="fa-solid fa-plus"></i></button></div>
                         </div>
                         <div className="d-flex align-items-center rounded-3 px-3 py-2 border border-primary border-opacity-25 flex-grow-1" style={{ backgroundColor: '#F4FAFC' }}>
-                            <div className="me-auto"><span className="d-block text-navy fw-bold">Children</span><small className="text-accent fw-bold" style={{ fontSize: '0.75rem' }}>50% Off (2-11 yrs)</small></div>
+                            <div className="me-auto"><span className="d-block text-navy fw-bold">{t('children', 'Children')}</span><small className="text-accent fw-bold" style={{ fontSize: '0.75rem' }}>{t('children_desc', '50% Off (2-11 yrs)')}</small></div>
                             <div className="d-flex align-items-center gap-3"><button type="button" className="btn btn-sm btn-outline-primary rounded-circle" style={{ width: '30px', height: '30px', padding: 0 }} onClick={() => handleGuestChange('children', 'sub')} disabled={guests.children === 0}><i className="fa-solid fa-minus"></i></button><span className="text-navy fw-bold fs-5" style={{ minWidth: '20px', textAlign: 'center' }}>{guests.children}</span><button type="button" className="btn btn-sm btn-outline-primary rounded-circle" style={{ width: '30px', height: '30px', padding: 0 }} onClick={() => handleGuestChange('children', 'add')}><i className="fa-solid fa-plus"></i></button></div>
                         </div>
                         <div className="d-flex align-items-center rounded-3 px-3 py-2 border border-primary border-opacity-25 flex-grow-1" style={{ backgroundColor: '#F4FAFC' }}>
-                            <div className="me-auto"><span className="d-block text-navy fw-bold">Infants</span><small className="text-success fw-bold" style={{ fontSize: '0.75rem' }}>Free (Under 2)</small></div>
+                            <div className="me-auto"><span className="d-block text-navy fw-bold">{t('infants', 'Infants')}</span><small className="text-success fw-bold" style={{ fontSize: '0.75rem' }}>{t('infants_desc', 'Free (Under 2)')}</small></div>
                             <div className="d-flex align-items-center gap-3"><button type="button" className="btn btn-sm btn-outline-primary rounded-circle" style={{ width: '30px', height: '30px', padding: 0 }} onClick={() => handleGuestChange('infants', 'sub')} disabled={guests.infants === 0}><i className="fa-solid fa-minus"></i></button><span className="text-navy fw-bold fs-5" style={{ minWidth: '20px', textAlign: 'center' }}>{guests.infants}</span><button type="button" className="btn btn-sm btn-outline-primary rounded-circle" style={{ width: '30px', height: '30px', padding: 0 }} onClick={() => handleGuestChange('infants', 'add')}><i className="fa-solid fa-plus"></i></button></div>
                         </div>
                     </div>
@@ -187,73 +175,68 @@ const Booking = () => {
                 </div>
               </div>
 
-              {/* === ACCOMMODATION CLASS === */}
               <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 mb-4 teal-hover-box">
-                <h4 className="fw-bold mb-4 font-montserrat text-navy"><i className="fa-solid fa-bed text-accent me-2"></i> Accommodation Class</h4>
+                <h4 className="fw-bold mb-4 font-montserrat text-navy"><i className="fa-solid fa-bed text-accent me-2"></i> {t('acc_class', 'Accommodation Class')}</h4>
                 <div className="row g-3">
-                    <div className="col-md-4"><div className={`p-3 rounded-3 border text-center ${accClass === 'Standard' ? 'border-primary' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: accClass === 'Standard' ? 'rgba(0, 180, 216, 0.1)' : '#F4FAFC', cursor: 'pointer', transition: 'all 0.3s' }} onClick={() => setAccClass('Standard')}><h6 className="text-navy fw-bold mb-1">Standard</h6><p className="text-grey small mb-0">Included</p></div></div>
-                    <div className="col-md-4"><div className={`p-3 rounded-3 border text-center ${accClass === 'Deluxe' ? 'border-primary' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: accClass === 'Deluxe' ? 'rgba(0, 180, 216, 0.1)' : '#F4FAFC', cursor: 'pointer', transition: 'all 0.3s' }} onClick={() => setAccClass('Deluxe')}><h6 className="text-navy fw-bold mb-1">Deluxe</h6><p className="text-accent fw-bold small mb-0">+{formatPrice(2500)} <span className="text-grey fw-normal">/pax</span></p></div></div>
-                    <div className="col-md-4"><div className={`p-3 rounded-3 border text-center ${accClass === 'Luxury' ? 'border-primary' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: accClass === 'Luxury' ? 'rgba(0, 180, 216, 0.1)' : '#F4FAFC', cursor: 'pointer', transition: 'all 0.3s' }} onClick={() => setAccClass('Luxury')}><h6 className="text-navy fw-bold mb-1">Luxury</h6><p className="text-accent fw-bold small mb-0">+{formatPrice(5000)} <span className="text-grey fw-normal">/pax</span></p></div></div>
+                    <div className="col-md-4"><div className={`p-3 rounded-3 border text-center ${accClass === 'Standard' ? 'border-primary' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: accClass === 'Standard' ? 'rgba(0, 180, 216, 0.1)' : '#F4FAFC', cursor: 'pointer', transition: 'all 0.3s' }} onClick={() => setAccClass('Standard')}><h6 className="text-navy fw-bold mb-1">{t('std_class', 'Standard')}</h6><p className="text-grey small mb-0">{t('std_desc', 'Included')}</p></div></div>
+                    <div className="col-md-4"><div className={`p-3 rounded-3 border text-center ${accClass === 'Deluxe' ? 'border-primary' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: accClass === 'Deluxe' ? 'rgba(0, 180, 216, 0.1)' : '#F4FAFC', cursor: 'pointer', transition: 'all 0.3s' }} onClick={() => setAccClass('Deluxe')}><h6 className="text-navy fw-bold mb-1">{t('deluxe_class', 'Deluxe')}</h6><p className="text-accent fw-bold small mb-0">+{formatPrice(2500)} <span className="text-grey fw-normal">{t('pax', '/pax')}</span></p></div></div>
+                    <div className="col-md-4"><div className={`p-3 rounded-3 border text-center ${accClass === 'Luxury' ? 'border-primary' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: accClass === 'Luxury' ? 'rgba(0, 180, 216, 0.1)' : '#F4FAFC', cursor: 'pointer', transition: 'all 0.3s' }} onClick={() => setAccClass('Luxury')}><h6 className="text-navy fw-bold mb-1">{t('lux_class', 'Luxury')}</h6><p className="text-accent fw-bold small mb-0">+{formatPrice(5000)} <span className="text-grey fw-normal">{t('pax', '/pax')}</span></p></div></div>
                 </div>
               </div>
 
-              {/* === LEAD GUEST DETAILS === */}
               <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 mb-4 teal-hover-box">
-                <h4 className="fw-bold mb-4 font-montserrat text-navy"><i className="fa-solid fa-address-card text-accent me-2"></i> Lead Guest Details</h4>
+                <h4 className="fw-bold mb-4 font-montserrat text-navy"><i className="fa-solid fa-address-card text-accent me-2"></i> {t('lead_guest', 'Lead Guest Details')}</h4>
                 <div className="row g-3">
-                  <div className="col-md-12"><label className="text-grey fw-bold small mb-2">Full Name</label><input type="text" name="name" className="form-control-dark w-100" placeholder="Juan Dela Cruz" value={personalInfo.name} onChange={handleInfoChange} style={{ paddingLeft: '20px' }} required /></div>
-                  <div className="col-md-6"><label className="text-grey fw-bold small mb-2">Email Address</label><input type="email" name="email" className="form-control-dark w-100" placeholder="juan@example.com" value={personalInfo.email} onChange={handleInfoChange} style={{ paddingLeft: '20px' }} required /></div>
-                  <div className="col-md-6"><label className="text-grey fw-bold small mb-2">Phone Number</label><input type="tel" name="phone" className="form-control-dark w-100" placeholder="+63 900 000 0000" value={personalInfo.phone} onChange={handleInfoChange} style={{ paddingLeft: '20px' }} required /></div>
+                  <div className="col-md-12"><label className="text-grey fw-bold small mb-2">{t('full_name', 'Full Name')}</label><input type="text" name="name" className="form-control-dark w-100" placeholder="Juan Dela Cruz" value={personalInfo.name} onChange={handleInfoChange} style={{ paddingLeft: '20px' }} required /></div>
+                  <div className="col-md-6"><label className="text-grey fw-bold small mb-2">{t('email_addr', 'Email Address')}</label><input type="email" name="email" className="form-control-dark w-100" placeholder="juan@example.com" value={personalInfo.email} onChange={handleInfoChange} style={{ paddingLeft: '20px' }} required /></div>
+                  <div className="col-md-6"><label className="text-grey fw-bold small mb-2">{t('phone', 'Phone Number')}</label><input type="tel" name="phone" className="form-control-dark w-100" placeholder="+63 900 000 0000" value={personalInfo.phone} onChange={handleInfoChange} style={{ paddingLeft: '20px' }} required /></div>
                 </div>
               </div>
 
-              {/* === CARBON FOOTPRINT === */}
               <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 mb-4 teal-hover-box" style={{ borderLeft: '4px solid #4CAF50 !important' }}>
-                <h4 className="fw-bold mb-2 font-montserrat text-navy"><i className="fa-solid fa-leaf text-success me-2"></i> Carbon Footprint</h4>
-                <p className="text-grey small mb-3">Air travel and ground transport generate emissions. The estimated footprint for {totalHeads} traveler(s) is <strong className="text-navy">{totalHeads * 150}kg CO₂</strong>. Help us offset this by contributing to local Philippine reforestation projects.</p>
+                <h4 className="fw-bold mb-2 font-montserrat text-navy"><i className="fa-solid fa-leaf text-success me-2"></i> {t('carbon_footprint', 'Carbon Footprint')}</h4>
+                <p className="text-grey small mb-3">{t('carbon_desc', 'Air travel and ground transport generate emissions. The estimated footprint for')} {totalHeads} {t('carbon_desc2', 'traveler(s) is')} <strong className="text-navy">{totalHeads * 150}kg CO₂</strong>. {t('carbon_desc3', 'Help us offset this by contributing to local Philippine reforestation projects.')}</p>
                 <div className={`p-3 rounded-3 border ${addons.carbonOffset ? 'border-success' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: addons.carbonOffset ? 'rgba(76, 175, 80, 0.1)' : '#F4FAFC', cursor: 'pointer', transition: 'all 0.3s' }} onClick={() => toggleAddon('carbonOffset')}>
                     <div className="form-check d-flex justify-content-between align-items-center m-0 p-0">
                         <div>
                             <input className="form-check-input me-3 ms-0 mt-0" type="checkbox" checked={addons.carbonOffset} readOnly style={{ cursor: 'pointer', accentColor: '#4CAF50' }} />
-                            <label className="form-check-label text-navy fw-bold d-inline" style={{ cursor: 'pointer' }}>Offset My Carbon Footprint</label>
-                            <p className="text-grey small m-0 ms-4 ps-2">{formatPrice(500)} per person</p>
+                            <label className="form-check-label text-navy fw-bold d-inline" style={{ cursor: 'pointer' }}>{t('offset_carbon', 'Offset My Carbon Footprint')}</label>
+                            <p className="text-grey small m-0 ms-4 ps-2">{formatPrice(500)} {t('per_person', 'per person')}</p>
                         </div>
                         <span className="text-success fw-bold">+{formatPrice(addonPrices.carbonOffset * totalHeads)}</span>
                     </div>
                 </div>
               </div>
 
-              {/* === OPTIONAL ADD-ONS === */}
               <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 mb-4 teal-hover-box">
-                <h4 className="fw-bold mb-4 font-montserrat text-navy"><i className="fa-solid fa-puzzle-piece text-accent me-2"></i> Optional Add-ons</h4>
-                <div className={`p-3 rounded-3 mb-3 border ${addons.airportTransfer ? 'border-primary' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: addons.airportTransfer ? 'rgba(0, 180, 216, 0.1)' : '#F4FAFC', cursor: 'pointer', transition: 'all 0.3s' }} onClick={() => toggleAddon('airportTransfer')}><div className="form-check d-flex justify-content-between align-items-center m-0 p-0"><div><input className="form-check-input me-3 ms-0 mt-0" type="checkbox" checked={addons.airportTransfer} readOnly style={{ cursor: 'pointer' }} /><label className="form-check-label text-navy fw-bold d-inline" style={{ cursor: 'pointer' }}>Roundtrip Airport Transfer</label><p className="text-grey small m-0 ms-4 ps-2">Hassle-free pick up and drop off.</p></div><span className="text-accent fw-bold">+{formatPrice(1500)}</span></div></div>
-                <div className={`p-3 rounded-3 mb-3 border ${addons.insurance ? 'border-primary' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: addons.insurance ? 'rgba(0, 180, 216, 0.1)' : '#F4FAFC', cursor: 'pointer', transition: 'all 0.3s' }} onClick={() => toggleAddon('insurance')}><div className="form-check d-flex justify-content-between align-items-center m-0 p-0"><div><input className="form-check-input me-3 ms-0 mt-0" type="checkbox" checked={addons.insurance} readOnly style={{ cursor: 'pointer' }} /><label className="form-check-label text-navy fw-bold d-inline" style={{ cursor: 'pointer' }}>Travel Insurance</label><p className="text-grey small m-0 ms-4 ps-2">Full coverage per guest.</p></div><span className="text-accent fw-bold">+{formatPrice(950)} <small className="text-grey fw-normal">/head</small></span></div></div>
-                <div className={`p-3 rounded-3 border ${addons.romanticDinner ? 'border-primary' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: addons.romanticDinner ? 'rgba(0, 180, 216, 0.1)' : '#F4FAFC', cursor: 'pointer', transition: 'all 0.3s' }} onClick={() => toggleAddon('romanticDinner')}><div className="form-check d-flex justify-content-between align-items-center m-0 p-0"><div><input className="form-check-input me-3 ms-0 mt-0" type="checkbox" checked={addons.romanticDinner} readOnly style={{ cursor: 'pointer' }} /><label className="form-check-label text-navy fw-bold d-inline" style={{ cursor: 'pointer' }}>Romantic Dinner Setup</label><p className="text-grey small m-0 ms-4 ps-2">Candlelit dinner by the beach.</p></div><span className="text-accent fw-bold">+{formatPrice(2500)}</span></div></div>
+                <h4 className="fw-bold mb-4 font-montserrat text-navy"><i className="fa-solid fa-puzzle-piece text-accent me-2"></i> {t('optional_addons', 'Optional Add-ons')}</h4>
+                <div className={`p-3 rounded-3 mb-3 border ${addons.airportTransfer ? 'border-primary' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: addons.airportTransfer ? 'rgba(0, 180, 216, 0.1)' : '#F4FAFC', cursor: 'pointer', transition: 'all 0.3s' }} onClick={() => toggleAddon('airportTransfer')}><div className="form-check d-flex justify-content-between align-items-center m-0 p-0"><div><input className="form-check-input me-3 ms-0 mt-0" type="checkbox" checked={addons.airportTransfer} readOnly style={{ cursor: 'pointer' }} /><label className="form-check-label text-navy fw-bold d-inline" style={{ cursor: 'pointer' }}>{t('transfer', 'Roundtrip Airport Transfer')}</label><p className="text-grey small m-0 ms-4 ps-2">{t('transfer_desc', 'Hassle-free pick up and drop off.')}</p></div><span className="text-accent fw-bold">+{formatPrice(1500)}</span></div></div>
+                <div className={`p-3 rounded-3 mb-3 border ${addons.insurance ? 'border-primary' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: addons.insurance ? 'rgba(0, 180, 216, 0.1)' : '#F4FAFC', cursor: 'pointer', transition: 'all 0.3s' }} onClick={() => toggleAddon('insurance')}><div className="form-check d-flex justify-content-between align-items-center m-0 p-0"><div><input className="form-check-input me-3 ms-0 mt-0" type="checkbox" checked={addons.insurance} readOnly style={{ cursor: 'pointer' }} /><label className="form-check-label text-navy fw-bold d-inline" style={{ cursor: 'pointer' }}>{t('insurance', 'Travel Insurance')}</label><p className="text-grey small m-0 ms-4 ps-2">{t('insurance_desc', 'Full coverage per guest.')}</p></div><span className="text-accent fw-bold">+{formatPrice(950)} <small className="text-grey fw-normal">/head</small></span></div></div>
+                <div className={`p-3 rounded-3 border ${addons.romanticDinner ? 'border-primary' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: addons.romanticDinner ? 'rgba(0, 180, 216, 0.1)' : '#F4FAFC', cursor: 'pointer', transition: 'all 0.3s' }} onClick={() => toggleAddon('romanticDinner')}><div className="form-check d-flex justify-content-between align-items-center m-0 p-0"><div><input className="form-check-input me-3 ms-0 mt-0" type="checkbox" checked={addons.romanticDinner} readOnly style={{ cursor: 'pointer' }} /><label className="form-check-label text-navy fw-bold d-inline" style={{ cursor: 'pointer' }}>{t('dinner', 'Romantic Dinner Setup')}</label><p className="text-grey small m-0 ms-4 ps-2">{t('dinner_desc', 'Candlelit dinner by the beach.')}</p></div><span className="text-accent fw-bold">+{formatPrice(2500)}</span></div></div>
               </div>
 
-              {/* === PAYMENT DETAILS === */}
               <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 mb-4 teal-hover-box">
-                <h4 className="fw-bold mb-4 font-montserrat text-navy"><i className="fa-solid fa-people-arrows text-accent me-2"></i> Payment Details</h4>
+                <h4 className="fw-bold mb-4 font-montserrat text-navy"><i className="fa-solid fa-people-arrows text-accent me-2"></i> {t('payment_details', 'Payment Details')}</h4>
                 <div className="row g-3">
                   <div className="col-md-12">
-                    <label className="text-grey fw-bold small mb-2">How are we paying?</label>
+                    <label className="text-grey fw-bold small mb-2">{t('how_paying', 'How are we paying?')}</label>
                     <div className="input-with-icon position-relative">
                         <i className="fa-solid fa-users position-absolute" style={{ left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'var(--primary-color)', zIndex: 1 }}></i>
                         <select className="form-control-dark w-100" value={splitBetween} onChange={(e) => {
                             setSplitBetween(e.target.value);
                             setPayerEmails(Array(parseInt(e.target.value)).fill(''));
                         }} style={{ paddingLeft: '45px' }}>
-                            <option value="1">Just me (Pay in full)</option>
-                            <option value="2">Split 2 ways</option>
-                            <option value="3">Split 3 ways</option>
-                            <option value="4">Split 4 ways</option>
-                            <option value="5">Split 5 ways</option>
+                            <option value="1">{t('split_1', 'Just me (Pay in full)')}</option>
+                            <option value="2">{t('split_ways', 'Split')} 2 {t('split_ways2', 'ways')}</option>
+                            <option value="3">{t('split_ways', 'Split')} 3 {t('split_ways2', 'ways')}</option>
+                            <option value="4">{t('split_ways', 'Split')} 4 {t('split_ways2', 'ways')}</option>
+                            <option value="5">{t('split_ways', 'Split')} 5 {t('split_ways2', 'ways')}</option>
                         </select>
                     </div>
                   </div>
 
                   <div className="col-md-12 mt-3">
-                      <label className="text-grey fw-bold small mb-2">Email Addresses for Invoices:</label>
+                      <label className="text-grey fw-bold small mb-2">{t('invoice_emails', 'Email Addresses for Invoices:')}</label>
                       {Array.from({ length: splitBetween }).map((_, index) => (
                           <div key={index} className="mb-2 input-with-icon position-relative">
                               <i className="fa-regular fa-envelope position-absolute" style={{ left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'var(--primary-color)', zIndex: 1 }}></i>
@@ -261,7 +244,7 @@ const Booking = () => {
                                   type="email" 
                                   className="form-control-dark w-100" 
                                   style={{ paddingLeft: '45px' }}
-                                  placeholder={index === 0 ? "Lead Booker's Email" : `Friend ${index}'s Email`}
+                                  placeholder={index === 0 ? t('lead_email', "Lead Booker's Email") : `${t('friend_email', 'Friend')} ${index}${t('friend_email2', "'s Email")}`}
                                   value={payerEmails[index] || ''}
                                   onChange={(e) => {
                                       const updatedEmails = [...payerEmails];
@@ -276,15 +259,14 @@ const Booking = () => {
 
                   {splitBetween > 1 && (
                       <div className="col-md-12 mt-2">
-                          <p className="text-accent small mb-0"><i className="fa-solid fa-circle-info me-1"></i> Each person will pay <strong className="text-navy">{formatPrice(grandTotal / splitBetween)}</strong>. Invoices will be tied to the emails above.</p>
+                          <p className="text-accent small mb-0"><i className="fa-solid fa-circle-info me-1"></i> {t('each_pays', 'Each person will pay')} <strong className="text-navy">{formatPrice(grandTotal / splitBetween)}</strong>. {t('invoices_tied', 'Invoices will be tied to the emails above.')}</p>
                       </div>
                   )}
                 </div>
               </div>
 
-              {/* === PAYMENT METHOD === */}
               <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 teal-hover-box">
-                <h4 className="fw-bold mb-4 font-montserrat text-navy"><i className="fa-solid fa-wallet text-accent me-2"></i> Payment Method</h4>
+                <h4 className="fw-bold mb-4 font-montserrat text-navy"><i className="fa-solid fa-wallet text-accent me-2"></i> {t('payment_method', 'Payment Method')}</h4>
                 <div className="d-flex flex-wrap gap-3">
                   {['Card', 'Paypal', 'GCash', 'Maya', 'Stripe'].map((method) => (
                     <div key={method} onClick={() => setPaymentMethod(method)} className={`border rounded-pill px-4 py-2 ${paymentMethod === method ? 'border-primary text-white' : 'border-primary border-opacity-25 text-grey'}`} style={{ backgroundColor: paymentMethod === method ? 'var(--primary-color)' : '#F4FAFC', cursor: 'pointer', transition: 'all 0.3s', fontWeight: paymentMethod === method ? 'bold' : 'normal' }}>
@@ -303,18 +285,16 @@ const Booking = () => {
                 {selectedPackage ? (
                     <>
                         <h6 className="text-primary-dark fw-bold mb-1">{selectedPackage}</h6>
-                        <p className="text-grey small mb-4">{guests.adults} Adult{guests.adults > 1 ? 's' : ''}{guests.children > 0 && `, ${guests.children} Child${guests.children > 1 ? 'ren' : ''}`}{guests.infants > 0 && `, ${guests.infants} Infant${guests.infants > 1 ? 's' : ''}`}{date && ` • ${date}`}</p>
+                        <p className="text-grey small mb-4">{guests.adults} {t('adults', 'Adults')}, {guests.children} {t('children', 'Children')}, {guests.infants} {t('infants', 'Infants')} {date && ` • ${date}`}</p>
                         
-                        {/* SUBTOTAL ITEMS */}
                         <div className="d-flex justify-content-between mb-2"><span className="text-grey small">Base Price (x{guests.adults})</span><span className="text-navy fw-bold">{formatPrice(adultTotal)}</span></div>
                         {guests.children > 0 && (<div className="d-flex justify-content-between mb-2"><span className="text-accent small">Children (50% Off)</span><span className="text-navy fw-bold">{formatPrice(childTotal)}</span></div>)}
-                        {accClass !== 'Standard' && (<div className="d-flex justify-content-between mb-2"><span className="text-accent small">{accClass} Class (x{chargeablePax})</span><span className="text-navy fw-bold">{formatPrice(accClassTotal)}</span></div>)}
-                        {addons.airportTransfer && (<div className="d-flex justify-content-between mb-2"><span className="text-grey small">Airport Transfer</span><span className="text-navy fw-bold">{formatPrice(transferTotal)}</span></div>)}
-                        {addons.insurance && (<div className="d-flex justify-content-between mb-2"><span className="text-grey small">Insurance (x{totalHeads})</span><span className="text-navy fw-bold">{formatPrice(insuranceTotal)}</span></div>)}
-                        {addons.romanticDinner && (<div className="d-flex justify-content-between mb-2"><span className="text-grey small">Romantic Dinner</span><span className="text-navy fw-bold">{formatPrice(dinnerTotal)}</span></div>)}
+                        {accClass !== 'Standard' && (<div className="d-flex justify-content-between mb-2"><span className="text-accent small">{t('acc_class', 'Class')} (x{chargeablePax})</span><span className="text-navy fw-bold">{formatPrice(accClassTotal)}</span></div>)}
+                        {addons.airportTransfer && (<div className="d-flex justify-content-between mb-2"><span className="text-grey small">{t('transfer', 'Airport Transfer')}</span><span className="text-navy fw-bold">{formatPrice(transferTotal)}</span></div>)}
+                        {addons.insurance && (<div className="d-flex justify-content-between mb-2"><span className="text-grey small">{t('insurance', 'Insurance')} (x{totalHeads})</span><span className="text-navy fw-bold">{formatPrice(insuranceTotal)}</span></div>)}
+                        {addons.romanticDinner && (<div className="d-flex justify-content-between mb-2"><span className="text-grey small">{t('dinner', 'Romantic Dinner')}</span><span className="text-navy fw-bold">{formatPrice(dinnerTotal)}</span></div>)}
                         {addons.carbonOffset && (<div className="d-flex justify-content-between mb-2"><span className="text-success small">Carbon Offset (x{totalHeads})</span><span className="text-navy fw-bold">{formatPrice(carbonTotal)}</span></div>)}
                         
-                        {/* ⚡ TAXES SECTION (12% VAT ONLY) ⚡ */}
                         <div className="border-top border-primary border-opacity-10 mt-3 pt-3">
                             <div className="d-flex justify-content-between mb-2">
                                 <span className="text-grey small">VAT (12%)</span>
@@ -323,29 +303,29 @@ const Booking = () => {
                         </div>
                     </>
                 ) : (
-                    <div className="text-center text-grey py-4 border border-primary border-opacity-25 border-dashed rounded-3 mb-4"><small>Select a package to see summary</small></div>
+                    <div className="text-center text-grey py-4 border border-primary border-opacity-25 border-dashed rounded-3 mb-4"><small>{t('select_summary', 'Select a package to see summary')}</small></div>
                 )}
 
                 <div className="border-top border-primary border-opacity-10 mt-3 pt-3 d-flex justify-content-between align-items-center mb-4"><span className="text-navy fw-bold fs-5">{t('total', 'Total')}</span><span className="fw-bold fs-3 text-accent">{formatPrice(grandTotal)}</span></div>
                 
                 {splitBetween > 1 && (
                     <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-primary border-opacity-10">
-                        <span className="text-grey small">Split {splitBetween} ways</span>
-                        <span className="text-accent fw-bold">{formatPrice(grandTotal / splitBetween)} <small className="text-grey fw-normal">/person</small></span>
+                        <span className="text-grey small">{t('split', 'Split')} {splitBetween} {t('ways', 'ways')}</span>
+                        <span className="text-accent fw-bold">{formatPrice(grandTotal / splitBetween)} <small className="text-grey fw-normal">{t('per_person2', '/person')}</small></span>
                     </div>
                 )}
 
-                <div className="text-grey small mb-3 text-center">Payment Method: <strong className="text-navy">{paymentMethod}</strong></div>
+                <div className="text-grey small mb-3 text-center">{t('payment_method', 'Payment Method')}: <strong className="text-navy">{paymentMethod}</strong></div>
 
                 <button type="submit" className="btn btn-proceed w-100 py-3 text-uppercase font-montserrat fw-bold shadow" disabled={isSubmitting}>
                     {isSubmitting ? (
-                        <><i className="fa-solid fa-spinner fa-spin me-2"></i> Processing...</>
+                        <><i className="fa-solid fa-spinner fa-spin me-2"></i> {t('processing', 'Processing...')}</>
                     ) : (
                         <>{t('confirm', 'Confirm Booking')} <i className="fa-solid fa-arrow-right ms-2"></i></>
                     )}
                 </button>
 
-                <p className="text-center text-grey small mt-3 mb-0"><i className="fa-solid fa-lock text-primary-dark me-1"></i> Secure Encrypted Payment</p>
+                <p className="text-center text-grey small mt-3 mb-0"><i className="fa-solid fa-lock text-primary-dark me-1"></i> {t('secure_payment', 'Secure Encrypted Payment')}</p>
               </div>
             </div>
 
