@@ -2,20 +2,12 @@ const express = require('express');
 const router = express.Router();
 const Booking = require('../models/Booking');
 const User = require('../models/User'); 
-const nodemailer = require('nodemailer'); 
+const { Resend } = require('resend'); // ⚡ NEW: Imported Resend
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-// ⚡ FIX 1: Switched to Port 465 and Secure: true to bypass the Render Timeout ⚡
-const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true, 
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    }
-});
+// ⚡ NEW: Initialize Resend with your API Key
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // ==========================================
 // POST: Create a new booking & Send Emails
@@ -31,13 +23,11 @@ router.post('/create', async (req, res) => {
         const safeInvoice = invoiceDetails || {};
         let paymentsArray = [];
 
-        // ⚡ FIX 2: Break down the invoice into individual line items for Stripe ⚡
         const buildStripeLineItems = () => {
             const items = [];
             const split = splitBetween || 1;
             const splitText = split > 1 ? ` (Split ${split} ways)` : '';
 
-            // Map each item securely. Stripe requires unit_amount in cents (x100)
             if (safeInvoice.basePriceTotal > 0) items.push({ price_data: { currency: 'php', product_data: { name: `Base Price${splitText}` }, unit_amount: Math.round((safeInvoice.basePriceTotal / split) * 100) }, quantity: 1 });
             if (safeInvoice.accClassTotal > 0) items.push({ price_data: { currency: 'php', product_data: { name: `${safeInvoice.accClassText || 'Room Upgrade'}${splitText}` }, unit_amount: Math.round((safeInvoice.accClassTotal / split) * 100) }, quantity: 1 });
             if (safeInvoice.transferTotal > 0) items.push({ price_data: { currency: 'php', product_data: { name: `Airport Transfer${splitText}` }, unit_amount: Math.round((safeInvoice.transferTotal / split) * 100) }, quantity: 1 });
@@ -46,7 +36,6 @@ router.post('/create', async (req, res) => {
             if (safeInvoice.carbonTotal > 0) items.push({ price_data: { currency: 'php', product_data: { name: `Carbon Offset${splitText}` }, unit_amount: Math.round((safeInvoice.carbonTotal / split) * 100) }, quantity: 1 });
             if (safeInvoice.vatTotal > 0) items.push({ price_data: { currency: 'php', product_data: { name: `VAT (12%)${splitText}` }, unit_amount: Math.round((safeInvoice.vatTotal / split) * 100) }, quantity: 1 });
 
-            // Failsafe just in case nothing mapped
             if (items.length === 0) {
                 items.push({ price_data: { currency: 'php', product_data: { name: `${packageName}${splitText}`, description: `Travel Date: ${travelDate}` }, unit_amount: Math.round(amountDue * 100) }, quantity: 1 });
             }
@@ -62,10 +51,10 @@ router.post('/create', async (req, res) => {
             const session = await stripe.checkout.sessions.create({
                 payment_method_types: ['card'],
                 customer_email: payerEmail.includes('@pending.com') ? undefined : payerEmail,
-                line_items: stripeLineItems, // ⚡ Inject the broken-down items here
+                line_items: stripeLineItems, 
                 mode: 'payment',
                 invoice_creation: {
-                    enabled: true, // ⚡ Forces Stripe to generate a beautiful, itemized PDF receipt
+                    enabled: true, 
                 },
                 success_url: 'https://philgood-travels.vercel.app/profile?payment=success', 
                 cancel_url: 'https://philgood-travels.vercel.app/profile?payment=cancelled',
@@ -88,7 +77,10 @@ router.post('/create', async (req, res) => {
 
         await newBooking.save();
 
-        // ⚡ SEND AUTOMATED EMAILS TO PAYEES ⚡
+        // Instantly respond to frontend so it doesn't freeze
+        res.status(201).json({ message: "✅ Booking created! (Emails sending via Resend)", booking: newBooking });
+
+        // ⚡ SEND AUTOMATED EMAILS VIA RESEND ⚡
         try {
             const formatPHP = (num) => {
                 const validNum = Number(num) || 0;
@@ -102,9 +94,11 @@ router.post('/create', async (req, res) => {
 
             for (const payment of paymentsArray) {
                 if (!payment.payerEmail.includes('@pending.com')) {
-                    await transporter.sendMail({
-                        from: `"PhilGood Travels" <${process.env.EMAIL_USER}>`,
-                        to: payment.payerEmail,
+                    
+                    // ⚡ NEW: Using Resend to fire the email via HTTP
+                    await resend.emails.send({
+                        from: 'PhilGood Travels <onboarding@resend.dev>', // Must use this for testing
+                        to: payment.payerEmail, // Note: While testing, this MUST match your Resend account email
                         subject: `Action Required: Join ${leadName} on a trip to ${packageName}!`,
                         html: `
                             <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; padding: 30px; border: 1px solid #E0F7FA; border-radius: 16px; background-color: #FFFFFF;">
@@ -177,12 +171,10 @@ router.post('/create', async (req, res) => {
                     });
                 }
             }
-            console.log("✅ All payee emails processed.");
+            console.log("✅ All payee emails processed via Resend.");
         } catch (emailError) {
-            console.error("⚠️ Booking saved, but email sending encountered an error:", emailError);
+            console.error("⚠️ Booking saved, but Resend encountered an error:", emailError);
         }
-        
-        res.status(201).json({ message: "✅ Booking created and emails sent!", booking: newBooking });
         
     } catch (error) {
         console.error("Booking Error:", error);
