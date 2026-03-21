@@ -33,11 +33,6 @@ const Profile = () => {
     }
   }, [navigate, location]);
 
-  // ==========================================
-  // ⚡ ACTION FUNCTIONS & RULES
-  // ==========================================
-  
-  // Rule: Must be at least 2 days before the trip
   const canModify = (travelDate) => {
       const tripDate = new Date(travelDate);
       const today = new Date();
@@ -46,7 +41,6 @@ const Profile = () => {
       return diffDays >= 2;
   };
 
-  // Rule: Can only rebook if cancelled within the last 1 month
   const isWithinRebookWindow = (cancelledAt) => {
       if (!cancelledAt) return true;
       const oneMonthAgo = new Date();
@@ -73,7 +67,6 @@ const Profile = () => {
       if (window.confirm("Are you sure you want to cancel this trip?")) {
           try {
               const response = await axios.put(`https://philgood-travels.onrender.com/api/bookings/cancel/${bookingId}`);
-              // Instantly update UI with new status and cancelledAt date
               setBookings(prev => prev.map(b => b._id === bookingId ? response.data.booking : b));
               alert("Trip cancelled successfully.");
           } catch (error) {
@@ -91,7 +84,6 @@ const Profile = () => {
           if (window.confirm(`Are you sure you want to move your trip to ${newDate}?`)) {
               try {
                   const response = await axios.put(`https://philgood-travels.onrender.com/api/bookings/postpone/${bookingId}`, { newDate });
-                  // Instantly update UI with new date and incremented counter
                   setBookings(prev => prev.map(b => b._id === bookingId ? response.data.booking : b));
                   alert("Trip postponed successfully.");
               } catch (error) {
@@ -107,7 +99,6 @@ const Profile = () => {
           if (window.confirm(`Are you sure you want to rebook this trip to ${newDate}?`)) {
               try {
                   const response = await axios.put(`https://philgood-travels.onrender.com/api/bookings/rebook/${bookingId}`, { newDate });
-                  // Instantly update the screen
                   setBookings(prev => prev.map(b => b._id === bookingId ? response.data.booking : b));
                   alert("Trip rebooked successfully!");
               } catch (error) {
@@ -118,11 +109,24 @@ const Profile = () => {
   };
 
   // ==========================================
-  // ⚡ INVOICE GENERATOR
+  // ⚡ UPDATED INVOICE GENERATOR
   // ==========================================
   const handleDownloadInvoice = (booking) => {
     let actualPaid = booking.payments?.filter(p => p.status === 'Paid').reduce((acc, curr) => acc + curr.amountDue, 0) || 0;
     const actualDue = booking.totalPrice - actualPaid;
+    
+    // Safely pull invoiceDetails (or empty object if old booking)
+    const inv = booking.invoiceDetails || {};
+
+    // Dynamically generate the rows based on what they bought
+    let itemizedRows = `<tr><td><strong>Base Price</strong></td><td></td><td style="text-align: right;">${formatPrice(inv.basePriceTotal || booking.totalPrice)}</td></tr>`;
+    
+    if (inv.accClassTotal) itemizedRows += `<tr><td>${inv.accClassText || 'Room Upgrade'}</td><td></td><td style="text-align: right;">${formatPrice(inv.accClassTotal)}</td></tr>`;
+    if (inv.transferTotal) itemizedRows += `<tr><td>Airport Transfer</td><td></td><td style="text-align: right;">${formatPrice(inv.transferTotal)}</td></tr>`;
+    if (inv.insuranceTotal) itemizedRows += `<tr><td>Travel Insurance</td><td></td><td style="text-align: right;">${formatPrice(inv.insuranceTotal)}</td></tr>`;
+    if (inv.dinnerTotal) itemizedRows += `<tr><td>Romantic Dinner</td><td></td><td style="text-align: right;">${formatPrice(inv.dinnerTotal)}</td></tr>`;
+    if (inv.carbonTotal) itemizedRows += `<tr><td>Carbon Offset</td><td></td><td style="text-align: right;">${formatPrice(inv.carbonTotal)}</td></tr>`;
+    if (inv.vatTotal) itemizedRows += `<tr><td>VAT (12%)</td><td></td><td style="text-align: right;">${formatPrice(inv.vatTotal)}</td></tr>`;
 
     const invoiceWindow = window.open('', '_blank');
     const htmlContent = `
@@ -156,16 +160,18 @@ const Profile = () => {
         </div>
         <div class="meta">
           <div class="box"><h3>Client Details</h3><p><strong>${user.name}</strong></p><p>${user.email}</p></div>
-          <div class="box"><h3>Order Info</h3><p><strong>ORDER NO:</strong> #${booking._id.substring(0, 8).toUpperCase()}</p><p><strong>DATE:</strong> ${new Date(booking.createdAt || Date.now()).toLocaleDateString()}</p></div>
+          <div class="box"><h3>Order Info</h3><p><strong>PACKAGE:</strong> ${booking.packageName}</p><p><strong>ORDER NO:</strong> #${booking._id.substring(0, 8).toUpperCase()}</p><p><strong>DATE:</strong> ${new Date(booking.createdAt || Date.now()).toLocaleDateString()}</p></div>
         </div>
         <table>
-          <thead><tr><th>Item</th><th>Payment</th><th style="text-align: right;">Total</th></tr></thead>
-          <tbody><tr><td><strong>${booking.packageName}</strong></td><td>${booking.paymentMethod}</td><td style="text-align: right;">${formatPrice(booking.totalPrice)}</td></tr></tbody>
+          <thead><tr><th>Item</th><th>Payment Method</th><th style="text-align: right;">Cost</th></tr></thead>
+          <tbody>
+            ${itemizedRows}
+          </tbody>
         </table>
         <div class="totals">
           <table class="totals-table">
-            <tr><td>SUB TOTAL</td><td style="text-align: right;">${formatPrice(booking.totalPrice)}</td></tr>
-            <tr><td>PAID</td><td style="text-align: right;">${formatPrice(actualPaid)}</td></tr>
+            <tr><td>GRAND TOTAL</td><td style="text-align: right;">${formatPrice(booking.totalPrice)}</td></tr>
+            <tr><td>PAID (${booking.paymentMethod})</td><td style="text-align: right;">${formatPrice(actualPaid)}</td></tr>
             <tr><td>AMOUNT DUE</td><td style="text-align: right;">${formatPrice(actualDue)}</td></tr>
           </table>
         </div>
@@ -299,28 +305,24 @@ const Profile = () => {
                         {/* ⚡ ADVANCED ACTION BUTTONS ⚡ */}
                         <div className="d-flex justify-content-end gap-2 mt-4 pt-3 border-top border-primary border-opacity-10">
                             
-                            {/* REBOOK BUTTON: Only shows if Cancelled AND within 1 month */}
                             {booking.bookingStatus === 'Cancelled' && isWithinRebookWindow(booking.cancelledAt) && (
                                 <button className="btn btn-sm btn-outline-success" onClick={() => handleRebook(booking._id)}>
                                     <i className="fa-solid fa-rotate-right me-1"></i> Rebook
                                 </button>
                             )}
 
-                            {/* POSTPONE BUTTON: Disappears if Cancelled, or if they already postponed 2 times */}
                             {canModify(booking.travelDate) && booking.bookingStatus !== 'Cancelled' && postponeCount < 2 && (
                                 <button className="btn btn-sm btn-outline-warning" onClick={() => handlePostpone(booking._id, booking.travelDate)}>
                                     <i className="fa-regular fa-calendar-days me-1"></i> Postpone
                                 </button>
                             )}
 
-                            {/* CANCEL BUTTON: Disappears once it is already Cancelled */}
                             {canModify(booking.travelDate) && booking.bookingStatus !== 'Cancelled' && (
                                 <button className="btn btn-sm btn-outline-danger" onClick={() => handleCancel(booking._id, booking.travelDate)}>
                                     <i className="fa-solid fa-ban me-1"></i> Cancel Trip
                                 </button>
                             )}
                             
-                            {/* DELETE BUTTON: Always visible for cleanup */}
                             <button className="btn btn-sm btn-danger" onClick={() => handleDelete(booking._id)}>
                                 <i className="fa-solid fa-trash me-1"></i> Delete
                             </button>
