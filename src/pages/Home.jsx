@@ -91,7 +91,7 @@ const Home = () => {
         
         <style>
             {`
-                /* ⚡ NEW MOBILE STYLES FOR SCENE SECTIONS ⚡ */
+                /* ⚡ UPDATED MOBILE STYLES FOR SCENE SECTIONS ⚡ */
                 @media (max-width: 991px) {
                     .scene-section {
                         /* Remove background image on mobile */
@@ -101,16 +101,17 @@ const Home = () => {
                         min-height: auto;
                     }
                     
-                    /* The container for the image on mobile */
+                    /* The container for the transparent PNG images on mobile */
                     .mobile-scene-img {
                         display: block !important;
                         width: 100%;
                         height: 300px;
-                        background-size: cover;
+                        background-size: contain; /* Changed from cover so the full image fits */
                         background-position: center;
-                        border-radius: 12px;
+                        background-repeat: no-repeat; /* Prevents the image from repeating */
+                        background-color: transparent; /* Makes the box completely clear */
                         margin-top: 2rem;
-                        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+                        box-shadow: none; /* Removed the harsh shadow */
                     }
 
                     .scene-content {
