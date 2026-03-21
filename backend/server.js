@@ -90,6 +90,7 @@ app.use(express.json());
 // 👉 Normal API Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/bookings', require('./routes/bookings'));
+app.use('/api/contact', require('./routes/contact'));
 
 
 // ==========================================
