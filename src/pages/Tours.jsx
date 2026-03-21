@@ -98,22 +98,51 @@ const Tours = () => {
                             <button className="btn btn-outline-custom w-100" onClick={handleSaveItinerary} disabled={itinerary.length === 0}><i className="fa-solid fa-floppy-disk me-2"></i> {t('save_itinerary', 'Save Itinerary')}</button>
                         </div>
                         <div className="col-md-6 d-none d-md-block">
-                            <div className="position-relative h-100 min-vh-100 overflow-hidden shadow-sm border border-primary border-opacity-10" style={{ minHeight: '400px', backgroundColor: '#F4FAFC', borderRadius: '16px', backgroundImage: "url('https://upload.wikimedia.org/wikipedia/commons/8/87/Relief_Map_of_the_Philippines.png')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
-                                <div className="position-absolute top-0 start-0 m-3 z-3"><span className="badge bg-primary text-white px-3 py-2 shadow"><i className="fa-solid fa-map me-1"></i> {t('live_preview', 'Live Preview')}</span></div>
-                                <div className="position-absolute w-100 h-100 top-0 start-0 d-flex flex-column align-items-center justify-content-center gap-2 p-4" style={{ backgroundColor: 'rgba(255,255,255,0.6)', backdropFilter: 'blur(3px)' }}>
-                                    {itinerary.length === 0 ? (
-                                        <span className="text-navy fw-bold bg-white px-4 py-2 rounded-pill shadow-sm border border-primary border-opacity-10">{t('map_blank', 'Map is blank')}</span>
-                                    ) : (
-                                        itinerary.map((item, index) => (
-                                            <div key={index} className="badge bg-white text-navy shadow px-3 py-2 border border-primary border-opacity-25 d-flex align-items-center gap-2" style={{ animation: 'fadeIn 0.3s ease-in' }}><span className="badge rounded-circle text-white shadow-sm" style={{ backgroundColor: 'var(--primary-color)' }}>{index + 1}</span> <span className="fw-bold font-montserrat text-navy">{item}</span></div>
-                                        ))
-                                    )}
-                                </div>
-                            </div>
-                        </div>
+    <div 
+        className="position-relative h-100 overflow-hidden shadow-sm border border-primary border-opacity-10" 
+        style={{ 
+            minHeight: '500px', 
+            backgroundColor: '#F4FAFC', 
+            borderRadius: '16px', 
+            // ⚡ NEW: Reliable map URL and proper containment sizing
+            backgroundImage: "url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Philippines_location_map.svg/800px-Philippines_location_map.svg.png')", 
+            backgroundSize: 'contain', 
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center' 
+        }}
+    >
+        <div className="position-absolute top-0 start-0 m-3 z-3">
+            <span className="badge bg-primary text-white px-3 py-2 shadow">
+                <i className="fa-solid fa-map me-1"></i> {t('live_preview', 'Live Preview')}
+            </span>
+        </div>
+        
+        {/* ⚡ NEW: Reduced the blur and opacity so the map is clearly visible */}
+        <div 
+            className="position-absolute w-100 h-100 top-0 start-0 d-flex flex-column align-items-center justify-content-center gap-2 p-4" 
+            style={{ backgroundColor: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(1px)' }}
+        >
+            {itinerary.length === 0 ? (
+                <span className="text-navy fw-bold bg-white px-4 py-2 rounded-pill shadow-sm border border-primary border-opacity-10">
+                    {t('map_blank', 'Map is blank')}
+                </span>
+            ) : (
+                itinerary.map((item, index) => (
+                    <div 
+                        key={index} 
+                        className="badge bg-white text-navy shadow px-3 py-2 border border-primary border-opacity-25 d-flex align-items-center gap-2" 
+                        style={{ animation: 'fadeIn 0.3s ease-in' }}
+                    >
+                        <span className="badge rounded-circle text-white shadow-sm" style={{ backgroundColor: 'var(--primary-color)' }}>
+                            {index + 1}
+                        </span> 
+                        <span className="fw-bold font-montserrat text-navy">{item}</span>
                     </div>
-                </div>
-            </div>
+                ))
+            )}
+        </div>
+    </div>
+</div>
         </section>
 
         {showModal && selectedTour && (
