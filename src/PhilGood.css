@@ -354,27 +354,24 @@ h3, h4, h5, h6, .navbar-brand, .btn, .stat-label, .card-title, .placeholder-scen
 }
 
 @media (min-width: 992px) {
-    /* ⚡ The Dive and Bask Sun sections use the exact same logic ⚡ */
+    /* ⚡ The Dive and Bask Sun sections */
     .dive-bg, .bask-sun-bg {
-        background-position: right center !important;
-        background-size: 45% auto !important; 
+        background-position: right 2% center !important; /* Adds a tiny cushion so it doesn't touch the right edge */
+        background-size: 45vw auto !important; /* Locks width to screen size */
     }
+    
+    /* ⚡ Trail Makers section */
     .trail-makers-bg {
-        background-position: right 0px center !important;
-        background-size: 55% auto !important; 
+        background-position: right 2% center !important;
+        background-size: 50vw auto !important; /* Slightly larger as requested previously */
     }
-}
 
-@media (max-width: 991px) {
-    .dive-bg, .bask-sun-bg {
-        background-position: bottom center !important;
-        background-size: 80% auto !important; 
-        padding-bottom: 350px !important; 
-    }
-    .trail-makers-bg {
-        background-position: bottom right !important;
-        background-size: 85% auto !important; 
-        padding-bottom: 350px !important;
+    /* ⚡ MATHEMATICAL FIX FOR CLIPPING */
+    .scene-section {
+        /* Force the container to always be proportionally taller than the image */
+        min-height: 40vw !important; 
+        display: flex;
+        align-items: center; /* Keeps the text perfectly vertically centered */
     }
 }
 
