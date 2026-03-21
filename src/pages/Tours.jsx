@@ -4,10 +4,8 @@ import { tourPackages, regions } from '../data/placesData';
 import { usePreferences } from '../context/PreferencesContext';
 import heroImg from '../assets/img/Tours__Packages.png';
 
-// ⚡ NEW: Leaflet Map Imports ⚡
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
+// ⚡ NEW: Official Google Maps Imports ⚡
+import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 
 // ⚡ EXPANDED: GPS Coordinates for every region and tour package
 const regionCoords = {
@@ -49,16 +47,6 @@ const regionCoords = {
   'Banaue Heritage Tour': [16.9140, 121.0564]
 };
 
-// ⚡ NEW: Custom map marker function to generate blue numbered circles
-const createCustomIcon = (number) => {
-  return L.divIcon({
-      className: 'custom-map-marker',
-      html: `<div style="background-color: var(--primary-color, #00B4D8); color: white; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold; border: 2px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-family: Montserrat, sans-serif;">${number}</div>`,
-      iconSize: [30, 30],
-      iconAnchor: [15, 15]
-  });
-};
-
 const Tours = () => {
   const location = useLocation();
   const { t, formatPrice } = usePreferences();
@@ -69,6 +57,12 @@ const Tours = () => {
   const [pax, setPax] = useState(1);
   const [itinerary, setItinerary] = useState([]);
   const [selectedDest, setSelectedDest] = useState('');
+
+  // ⚡ NEW: Connect to Google Maps using your .env API Key ⚡
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY
+  });
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -89,7 +83,7 @@ const Tours = () => {
   const removeItem = (index) => { setItinerary(itinerary.filter((_, i) => i !== index)); };
   const handleSaveItinerary = () => { alert(`Your custom route has been saved!\n\nStops:\n${itinerary.map((item, i) => `${i + 1}. ${item}`).join('\n')}`); };
 
-  // ⚡ COMBINED OPTIONS: Flatten regions and tour packages so users can add EVERYTHING to their map
+  // COMBINED OPTIONS: Flatten regions and tour packages so users can add EVERYTHING to their map
   const itineraryOptions = Array.from(new Set([
       ...regions.map(r => r.name),
       ...tourPackages.map(t => t.name)
@@ -119,12 +113,22 @@ const Tours = () => {
                         filteredTours.map((pkg) => (
                             <div key={pkg.id} className="col-md-6 col-lg-4 scroll-reveal visible">
                                 <div className="card h-100 border border-primary border-opacity-10 shadow-sm teal-hover-box">
-                                    <div className="card-img-wrapper"><div className="card-badges-container"><span className="badge-item"><i className="fa-regular fa-clock text-accent"></i> {pkg.duration}</span><span className="badge-item"><i className="fa-solid fa-tag text-accent"></i> {pkg.type || 'Guided'}</span></div><img src={pkg.img} className="card-img-top" alt={pkg.name} /></div>
+                                    <div className="card-img-wrapper">
+                                        <div className="card-badges-container">
+                                            <span className="badge-item"><i className="fa-regular fa-clock text-accent"></i> {pkg.duration}</span>
+                                            <span className="badge-item"><i className="fa-solid fa-tag text-accent"></i> {pkg.type || 'Guided'}</span>
+                                        </div>
+                                        <img src={pkg.img} className="card-img-top" alt={pkg.name} />
+                                    </div>
                                     <div className="card-body">
                                         <h5 className="card-title text-navy">{pkg.name}</h5>
                                         <p className="card-text text-grey mb-3 small">{t('explore_sights', 'Explore the breathtaking sights, immersive culture, and hidden gems of this destination.')}</p>
                                         <div className="includes-label">{t('includes', 'INCLUDES:')}</div>
-                                        <ul className="includes-list"><li><i className="fa-solid fa-check text-accent"></i> {t('hotel_acc', 'Hotel Accommodation')}</li><li><i className="fa-solid fa-check text-accent"></i> {t('guided_tours', 'Guided Tours')}</li><li><i className="fa-solid fa-check text-accent"></i> {t('selected_meals', 'Selected Meals')}</li></ul>
+                                        <ul className="includes-list">
+                                            <li><i className="fa-solid fa-check text-accent"></i> {t('hotel_acc', 'Hotel Accommodation')}</li>
+                                            <li><i className="fa-solid fa-check text-accent"></i> {t('guided_tours', 'Guided Tours')}</li>
+                                            <li><i className="fa-solid fa-check text-accent"></i> {t('selected_meals', 'Selected Meals')}</li>
+                                        </ul>
                                         <div className="price-section border-top border-primary border-opacity-10 pt-3">
                                             <div>
                                                 <span className="price-large text-accent">{formatPrice(pkg.price)}</span>
@@ -162,55 +166,80 @@ const Tours = () => {
                             
                             <div className="itinerary-list mb-4">
                                 {itinerary.length === 0 ? (
-                                    <div className="text-center p-4 rounded-3 border border-2 border-primary border-opacity-25 text-grey" style={{ borderStyle: 'dashed !important', backgroundColor: '#F4FAFC' }}><i className="fa-solid fa-route fs-3 mb-2 opacity-50 text-primary"></i><p className="mb-0 fw-bold">{t('itinerary_empty', 'Your itinerary is empty. Add your first stop above!')}</p></div>
+                                    <div className="text-center p-4 rounded-3 border border-2 border-primary border-opacity-25 text-grey" style={{ borderStyle: 'dashed !important', backgroundColor: '#F4FAFC' }}>
+                                        <i className="fa-solid fa-route fs-3 mb-2 opacity-50 text-primary"></i>
+                                        <p className="mb-0 fw-bold">{t('itinerary_empty', 'Your itinerary is empty. Add your first stop above!')}</p>
+                                    </div>
                                 ) : (
                                     <ul className="list-group shadow-sm">
                                         {itinerary.map((item, index) => (
-                                            <li key={index} className="list-group-item d-flex justify-content-between align-items-center p-3 border-primary border-opacity-25" style={{ backgroundColor: '#F4FAFC' }}><div className="d-flex align-items-center gap-3"><span className="badge rounded-pill text-navy fw-bold shadow-sm" style={{ backgroundColor: 'var(--primary-color)', color: 'white', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{index + 1}</span><span className="fw-bold text-navy font-montserrat">{item}</span></div><div className="btn-group btn-group-sm"><button className="btn btn-outline-primary" onClick={() => moveItem(index, -1)} disabled={index === 0} title={t('move_up', 'Move Up')}><i className="fa-solid fa-arrow-up"></i></button><button className="btn btn-outline-primary" onClick={() => moveItem(index, 1)} disabled={index === itinerary.length - 1} title={t('move_down', 'Move Down')}><i className="fa-solid fa-arrow-down"></i></button><button className="btn btn-outline-danger" onClick={() => removeItem(index)} title={t('remove', 'Remove')}><i className="fa-solid fa-trash"></i></button></div></li>
+                                            <li key={index} className="list-group-item d-flex justify-content-between align-items-center p-3 border-primary border-opacity-25" style={{ backgroundColor: '#F4FAFC' }}>
+                                                <div className="d-flex align-items-center gap-3">
+                                                    <span className="badge rounded-pill text-navy fw-bold shadow-sm" style={{ backgroundColor: 'var(--primary-color)', color: 'white', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                        {index + 1}
+                                                    </span>
+                                                    <span className="fw-bold text-navy font-montserrat">{item}</span>
+                                                </div>
+                                                <div className="btn-group btn-group-sm">
+                                                    <button className="btn btn-outline-primary" onClick={() => moveItem(index, -1)} disabled={index === 0} title={t('move_up', 'Move Up')}><i className="fa-solid fa-arrow-up"></i></button>
+                                                    <button className="btn btn-outline-primary" onClick={() => moveItem(index, 1)} disabled={index === itinerary.length - 1} title={t('move_down', 'Move Down')}><i className="fa-solid fa-arrow-down"></i></button>
+                                                    <button className="btn btn-outline-danger" onClick={() => removeItem(index)} title={t('remove', 'Remove')}><i className="fa-solid fa-trash"></i></button>
+                                                </div>
+                                            </li>
                                         ))}
                                     </ul>
                                 )}
                             </div>
-                            <button className="btn btn-outline-custom w-100" onClick={handleSaveItinerary} disabled={itinerary.length === 0}><i className="fa-solid fa-floppy-disk me-2"></i> {t('save_itinerary', 'Save Itinerary')}</button>
+                            <button className="btn btn-outline-custom w-100" onClick={handleSaveItinerary} disabled={itinerary.length === 0}>
+                                <i className="fa-solid fa-floppy-disk me-2"></i> {t('save_itinerary', 'Save Itinerary')}
+                            </button>
                         </div>
                         
-                        {/* RIGHT COLUMN: Interactive Leaflet Map */}
+                        {/* RIGHT COLUMN: Interactive Google Map */}
                         <div className="col-md-6 d-none d-md-block">
                             <div className="position-relative h-100 overflow-hidden shadow-sm border border-primary border-opacity-10" style={{ minHeight: '500px', backgroundColor: '#F4FAFC', borderRadius: '16px' }}>
                                 <div className="position-absolute top-0 start-0 m-3" style={{ zIndex: 1000 }}>
                                     <span className="badge bg-primary text-white px-3 py-2 shadow">
-                                        <i className="fa-solid fa-map me-1"></i> {t('live_preview', 'Live Preview')}
+                                        <i className="fa-brands fa-google me-1"></i> {t('live_preview', 'Live Preview')}
                                     </span>
                                 </div>
                                 
-                                <MapContainer 
-    center={[12.8797, 121.7740]} 
-    zoom={5} 
-    minZoom={5} /* ⚡ NEW: Prevents zooming out too far */
-    maxBounds={[
-        [4.0, 116.0], /* ⚡ NEW: South-West boundary limit */
-        [22.0, 127.0] /* ⚡ NEW: North-East boundary limit */
-    ]} 
-    maxBoundsViscosity={1.0} /* ⚡ NEW: Creates a solid "bounce back" wall when panning */
-    scrollWheelZoom={true} 
-    style={{ height: '100%', width: '100%', minHeight: '500px', zIndex: 1 }}
->
-    <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-    />
-    
-    {itinerary.map((item, index) => {
-        const coords = regionCoords[item] || [12.8797, 121.7740]; 
-        return (
-            <Marker key={index} position={coords} icon={createCustomIcon(index + 1)}>
-                <Popup>
-                    <strong>Stop {index + 1}:</strong> {item}
-                </Popup>
-            </Marker>
-        );
-    })}
-</MapContainer>
+                                {!isLoaded ? (
+                                    <div className="w-100 h-100 d-flex justify-content-center align-items-center">
+                                        <div className="spinner-border text-primary" role="status"></div>
+                                    </div>
+                                ) : (
+                                    <GoogleMap 
+                                        mapContainerStyle={{ height: '100%', width: '100%', minHeight: '500px' }}
+                                        center={{ lat: 12.8797, lng: 121.7740 }} 
+                                        zoom={5}
+                                        options={{
+                                            // ⚡ NEW: Restricts the map to the Philippines only!
+                                            restriction: {
+                                                latLngBounds: { north: 22.0, south: 4.0, east: 127.0, west: 116.0 },
+                                                strictBounds: true,
+                                            },
+                                            minZoom: 5,
+                                            streetViewControl: false, 
+                                            mapTypeControl: false     
+                                        }}
+                                    >
+                                        {itinerary.map((item, index) => {
+                                            // Convert existing array coordinates to {lat, lng} for Google
+                                            const coordsArray = regionCoords[item] || [12.8797, 121.7740];
+                                            const position = { lat: coordsArray[0], lng: coordsArray[1] };
+
+                                            return (
+                                                <Marker 
+                                                    key={index} 
+                                                    position={position} 
+                                                    title={item}
+                                                    label={{ text: (index + 1).toString(), color: 'white', fontWeight: 'bold' }} 
+                                                />
+                                            );
+                                        })}
+                                    </GoogleMap>
+                                )}
 
                             </div>
                         </div>
@@ -225,14 +254,32 @@ const Tours = () => {
             <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'transparent', backdropFilter: 'blur(5px)', zIndex: 1060 }}>
                 <div className="modal-dialog modal-dialog-centered calculate-modal-dialog"> 
                     <div className="modal-content calculate-modal-content border-0 shadow-lg" style={{ backgroundColor: 'var(--card-bg)' }}>
-                        <div className="modal-header border-0 pb-1"><h4 className="modal-title text-navy fw-bold" id="calculateModalLabel">{t('calc_price', 'CALCULATE TOTAL PRICE')}</h4></div>
+                        <div className="modal-header border-0 pb-1">
+                            <h4 className="modal-title text-navy fw-bold" id="calculateModalLabel">{t('calc_price', 'CALCULATE TOTAL PRICE')}</h4>
+                        </div>
                         <div className="modal-body pt-1">
                             <h5 id="modalPackageName" className="text-primary-dark fw-bold mb-1 font-montserrat text-uppercase">{selectedTour.name}</h5>
                             <p id="modalDuration" className="text-grey fw-bold small mb-4">{selectedTour.duration}</p>
-                            <div className="mb-4"><label className="text-navy fw-bold small mb-2 d-block">{t('num_people', 'Number of People')}</label><input type="number" className="form-control-dark w-100 border-primary border-opacity-25" value={pax} min="1" onChange={(e) => setPax(parseInt(e.target.value) || 1)} /></div>
-                            <div className="d-flex justify-content-between align-items-center mb-2"><div className="text-grey fw-bold small">{t('price_per_person', 'Price per person')}</div><div className="text-navy fw-bold">{formatPrice(selectedTour.price)}</div></div>
-                            <div className="d-flex justify-content-between align-items-center mb-4 pb-4 border-bottom border-primary border-opacity-10"><div className="text-grey fw-bold small">{t('num_people', 'Number of People')}</div><div className="text-navy fw-bold">× {pax}</div></div>
-                            <div className="d-flex justify-content-between align-items-center mb-4"><div className="text-navy fw-bold fs-5">{t('total_price', 'Total Price')}</div><div className="fw-bold fs-2 text-accent" id="modalTotalPrice">{formatPrice(selectedTour.price * pax)}</div></div>
+                            
+                            <div className="mb-4">
+                                <label className="text-navy fw-bold small mb-2 d-block">{t('num_people', 'Number of People')}</label>
+                                <input type="number" className="form-control-dark w-100 border-primary border-opacity-25" value={pax} min="1" onChange={(e) => setPax(parseInt(e.target.value) || 1)} />
+                            </div>
+                            
+                            <div className="d-flex justify-content-between align-items-center mb-2">
+                                <div className="text-grey fw-bold small">{t('price_per_person', 'Price per person')}</div>
+                                <div className="text-navy fw-bold">{formatPrice(selectedTour.price)}</div>
+                            </div>
+                            
+                            <div className="d-flex justify-content-between align-items-center mb-4 pb-4 border-bottom border-primary border-opacity-10">
+                                <div className="text-grey fw-bold small">{t('num_people', 'Number of People')}</div>
+                                <div className="text-navy fw-bold">× {pax}</div>
+                            </div>
+                            
+                            <div className="d-flex justify-content-between align-items-center mb-4">
+                                <div className="text-navy fw-bold fs-5">{t('total_price', 'Total Price')}</div>
+                                <div className="fw-bold fs-2 text-accent" id="modalTotalPrice">{formatPrice(selectedTour.price * pax)}</div>
+                            </div>
                         </div>
                         <div className="modal-footer border-0 pt-0 d-flex gap-3">
                             <button type="button" className="btn-cancel flex-grow-1" onClick={handleCloseModal}>{t('cancel', 'Cancel')}</button>
