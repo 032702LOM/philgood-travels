@@ -197,7 +197,7 @@ const Home = () => {
                             <h2 className="scene-title wave-text">{t('trail_makers', 'The Trail Makers')}</h2>
                             <p className="scene-text">{t('trail_desc1', 'Sometimes the best view comes after the hardest climb. Take a moment to sit, breathe, and appreciate the world from a new perspective.')}</p>     
                             <p className="scene-text">{t('trail_desc2', 'A breathtaking panoramic view from a mountain summit at sunset. A lone hiker is sitting on a rocky ledge, silhouette against a vibrant orange and purple sky, looking out over a sea of clouds and distant peaks.')}</p>             
-                            <Link to="/destinations" className="btn-text-link">{t('explore_mountains', 'Explore Mountains')} <i className="fa-solid fa-arrow-right"></i></Link>
+                            <Link to="/destinations?search=mountain" className="btn-text-link">{t('explore_mountains', 'Explore Mountains')} <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
                         <div className="mobile-scene-img" style={{ backgroundImage: `url("${manOnCliffImg}")` }}></div>
                     </div>
