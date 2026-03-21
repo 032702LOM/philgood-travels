@@ -6,17 +6,14 @@ const nodemailer = require('nodemailer');
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
+// ⚡ FIX 1: Switched to Port 465 and Secure: true to bypass the Render Timeout ⚡
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
-    port: 587,
-    secure: false, 
-    requireTLS: true, 
+    port: 465,
+    secure: true, 
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
-    },
-    tls: {
-        rejectUnauthorized: false 
     }
 });
 
@@ -31,7 +28,33 @@ router.post('/create', async (req, res) => {
         const leadName = leadUser ? leadUser.name : "A friend";
 
         const amountDue = totalPrice / splitBetween;
+        const safeInvoice = invoiceDetails || {};
         let paymentsArray = [];
+
+        // ⚡ FIX 2: Break down the invoice into individual line items for Stripe ⚡
+        const buildStripeLineItems = () => {
+            const items = [];
+            const split = splitBetween || 1;
+            const splitText = split > 1 ? ` (Split ${split} ways)` : '';
+
+            // Map each item securely. Stripe requires unit_amount in cents (x100)
+            if (safeInvoice.basePriceTotal > 0) items.push({ price_data: { currency: 'php', product_data: { name: `Base Price${splitText}` }, unit_amount: Math.round((safeInvoice.basePriceTotal / split) * 100) }, quantity: 1 });
+            if (safeInvoice.accClassTotal > 0) items.push({ price_data: { currency: 'php', product_data: { name: `${safeInvoice.accClassText || 'Room Upgrade'}${splitText}` }, unit_amount: Math.round((safeInvoice.accClassTotal / split) * 100) }, quantity: 1 });
+            if (safeInvoice.transferTotal > 0) items.push({ price_data: { currency: 'php', product_data: { name: `Airport Transfer${splitText}` }, unit_amount: Math.round((safeInvoice.transferTotal / split) * 100) }, quantity: 1 });
+            if (safeInvoice.insuranceTotal > 0) items.push({ price_data: { currency: 'php', product_data: { name: `Travel Insurance${splitText}` }, unit_amount: Math.round((safeInvoice.insuranceTotal / split) * 100) }, quantity: 1 });
+            if (safeInvoice.dinnerTotal > 0) items.push({ price_data: { currency: 'php', product_data: { name: `Romantic Dinner${splitText}` }, unit_amount: Math.round((safeInvoice.dinnerTotal / split) * 100) }, quantity: 1 });
+            if (safeInvoice.carbonTotal > 0) items.push({ price_data: { currency: 'php', product_data: { name: `Carbon Offset${splitText}` }, unit_amount: Math.round((safeInvoice.carbonTotal / split) * 100) }, quantity: 1 });
+            if (safeInvoice.vatTotal > 0) items.push({ price_data: { currency: 'php', product_data: { name: `VAT (12%)${splitText}` }, unit_amount: Math.round((safeInvoice.vatTotal / split) * 100) }, quantity: 1 });
+
+            // Failsafe just in case nothing mapped
+            if (items.length === 0) {
+                items.push({ price_data: { currency: 'php', product_data: { name: `${packageName}${splitText}`, description: `Travel Date: ${travelDate}` }, unit_amount: Math.round(amountDue * 100) }, quantity: 1 });
+            }
+            
+            return items;
+        };
+
+        const stripeLineItems = buildStripeLineItems();
 
         for (let i = 0; i < splitBetween; i++) {
             const payerEmail = friendEmails[i] || `guest${i+1}@pending.com`;
@@ -39,18 +62,11 @@ router.post('/create', async (req, res) => {
             const session = await stripe.checkout.sessions.create({
                 payment_method_types: ['card'],
                 customer_email: payerEmail.includes('@pending.com') ? undefined : payerEmail,
-                line_items: [{
-                    price_data: {
-                        currency: 'php',
-                        product_data: { 
-                            name: `${packageName} - Split Share`,
-                            description: `Payment ${i + 1} of ${splitBetween} for trip on ${travelDate}`
-                        },
-                        unit_amount: Math.round(amountDue * 100), 
-                    },
-                    quantity: 1,
-                }],
+                line_items: stripeLineItems, // ⚡ Inject the broken-down items here
                 mode: 'payment',
+                invoice_creation: {
+                    enabled: true, // ⚡ Forces Stripe to generate a beautiful, itemized PDF receipt
+                },
                 success_url: 'https://philgood-travels.vercel.app/profile?payment=success', 
                 cancel_url: 'https://philgood-travels.vercel.app/profile?payment=cancelled',
             });
@@ -64,9 +80,6 @@ router.post('/create', async (req, res) => {
             });
         }
 
-        // ⚡ Ensure invoiceDetails is never completely undefined ⚡
-        const safeInvoice = invoiceDetails || {};
-
         const newBooking = new Booking({
             userId, packageName, travelDate, guests, totalPrice, paymentMethod, 
             invoiceDetails: safeInvoice,
@@ -77,7 +90,6 @@ router.post('/create', async (req, res) => {
 
         // ⚡ SEND AUTOMATED EMAILS TO PAYEES ⚡
         try {
-            // ⚡ BULLETPROOF FORMATTER: Falls back safely if num is undefined/null ⚡
             const formatPHP = (num) => {
                 const validNum = Number(num) || 0;
                 return `₱${validNum.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
