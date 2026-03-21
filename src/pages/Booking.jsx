@@ -89,6 +89,18 @@ const Booking = () => {
     setIsSubmitting(true);
     const user = JSON.parse(userStr);
 
+    // ⚡ NEW: Package up the exact itemized pricing to send to the backend
+    const invoiceDetails = {
+        basePriceTotal: adultTotal + childTotal,
+        accClassText: `${accClass} Class (x${chargeablePax})`,
+        accClassTotal: accClassTotal,
+        transferTotal: transferTotal,
+        insuranceTotal: insuranceTotal,
+        dinnerTotal: dinnerTotal,
+        carbonTotal: carbonTotal,
+        vatTotal: vatTotal
+    };
+
     const bookingData = {
         userId: user.id,
         packageName: selectedPackage,
@@ -97,7 +109,8 @@ const Booking = () => {
         totalPrice: grandTotal,
         paymentMethod: paymentMethod,
         splitBetween: parseInt(splitBetween), 
-        friendEmails: payerEmails
+        friendEmails: payerEmails,
+        invoiceDetails: invoiceDetails // ⚡ Successfully added to the backend payload
     };
 
     try {

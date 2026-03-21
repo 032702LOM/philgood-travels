@@ -11,15 +11,27 @@ const bookingSchema = new mongoose.Schema({
     },
     totalPrice: { type: Number, required: true },
     paymentMethod: { type: String, required: true },
+    
+    // ⚡ NEW: Stores the exact price breakdown for the invoice email ⚡
+    invoiceDetails: {
+        basePriceTotal: { type: Number, default: 0 },
+        accClassText: { type: String, default: '' },
+        accClassTotal: { type: Number, default: 0 },
+        transferTotal: { type: Number, default: 0 },
+        insuranceTotal: { type: Number, default: 0 },
+        dinnerTotal: { type: Number, default: 0 },
+        carbonTotal: { type: Number, default: 0 },
+        vatTotal: { type: Number, default: 0 }
+    },
+
     bookingStatus: { 
         type: String, 
         enum: ['Pending', 'Confirmed', 'Cancelled', 'Postponed'], 
         default: 'Pending' 
     },
     
-    // ⚡ NEW: Tracking limits for modifications ⚡
-    postponeCount: { type: Number, default: 0 }, // Stops at 2
-    cancelledAt: { type: Date }, // Remembers when it was cancelled
+    postponeCount: { type: Number, default: 0 }, 
+    cancelledAt: { type: Date }, 
 
     splitBetween: { type: Number, default: 1 },
     payments: [

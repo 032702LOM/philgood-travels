@@ -1,13 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const Booking = require('../models/Booking');
-const User = require('../models/User'); // ⚡ NEW: Added to look up the Lead Booker's name
+const User = require('../models/User'); 
 const nodemailer = require('nodemailer'); 
 
-// 1. Initialize Stripe using your Secret Key
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-// 2. Set up Nodemailer Transport (Updated for Render/Gmail compatibility)
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
@@ -27,16 +25,15 @@ const transporter = nodemailer.createTransport({
 // ==========================================
 router.post('/create', async (req, res) => {
     try {
-        const { userId, packageName, travelDate, guests, totalPrice, paymentMethod, splitBetween = 1, friendEmails = [] } = req.body;
+        // ⚡ NEW: We now accept invoiceDetails from the frontend request
+        const { userId, packageName, travelDate, guests, totalPrice, paymentMethod, splitBetween = 1, friendEmails = [], invoiceDetails } = req.body;
 
-        // ⚡ NEW: Find the lead user to personalize the invitation email
         const leadUser = await User.findById(userId);
         const leadName = leadUser ? leadUser.name : "A friend";
 
         const amountDue = totalPrice / splitBetween;
         let paymentsArray = [];
 
-        // Generate individual Stripe links for everyone in the group
         for (let i = 0; i < splitBetween; i++) {
             const payerEmail = friendEmails[i] || `guest${i+1}@pending.com`;
 
@@ -68,9 +65,9 @@ router.post('/create', async (req, res) => {
             });
         }
 
-        // Save the booking to the Database
+        // ⚡ NEW: Save the invoiceDetails to the Database
         const newBooking = new Booking({
-            userId, packageName, travelDate, guests, totalPrice, paymentMethod,
+            userId, packageName, travelDate, guests, totalPrice, paymentMethod, invoiceDetails,
             bookingStatus: 'Pending', splitBetween, payments: paymentsArray
         });
 
@@ -78,8 +75,11 @@ router.post('/create', async (req, res) => {
 
         // ⚡ SEND AUTOMATED EMAILS TO PAYEES ⚡
         try {
+            // Helper function to format numbers as PHP currency safely
+            const formatPHP = (num) => num ? `₱${num.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '₱0.00';
+            const totalHeads = (guests.adults || 0) + (guests.children || 0) + (guests.infants || 0);
+
             for (const payment of paymentsArray) {
-                // Only send to real email addresses (skip placeholders)
                 if (!payment.payerEmail.includes('@pending.com')) {
                     await transporter.sendMail({
                         from: `"PhilGood Travels" <${process.env.EMAIL_USER}>`,
@@ -93,10 +93,53 @@ router.post('/create', async (req, res) => {
                                 <p style="font-size: 16px; color: #4A5568;">Hi there!</p>
                                 <p style="font-size: 16px; color: #4A5568;"><strong>${leadName}</strong> is planning an adventure to <strong style="color: #00B4D8;">${packageName}</strong> on <strong>${travelDate}</strong> and has invited you to join!</p>
                                 
-                                <div style="background-color: #F4FAFC; padding: 25px; border-radius: 12px; margin: 25px 0; border-left: 5px solid #FF9F1C;">
-                                    <h3 style="margin-top: 0; color: #023E8A; font-size: 18px;">Your Payment Details:</h3>
-                                    <p style="margin: 8px 0; color: #4A5568; font-size: 20px;"><strong>Amount Due:</strong> ₱${payment.amountDue.toLocaleString()}</p>
-                                    <p style="margin: 8px 0; color: #4A5568;"><strong>Status:</strong> <span style="color: #FF9F1C; font-weight: bold;">PENDING</span></p>
+                                <div style="background-color: #F4FAFC; padding: 25px; border-radius: 12px; margin: 25px 0; border: 1px solid #00B4D8;">
+                                    <h3 style="margin-top: 0; color: #023E8A; font-size: 18px; border-bottom: 1px solid rgba(0, 180, 216, 0.2); padding-bottom: 10px;">Price Summary</h3>
+                                    
+                                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; color: #4A5568;">
+                                        <tr>
+                                            <td style="padding: 8px 0;">Base Price (x${guests.adults || 1})</td>
+                                            <td style="padding: 8px 0; text-align: right; font-weight: bold;">${formatPHP(invoiceDetails?.basePriceTotal)}</td>
+                                        </tr>
+                                        ${invoiceDetails?.accClassTotal > 0 ? `
+                                        <tr>
+                                            <td style="padding: 8px 0;">${invoiceDetails?.accClassText}</td>
+                                            <td style="padding: 8px 0; text-align: right; font-weight: bold;">${formatPHP(invoiceDetails?.accClassTotal)}</td>
+                                        </tr>` : ''}
+                                        ${invoiceDetails?.transferTotal > 0 ? `
+                                        <tr>
+                                            <td style="padding: 8px 0;">Airport Transfer</td>
+                                            <td style="padding: 8px 0; text-align: right; font-weight: bold;">${formatPHP(invoiceDetails?.transferTotal)}</td>
+                                        </tr>` : ''}
+                                        ${invoiceDetails?.insuranceTotal > 0 ? `
+                                        <tr>
+                                            <td style="padding: 8px 0;">Insurance (x${totalHeads})</td>
+                                            <td style="padding: 8px 0; text-align: right; font-weight: bold;">${formatPHP(invoiceDetails?.insuranceTotal)}</td>
+                                        </tr>` : ''}
+                                        ${invoiceDetails?.dinnerTotal > 0 ? `
+                                        <tr>
+                                            <td style="padding: 8px 0;">Romantic Dinner</td>
+                                            <td style="padding: 8px 0; text-align: right; font-weight: bold;">${formatPHP(invoiceDetails?.dinnerTotal)}</td>
+                                        </tr>` : ''}
+                                        ${invoiceDetails?.carbonTotal > 0 ? `
+                                        <tr>
+                                            <td style="padding: 8px 0; color: #4CAF50;">Carbon Offset (x${totalHeads})</td>
+                                            <td style="padding: 8px 0; text-align: right; font-weight: bold; color: #4CAF50;">${formatPHP(invoiceDetails?.carbonTotal)}</td>
+                                        </tr>` : ''}
+                                        <tr>
+                                            <td style="padding: 8px 0; border-top: 1px solid rgba(0, 180, 216, 0.2); padding-top: 15px;">VAT (12%)</td>
+                                            <td style="padding: 8px 0; border-top: 1px solid rgba(0, 180, 216, 0.2); padding-top: 15px; text-align: right; font-weight: bold;">${formatPHP(invoiceDetails?.vatTotal)}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 15px 0 5px 0; font-size: 18px; color: #023E8A; font-weight: bold;">Grand Total</td>
+                                            <td style="padding: 15px 0 5px 0; font-size: 18px; color: #FF9F1C; text-align: right; font-weight: bold;">${formatPHP(totalPrice)}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <div style="background-color: #023E8A; padding: 20px; border-radius: 12px; margin: 20px 0; text-align: center; color: #FFFFFF;">
+                                    <p style="margin: 0 0 10px 0; font-size: 14px; opacity: 0.9;">Your Split Share (${splitBetween} ways):</p>
+                                    <p style="margin: 0; font-size: 24px; font-weight: bold; color: #FF9F1C;">${formatPHP(payment.amountDue)}</p>
                                 </div>
 
                                 <p style="font-size: 16px; color: #4A5568; text-align: center;">To secure your spot and confirm the group booking, please pay your share via our secure Stripe link:</p>
@@ -108,8 +151,6 @@ router.post('/create', async (req, res) => {
                                 <p style="font-size: 14px; color: #A0AEC0; text-align: center; line-height: 1.5;">
                                     This is a group booking. The entire trip will be officially confirmed once all members have completed their individual payments.
                                 </p>
-                                <hr style="border: none; border-top: 1px solid #E0F7FA; margin-top: 30px;" />
-                                <p style="font-size: 11px; color: #CBD5E0; text-align: center;">If you did not expect this invitation, you can safely ignore this email.</p>
                             </div>
                         `
                     });
