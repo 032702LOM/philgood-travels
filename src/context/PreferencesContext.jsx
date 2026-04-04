@@ -196,12 +196,12 @@ export const PreferencesProvider = ({ children }) => {
       stats_tours: "TOURS ORGANIZED",
       stats_dest: "DESTINATIONS",
       
-      // ⚡ UPDATED ENGLISH ISLAND HOPPING TEXT
-      perspective: "DISCOVERY",
-      trail_makers: "The Island Hoppers",
-      trail_desc1: "Sometimes the best adventures begin where the ocean meets the shore. Step aboard a traditional bangka, feel the sea breeze, and hop between pristine islands waiting to be discovered.",
-      trail_desc2: "Navigate past towering limestone cliffs into hidden lagoons of crystal-clear turquoise water. Drop your anchor at secluded white-sand beaches and dive into vibrant marine sanctuaries.",
-      explore_mountains: "Explore Island Tours",
+      // ⚡ NEW ISLAND HOPPING KEYS
+      island_subtitle: "DISCOVERY",
+      island_title: "The Island Hoppers",
+      island_desc1: "Sometimes the best adventures begin where the ocean meets the shore. Step aboard a traditional bangka, feel the sea breeze, and hop between pristine islands waiting to be discovered.",
+      island_desc2: "Navigate past towering limestone cliffs into hidden lagoons of crystal-clear turquoise water. Drop your anchor at secluded white-sand beaches and dive into vibrant marine sanctuaries.",
+      island_btn: "Explore Island Tours",
       
       regional: "Regional",
       pop_dest_desc: "Discover the key regions and landmarks the Philippines has to offer.",
@@ -361,12 +361,12 @@ export const PreferencesProvider = ({ children }) => {
       stats_tours: "TOURS ORGANIZADOS",
       stats_dest: "DESTINOS",
       
-      // ⚡ UPDATED SPANISH ISLAND HOPPING TEXT
-      perspective: "DESCUBRIMIENTO",
-      trail_makers: "Los Exploradores de Islas",
-      trail_desc1: "A veces, las mejores aventuras comienzan donde el océano se encuentra con la costa. Sube a bordo de una bangka tradicional, siente la brisa marina y salta entre islas vírgenes que esperan ser descubiertas.",
-      trail_desc2: "Navega más allá de imponentes acantilados de piedra caliza hacia lagunas escondidas de aguas turquesas cristalinas. Echa el ancla en playas solitarias de arena blanca y sumérgete en vibrantes santuarios marinos.",
-      explore_mountains: "Explorar Tours por las Islas",
+      // ⚡ SPANISH NEW KEYS
+      island_subtitle: "DESCUBRIMIENTO",
+      island_title: "Los Exploradores de Islas",
+      island_desc1: "A veces, las mejores aventuras comienzan donde el océano se encuentra con la costa. Sube a bordo de una bangka tradicional, siente la brisa marina y salta entre islas vírgenes que esperan ser descubiertas.",
+      island_desc2: "Navega más allá de imponentes acantilados de piedra caliza hacia lagunas escondidas de aguas turquesas cristalinas. Echa el ancla en playas solitarias de arena blanca y sumérgete en vibrantes santuarios marinos.",
+      island_btn: "Explorar Tours por las Islas",
       
       regional: "Regional",
       pop_dest_desc: "Descubre las regiones y lugares clave que Filipinas tiene para ofrecer.",
@@ -526,12 +526,12 @@ export const PreferencesProvider = ({ children }) => {
       stats_tours: "MGA TOUR NA ORGANISA",
       stats_dest: "MGA DESTINASYON",
       
-      // ⚡ UPDATED TAGALOG ISLAND HOPPING TEXT
-      perspective: "PAGTUKLAS",
-      trail_makers: "Ang Mga Island Hopper",
-      trail_desc1: "Minsan ang pinakamagandang pakikipagsapalaran ay nagsisimula kung saan nagtatagpo ang karagatan at dalampasigan. Sumakay sa tradisyonal na bangka, ramdamin ang simoy ng dagat, at mag-island hopping sa mga paraisong naghihintay matuklasan.",
-      trail_desc2: "Maglayag lampas sa matataas na limestone cliffs patungo sa mga nakatagong lagoon na may malinaw at turquoise na tubig. Ihulog ang angkla sa mga tagong white-sand beach at sumisid sa mga makulay na marine sanctuary.",
-      explore_mountains: "Tuklasin ang Island Tours",
+      // ⚡ TAGALOG NEW KEYS
+      island_subtitle: "PAGTUKLAS",
+      island_title: "Ang Mga Island Hopper",
+      island_desc1: "Minsan ang pinakamagandang pakikipagsapalaran ay nagsisimula kung saan nagtatagpo ang karagatan at dalampasigan. Sumakay sa tradisyonal na bangka, ramdamin ang simoy ng dagat, at mag-island hopping sa mga paraisong naghihintay matuklasan.",
+      island_desc2: "Maglayag lampas sa matataas na limestone cliffs patungo sa mga nakatagong lagoon na may malinaw at turquoise na tubig. Ihulog ang angkla sa mga tagong white-sand beach at sumisid sa mga makulay na marine sanctuary.",
+      island_btn: "Tuklasin ang Island Tours",
       
       regional: "Rehiyonal",
       pop_dest_desc: "Tuklasin ang mga pangunahing rehiyon at palatandaan sa Pilipinas.",
@@ -691,12 +691,12 @@ export const PreferencesProvider = ({ children }) => {
       stats_tours: "CIRCUITS ORGANISÉS",
       stats_dest: "DESTINATIONS",
       
-      // ⚡ UPDATED FRENCH ISLAND HOPPING TEXT
-      perspective: "DÉCOUVERTE",
-      trail_makers: "Les Explorateurs d'Îles",
-      trail_desc1: "Parfois, les meilleures aventures commencent là où l'océan rencontre le rivage. Montez à bord d'une bangka traditionnelle, sentez la brise marine et naviguez d'île en île à la découverte de paradis préservés.",
-      trail_desc2: "Naviguez au-delà des imposantes falaises de calcaire vers des lagons cachés aux eaux turquoise cristallines. Jetez l'ancre sur des plages de sable blanc isolées et plongez dans des sanctuaires marins vibrants.",
-      explore_mountains: "Explorer les circuits des îles",
+      // ⚡ FRENCH NEW KEYS
+      island_subtitle: "DÉCOUVERTE",
+      island_title: "Les Explorateurs d'Îles",
+      island_desc1: "Parfois, les meilleures aventures commencent là où l'océan rencontre le rivage. Montez à bord d'une bangka traditionnelle, sentez la brise marine et naviguez d'île en île à la découverte de paradis préservés.",
+      island_desc2: "Naviguez au-delà des imposantes falaises de calcaire vers des lagons cachés aux eaux turquoise cristallines. Jetez l'ancre sur des plages de sable blanc isolées et plongez dans des sanctuaires marins vibrants.",
+      island_btn: "Explorer les circuits des îles",
       
       regional: "Régional",
       pop_dest_desc: "Découvrez les régions et sites incontournables des Philippines.",
@@ -856,12 +856,12 @@ export const PreferencesProvider = ({ children }) => {
       stats_tours: "TOURS ORGANIZADOS",
       stats_dest: "DESTINOS",
       
-      // ⚡ UPDATED PORTUGUESE ISLAND HOPPING TEXT
-      perspective: "DESCOBERTA",
-      trail_makers: "Os Exploradores de Ilhas",
-      trail_desc1: "Às vezes, as melhores aventuras começam onde o oceano encontra a costa. Suba a bordo de um bangka tradicional, sinta a brisa do mar e salte entre ilhas imaculadas à espera de serem descobertas.",
-      trail_desc2: "Navegue além de imponentes penhascos de calcário para lagoas escondidas de águas azul-turquesa cristalinas. Ancore em praias isoladas de areia branca e mergulhe em vibrantes santuários marinhos.",
-      explore_mountains: "Explorar Passeios pelas Ilhas",
+      // ⚡ PORTUGUESE NEW KEYS
+      island_subtitle: "DESCOBERTA",
+      island_title: "Os Exploradores de Ilhas",
+      island_desc1: "Às vezes, as melhores aventuras começam onde o oceano encontra a costa. Suba a bordo de um bangka tradicional, sinta a brisa do mar e salte entre ilhas imaculadas à espera de serem descobertas.",
+      island_desc2: "Navegue além de imponentes penhascos de calcário para lagoas escondidas de águas azul-turquesa cristalinas. Ancore em praias isoladas de areia branca e mergulhe em vibrantes santuários marinhos.",
+      island_btn: "Explorar Passeios pelas Ilhas",
       
       regional: "Regional",
       pop_dest_desc: "Descubra as principais regiões e pontos turísticos que as Filipinas têm a oferecer.",
@@ -1021,12 +1021,12 @@ export const PreferencesProvider = ({ children }) => {
       stats_tours: "企画されたツアー",
       stats_dest: "目的地",
       
-      // ⚡ UPDATED JAPANESE ISLAND HOPPING TEXT
-      perspective: "発見",
-      trail_makers: "アイランドホッパー",
-      trail_desc1: "最高の冒険は、海と岸が出会う場所から始まることがあります。伝統的なバンカ船に乗り込み、海風を感じながら、手つかずの島々を巡りましょう。",
-      trail_desc2: "そびえ立つ石灰岩の崖を通り抜け、透き通ったターコイズブルーの隠れたラグーンへ。人里離れた白砂のビーチにいかりを下ろし、活気ある海洋保護区に飛び込みましょう。",
-      explore_mountains: "アイランドツアーを探索",
+      // ⚡ JAPANESE NEW KEYS
+      island_subtitle: "発見",
+      island_title: "アイランドホッパー",
+      island_desc1: "最高の冒険は、海と岸が出会う場所から始まることがあります。伝統的なバンカ船に乗り込み、海風を感じながら、手つかずの島々を巡りましょう。",
+      island_desc2: "そびえ立つ石灰岩の崖を通り抜け、透き通ったターコイズブルーの隠れたラグーンへ。人里離れた白砂のビーチにいかりを下ろし、活気ある海洋保護区に飛び込みましょう。",
+      island_btn: "アイランドツアーを探索",
       
       regional: "地域",
       pop_dest_desc: "フィリピンが提供する主要な地域とランドマークを発見してください。",
@@ -1186,12 +1186,12 @@ export const PreferencesProvider = ({ children }) => {
       stats_tours: "组织的旅行",
       stats_dest: "目的地",
       
-      // ⚡ UPDATED CHINESE ISLAND HOPPING TEXT
-      perspective: "发现",
-      trail_makers: "跳岛探险家",
-      trail_desc1: "有时最好的冒险始于海洋与海岸相遇的地方。登上传统的螃蟹船（bangka），感受海风，在等待被发现的原始岛屿之间穿梭。",
-      trail_desc2: "驶过高耸的石灰岩悬崖，进入拥有清澈绿松石色海水的隐藏泻湖。在僻静的白沙滩抛锚，潜入充满活力的海洋保护区。",
-      explore_mountains: "探索跳岛游",
+      // ⚡ CHINESE NEW KEYS
+      island_subtitle: "发现",
+      island_title: "跳岛探险家",
+      island_desc1: "有时最好的冒险始于海洋与海岸相遇的地方。登上传统的螃蟹船（bangka），感受海风，在等待被发现的原始岛屿之间穿梭。",
+      island_desc2: "驶过高耸的石灰岩悬崖，进入拥有清澈绿松石色海水的隐藏泻湖。在僻静的白沙滩抛锚，潜入充满活力的海洋保护区。",
+      island_btn: "探索跳岛游",
       
       regional: "区域",
       pop_dest_desc: "发现菲律宾提供的主要地区和地标。",
@@ -1351,12 +1351,12 @@ export const PreferencesProvider = ({ children }) => {
       stats_tours: "جولات منظمة",
       stats_dest: "وجهات",
       
-      // ⚡ UPDATED ARABIC ISLAND HOPPING TEXT
-      perspective: "اكتشاف",
-      trail_makers: "مستكشفو الجزر",
-      trail_desc1: "أحيانًا تبدأ أفضل المغامرات حيث يلتقي المحيط بالشاطئ. اصعد على متن قارب البانغكا التقليدي، واشعر بنسيم البحر، وتنقل بين الجزر البكر التي تنتظر من يكتشفها.",
-      trail_desc2: "أبحر متجاوزًا منحدرات الحجر الجيري الشاهقة إلى البحيرات المخفية ذات المياه الفيروزية الصافية. ألقِ مرساتك في الشواطئ الرملية البيضاء المنعزلة واغطس في المحميات البحرية النابضة بالحياة.",
-      explore_mountains: "استكشاف جولات الجزر",
+      // ⚡ ARABIC NEW KEYS
+      island_subtitle: "اكتشاف",
+      island_title: "مستكشفو الجزر",
+      island_desc1: "أحيانًا تبدأ أفضل المغامرات حيث يلتقي المحيط بالشاطئ. اصعد على متن قارب البانغكا التقليدي، واشعر بنسيم البحر، وتنقل بين الجزر البكر التي تنتظر من يكتشفها.",
+      island_desc2: "أبحر متجاوزًا منحدرات الحجر الجيري الشاهقة إلى البحيرات المخفية ذات المياه الفيروزية الصافية. ألقِ مرساتك في الشواطئ الرملية البيضاء المنعزلة واغطس في المحميات البحرية النابضة بالحياة.",
+      island_btn: "استكشاف جولات الجزر",
       
       regional: "إقليمي",
       pop_dest_desc: "اكتشف المناطق والمعالم الرئيسية التي تقدمها الفلبين.",
@@ -1516,12 +1516,12 @@ export const PreferencesProvider = ({ children }) => {
       stats_tours: "ทัวร์ที่จัดขึ้น",
       stats_dest: "จุดหมายปลายทาง",
       
-      // ⚡ UPDATED THAI ISLAND HOPPING TEXT
-      perspective: "การค้นพบ",
-      trail_makers: "นักผจญภัยข้ามเกาะ",
-      trail_desc1: "บางครั้งการผจญภัยที่ดีที่สุดเริ่มต้นในจุดที่มหาสมุทรบรรจบกับชายฝั่ง ก้าวขึ้นเรือบังกาแบบดั้งเดิม สัมผัสลมทะเล และเดินทางข้ามเกาะที่บริสุทธิ์ซึ่งรอการค้นพบ",
-      trail_desc2: "ล่องเรือผ่านหน้าผาหินปูนสูงตระหง่านไปยังทะเลสาบที่ซ่อนอยู่ซึ่งมีน้ำสีเทอร์ควอยซ์ใส ทอดสมอที่ชายหาดทรายขาวอันเงียบสงบและดำดิ่งสู่เขตอนุรักษ์ทางทะเลที่มีชีวิตชีวา",
-      explore_mountains: "สำรวจทัวร์เกาะ",
+      // ⚡ THAI NEW KEYS
+      island_subtitle: "การค้นพบ",
+      island_title: "นักผจญภัยข้ามเกาะ",
+      island_desc1: "บางครั้งการผจญภัยที่ดีที่สุดเริ่มต้นในจุดที่มหาสมุทรบรรจบกับชายฝั่ง ก้าวขึ้นเรือบังกาแบบดั้งเดิม สัมผัสลมทะเล และเดินทางข้ามเกาะที่บริสุทธิ์ซึ่งรอการค้นพบ",
+      island_desc2: "ล่องเรือผ่านหน้าผาหินปูนสูงตระหง่านไปยังทะเลสาบที่ซ่อนอยู่ซึ่งมีน้ำสีเทอร์ควอยซ์ใส ทอดสมอที่ชายหาดทรายขาวอันเงียบสงบและดำดิ่งสู่เขตอนุรักษ์ทางทะเลที่มีชีวิตชีวา",
+      island_btn: "สำรวจทัวร์เกาะ",
       
       regional: "ภูมิภาค",
       pop_dest_desc: "ค้นพบภูมิภาคและสถานที่สำคัญที่ฟิลิปปินส์มีให้",
@@ -1681,12 +1681,12 @@ export const PreferencesProvider = ({ children }) => {
       stats_tours: "LAWATAN DIANJURKAN",
       stats_dest: "DESTINASI",
       
-      // ⚡ UPDATED MALAY ISLAND HOPPING TEXT
-      perspective: "PENEMUAN",
-      trail_makers: "Penjelajah Pulau",
-      trail_desc1: "Kadang-kadang pengembaraan terbaik bermula di mana lautan bertemu pantai. Naik bangka tradisional, rasakan bayu laut, dan lompat antara pulau-pulau dara yang menunggu untuk ditemui.",
-      trail_desc2: "Belayar melepasi tebing batu kapur yang menjulang tinggi ke lagun tersembunyi dengan air biru pirus yang jernih. Jatuhkan sauh di pantai pasir putih yang terpencil dan selami tempat perlindungan marin yang meriah.",
-      explore_mountains: "Teroka Lawatan Pulau",
+      // ⚡ MALAY NEW KEYS
+      island_subtitle: "PENEMUAN",
+      island_title: "Penjelajah Pulau",
+      island_desc1: "Kadang-kadang pengembaraan terbaik bermula di mana lautan bertemu pantai. Naik bangka tradisional, rasakan bayu laut, dan lompat antara pulau-pulau dara yang menunggu untuk ditemui.",
+      island_desc2: "Belayar melepasi tebing batu kapur yang menjulang tinggi ke lagun tersembunyi dengan air biru pirus yang jernih. Jatuhkan sauh di pantai pasir putih yang terpencil dan selami tempat perlindungan marin yang meriah.",
+      island_btn: "Teroka Lawatan Pulau",
       
       regional: "Serantau",
       pop_dest_desc: "Temui wilayah dan mercu tanda utama yang ditawarkan oleh Filipina.",
@@ -1846,12 +1846,12 @@ export const PreferencesProvider = ({ children }) => {
       stats_tours: "TUR DISELENGGARAKAN",
       stats_dest: "DESTINASI",
       
-      // ⚡ UPDATED INDONESIAN ISLAND HOPPING TEXT
-      perspective: "PENEMUAN",
-      trail_makers: "Penjelajah Pulau",
-      trail_desc1: "Terkadang petualangan terbaik dimulai di mana lautan bertemu dengan pantai. Naiklah bangka tradisional, rasakan angin laut, dan jelajahi pulau-pulau perawan yang menunggu untuk ditemukan.",
-      trail_desc2: "Berlayar melewati tebing batu kapur yang menjulang tinggi menuju laguna tersembunyi dengan air pirus sebening kristal. Jatuhkan jangkar di pantai pasir putih terpencil dan selami cagar alam laut yang semarak.",
-      explore_mountains: "Jelajahi Tur Pulau",
+      // ⚡ INDONESIAN NEW KEYS
+      island_subtitle: "PENEMUAN",
+      island_title: "Penjelajah Pulau",
+      island_desc1: "Terkadang petualangan terbaik dimulai di mana lautan bertemu dengan pantai. Naiklah bangka tradisional, rasakan angin laut, dan jelajahi pulau-pulau perawan yang menunggu untuk ditemukan.",
+      island_desc2: "Berlayar melewati tebing batu kapur yang menjulang tinggi menuju laguna tersembunyi dengan air pirus sebening kristal. Jatuhkan jangkar di pantai pasir putih terpencil dan selami cagar alam laut yang semarak.",
+      island_btn: "Jelajahi Tur Pulau",
       
       regional: "Regional",
       pop_dest_desc: "Temukan wilayah dan landmark utama yang ditawarkan Filipina.",
