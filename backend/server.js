@@ -91,7 +91,7 @@ app.use(express.json());
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/bookings', require('./routes/bookings'));
 app.use('/api/contact', require('./routes/contact'));
-
+app.use('/api/admin', require('./routes/admin'));
 
 // ==========================================
 // 5. CONNECT TO MONGODB ATLAS

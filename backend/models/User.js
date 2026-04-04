@@ -8,17 +8,22 @@ const userSchema = new mongoose.Schema({
     email: { 
         type: String, 
         required: true, 
-        unique: true // Ensures no two users can use the same email
+        unique: true 
     },
     password: { 
         type: String, 
         required: true 
     },
     bookmarks: [{ 
-        type: String // We will store the names or IDs of the places they save here
-    }]
+        type: String 
+    }],
+    // ⚡ NEW: Identifies if the user is an administrator ⚡
+    isAdmin: { 
+        type: Boolean, 
+        default: false 
+    }
 }, { 
-    timestamps: true // Automatically adds 'createdAt' and 'updatedAt' dates!
+    timestamps: true 
 });
 
 module.exports = mongoose.model('User', userSchema);
