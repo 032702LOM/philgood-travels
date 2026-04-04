@@ -3,7 +3,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import './PhilGood.css';
 
 // Context Provider
-import { PreferencesProvider } from './context/PreferencesContext'; // <-- NEW
+import { PreferencesProvider } from './context/PreferencesContext'; 
 
 // Layout & Pages
 import Navbar from './components/Navbar';
@@ -17,6 +17,7 @@ import Tours from './pages/Tours';
 import Gallery from './pages/Gallery';
 import Connect from './pages/Connect';
 import Booking from './pages/Booking';
+import AdminDashboard from './pages/AdminDashboard'; // ⚡ NEW: Import the admin dashboard
 import NotFound from './pages/NotFound';
 
 const ScrollToTop = () => {
@@ -27,7 +28,7 @@ const ScrollToTop = () => {
 
 function App() {
   return (
-    <PreferencesProvider> {/* <-- WRAPPED THE ENTIRE APP HERE */}
+    <PreferencesProvider> 
       <div className="App">
         <ScrollToTop />
         <Navbar />
@@ -39,6 +40,10 @@ function App() {
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/connect" element={<Connect />} />
             <Route path="/booking" element={<Booking />} />
+            
+            {/* ⚡ NEW: The hidden admin route */}
+            <Route path="/admin" element={<AdminDashboard />} /> 
+            
             <Route path="*" element={<NotFound />} /> 
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
