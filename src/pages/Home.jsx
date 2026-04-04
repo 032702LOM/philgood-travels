@@ -5,7 +5,7 @@ import { usePreferences } from '../context/PreferencesContext';
 
 import islandParadiseImg from '../assets/img/island_paradise.png'; 
 // Tip: You can change this image file later to match the new Island Hopping theme!
-import manOnCliffImg from '../assets/img/man on cliff.png'; 
+import manOnCliffImg from '../assets/img/island_hopping.png'; 
 import sunbathingImg from '../assets/img/sunbathing.png'; 
 import swimImg from '../assets/img/swim.png';
 import promoVideo from '../assets/video/home.mp4'; 
