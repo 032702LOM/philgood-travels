@@ -52,7 +52,9 @@ const Booking = () => {
   const childTotal = (basePrice * 0.5) * guests.children; 
   const packageTotal = adultTotal + childTotal;
   
-  const accClassTotal = accClassRates[accClass] * chargeablePax; 
+  const adultAccTotal = accClassRates[accClass] * guests.adults;
+  const childAccTotal = (accClassRates[accClass] * 0.5) * guests.children;
+  const accClassTotal = adultAccTotal + childAccTotal;
   const transferTotal = addons.airportTransfer ? addonPrices.airportTransfer : 0;
   const insuranceTotal = addons.insurance ? (addonPrices.insurance * totalHeads) : 0; 
   const dinnerTotal = addons.romanticDinner ? addonPrices.romanticDinner : 0;
@@ -81,7 +83,7 @@ const Booking = () => {
 
     const invoiceDetails = {
         basePriceTotal: adultTotal + childTotal,
-        accClassText: `${accClass} Class (x${chargeablePax})`,
+        accClassText: `${accClass} Class`,
         accClassTotal: accClassTotal,
         transferTotal: transferTotal,
         insuranceTotal: insuranceTotal,
@@ -300,7 +302,8 @@ const Booking = () => {
                         
                         <div className="d-flex justify-content-between mb-2"><span className="text-grey small">Base Price (x{guests.adults})</span><span className="text-navy fw-bold">{formatPrice(adultTotal)}</span></div>
                         {guests.children > 0 && (<div className="d-flex justify-content-between mb-2"><span className="text-accent small">Children (50% Off)</span><span className="text-navy fw-bold">{formatPrice(childTotal)}</span></div>)}
-                        {accClass !== 'Standard' && (<div className="d-flex justify-content-between mb-2"><span className="text-accent small">{t('acc_class', 'Class')} (x{chargeablePax})</span><span className="text-navy fw-bold">{formatPrice(accClassTotal)}</span></div>)}
+                        {accClass !== 'Standard' && (<div className="d-flex justify-content-between mb-2"><span className="text-accent small">{t('acc_class', 'Class')} (x{guests.adults})</span><span className="text-navy fw-bold">{formatPrice(adultAccTotal)}</span></div>)}
+                        {accClass !== 'Standard' && guests.children > 0 && (<div className="d-flex justify-content-between mb-2"><span className="text-accent small">{t('acc_class', 'Class')} Child (50% Off)</span><span className="text-navy fw-bold">{formatPrice(childAccTotal)}</span></div>)}
                         {addons.airportTransfer && (<div className="d-flex justify-content-between mb-2"><span className="text-grey small">{t('transfer', 'Airport Transfer')}</span><span className="text-navy fw-bold">{formatPrice(transferTotal)}</span></div>)}
                         {addons.insurance && (<div className="d-flex justify-content-between mb-2"><span className="text-grey small">{t('insurance', 'Insurance')} (x{totalHeads})</span><span className="text-navy fw-bold">{formatPrice(insuranceTotal)}</span></div>)}
                         {addons.romanticDinner && (<div className="d-flex justify-content-between mb-2"><span className="text-grey small">{t('dinner', 'Romantic Dinner')}</span><span className="text-navy fw-bold">{formatPrice(dinnerTotal)}</span></div>)}
