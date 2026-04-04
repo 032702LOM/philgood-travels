@@ -27,9 +27,11 @@ const ScrollAndReveal = () => {
     // 1. Scroll to top instantly on page change
     window.scrollTo(0, 0); 
     
-    // 2. Globally initialize the Scroll Reveal Animation for EVERY page
-    setTimeout(() => {
-        const observer = new IntersectionObserver((entries) => {
+    let observer;
+
+    // 2. Increased from 100ms to 300ms so React has enough time to build the new page!
+    const timer = setTimeout(() => {
+        observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
@@ -38,9 +40,16 @@ const ScrollAndReveal = () => {
             });
         }, { threshold: 0.1 });
         
-        document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
-    }, 100); 
+        const elements = document.querySelectorAll('.scroll-reveal');
+        elements.forEach(el => observer.observe(el));
+    }, 300); 
     
+    // 3. CLEANUP: This stops the observer from glitching when you click links quickly
+    return () => {
+        clearTimeout(timer);
+        if (observer) observer.disconnect();
+    };
+
   }, [pathname]);
   
   return null;
