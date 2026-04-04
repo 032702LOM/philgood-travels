@@ -3,7 +3,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import './PhilGood.css';
 
 // Context Provider
-import { PreferencesProvider } from './context/PreferencesContext'; // <-- NEW
+import { PreferencesProvider } from './context/PreferencesContext'; 
 
 // Layout & Pages
 import Navbar from './components/Navbar';
@@ -19,17 +19,38 @@ import Connect from './pages/Connect';
 import Booking from './pages/Booking';
 import NotFound from './pages/NotFound';
 
-const ScrollToTop = () => {
+// ⚡ UPDATED: Global Scroll and Reveal Animation Tracker
+const ScrollAndReveal = () => {
   const { pathname } = useLocation();
-  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  
+  useEffect(() => { 
+    // 1. Scroll to top instantly on page change
+    window.scrollTo(0, 0); 
+    
+    // 2. Globally initialize the Scroll Reveal Animation for EVERY page
+    setTimeout(() => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+    }, 100); 
+    
+  }, [pathname]);
+  
   return null;
 };
 
 function App() {
   return (
-    <PreferencesProvider> {/* <-- WRAPPED THE ENTIRE APP HERE */}
+    <PreferencesProvider> 
       <div className="App">
-        <ScrollToTop />
+        <ScrollAndReveal /> {/* <-- Applied global fix here */}
         <Navbar />
         <main>
           <Routes>

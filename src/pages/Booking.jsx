@@ -52,9 +52,11 @@ const Booking = () => {
   const childTotal = (basePrice * 0.5) * guests.children; 
   const packageTotal = adultTotal + childTotal;
   
+  // ⚡ UPDATED: 50% Child Discount for Accommodation Class
   const adultAccTotal = accClassRates[accClass] * guests.adults;
   const childAccTotal = (accClassRates[accClass] * 0.5) * guests.children;
   const accClassTotal = adultAccTotal + childAccTotal;
+  
   const transferTotal = addons.airportTransfer ? addonPrices.airportTransfer : 0;
   const insuranceTotal = addons.insurance ? (addonPrices.insurance * totalHeads) : 0; 
   const dinnerTotal = addons.romanticDinner ? addonPrices.romanticDinner : 0;
@@ -81,6 +83,7 @@ const Booking = () => {
     setIsSubmitting(true);
     const user = JSON.parse(userStr);
 
+    // ⚡ UPDATED: Removed the multiplier text since math is now split
     const invoiceDetails = {
         basePriceTotal: adultTotal + childTotal,
         accClassText: `${accClass} Class`,
@@ -195,6 +198,7 @@ const Booking = () => {
                 </div>
               </div>
 
+              {/* ⚡ UPDATED: Carbon Footprint Link uses translations */}
               <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 mb-4 teal-hover-box" style={{ borderLeft: '4px solid #4CAF50 !important' }}>
                 <h4 className="fw-bold mb-2 font-montserrat text-navy">
                   <i className="fa-solid fa-leaf text-success me-2"></i> 
@@ -302,8 +306,11 @@ const Booking = () => {
                         
                         <div className="d-flex justify-content-between mb-2"><span className="text-grey small">Base Price (x{guests.adults})</span><span className="text-navy fw-bold">{formatPrice(adultTotal)}</span></div>
                         {guests.children > 0 && (<div className="d-flex justify-content-between mb-2"><span className="text-accent small">Children (50% Off)</span><span className="text-navy fw-bold">{formatPrice(childTotal)}</span></div>)}
+                        
+                        {/* ⚡ UPDATED: Split Accommodation Class UI */}
                         {accClass !== 'Standard' && (<div className="d-flex justify-content-between mb-2"><span className="text-accent small">{t('acc_class', 'Class')} (x{guests.adults})</span><span className="text-navy fw-bold">{formatPrice(adultAccTotal)}</span></div>)}
                         {accClass !== 'Standard' && guests.children > 0 && (<div className="d-flex justify-content-between mb-2"><span className="text-accent small">{t('acc_class', 'Class')} Child (50% Off)</span><span className="text-navy fw-bold">{formatPrice(childAccTotal)}</span></div>)}
+                        
                         {addons.airportTransfer && (<div className="d-flex justify-content-between mb-2"><span className="text-grey small">{t('transfer', 'Airport Transfer')}</span><span className="text-navy fw-bold">{formatPrice(transferTotal)}</span></div>)}
                         {addons.insurance && (<div className="d-flex justify-content-between mb-2"><span className="text-grey small">{t('insurance', 'Insurance')} (x{totalHeads})</span><span className="text-navy fw-bold">{formatPrice(insuranceTotal)}</span></div>)}
                         {addons.romanticDinner && (<div className="d-flex justify-content-between mb-2"><span className="text-grey small">{t('dinner', 'Romantic Dinner')}</span><span className="text-navy fw-bold">{formatPrice(dinnerTotal)}</span></div>)}
