@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
     bookmarks: [{ 
         type: String 
     }],
-    // ⚡ NEW: Identifies if the user is an administrator ⚡
+    // ⚡ NEW: Identifies if the user is an administrator
     isAdmin: { 
         type: Boolean, 
         default: false 

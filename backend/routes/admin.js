@@ -6,11 +6,9 @@ const User = require('../models/User');
 // GET: Fetch all dashboard statistics
 router.get('/stats', async (req, res) => {
     try {
-        // 1. Fetch all bookings and users from the database
         const allBookings = await Booking.find().sort({ createdAt: -1 }).populate('userId', 'name email');
-        const allUsers = await User.find().sort({ createdAt: -1 }).select('-password'); // Exclude passwords!
+        const allUsers = await User.find().sort({ createdAt: -1 }).select('-password'); 
 
-        // 2. Calculate Total Revenue (Only from Confirmed/Paid bookings)
         let totalRevenue = 0;
         allBookings.forEach(booking => {
             if (booking.bookingStatus !== 'Cancelled') {
@@ -19,14 +17,13 @@ router.get('/stats', async (req, res) => {
             }
         });
 
-        // 3. Send the packaged data back to the frontend dashboard
         res.status(200).json({
             totalUsers: allUsers.length,
             totalBookings: allBookings.length,
             totalRevenue: totalRevenue,
-            recentBookings: allBookings.slice(0, 10), // Send the 10 most recent bookings
-            recentUsers: allUsers.slice(0, 5),        // Send the 5 newest users
-            allBookings: allBookings                  // Send all for the data table
+            recentBookings: allBookings.slice(0, 10), 
+            recentUsers: allUsers.slice(0, 5),        
+            allBookings: allBookings                  
         });
 
     } catch (error) {
@@ -35,7 +32,7 @@ router.get('/stats', async (req, res) => {
     }
 });
 
-// PUT: Admin can quickly update a booking status (e.g., mark as confirmed/cancelled)
+// PUT: Admin can quickly update a booking status
 router.put('/booking-status/:id', async (req, res) => {
     try {
         const { status } = req.body;
