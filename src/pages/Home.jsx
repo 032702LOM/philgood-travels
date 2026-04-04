@@ -4,7 +4,6 @@ import { regions, tourPackages } from '../data/placesData';
 import { usePreferences } from '../context/PreferencesContext';
 
 import islandParadiseImg from '../assets/img/island_paradise.png'; 
-// Tip: You can change this image file later to match the new Island Hopping theme!
 import manOnCliffImg from '../assets/img/island_hopping.png'; 
 import sunbathingImg from '../assets/img/sunbathing.png'; 
 import swimImg from '../assets/img/swim.png';
@@ -72,62 +71,8 @@ const Home = () => {
     if (distance < -minSwipeDistance) rotateStack('pkg', 'prev'); 
   };
 
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.1 });
-    
-    document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
-    
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <div className="fade-in">
-        
-        <style>
-            {`
-                /* ⚡ UPDATED MOBILE STYLES FOR SCENE SECTIONS ⚡ */
-                @media (max-width: 991px) {
-                    .scene-section {
-                        /* Remove background image on mobile */
-                        background-image: none !important;
-                        background-color: var(--bg-dark); 
-                        padding: 2rem 0 !important;
-                        min-height: auto;
-                    }
-                    
-                    /* The container for the transparent PNG images on mobile */
-                    .mobile-scene-img {
-                        display: block !important;
-                        width: 100%;
-                        height: 300px;
-                        background-size: contain; /* Changed from cover so the full image fits */
-                        background-position: center;
-                        background-repeat: no-repeat; /* Prevents the image from repeating */
-                        background-color: transparent; /* Makes the box completely clear */
-                        margin-top: 2rem;
-                        box-shadow: none; /* Removed the harsh shadow */
-                    }
-
-                    .scene-content {
-                        padding-right: 0 !important;
-                    }
-                }
-
-                /* Hide the mobile image containers on desktop */
-                @media (min-width: 992px) {
-                    .mobile-scene-img {
-                        display: none !important;
-                    }
-                }
-            `}
-        </style>
 
         {showPromo && (
             <div className="top-alert" id="specialOfferBanner">
@@ -136,10 +81,17 @@ const Home = () => {
             </div>
         )}
 
-        {/* --- STATIC HERO SECTION --- */}
+        {/* --- STATIC HERO SECTION (Updated for Transparent Image) --- */}
         <section id="home" className="fade-in" style={{ marginTop: 0 }}>
-            <div className="home-hero w-100 position-relative" style={{ backgroundImage: `url(${islandParadiseImg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-                <div className="hero-overlay w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center"></div>
+            <div className="home-hero w-100 position-relative d-flex justify-content-center align-items-center" style={{ background: 'linear-gradient(180deg, #89C2D9 0%, #023E8A 100%)', minHeight: '100vh' }}>
+                <div className="hero-overlay w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center pb-5">
+                    <img 
+                        src={islandParadiseImg} 
+                        alt="Island Paradise" 
+                        className="img-fluid px-3" 
+                        style={{ maxWidth: '900px', width: '100%', objectFit: 'contain', filter: 'drop-shadow(0 15px 25px rgba(0,0,0,0.4))', animation: 'floatAir 6s ease-in-out infinite' }} 
+                    />
+                </div>
             </div>
 
             {/* PROMO VIDEO OVERLAP */}
@@ -188,20 +140,21 @@ const Home = () => {
             </div>
         </section>
 
-        {/* SCENE 1: THE ISLAND HOPPERS */}
-        <section className="scene-section trail-makers-bg" style={{ backgroundImage: `url("${manOnCliffImg}")`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+        {/* SCENE 1: THE ISLAND HOPPERS (Text Left, Image Right) */}
+        <section className="scene-section" style={{ backgroundColor: 'var(--bg-dark)', padding: '80px 0' }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal">
-                    <div className="col-lg-6 trail-makers-text-col">
+                    <div className="col-lg-6 order-1 order-lg-1">
                         <div className="scene-content pe-lg-5">
-                            {/* ⚡ NEW KEYS: Bypasses the old Mountain dictionary completely! ⚡ */}
                             <span className="section-subtitle">{t('island_subtitle', 'DISCOVERY')}</span>
                             <h2 className="scene-title wave-text">{t('island_title', 'The Island Hoppers')}</h2>
                             <p className="scene-text">{t('island_desc1', 'Sometimes the best adventures begin where the ocean meets the shore. Step aboard a traditional bangka, feel the sea breeze, and hop between pristine islands waiting to be discovered.')}</p>     
                             <p className="scene-text">{t('island_desc2', 'Navigate past towering limestone cliffs into hidden lagoons of crystal-clear turquoise water. Drop your anchor at secluded white-sand beaches and dive into vibrant marine sanctuaries.')}</p>             
-                            <Link to="/destinations?search=island" className="btn-text-link">{t('island_btn', 'Explore Island Tours')} <i className="fa-solid fa-arrow-right"></i></Link>
+                            <Link to="/destinations?search=island" className="btn-text-link mt-3">{t('island_btn', 'Explore Island Tours')} <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
-                        <div className="mobile-scene-img" style={{ backgroundImage: `url("${manOnCliffImg}")` }}></div>
+                    </div>
+                    <div className="col-lg-6 order-2 order-lg-2 text-center mt-5 mt-lg-0">
+                        <img src={manOnCliffImg} alt="Island Hopping" className="img-fluid" style={{ maxHeight: '450px', objectFit: 'contain', filter: 'drop-shadow(0 20px 30px rgba(0,0,0,0.15))' }} />
                     </div>
                 </div>
             </div>
@@ -254,30 +207,32 @@ const Home = () => {
             </div>
         </section>
 
-        {/* --- SCENE 2: BASK UNDER THE SUN --- */}
-        <section className="scene-section bask-sun-bg" style={{ backgroundImage: `url("${sunbathingImg}")`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+        {/* --- SCENE 2: BASK UNDER THE SUN (Image Left, Text Right) --- */}
+        <section className="scene-section" style={{ backgroundColor: 'var(--bg-dark)', padding: '80px 0' }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal">
-                    <div className="col-lg-6">
-                        <div className="scene-content pe-lg-5">
+                    <div className="col-lg-6 order-2 order-lg-1 text-center mt-5 mt-lg-0">
+                        <img src={sunbathingImg} alt="Relaxation" className="img-fluid" style={{ maxHeight: '450px', objectFit: 'contain', filter: 'drop-shadow(0 20px 30px rgba(0,0,0,0.15))' }} />
+                    </div>
+                    <div className="col-lg-6 order-1 order-lg-2">
+                        <div className="scene-content ps-lg-5">
                             <span className="section-subtitle">{t('relaxation', 'RELAXATION')}</span>
                             <h2 className="scene-title wave-text">{t('bask_sun', 'Bask Under the Sun')}</h2>
                             <p className="scene-text">{t('sun_desc1', "Feel the warmth of the tropical sun on your skin as you unwind on some of the world's most beautiful, powdery white sand beaches.")}</p>
                             <p className="scene-text">{t('sun_desc2', 'Let the gentle rhythm of the waves wash your worries away. Whether you are sipping a fresh coconut under a swaying palm tree or wading into crystal-clear turquoise waters, paradise is waiting.')}</p>
                             <Link to="/destinations?search=beach" className="btn-text-link mt-3 d-inline-block">{t('book_beach', 'Book a Beach Resort')} <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
-                        <div className="mobile-scene-img" style={{ backgroundImage: `url("${sunbathingImg}")` }}></div>
                     </div>
                 </div>
             </div>
         </section>
 
         {/* --- TOP PACKAGES --- */}
-        <section className="py-5" style={{ backgroundColor: 'var(--bg-dark)' }}>
+        <section className="py-5" style={{ backgroundColor: '#011627' }}>
             <div className="container py-5">
                 <div className="section-header scroll-reveal">
                     <span className="section-subtitle">{t('packages', 'Packages')}</span>
-                    <h2 className="section-title wave-text">{t('top_pkg', 'Top Packages That Fit You')}</h2>
+                    <h2 className="section-title wave-text force-white-text">{t('top_pkg', 'Top Packages That Fit You')}</h2>
                 </div>
                 
                 <div className="fanned-stack-container scroll-reveal mt-4" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEndPkg}>
@@ -357,19 +312,19 @@ const Home = () => {
         </section>
 
         {/* --- CTA --- */}
-        <section className="cta-section scroll-reveal">
+        <section className="cta-section scroll-reveal" style={{ backgroundColor: '#011627' }}>
             <div className="container text-center py-5">
-                <h2 className="section-title mb-3 wave-text">{t('ready_adventure', 'Ready for Your Next Adventure?')}</h2>
-                <p className="section-desc mb-4">{t('ready_desc', 'Book your dream Philippine vacation today and create memories that will last a lifetime.')}</p>
+                <h2 className="section-title mb-3 wave-text force-white-text">{t('ready_adventure', 'Ready for Your Next Adventure?')}</h2>
+                <p className="section-desc mb-4 force-white-text">{t('ready_desc', 'Book your dream Philippine vacation today and create memories that will last a lifetime.')}</p>
                 <Link to="/booking" className="hero-btn">{t('start_journey', 'START YOUR JOURNEY')}</Link>
             </div>
         </section>
 
-        {/* SCENE 3: READY FOR YOUR NEXT DIVE */}
-        <section className="scene-section dive-bg" style={{ backgroundImage: `url("${swimImg}")`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+        {/* SCENE 3: READY FOR YOUR NEXT DIVE (Text Left, Image Right) */}
+        <section className="scene-section" style={{ backgroundColor: 'var(--bg-dark)', padding: '80px 0' }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal">
-                    <div className="col-lg-6">
+                    <div className="col-lg-6 order-1 order-lg-1">
                         <div className="scene-content pe-lg-5">
                             <span className="section-subtitle">{t('underwater', 'UNDERWATER')}</span>
                             <h2 className="scene-title wave-text">{t('next_dive', 'Ready for Your Next Dive?')}</h2>
@@ -377,7 +332,9 @@ const Home = () => {
                             <p className="scene-text">{t('dive_desc2', 'Beyond the technicolor gardens of coral lies a world frozen in time. Navigate through haunting shipwrecks and silent underwater caverns where history rests beneath the tides.')}</p>
                             <Link to="/tours?search=diving" className="btn-text-link mt-3 d-inline-block">{t('view_diving', 'View Diving Packages')} <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
-                        <div className="mobile-scene-img" style={{ backgroundImage: `url("${swimImg}")` }}></div>
+                    </div>
+                    <div className="col-lg-6 order-2 order-lg-2 text-center mt-5 mt-lg-0">
+                        <img src={swimImg} alt="Diving" className="img-fluid" style={{ maxHeight: '450px', objectFit: 'contain', filter: 'drop-shadow(0 20px 30px rgba(0,0,0,0.15))' }} />
                     </div>
                 </div>
             </div>
