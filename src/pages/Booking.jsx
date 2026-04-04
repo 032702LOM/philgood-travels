@@ -203,7 +203,7 @@ const Booking = () => {
                     style={{ color: 'inherit', textDecoration: 'underline', textDecorationColor: '#4CAF50' }}
                     title="Visit Forest Foundation Philippines"
                   >
-                    {t('carbon_footprint', 'Carbon Footprint')}
+                    {t('carbon_footprint', 'Carbon Footprint Visit Forest Foundation Philippines')}
                   </a>
                 </h4>
                 <p className="text-grey small mb-3">{t('carbon_desc', 'Air travel and ground transport generate emissions. The estimated footprint for')} {totalHeads} {t('carbon_desc2', 'traveler(s) is')} <strong className="text-navy">{totalHeads * 150}kg CO₂</strong>. {t('carbon_desc3', 'Help us offset this by contributing to local Philippine reforestation projects.')}</p>
