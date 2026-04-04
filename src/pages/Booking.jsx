@@ -194,7 +194,18 @@ const Booking = () => {
               </div>
 
               <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 mb-4 teal-hover-box" style={{ borderLeft: '4px solid #4CAF50 !important' }}>
-                <h4 className="fw-bold mb-2 font-montserrat text-navy"><i className="fa-solid fa-leaf text-success me-2"></i> {t('carbon_footprint', 'Carbon Footprint')}</h4>
+                <h4 className="fw-bold mb-2 font-montserrat text-navy">
+                  <i className="fa-solid fa-leaf text-success me-2"></i> 
+                  <a 
+                    href="https://www.forestfoundation.ph/" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    style={{ color: 'inherit', textDecoration: 'underline', textDecorationColor: '#4CAF50' }}
+                    title="Visit Forest Foundation Philippines"
+                  >
+                    {t('carbon_footprint', 'Carbon Footprint')}
+                  </a>
+                </h4>
                 <p className="text-grey small mb-3">{t('carbon_desc', 'Air travel and ground transport generate emissions. The estimated footprint for')} {totalHeads} {t('carbon_desc2', 'traveler(s) is')} <strong className="text-navy">{totalHeads * 150}kg CO₂</strong>. {t('carbon_desc3', 'Help us offset this by contributing to local Philippine reforestation projects.')}</p>
                 <div className={`p-3 rounded-3 border ${addons.carbonOffset ? 'border-success' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: addons.carbonOffset ? 'rgba(76, 175, 80, 0.1)' : '#F4FAFC', cursor: 'pointer', transition: 'all 0.3s' }} onClick={() => toggleAddon('carbonOffset')}>
                     <div className="form-check d-flex justify-content-between align-items-center m-0 p-0">
