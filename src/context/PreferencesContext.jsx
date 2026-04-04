@@ -195,11 +195,14 @@ export const PreferencesProvider = ({ children }) => {
       stats_clients: "SATISFIED CLIENTS",
       stats_tours: "TOURS ORGANIZED",
       stats_dest: "DESTINATIONS",
-      perspective: "PERSPECTIVE",
-      trail_makers: "The Trail Makers",
-      trail_desc1: "Sometimes the best view comes after the hardest climb. Take a moment to sit, breathe, and appreciate the world from a new perspective.",
-      trail_desc2: "A breathtaking panoramic view from a mountain summit at sunset. A lone hiker is sitting on a rocky ledge, silhouette against a vibrant orange and purple sky, looking out over a sea of clouds and distant peaks.",
-      explore_mountains: "Explore Mountains",
+      
+      // ⚡ UPDATED ENGLISH ISLAND HOPPING TEXT
+      perspective: "DISCOVERY",
+      trail_makers: "The Island Hoppers",
+      trail_desc1: "Sometimes the best adventures begin where the ocean meets the shore. Step aboard a traditional bangka, feel the sea breeze, and hop between pristine islands waiting to be discovered.",
+      trail_desc2: "Navigate past towering limestone cliffs into hidden lagoons of crystal-clear turquoise water. Drop your anchor at secluded white-sand beaches and dive into vibrant marine sanctuaries.",
+      explore_mountains: "Explore Island Tours",
+      
       regional: "Regional",
       pop_dest_desc: "Discover the key regions and landmarks the Philippines has to offer.",
       view_all_dest: "View All Destinations",
@@ -357,11 +360,14 @@ export const PreferencesProvider = ({ children }) => {
       stats_clients: "CLIENTES SATISFECHOS",
       stats_tours: "TOURS ORGANIZADOS",
       stats_dest: "DESTINOS",
-      perspective: "PERSPECTIVA",
-      trail_makers: "Los Creadores de Caminos",
-      trail_desc1: "A veces la mejor vista viene después de la subida más dura. Tómate un momento para sentarte, respirar y apreciar el mundo desde una nueva perspectiva.",
-      trail_desc2: "Una impresionante vista panorámica desde la cima de una montaña al atardecer. Un excursionista solitario está sentado en una cornisa rocosa, silueta contra un cielo vibrante naranja y morado.",
-      explore_mountains: "Explorar Montañas",
+      
+      // ⚡ UPDATED SPANISH ISLAND HOPPING TEXT
+      perspective: "DESCUBRIMIENTO",
+      trail_makers: "Los Exploradores de Islas",
+      trail_desc1: "A veces, las mejores aventuras comienzan donde el océano se encuentra con la costa. Sube a bordo de una bangka tradicional, siente la brisa marina y salta entre islas vírgenes que esperan ser descubiertas.",
+      trail_desc2: "Navega más allá de imponentes acantilados de piedra caliza hacia lagunas escondidas de aguas turquesas cristalinas. Echa el ancla en playas solitarias de arena blanca y sumérgete en vibrantes santuarios marinos.",
+      explore_mountains: "Explorar Tours por las Islas",
+      
       regional: "Regional",
       pop_dest_desc: "Descubre las regiones y lugares clave que Filipinas tiene para ofrecer.",
       view_all_dest: "Ver Todos los Destinos",
@@ -519,11 +525,14 @@ export const PreferencesProvider = ({ children }) => {
       stats_clients: "MGA MASAYANG KLIENTE",
       stats_tours: "MGA TOUR NA ORGANISA",
       stats_dest: "MGA DESTINASYON",
-      perspective: "PERSPEKTIBA",
-      trail_makers: "Ang Mga Tagagawa ng Landas",
-      trail_desc1: "Minsan ang pinakamagandang tanawin ay pagkatapos ng pinakamahirap na pag-akyat. Maglaan ng sandali para umupo, huminga, at pahalagahan ang mundo.",
-      trail_desc2: "Isang nakamamanghang panoramic view mula sa tuktok ng bundok sa paglubog ng araw. Isang nag-iisang hiker na nakaupo sa bato.",
-      explore_mountains: "Tuklasin ang mga Bundok",
+      
+      // ⚡ UPDATED TAGALOG ISLAND HOPPING TEXT
+      perspective: "PAGTUKLAS",
+      trail_makers: "Ang Mga Island Hopper",
+      trail_desc1: "Minsan ang pinakamagandang pakikipagsapalaran ay nagsisimula kung saan nagtatagpo ang karagatan at dalampasigan. Sumakay sa tradisyonal na bangka, ramdamin ang simoy ng dagat, at mag-island hopping sa mga paraisong naghihintay matuklasan.",
+      trail_desc2: "Maglayag lampas sa matataas na limestone cliffs patungo sa mga nakatagong lagoon na may malinaw at turquoise na tubig. Ihulog ang angkla sa mga tagong white-sand beach at sumisid sa mga makulay na marine sanctuary.",
+      explore_mountains: "Tuklasin ang Island Tours",
+      
       regional: "Rehiyonal",
       pop_dest_desc: "Tuklasin ang mga pangunahing rehiyon at palatandaan sa Pilipinas.",
       view_all_dest: "Tingnan Lahat ng Destinasyon",
@@ -681,11 +690,14 @@ export const PreferencesProvider = ({ children }) => {
       stats_clients: "CLIENTS SATISFAITS",
       stats_tours: "CIRCUITS ORGANISÉS",
       stats_dest: "DESTINATIONS",
-      perspective: "PERSPECTIVE",
-      trail_makers: "Les Pionniers",
-      trail_desc1: "Parfois, la meilleure vue vient après la montée la plus difficile. Prenez un moment pour vous asseoir, respirer et apprécier le monde.",
-      trail_desc2: "Une vue panoramique à couper le souffle depuis un sommet de montagne au coucher du soleil. Un randonneur solitaire est assis sur un rebord rocheux.",
-      explore_mountains: "Explorer les montagnes",
+      
+      // ⚡ UPDATED FRENCH ISLAND HOPPING TEXT
+      perspective: "DÉCOUVERTE",
+      trail_makers: "Les Explorateurs d'Îles",
+      trail_desc1: "Parfois, les meilleures aventures commencent là où l'océan rencontre le rivage. Montez à bord d'une bangka traditionnelle, sentez la brise marine et naviguez d'île en île à la découverte de paradis préservés.",
+      trail_desc2: "Naviguez au-delà des imposantes falaises de calcaire vers des lagons cachés aux eaux turquoise cristallines. Jetez l'ancre sur des plages de sable blanc isolées et plongez dans des sanctuaires marins vibrants.",
+      explore_mountains: "Explorer les circuits des îles",
+      
       regional: "Régional",
       pop_dest_desc: "Découvrez les régions et sites incontournables des Philippines.",
       view_all_dest: "Voir toutes les destinations",
@@ -807,7 +819,7 @@ export const PreferencesProvider = ({ children }) => {
       filters: "Filtros",
       clear_all: "Limpar tudo",
       explore_regions: "Explorar Regiões",
-      major_regions: "6 Regiões Principais",
+      major_regions: "6 Regiões Principales",
       view_acc: "Ver Acomodações",
       search_results: "Resultados da Pesquisa",
       dest_found: "destino(s) encontrado(s)",
@@ -843,11 +855,14 @@ export const PreferencesProvider = ({ children }) => {
       stats_clients: "CLIENTES SATISFEITOS",
       stats_tours: "TOURS ORGANIZADOS",
       stats_dest: "DESTINOS",
-      perspective: "PERSPECTIVA",
-      trail_makers: "Os Pioneiros",
-      trail_desc1: "Às vezes, a melhor vista vem após a subida mais difícil. Reserve um momento para sentar, respirar e apreciar o mundo de uma nova perspectiva.",
-      trail_desc2: "Uma vista panorâmica de tirar o fôlego de uma montanha ao pôr do sol. Um caminhante solitário está sentado em uma borda rochosa.",
-      explore_mountains: "Explorar Montanhas",
+      
+      // ⚡ UPDATED PORTUGUESE ISLAND HOPPING TEXT
+      perspective: "DESCOBERTA",
+      trail_makers: "Os Exploradores de Ilhas",
+      trail_desc1: "Às vezes, as melhores aventuras começam onde o oceano encontra a costa. Suba a bordo de um bangka tradicional, sinta a brisa do mar e salte entre ilhas imaculadas à espera de serem descobertas.",
+      trail_desc2: "Navegue além de imponentes penhascos de calcário para lagoas escondidas de águas azul-turquesa cristalinas. Ancore em praias isoladas de areia branca e mergulhe em vibrantes santuários marinhos.",
+      explore_mountains: "Explorar Passeios pelas Ilhas",
+      
       regional: "Regional",
       pop_dest_desc: "Descubra as principais regiões e pontos turísticos que as Filipinas têm a oferecer.",
       view_all_dest: "Ver Todos os Destinos",
@@ -1005,11 +1020,14 @@ export const PreferencesProvider = ({ children }) => {
       stats_clients: "満足したお客様",
       stats_tours: "企画されたツアー",
       stats_dest: "目的地",
-      perspective: "視点",
-      trail_makers: "トレイルメーカー",
-      trail_desc1: "最高の景色は、最も困難な登りの後にやって来ることがあります。座って、深呼吸をして、新しい視点から世界に感謝する時間を取ってください。",
-      trail_desc2: "夕暮れ時の山頂からの息をのむようなパノラマビュー。孤独なハイカーが岩棚に座っています。",
-      explore_mountains: "山を探索する",
+      
+      // ⚡ UPDATED JAPANESE ISLAND HOPPING TEXT
+      perspective: "発見",
+      trail_makers: "アイランドホッパー",
+      trail_desc1: "最高の冒険は、海と岸が出会う場所から始まることがあります。伝統的なバンカ船に乗り込み、海風を感じながら、手つかずの島々を巡りましょう。",
+      trail_desc2: "そびえ立つ石灰岩の崖を通り抜け、透き通ったターコイズブルーの隠れたラグーンへ。人里離れた白砂のビーチにいかりを下ろし、活気ある海洋保護区に飛び込みましょう。",
+      explore_mountains: "アイランドツアーを探索",
+      
       regional: "地域",
       pop_dest_desc: "フィリピンが提供する主要な地域とランドマークを発見してください。",
       view_all_dest: "すべての目的地を見る",
@@ -1167,11 +1185,14 @@ export const PreferencesProvider = ({ children }) => {
       stats_clients: "满意的客户",
       stats_tours: "组织的旅行",
       stats_dest: "目的地",
-      perspective: "视角",
-      trail_makers: "开路先锋",
-      trail_desc1: "有时最美的风景出现在最艰难的攀登之后。花点时间坐下来，深呼吸，从一个新的角度欣赏世界。",
-      trail_desc2: "日落时分山顶的壮丽全景。一个孤独的徒步旅行者坐在岩石边缘。",
-      explore_mountains: "探索山脉",
+      
+      // ⚡ UPDATED CHINESE ISLAND HOPPING TEXT
+      perspective: "发现",
+      trail_makers: "跳岛探险家",
+      trail_desc1: "有时最好的冒险始于海洋与海岸相遇的地方。登上传统的螃蟹船（bangka），感受海风，在等待被发现的原始岛屿之间穿梭。",
+      trail_desc2: "驶过高耸的石灰岩悬崖，进入拥有清澈绿松石色海水的隐藏泻湖。在僻静的白沙滩抛锚，潜入充满活力的海洋保护区。",
+      explore_mountains: "探索跳岛游",
+      
       regional: "区域",
       pop_dest_desc: "发现菲律宾提供的主要地区和地标。",
       view_all_dest: "查看所有目的地",
@@ -1329,11 +1350,14 @@ export const PreferencesProvider = ({ children }) => {
       stats_clients: "عملاء راضون",
       stats_tours: "جولات منظمة",
       stats_dest: "وجهات",
-      perspective: "منظور",
-      trail_makers: "صناع المسار",
-      trail_desc1: "أحيانًا تأتي أفضل إطلالة بعد أصعب تسلق. خذ لحظة للجلوس والتنفس وتقدير العالم من منظور جديد.",
-      trail_desc2: "إطلالة بانورامية خلابة من قمة جبل عند غروب الشمس. متجول يجلس على حافة صخرية.",
-      explore_mountains: "استكشاف الجبال",
+      
+      // ⚡ UPDATED ARABIC ISLAND HOPPING TEXT
+      perspective: "اكتشاف",
+      trail_makers: "مستكشفو الجزر",
+      trail_desc1: "أحيانًا تبدأ أفضل المغامرات حيث يلتقي المحيط بالشاطئ. اصعد على متن قارب البانغكا التقليدي، واشعر بنسيم البحر، وتنقل بين الجزر البكر التي تنتظر من يكتشفها.",
+      trail_desc2: "أبحر متجاوزًا منحدرات الحجر الجيري الشاهقة إلى البحيرات المخفية ذات المياه الفيروزية الصافية. ألقِ مرساتك في الشواطئ الرملية البيضاء المنعزلة واغطس في المحميات البحرية النابضة بالحياة.",
+      explore_mountains: "استكشاف جولات الجزر",
+      
       regional: "إقليمي",
       pop_dest_desc: "اكتشف المناطق والمعالم الرئيسية التي تقدمها الفلبين.",
       view_all_dest: "عرض جميع الوجهات",
@@ -1491,11 +1515,14 @@ export const PreferencesProvider = ({ children }) => {
       stats_clients: "ลูกค้าที่พึงพอใจ",
       stats_tours: "ทัวร์ที่จัดขึ้น",
       stats_dest: "จุดหมายปลายทาง",
-      perspective: "มุมมอง",
-      trail_makers: "ผู้สร้างเส้นทาง",
-      trail_desc1: "บางครั้งวิวที่ดีที่สุดก็มาหลังจากการปีนเขาที่ยากที่สุด ใช้เวลาสักครู่เพื่อพักผ่อน หายใจ และชื่นชมโลกจากมุมมองใหม่",
-      trail_desc2: "วิวพาโนรามาที่น่าทึ่งจากยอดเขาตอนพระอาทิตย์ตก นักปีนเขากำลังนั่งอยู่บนหน้าผาหิน",
-      explore_mountains: "สำรวจภูเขา",
+      
+      // ⚡ UPDATED THAI ISLAND HOPPING TEXT
+      perspective: "การค้นพบ",
+      trail_makers: "นักผจญภัยข้ามเกาะ",
+      trail_desc1: "บางครั้งการผจญภัยที่ดีที่สุดเริ่มต้นในจุดที่มหาสมุทรบรรจบกับชายฝั่ง ก้าวขึ้นเรือบังกาแบบดั้งเดิม สัมผัสลมทะเล และเดินทางข้ามเกาะที่บริสุทธิ์ซึ่งรอการค้นพบ",
+      trail_desc2: "ล่องเรือผ่านหน้าผาหินปูนสูงตระหง่านไปยังทะเลสาบที่ซ่อนอยู่ซึ่งมีน้ำสีเทอร์ควอยซ์ใส ทอดสมอที่ชายหาดทรายขาวอันเงียบสงบและดำดิ่งสู่เขตอนุรักษ์ทางทะเลที่มีชีวิตชีวา",
+      explore_mountains: "สำรวจทัวร์เกาะ",
+      
       regional: "ภูมิภาค",
       pop_dest_desc: "ค้นพบภูมิภาคและสถานที่สำคัญที่ฟิลิปปินส์มีให้",
       view_all_dest: "ดูจุดหมายปลายทางทั้งหมด",
@@ -1653,11 +1680,14 @@ export const PreferencesProvider = ({ children }) => {
       stats_clients: "PELANGGAN BERPUAS HATI",
       stats_tours: "LAWATAN DIANJURKAN",
       stats_dest: "DESTINASI",
-      perspective: "PERSPEKTIF",
-      trail_makers: "Pembuat Laluan",
-      trail_desc1: "Kadang-kadang pemandangan terbaik datang selepas pendakian yang paling sukar. Luangkan masa untuk duduk, bernafas, dan menghargai dunia dari perspektif baharu.",
-      trail_desc2: "Pemandangan panorama yang menakjubkan dari puncak gunung pada waktu matahari terbenam. Seorang pendaki sedang duduk di tebing batu.",
-      explore_mountains: "Teroka Gunung",
+      
+      // ⚡ UPDATED MALAY ISLAND HOPPING TEXT
+      perspective: "PENEMUAN",
+      trail_makers: "Penjelajah Pulau",
+      trail_desc1: "Kadang-kadang pengembaraan terbaik bermula di mana lautan bertemu pantai. Naik bangka tradisional, rasakan bayu laut, dan lompat antara pulau-pulau dara yang menunggu untuk ditemui.",
+      trail_desc2: "Belayar melepasi tebing batu kapur yang menjulang tinggi ke lagun tersembunyi dengan air biru pirus yang jernih. Jatuhkan sauh di pantai pasir putih yang terpencil dan selami tempat perlindungan marin yang meriah.",
+      explore_mountains: "Teroka Lawatan Pulau",
+      
       regional: "Serantau",
       pop_dest_desc: "Temui wilayah dan mercu tanda utama yang ditawarkan oleh Filipina.",
       view_all_dest: "Lihat Semua Destinasi",
@@ -1815,11 +1845,14 @@ export const PreferencesProvider = ({ children }) => {
       stats_clients: "KLIEN PUAS",
       stats_tours: "TUR DISELENGGARAKAN",
       stats_dest: "DESTINASI",
-      perspective: "PERSPEKTIF",
-      trail_makers: "Pembuat Jejak",
-      trail_desc1: "Terkadang pemandangan terbaik datang setelah pendakian tersulit. Luangkan waktu untuk duduk, bernapas, dan menghargai dunia dari perspektif baru.",
-      trail_desc2: "Pemandangan panorama yang menakjubkan dari puncak gunung saat matahari terbenam. Seorang pejalan kaki sedang duduk di langkan batu.",
-      explore_mountains: "Jelajahi Pegunungan",
+      
+      // ⚡ UPDATED INDONESIAN ISLAND HOPPING TEXT
+      perspective: "PENEMUAN",
+      trail_makers: "Penjelajah Pulau",
+      trail_desc1: "Terkadang petualangan terbaik dimulai di mana lautan bertemu dengan pantai. Naiklah bangka tradisional, rasakan angin laut, dan jelajahi pulau-pulau perawan yang menunggu untuk ditemukan.",
+      trail_desc2: "Berlayar melewati tebing batu kapur yang menjulang tinggi menuju laguna tersembunyi dengan air pirus sebening kristal. Jatuhkan jangkar di pantai pasir putih terpencil dan selami cagar alam laut yang semarak.",
+      explore_mountains: "Jelajahi Tur Pulau",
+      
       regional: "Regional",
       pop_dest_desc: "Temukan wilayah dan landmark utama yang ditawarkan Filipina.",
       view_all_dest: "Lihat Semua Destinasi",
