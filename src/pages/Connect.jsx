@@ -28,7 +28,7 @@ const Connect = () => {
   };
 
   return (
-    <div className="fade-in position-relative connect-page-bg" style={{ backgroundColor: '#023E8A', backgroundImage: `url(${connectBgImg})` }}>
+    <div className="fade-in position-relative connect-page-bg" style={{ backgroundImage: `url(${connectBgImg})` }}>
       
       <div className="container position-relative" style={{ zIndex: 10, paddingTop: '150px', paddingBottom: '100px' }}>
           

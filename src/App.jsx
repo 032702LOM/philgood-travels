@@ -3,7 +3,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import './PhilGood.css';
 
 // Context Provider
-import { PreferencesProvider } from './context/PreferencesContext'; 
+import { PreferencesProvider } from './context/PreferencesContext'; // <-- NEW
 
 // Layout & Pages
 import Navbar from './components/Navbar';
@@ -19,47 +19,17 @@ import Connect from './pages/Connect';
 import Booking from './pages/Booking';
 import NotFound from './pages/NotFound';
 
-// ⚡ UPDATED: Global Scroll and Reveal Animation Tracker
-const ScrollAndReveal = () => {
+const ScrollToTop = () => {
   const { pathname } = useLocation();
-  
-  useEffect(() => { 
-    // 1. Scroll to top instantly on page change
-    window.scrollTo(0, 0); 
-    
-    let observer;
-
-    // 2. Increased from 100ms to 300ms so React has enough time to build the new page!
-    const timer = setTimeout(() => {
-        observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
-        
-        const elements = document.querySelectorAll('.scroll-reveal');
-        elements.forEach(el => observer.observe(el));
-    }, 300); 
-    
-    // 3. CLEANUP: This stops the observer from glitching when you click links quickly
-    return () => {
-        clearTimeout(timer);
-        if (observer) observer.disconnect();
-    };
-
-  }, [pathname]);
-  
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
   return null;
 };
 
 function App() {
   return (
-    <PreferencesProvider> 
+    <PreferencesProvider> {/* <-- WRAPPED THE ENTIRE APP HERE */}
       <div className="App">
-        <ScrollAndReveal /> {/* <-- Applied global fix here */}
+        <ScrollToTop />
         <Navbar />
         <main>
           <Routes>

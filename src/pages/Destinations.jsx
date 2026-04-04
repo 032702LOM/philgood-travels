@@ -210,7 +210,7 @@ const Destinations = () => {
 
   return (
     <div id="destinations-main-view" className="fade-in">
-        <section className="destinations-hero" style={{ backgroundColor: '#023E8A', backgroundImage: `url("${heroImg}")`, marginTop: 0 }}>
+        <section className="destinations-hero" style={{ backgroundImage: `url("${heroImg}")`, marginTop: 0 }}>
             <div className="container text-center mb-4 scroll-reveal visible">
                 <h1 className="hero-title transparent-text" style={{ fontSize: '4rem' }}>{t('dest_title', 'Find Your Place')}</h1>
             </div>

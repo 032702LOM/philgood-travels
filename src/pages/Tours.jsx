@@ -106,9 +106,9 @@ const Tours = () => {
       'Batad Terraces', 'Banaue Viewpoint', 'Tappiya Falls'
   ])).sort();
 
- return (
+  return (
     <div className="fade-in" style={{ backgroundColor: 'var(--bg-dark)' }}>
-       <section className="tours-hero" style={{ backgroundColor: '#023E8A', backgroundImage: `url("${heroImg}")`, marginTop: 0 }}>
+       <section className="tours-hero" style={{ marginTop: 0, backgroundImage: `url("${heroImg}")` }}>
             <div className="container text-center mb-4 scroll-reveal visible">
                 <h1 className="hero-title transparent-text" style={{ fontSize: '4rem' }}>{t('tours_title', 'Tour Packages')}</h1>
             </div>
