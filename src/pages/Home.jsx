@@ -4,6 +4,7 @@ import { regions, tourPackages } from '../data/placesData';
 import { usePreferences } from '../context/PreferencesContext';
 
 import islandParadiseImg from '../assets/img/island_paradise.png'; 
+// Tip: You can change this image file later to match the new Island Hopping theme!
 import manOnCliffImg from '../assets/img/man on cliff.png'; 
 import sunbathingImg from '../assets/img/sunbathing.png'; 
 import swimImg from '../assets/img/swim.png';
@@ -187,17 +188,17 @@ const Home = () => {
             </div>
         </section>
 
-        {/* SCENE 1: MAN ON CLIFF */}
+        {/* SCENE 1: THE ISLAND HOPPERS */}
         <section className="scene-section trail-makers-bg" style={{ backgroundImage: `url("${manOnCliffImg}")`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal">
                     <div className="col-lg-6 trail-makers-text-col">
                         <div className="scene-content pe-lg-5">
-                            <span className="section-subtitle">{t('perspective', 'PERSPECTIVE')}</span>
-                            <h2 className="scene-title wave-text">{t('trail_makers', 'The Trail Makers')}</h2>
-                            <p className="scene-text">{t('trail_desc1', 'Sometimes the best view comes after the hardest climb. Take a moment to sit, breathe, and appreciate the world from a new perspective.')}</p>     
-                            <p className="scene-text">{t('trail_desc2', 'A breathtaking panoramic view from a mountain summit at sunset. A lone hiker is sitting on a rocky ledge, silhouette against a vibrant orange and purple sky, looking out over a sea of clouds and distant peaks.')}</p>             
-                            <Link to="/destinations?search=mountain" className="btn-text-link">{t('explore_mountains', 'Explore Mountains')} <i className="fa-solid fa-arrow-right"></i></Link>
+                            <span className="section-subtitle">{t('perspective', 'DISCOVERY')}</span>
+                            <h2 className="scene-title wave-text">{t('trail_makers', 'The Island Hoppers')}</h2>
+                            <p className="scene-text">{t('trail_desc1', 'Sometimes the best adventures begin where the ocean meets the shore. Step aboard a traditional bangka, feel the sea breeze, and hop between pristine islands waiting to be discovered.')}</p>     
+                            <p className="scene-text">{t('trail_desc2', 'Navigate past towering limestone cliffs into hidden lagoons of crystal-clear turquoise water. Drop your anchor at secluded white-sand beaches and dive into vibrant marine sanctuaries.')}</p>             
+                            <Link to="/destinations?search=island" className="btn-text-link">{t('explore_mountains', 'Explore Island Tours')} <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
                         <div className="mobile-scene-img" style={{ backgroundImage: `url("${manOnCliffImg}")` }}></div>
                     </div>
