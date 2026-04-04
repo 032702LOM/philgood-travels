@@ -5,7 +5,8 @@ import { usePreferences } from '../context/PreferencesContext';
 
 import islandParadiseImg from '../assets/img/island_paradise.png'; 
 import manOnCliffImg from '../assets/img/island_hopping.png'; 
-import sunbathingImg from '../assets/img/sunbathing.png'; 
+// ⚡ FIX: Added the double .png.png to match your exact file name so the Vercel build doesn't crash!
+import sunbathingImg from '../assets/img/sunbathing.png.png'; 
 import swimImg from '../assets/img/swim.png';
 import promoVideo from '../assets/video/home.mp4'; 
 
