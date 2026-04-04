@@ -194,11 +194,12 @@ const Home = () => {
                 <div className="row align-items-center scene-block scroll-reveal">
                     <div className="col-lg-6 trail-makers-text-col">
                         <div className="scene-content pe-lg-5">
-                            <span className="section-subtitle">{t('perspective', 'DISCOVERY')}</span>
-                            <h2 className="scene-title wave-text">{t('trail_makers', 'The Island Hoppers')}</h2>
-                            <p className="scene-text">{t('trail_desc1', 'Sometimes the best adventures begin where the ocean meets the shore. Step aboard a traditional bangka, feel the sea breeze, and hop between pristine islands waiting to be discovered.')}</p>     
-                            <p className="scene-text">{t('trail_desc2', 'Navigate past towering limestone cliffs into hidden lagoons of crystal-clear turquoise water. Drop your anchor at secluded white-sand beaches and dive into vibrant marine sanctuaries.')}</p>             
-                            <Link to="/destinations?search=island" className="btn-text-link">{t('explore_mountains', 'Explore Island Tours')} <i className="fa-solid fa-arrow-right"></i></Link>
+                            {/* ⚡ NEW KEYS: Bypasses the old Mountain dictionary completely! ⚡ */}
+                            <span className="section-subtitle">{t('island_subtitle', 'DISCOVERY')}</span>
+                            <h2 className="scene-title wave-text">{t('island_title', 'The Island Hoppers')}</h2>
+                            <p className="scene-text">{t('island_desc1', 'Sometimes the best adventures begin where the ocean meets the shore. Step aboard a traditional bangka, feel the sea breeze, and hop between pristine islands waiting to be discovered.')}</p>     
+                            <p className="scene-text">{t('island_desc2', 'Navigate past towering limestone cliffs into hidden lagoons of crystal-clear turquoise water. Drop your anchor at secluded white-sand beaches and dive into vibrant marine sanctuaries.')}</p>             
+                            <Link to="/destinations?search=island" className="btn-text-link">{t('island_btn', 'Explore Island Tours')} <i className="fa-solid fa-arrow-right"></i></Link>
                         </div>
                         <div className="mobile-scene-img" style={{ backgroundImage: `url("${manOnCliffImg}")` }}></div>
                     </div>
