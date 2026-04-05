@@ -17,11 +17,18 @@ router.post('/register', async (req, res) => {
         const salt = await bcrypt.genSalt(10); 
         const hashedPassword = await bcrypt.hash(password, salt);
 
+        // ⚡ CHECK IF THEY ALREADY SUBSCRIBED TO THE NEWSLETTER ⚡
+        const existingSubscription = await Subscriber.findOne({ email: email });
+
         const newUser = new User({
             name: name,
             email: email,
             password: hashedPassword,
-            // ⚡ NEW: Auto-generate the first timeline note upon creation ⚡
+            // ⚡ APPLY THE SYNCED MARKETING PREFERENCE ⚡
+            marketing: {
+                email: !!existingSubscription, // true if found, false if not
+                sms: false
+            },
             adminNotes: [{
                 text: `System: Customer account created for ${name}.`,
                 authorInitials: '⚙️'
