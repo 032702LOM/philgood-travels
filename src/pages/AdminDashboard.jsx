@@ -200,6 +200,37 @@ const AdminDashboard = () => {
       });
   };
 
+  // ⚡ NEW: CLICK-TO-COPY FEATURE ⚡
+  const handleCopyEmail = (email) => {
+      if (!email) return;
+      navigator.clipboard.writeText(email).then(() => {
+          alert(`✅ Copied to clipboard: ${email}`);
+      }).catch(err => {
+          console.error("Failed to copy text: ", err);
+      });
+  };
+
+  const handleSendNewsletter = async () => {
+      if (!window.confirm("Are you sure you want to email ALL subscribers?")) return;
+      
+      try {
+          await axios.post('https://philgood-travels.onrender.com/api/admin/broadcast', {
+              subject: "Our Monsoon Special is Here! 🌧️",
+              htmlContent: `
+                  <div style="font-family: sans-serif; padding: 20px;">
+                      <h2 style="color: #00B4D8;">PhilGood Travels</h2>
+                      <p>Pack your bags! Get 30% off all Palawan packages this weekend only.</p>
+                      <a href="https://philgood-travels.vercel.app/tours" style="background-color: #FF9F1C; padding: 10px 20px; text-decoration: none; color: white; border-radius: 5px;">Book Now</a>
+                  </div>
+              `
+          });
+          alert("Newsletter sent successfully!");
+      } catch (error) {
+          alert("Failed to send newsletter.");
+      }
+  };
+ 
+
   // ==========================================
   // SAFE EARLY RETURNS
   // ==========================================
@@ -921,6 +952,10 @@ const AdminDashboard = () => {
             <p className="text-grey fw-bold m-0">Welcome to mission control. Here is your overview.</p>
           </div>
         </div>
+
+        <button className="btn btn-proceed shadow-lg px-4 py-2" onClick={handleSendNewsletter}>
+              <i className="fa-solid fa-paper-plane me-2"></i> Send Newsletter Blast
+          </button>
 
         {renderStatsCards()}
 

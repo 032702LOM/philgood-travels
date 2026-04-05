@@ -3,6 +3,9 @@ const router = express.Router();
 const Booking = require('../models/Booking');
 const User = require('../models/User');
 const Message = require('../models/Message');
+const { Resend } = require('resend');
+const Subscriber = require('../models/Subscriber');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // GET: Fetch all dashboard statistics
 router.get('/stats', async (req, res) => {
@@ -134,6 +137,40 @@ router.post('/user/:id/notes', async (req, res) => {
         res.status(200).json({ message: "Note added!", user: updatedUser });
     } catch (error) {
         res.status(500).json({ error: "Failed to add note." });
+    }
+});
+
+// POST: Send a marketing broadcast to all subscribers
+router.post('/broadcast', async (req, res) => {
+    try {
+        const { subject, htmlContent } = req.body;
+
+        if (!subject || !htmlContent) {
+            return res.status(400).json({ error: "Subject and HTML content are required." });
+        }
+
+        // 1. Fetch your master list of subscribers
+        const subscribers = await Subscriber.find({});
+        if (subscribers.length === 0) {
+            return res.status(400).json({ error: "Your subscriber list is empty!" });
+        }
+
+        // 2. Format the payload for Resend's Batch API
+        const emailBatch = subscribers.map(sub => ({
+            from: 'PhilGood Travels <onboarding@resend.dev>', // Update this once you add a custom domain to Resend
+            to: sub.email,
+            subject: subject,
+            html: htmlContent
+        }));
+
+        // Note: Resend's batch.send accepts up to 100 emails per call. 
+        // If your list grows beyond 100, you will need to slice the array into chunks of 100.
+        const response = await resend.batch.send(emailBatch);
+
+        res.status(200).json({ message: `Success! Blast sent to ${subscribers.length} subscribers.` });
+    } catch (error) {
+        console.error("Broadcast Error:", error);
+        res.status(500).json({ error: "Failed to send newsletter blast." });
     }
 });
 
