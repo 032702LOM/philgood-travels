@@ -16,8 +16,15 @@ const AdminDashboard = () => {
   const [selectedMessage, setSelectedMessage] = useState(null);
 
   const [selectedUser, setSelectedUser] = useState(null);
-  const [isEditingUser, setIsEditingUser] = useState(false);
-  const [editUserData, setEditUserData] = useState({ name: '', email: '', isAdmin: false });
+  
+  // ⚡ NEW: Advanced CRM Edit States ⚡
+  const [editMode, setEditMode] = useState(null); // 'contact', 'address', 'marketing', 'tax', or null
+  const [editUserData, setEditUserData] = useState({
+      name: '', email: '', isAdmin: false,
+      address: { phone: '', street: '', city: '', postalCode: '', country: '' },
+      marketing: { email: false, sms: false },
+      tax: { vatNumber: '', collectTax: false }
+  });
   
   const [newNote, setNewNote] = useState('');
   const [isPostingNote, setIsPostingNote] = useState(false);
@@ -75,10 +82,18 @@ const AdminDashboard = () => {
     } catch (error) { alert('❌ Failed to delete user.'); }
   };
 
+  // ⚡ UPDATED: Pre-fill all new forms when opening a user CRM ⚡
   const handleOpenUserCRM = (user) => {
       setSelectedUser(user);
-      setEditUserData({ name: user.name, email: user.email, isAdmin: user.isAdmin });
-      setIsEditingUser(false);
+      setEditUserData({ 
+          name: user.name || '', 
+          email: user.email || '', 
+          isAdmin: user.isAdmin || false,
+          address: user.address || { phone: '', street: '', city: '', postalCode: '', country: '' },
+          marketing: user.marketing || { email: false, sms: false },
+          tax: user.tax || { vatNumber: '', collectTax: false }
+      });
+      setEditMode(null);
       setNewNote(''); 
   };
 
@@ -88,7 +103,7 @@ const AdminDashboard = () => {
           const updatedUser = response.data.user;
           setStats(prevStats => ({ ...prevStats, allUsers: prevStats.allUsers.map(u => u._id === updatedUser._id ? updatedUser : u) }));
           setSelectedUser(updatedUser);
-          setIsEditingUser(false);
+          setEditMode(null);
       } catch (error) { alert('❌ Failed to update user.'); }
   };
 
@@ -98,21 +113,12 @@ const AdminDashboard = () => {
       try {
           const currentUser = JSON.parse(localStorage.getItem('user'));
           const initials = currentUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-
-          const response = await axios.post(`https://philgood-travels.onrender.com/api/admin/user/${selectedUser._id}/notes`, {
-              text: newNote,
-              authorInitials: initials
-          });
-
+          const response = await axios.post(`https://philgood-travels.onrender.com/api/admin/user/${selectedUser._id}/notes`, { text: newNote, authorInitials: initials });
           const updatedUser = response.data.user;
           setStats(prevStats => ({ ...prevStats, allUsers: prevStats.allUsers.map(u => u._id === updatedUser._id ? updatedUser : u) }));
           setSelectedUser(updatedUser);
           setNewNote('');
-      } catch (error) {
-          alert("❌ Failed to post note.");
-      } finally {
-          setIsPostingNote(false);
-      }
+      } catch (error) { alert("❌ Failed to post note."); } finally { setIsPostingNote(false); }
   };
 
   const handleReadMessage = async (msg) => {
@@ -174,7 +180,6 @@ const AdminDashboard = () => {
           const paid = b.payments?.reduce((s, p) => p.status === 'Paid' ? s + p.amountDue : s, 0) || 0;
           return sum + paid;
       }, 0);
-      
       const createdDate = new Date(selectedUser.createdAt);
       const today = new Date();
       daysSince = Math.floor((today - createdDate) / (1000 * 60 * 60 * 24));
@@ -234,7 +239,6 @@ const AdminDashboard = () => {
         </div>
 
         <div className="rounded-4 shadow-lg border border-primary border-opacity-25 overflow-hidden" style={{ backgroundColor: 'var(--card-bg)' }}>
-          
           {/* TAB 1: BOOKINGS */}
           {activeTab === 'bookings' && (
               <div className="row g-0 fade-in">
@@ -456,18 +460,19 @@ const AdminDashboard = () => {
                               </div>
 
                               <div className="col-lg-4">
+                                  {/* ⚡ UPDATED: Dynamic Customer Card with Multi-Form Editing ⚡ */}
                                   <div className="bg-white p-4 rounded-3 shadow-sm border mb-4">
                                       <div className="d-flex justify-content-between align-items-center mb-3">
                                           <h6 className="fw-bold text-dark m-0">Customer</h6>
                                           
-                                          {!isEditingUser && (
+                                          {!editMode && (
                                               <div className="dropdown">
                                                   <i className="fa-solid fa-ellipsis text-muted" style={{ cursor: 'pointer', padding: '0 5px' }} data-bs-toggle="dropdown"></i>
                                                   <ul className="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-2" style={{ fontSize: '0.9rem', minWidth: '220px' }}>
-                                                      <li><button className="dropdown-item py-2" onClick={() => setIsEditingUser(true)}>Edit contact information</button></li>
-                                                      <li><button className="dropdown-item py-2 text-muted" onClick={() => alert('Address management coming soon!')}>Manage addresses</button></li>
-                                                      <li><button className="dropdown-item py-2 text-muted" onClick={() => alert('Marketing settings coming soon!')}>Edit marketing settings</button></li>
-                                                      <li><button className="dropdown-item py-2 text-muted" onClick={() => alert('Tax details coming soon!')}>Edit tax details</button></li>
+                                                      <li><button className="dropdown-item py-2" onClick={() => setEditMode('contact')}>Edit contact information</button></li>
+                                                      <li><button className="dropdown-item py-2" onClick={() => setEditMode('address')}>Manage addresses</button></li>
+                                                      <li><button className="dropdown-item py-2" onClick={() => setEditMode('marketing')}>Edit marketing settings</button></li>
+                                                      <li><button className="dropdown-item py-2" onClick={() => setEditMode('tax')}>Edit tax details</button></li>
                                                       <li><hr className="dropdown-divider" /></li>
                                                       <li><button className="dropdown-item py-2 text-danger" onClick={(e) => { e.stopPropagation(); handleDeleteUser(selectedUser._id, selectedUser.name); }}>Delete customer</button></li>
                                                   </ul>
@@ -475,27 +480,48 @@ const AdminDashboard = () => {
                                           )}
                                       </div>
 
-                                      {!isEditingUser ? (
-                                          <div>
+                                      {/* VIEW MODE: Default state showing all data */}
+                                      {!editMode && (
+                                          <div className="fade-in">
                                               <h6 className="text-dark fw-bold mb-2">Contact information</h6>
-                                              <div className="d-flex justify-content-between align-items-center mb-4">
+                                              <div className="d-flex justify-content-between align-items-center mb-1">
                                                   <a href={`mailto:${selectedUser.email}`} className="text-decoration-none text-primary">{selectedUser.email}</a>
                                                   <i className="fa-regular fa-copy text-muted" style={{ cursor: 'pointer' }}></i>
                                               </div>
+                                              <p className="m-0 text-dark mb-4">{selectedUser.address?.phone || 'No phone provided'}</p>
+
                                               <h6 className="text-dark fw-bold mb-2">Default address</h6>
-                                              <p className="m-0 text-dark" style={{ lineHeight: '1.5' }}>{selectedUser.name}<br/>Manila, Philippines<br/>(System Default)</p>
+                                              <p className="m-0 text-dark mb-4" style={{ lineHeight: '1.5' }}>
+                                                  {selectedUser.name}<br/>
+                                                  {selectedUser.address?.street ? (
+                                                      <>
+                                                          {selectedUser.address.street}<br/>
+                                                          {selectedUser.address.city} {selectedUser.address.postalCode}<br/>
+                                                          {selectedUser.address.country}
+                                                      </>
+                                                  ) : (
+                                                      <span className="text-muted">No address provided</span>
+                                                  )}
+                                              </p>
                                               
-                                              <h6 className="text-dark fw-bold mb-2 mt-4">Marketing</h6>
+                                              <h6 className="text-dark fw-bold mb-2">Marketing</h6>
                                               <div className="d-flex gap-2 mb-4">
-                                                  <span className="badge bg-light text-dark border px-2 py-1"><i className="fa-regular fa-circle text-muted me-1" style={{fontSize:'0.6rem'}}></i> Email</span>
-                                                  <span className="badge bg-light text-dark border px-2 py-1"><i className="fa-regular fa-circle text-muted me-1" style={{fontSize:'0.6rem'}}></i> SMS</span>
+                                                  <span className="badge bg-light text-dark border px-2 py-1"><i className={`fa-regular ${selectedUser.marketing?.email ? 'fa-circle-check text-success' : 'fa-circle text-muted'} me-1`} style={{fontSize:'0.6rem'}}></i> Email</span>
+                                                  <span className="badge bg-light text-dark border px-2 py-1"><i className={`fa-regular ${selectedUser.marketing?.sms ? 'fa-circle-check text-success' : 'fa-circle text-muted'} me-1`} style={{fontSize:'0.6rem'}}></i> SMS</span>
                                               </div>
 
-                                              <h6 className="text-dark fw-bold mb-2">Account Role</h6>
-                                              <p className="m-0 text-dark">{selectedUser.isAdmin ? 'Admin / Staff' : 'Customer'}</p>
+                                              <h6 className="text-dark fw-bold mb-2">Tax details</h6>
+                                              <p className="m-0 text-dark" style={{ lineHeight: '1.5' }}>
+                                                  VAT number: {selectedUser.tax?.vatNumber || 'Not provided'}<br/>
+                                                  {selectedUser.tax?.collectTax ? 'Collect tax' : 'Do not collect tax'}
+                                              </p>
                                           </div>
-                                      ) : (
+                                      )}
+
+                                      {/* EDIT MODE: Contact Info */}
+                                      {editMode === 'contact' && (
                                           <div className="fade-in">
+                                              <h6 className="text-dark fw-bold mb-3 border-bottom pb-2">Edit Contact Info</h6>
                                               <div className="mb-3">
                                                   <label className="text-muted fw-bold small mb-1">Full Name</label>
                                                   <input type="text" className="form-control" value={editUserData.name} onChange={(e) => setEditUserData({...editUserData, name: e.target.value})} />
@@ -504,12 +530,83 @@ const AdminDashboard = () => {
                                                   <label className="text-muted fw-bold small mb-1">Email Address</label>
                                                   <input type="email" className="form-control" value={editUserData.email} onChange={(e) => setEditUserData({...editUserData, email: e.target.value})} />
                                               </div>
+                                              <div className="mb-4">
+                                                  <label className="text-muted fw-bold small mb-1">Phone Number</label>
+                                                  <input type="text" className="form-control" value={editUserData.address.phone} onChange={(e) => setEditUserData({...editUserData, address: {...editUserData.address, phone: e.target.value}})} />
+                                              </div>
                                               <div className="mb-4 form-check form-switch pt-2">
                                                   <input className="form-check-input" type="checkbox" role="switch" id="adminSwitch" checked={editUserData.isAdmin} onChange={(e) => setEditUserData({...editUserData, isAdmin: e.target.checked})} />
                                                   <label className="form-check-label text-dark fw-bold ms-2" htmlFor="adminSwitch">Grant Admin Privileges</label>
                                               </div>
                                               <div className="d-flex gap-2">
-                                                  <button className="btn btn-light border flex-grow-1 fw-bold text-dark" onClick={() => setIsEditingUser(false)}>Cancel</button>
+                                                  <button className="btn btn-light border flex-grow-1 fw-bold text-dark" onClick={() => setEditMode(null)}>Cancel</button>
+                                                  <button className="btn btn-dark flex-grow-1 fw-bold" onClick={handleSaveUserEdit}>Save</button>
+                                              </div>
+                                          </div>
+                                      )}
+
+                                      {/* EDIT MODE: Address */}
+                                      {editMode === 'address' && (
+                                          <div className="fade-in">
+                                              <h6 className="text-dark fw-bold mb-3 border-bottom pb-2">Manage Address</h6>
+                                              <div className="mb-3">
+                                                  <label className="text-muted fw-bold small mb-1">Street Address</label>
+                                                  <input type="text" className="form-control" value={editUserData.address.street} onChange={(e) => setEditUserData({...editUserData, address: {...editUserData.address, street: e.target.value}})} />
+                                              </div>
+                                              <div className="row g-2 mb-3">
+                                                  <div className="col-6">
+                                                      <label className="text-muted fw-bold small mb-1">City</label>
+                                                      <input type="text" className="form-control" value={editUserData.address.city} onChange={(e) => setEditUserData({...editUserData, address: {...editUserData.address, city: e.target.value}})} />
+                                                  </div>
+                                                  <div className="col-6">
+                                                      <label className="text-muted fw-bold small mb-1">Postal Code</label>
+                                                      <input type="text" className="form-control" value={editUserData.address.postalCode} onChange={(e) => setEditUserData({...editUserData, address: {...editUserData.address, postalCode: e.target.value}})} />
+                                                  </div>
+                                              </div>
+                                              <div className="mb-4">
+                                                  <label className="text-muted fw-bold small mb-1">Country / Region</label>
+                                                  <input type="text" className="form-control" value={editUserData.address.country} onChange={(e) => setEditUserData({...editUserData, address: {...editUserData.address, country: e.target.value}})} />
+                                              </div>
+                                              <div className="d-flex gap-2">
+                                                  <button className="btn btn-light border flex-grow-1 fw-bold text-dark" onClick={() => setEditMode(null)}>Cancel</button>
+                                                  <button className="btn btn-dark flex-grow-1 fw-bold" onClick={handleSaveUserEdit}>Save</button>
+                                              </div>
+                                          </div>
+                                      )}
+
+                                      {/* EDIT MODE: Marketing */}
+                                      {editMode === 'marketing' && (
+                                          <div className="fade-in">
+                                              <h6 className="text-dark fw-bold mb-3 border-bottom pb-2">Marketing Settings</h6>
+                                              <div className="form-check mb-3">
+                                                  <input className="form-check-input" type="checkbox" id="emailOptIn" checked={editUserData.marketing.email} onChange={(e) => setEditUserData({...editUserData, marketing: {...editUserData.marketing, email: e.target.checked}})} />
+                                                  <label className="form-check-label text-dark" htmlFor="emailOptIn">Subscribed to Email marketing</label>
+                                              </div>
+                                              <div className="form-check mb-4">
+                                                  <input className="form-check-input" type="checkbox" id="smsOptIn" checked={editUserData.marketing.sms} onChange={(e) => setEditUserData({...editUserData, marketing: {...editUserData.marketing, sms: e.target.checked}})} />
+                                                  <label className="form-check-label text-dark" htmlFor="smsOptIn">Subscribed to SMS marketing</label>
+                                              </div>
+                                              <div className="d-flex gap-2">
+                                                  <button className="btn btn-light border flex-grow-1 fw-bold text-dark" onClick={() => setEditMode(null)}>Cancel</button>
+                                                  <button className="btn btn-dark flex-grow-1 fw-bold" onClick={handleSaveUserEdit}>Save</button>
+                                              </div>
+                                          </div>
+                                      )}
+
+                                      {/* EDIT MODE: Tax Details */}
+                                      {editMode === 'tax' && (
+                                          <div className="fade-in">
+                                              <h6 className="text-dark fw-bold mb-3 border-bottom pb-2">Tax Details</h6>
+                                              <div className="mb-3">
+                                                  <label className="text-muted fw-bold small mb-1">VAT Number</label>
+                                                  <input type="text" className="form-control" placeholder="e.g. GB123456789" value={editUserData.tax.vatNumber} onChange={(e) => setEditUserData({...editUserData, tax: {...editUserData.tax, vatNumber: e.target.value}})} />
+                                              </div>
+                                              <div className="form-check mb-4">
+                                                  <input className="form-check-input" type="checkbox" id="collectTax" checked={editUserData.tax.collectTax} onChange={(e) => setEditUserData({...editUserData, tax: {...editUserData.tax, collectTax: e.target.checked}})} />
+                                                  <label className="form-check-label text-dark" htmlFor="collectTax">Collect tax on this customer</label>
+                                              </div>
+                                              <div className="d-flex gap-2">
+                                                  <button className="btn btn-light border flex-grow-1 fw-bold text-dark" onClick={() => setEditMode(null)}>Cancel</button>
                                                   <button className="btn btn-dark flex-grow-1 fw-bold" onClick={handleSaveUserEdit}>Save</button>
                                               </div>
                                           </div>
