@@ -2,14 +2,14 @@ const express = require('express');
 const router = express.Router();
 const Booking = require('../models/Booking');
 const User = require('../models/User');
-const Message = require('../models/Message'); // ⚡ NEW
+const Message = require('../models/Message');
 
 // GET: Fetch all dashboard statistics
 router.get('/stats', async (req, res) => {
     try {
         const allBookings = await Booking.find().sort({ createdAt: -1 }).populate('userId', 'name email');
         const allUsers = await User.find().sort({ createdAt: -1 }).select('-password'); 
-        const allMessages = await Message.find().sort({ createdAt: -1 }); // ⚡ NEW: Fetch messages
+        const allMessages = await Message.find().sort({ createdAt: -1 });
 
         let totalRevenue = 0;
         allBookings.forEach(booking => {
@@ -25,7 +25,7 @@ router.get('/stats', async (req, res) => {
             totalRevenue: totalRevenue,
             allBookings: allBookings,
             allUsers: allUsers,
-            allMessages: allMessages // ⚡ NEW: Send messages to frontend
+            allMessages: allMessages
         });
 
     } catch (error) {
@@ -50,6 +50,27 @@ router.put('/booking-status/:id', async (req, res) => {
     }
 });
 
+// ⚡ NEW PUT: Edit User Details ⚡
+router.put('/user/:id', async (req, res) => {
+    try {
+        const { name, email, isAdmin } = req.body;
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).json({ error: "User not found" });
+
+        user.name = name || user.name;
+        user.email = email || user.email;
+        if (isAdmin !== undefined) user.isAdmin = isAdmin;
+
+        await user.save();
+        
+        // Return the updated user (excluding password)
+        const updatedUser = await User.findById(req.params.id).select('-password');
+        res.status(200).json({ message: "User updated successfully!", user: updatedUser });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to update user." });
+    }
+});
+
 // DELETE: Delete user
 router.delete('/user/:id', async (req, res) => {
     try {
@@ -60,7 +81,7 @@ router.delete('/user/:id', async (req, res) => {
     }
 });
 
-// ⚡ NEW: Mark message as read
+// PUT: Mark message as read
 router.put('/message/:id', async (req, res) => {
     try {
         const message = await Message.findById(req.params.id);
@@ -72,7 +93,7 @@ router.put('/message/:id', async (req, res) => {
     }
 });
 
-// ⚡ NEW: Delete message
+// DELETE: Delete message
 router.delete('/message/:id', async (req, res) => {
     try {
         await Message.findByIdAndDelete(req.params.id);
