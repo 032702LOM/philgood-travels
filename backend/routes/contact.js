@@ -3,6 +3,7 @@ const router = express.Router();
 const { Resend } = require('resend');
 const Message = require('../models/Message');
 const Subscriber = require('../models/Subscriber'); // ⚡ Imported our new model
+const User = require('../models/User');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
