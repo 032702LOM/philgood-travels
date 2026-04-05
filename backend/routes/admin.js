@@ -50,20 +50,23 @@ router.put('/booking-status/:id', async (req, res) => {
     }
 });
 
-// ⚡ NEW PUT: Edit User Details ⚡
+// ⚡ UPDATED PUT: Edit User Details (Now includes Address, Marketing, Tax) ⚡
 router.put('/user/:id', async (req, res) => {
     try {
-        const { name, email, isAdmin } = req.body;
+        const { name, email, isAdmin, address, marketing, tax } = req.body;
         const user = await User.findById(req.params.id);
         if (!user) return res.status(404).json({ error: "User not found" });
 
         user.name = name || user.name;
         user.email = email || user.email;
         if (isAdmin !== undefined) user.isAdmin = isAdmin;
+        
+        if (address) user.address = address;
+        if (marketing) user.marketing = marketing;
+        if (tax) user.tax = tax;
 
         await user.save();
         
-        // Return the updated user (excluding password)
         const updatedUser = await User.findById(req.params.id).select('-password');
         res.status(200).json({ message: "User updated successfully!", user: updatedUser });
     } catch (error) {
