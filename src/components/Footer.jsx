@@ -1,17 +1,39 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Footer = () => {
-  // State to control the Chat Widget popup
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState({ loading: false, message: '', type: '' });
 
   const toggleChat = () => {
     setIsChatOpen(!isChatOpen);
   };
 
+  // ⚡ NEW: Newsletter Subscribe Logic ⚡
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    if (!email) return;
+
+    setStatus({ loading: true, message: '', type: '' });
+
+    try {
+        const response = await axios.post('https://philgood-travels.onrender.com/api/contact/subscribe', { email });
+        setStatus({ loading: false, message: response.data.message, type: 'success' });
+        setEmail(''); // Clear input on success
+        
+        // Hide success message after 3 seconds
+        setTimeout(() => setStatus({ loading: false, message: '', type: '' }), 3000);
+    } catch (error) {
+        const errorMsg = error.response?.data?.error || "Failed to subscribe. Please try again.";
+        setStatus({ loading: false, message: errorMsg, type: 'danger' });
+        setTimeout(() => setStatus({ loading: false, message: '', type: '' }), 3000);
+    }
+  };
+
   return (
     <>
-      {/* --- ORIGINAL FOOTER (100% UNTOUCHED LOGIC) --- */}
       <footer>
           <div className="waves-container">
               <svg className="waves" xmlns="http://www.w3.org/2000/svg" viewBox="0 24 150 28" preserveAspectRatio="none" shapeRendering="auto">
@@ -62,9 +84,28 @@ const Footer = () => {
                   <div className="col-lg-3 col-md-6">
                       <h5 className="footer-heading text-white">Newsletter</h5>
                       <p className="mb-3 text-white-50">Subscribe for exclusive deals!</p>
-                      <form onSubmit={(e) => e.preventDefault()}>
-                          <input type="email" className="footer-input" placeholder="Your email" />
-                          <button type="submit" className="footer-subscribe-btn">SUBSCRIBE</button>
+                      
+                      {/* ⚡ UPDATED FORM ⚡ */}
+                      <form onSubmit={handleSubscribe} className="position-relative">
+                          <input 
+                              type="email" 
+                              className="footer-input" 
+                              placeholder="Your email" 
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                              required
+                          />
+                          <button type="submit" className="footer-subscribe-btn" disabled={status.loading}>
+                              {status.loading ? 'SUBSCRIBING...' : 'SUBSCRIBE'}
+                          </button>
+                          
+                          {/* Alert message directly underneath the form */}
+                          {status.message && (
+                              <div className={`text-${status.type} fw-bold small mt-2`}>
+                                  {status.type === 'success' ? <i className="fa-solid fa-check me-1"></i> : <i className="fa-solid fa-circle-exclamation me-1"></i>}
+                                  {status.message}
+                              </div>
+                          )}
                       </form>
                   </div>
               </div>
@@ -82,25 +123,16 @@ const Footer = () => {
                   <small className="text-white-50" style={{ fontSize: '0.8rem' }}>Chat directly with our team</small>
               </div>
               <div className="chat-popup-body">
-                  {/* WhatsApp Link - Replace number with your actual WhatsApp Business Number */}
                   <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" className="chat-platform-btn text-navy">
-                      <div className="platform-icon" style={{ backgroundColor: '#25D366' }}>
-                          <i className="fa-brands fa-whatsapp text-white"></i>
-                      </div>
+                      <div className="platform-icon" style={{ backgroundColor: '#25D366' }}><i className="fa-brands fa-whatsapp text-white"></i></div>
                       <span className="fw-bold font-montserrat" style={{ fontSize: '0.9rem' }}>WhatsApp</span>
                   </a>
-                  
-                  {/* Viber Link - Replace number with your actual Viber Number */}
                   <a href="viber://chat?number=%2B1234567890" target="_blank" rel="noopener noreferrer" className="chat-platform-btn text-navy">
-                      <div className="platform-icon" style={{ backgroundColor: '#7360F2' }}>
-                          <i className="fa-brands fa-viber text-white"></i>
-                      </div>
+                      <div className="platform-icon" style={{ backgroundColor: '#7360F2' }}><i className="fa-brands fa-viber text-white"></i></div>
                       <span className="fw-bold font-montserrat" style={{ fontSize: '0.9rem' }}>Viber</span>
                   </a>
               </div>
           </div>
-          
-          {/* Main Floating Button */}
           <button className="chat-btn-main" onClick={toggleChat}>
               <i className={`fa-solid ${isChatOpen ? 'fa-xmark' : 'fa-comment-dots'}`}></i>
           </button>

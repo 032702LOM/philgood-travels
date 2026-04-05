@@ -184,7 +184,7 @@ const AdminDashboard = () => {
   if (error) return <div className="fade-in d-flex align-items-center justify-content-center" style={{ minHeight: '80vh', backgroundColor: 'var(--bg-dark)' }}><h3 className="text-danger fw-bold font-montserrat">{error}</h3></div>;
 
   const unreadCount = stats.allMessages?.filter(m => m.status === 'Unread').length || 0;
-  const adminInitials = JSON.parse(localStorage.getItem('user'))?.name.substring(0, 2).toUpperCase() || 'AD';
+  const adminInitials = JSON.parse(localStorage.getItem('user'))?.name?.substring(0, 2).toUpperCase() || 'AD';
 
   return (
     <div className="fade-in" style={{ paddingTop: '100px', minHeight: '100vh', backgroundColor: 'var(--bg-dark)' }}>
@@ -234,6 +234,7 @@ const AdminDashboard = () => {
         </div>
 
         <div className="rounded-4 shadow-lg border border-primary border-opacity-25 overflow-hidden" style={{ backgroundColor: 'var(--card-bg)' }}>
+          
           {/* TAB 1: BOOKINGS */}
           {activeTab === 'bookings' && (
               <div className="row g-0 fade-in">
@@ -455,7 +456,6 @@ const AdminDashboard = () => {
                               </div>
 
                               <div className="col-lg-4">
-                                  {/* ⚡ NEW: Customer Contact Card with Dropdown ⚡ */}
                                   <div className="bg-white p-4 rounded-3 shadow-sm border mb-4">
                                       <div className="d-flex justify-content-between align-items-center mb-3">
                                           <h6 className="fw-bold text-dark m-0">Customer</h6>
@@ -532,8 +532,74 @@ const AdminDashboard = () => {
               </div>
           )}
 
-      {/* BOOKING DETAILS MODAL & MESSAGE READING MODAL REMAIN THE SAME... */}
-      {/* ... (Previous Booking & Message Modals omitted for brevity, they remain identical to your current working code) ... */}
+      {/* BOOKING DETAILS MODAL */}
+      {selectedBooking && (
+          <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0, 31, 63, 0.7)', backdropFilter: 'blur(5px)', zIndex: 1060 }}>
+              <div className="modal-dialog modal-dialog-centered modal-lg"> 
+                  <div className="modal-content border-0 shadow-lg" style={{ backgroundColor: 'var(--card-bg)', borderRadius: '16px' }}>
+                      <div className="modal-header border-bottom border-primary border-opacity-10 pb-3" style={{ backgroundColor: 'var(--primary-dark)', color: 'white', borderTopLeftRadius: '16px', borderTopRightRadius: '16px' }}>
+                          <div><h4 className="modal-title font-montserrat fw-bold mb-1">Booking Details</h4><small className="opacity-75">Order #{selectedBooking._id.toUpperCase()}</small></div>
+                          <button type="button" className="btn-close btn-close-white" onClick={() => setSelectedBooking(null)}></button>
+                      </div>
+                      <div className="modal-body p-4 text-grey">
+                          <div className="row mb-4">
+                              <div className="col-md-6">
+                                  <h6 className="text-primary-dark fw-bold mb-1">Package:</h6>
+                                  <p className="fs-5 text-navy fw-bold mb-3">{selectedBooking.packageName}</p>
+                                  <h6 className="text-primary-dark fw-bold mb-1">Travel Date:</h6>
+                                  <p className="mb-0"><i className="fa-regular fa-calendar text-accent me-2"></i>{selectedBooking.travelDate}</p>
+                              </div>
+                              <div className="col-md-6">
+                                  <h6 className="text-primary-dark fw-bold mb-1">Client:</h6>
+                                  <p className="mb-3">{selectedBooking.userId?.name || 'Deleted User'} ({selectedBooking.userId?.email || 'N/A'})</p>
+                                  <h6 className="text-primary-dark fw-bold mb-1">Guests:</h6>
+                                  <p className="mb-0"><i className="fa-solid fa-users text-accent me-2"></i>{selectedBooking.guests.adults} Adults, {selectedBooking.guests.children} Children, {selectedBooking.guests.infants} Infants</p>
+                              </div>
+                          </div>
+                          <div className="mb-4 p-3 rounded-3" style={{ backgroundColor: '#F4FAFC', border: '1px solid rgba(0, 119, 182, 0.2)' }}>
+                              <h6 className="text-navy font-montserrat fw-bold mb-3"><i className="fa-solid fa-file-invoice-dollar text-accent me-2"></i> Payment Tracking ({selectedBooking.paymentMethod})</h6>
+                              {selectedBooking.payments.map((payment, idx) => (
+                                  <div key={idx} className="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom border-primary border-opacity-10">
+                                      <span>{payment.payerEmail}</span>
+                                      <div>
+                                          <span className="fw-bold text-navy me-3">{formatPrice(payment.amountDue)}</span>
+                                          {payment.status === 'Paid' ? <span className="badge bg-success">Paid</span> : <span className="badge bg-warning text-dark">Pending</span>}
+                                      </div>
+                                  </div>
+                              ))}
+                              <div className="d-flex justify-content-between align-items-center mt-3 pt-2"><h5 className="text-navy fw-bold m-0">Grand Total</h5><h5 className="text-accent fw-bold m-0">{formatPrice(selectedBooking.totalPrice)}</h5></div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      )}
+
+      {/* MESSAGE READING MODAL */}
+      {selectedMessage && (
+          <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0, 31, 63, 0.7)', backdropFilter: 'blur(5px)', zIndex: 1060 }}>
+              <div className="modal-dialog modal-dialog-centered"> 
+                  <div className="modal-content border-0 shadow-lg" style={{ backgroundColor: 'var(--card-bg)', borderRadius: '16px' }}>
+                      <div className="modal-header border-bottom border-primary border-opacity-10 pb-3">
+                          <h4 className="modal-title font-montserrat fw-bold text-navy"><i className="fa-solid fa-envelope-open-text text-accent me-2"></i> Read Message</h4>
+                          <button type="button" className="btn-close" onClick={() => setSelectedMessage(null)}></button>
+                      </div>
+                      <div className="modal-body p-4 text-grey">
+                          <div className="mb-3 border-bottom border-primary border-opacity-10 pb-3">
+                              <h6 className="text-navy fw-bold mb-1">{selectedMessage.subject}</h6>
+                              <div className="d-flex justify-content-between small"><span>From: <strong>{selectedMessage.name}</strong> ({selectedMessage.email})</span><span>{new Date(selectedMessage.createdAt).toLocaleDateString()}</span></div>
+                          </div>
+                          <div className="p-3 rounded bg-light" style={{ minHeight: '150px', whiteSpace: 'pre-wrap', color: '#333' }}>{selectedMessage.message}</div>
+                      </div>
+                      <div className="modal-footer border-0 pt-0 d-flex gap-2">
+                          <a href={`mailto:${selectedMessage.email}?subject=Re: ${encodeURIComponent(selectedMessage.subject)}`} className="btn btn-outline-custom flex-grow-1 text-center shadow-sm" style={{ padding: '12px' }}><i className="fa-solid fa-desktop me-2"></i> Desktop App</a>
+                          <a href={`https://mail.google.com/mail/?view=cm&fs=1&to=${selectedMessage.email}&su=Re:%20${encodeURIComponent(selectedMessage.subject)}`} target="_blank" rel="noopener noreferrer" className="btn btn-proceed flex-grow-1 text-center shadow-sm" style={{ padding: '12px' }}><i className="fa-brands fa-google me-2"></i> Web Gmail</a>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      )}
+
     </div>
   );
 };
