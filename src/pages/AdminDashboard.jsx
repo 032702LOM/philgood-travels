@@ -141,7 +141,7 @@ const AdminDashboard = () => {
           
           // Payment Status
           const totalPaid = b.payments?.reduce((sum, p) => p.status === 'Paid' ? sum + p.amountDue : sum, 0) || 0;
-          const isFullyPaid = totalPaid >= b.totalPrice;
+          const kw = searchKeyword.toLowerCase().replace('#', '');
           const matchPayment = filterPayment === 'All' || (filterPayment === 'Fully Paid' && isFullyPaid) || (filterPayment === 'Pending/Partial' && !isFullyPaid);
           
           // Package Name
