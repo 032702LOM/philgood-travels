@@ -35,7 +35,12 @@ const Footer = () => {
       }
       setSessionId(currentSessionId);
 
-      const newSocket = io('https://philgood-travels.onrender.com'); 
+      const newSocket = io('https://philgood-travels.onrender.com', {
+    transports: ['polling', 'websocket'],
+    reconnection: true,
+    reconnectionAttempts: 5,
+    reconnectionDelay: 1000
+});
       setSocket(newSocket);
 
       // 1. ⚡ NEW: Always rejoin the room if the connection drops and reconnects

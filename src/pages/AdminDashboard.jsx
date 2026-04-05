@@ -94,7 +94,12 @@ const AdminDashboard = () => {
     fetchChats();
 
     // Opens the persistent "phone line" to your server
-    const socket = io('https://philgood-travels.onrender.com');
+    const socket = io('https://philgood-travels.onrender.com', {
+    transports: ['polling', 'websocket'],
+    reconnection: true,
+    reconnectionAttempts: 5,
+    reconnectionDelay: 1000
+});
     setAdminSocket(socket);
 
     // Listens for notifications when ANY visitor sends a message
