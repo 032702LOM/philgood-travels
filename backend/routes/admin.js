@@ -179,4 +179,14 @@ router.get('/chats', async (req, res) => {
     }
 });
 
+// ⚡ DELETE A CHAT SESSION
+router.delete('/chats/:sessionId', async (req, res) => {
+    try {
+        await ChatSession.findOneAndDelete({ sessionId: req.params.sessionId });
+        res.status(200).json({ message: 'Chat session deleted successfully' });
+    } catch (error) {
+        console.error("Error deleting chat:", error);
+        res.status(500).json({ error: 'Failed to delete chat session' });
+    }
+});
 module.exports = router;

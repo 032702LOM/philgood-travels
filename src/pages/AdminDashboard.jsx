@@ -145,6 +145,29 @@ const AdminDashboard = () => {
       setAdminChatInput('');
   };
 
+  // ⚡ END AND DELETE CHAT FUNCTION
+  const handleDeleteChat = async () => {
+      if (!selectedChat) return;
+      
+      // Double-check before deleting
+      if (!window.confirm('Are you sure you want to end and delete this chat session?')) return;
+
+      try {
+          // Tell the backend to delete it
+          await axios.delete(`https://philgood-travels.onrender.com/api/admin/chats/${selectedChat.sessionId}`);
+          
+          // Clear it from the main chat window
+          setSelectedChat(null);
+          
+          // Refresh the sidebar list to remove the deleted chat
+          const response = await axios.get('https://philgood-travels.onrender.com/api/admin/chats');
+          setActiveChats(response.data);
+      } catch (err) {
+          console.error("Error deleting chat:", err);
+          alert("Failed to delete chat. Check console for details.");
+      }
+  };
+
   const handleStatusUpdate = async (bookingId, newStatus) => {
     if (!window.confirm(`Mark this booking as ${newStatus}?`)) return;
     try {
@@ -1059,6 +1082,8 @@ const AdminDashboard = () => {
                         />
                         <button className="btn btn-proceed px-4 fw-bold" onClick={handleAdminReply} disabled={!adminChatInput.trim()}>
                             Send
+                        </button>
+                        <button className="btn btn-outline-danger px-3 fw-bold" onClick={handleDeleteChat} title="End & Delete Chat"><i className="fa-solid fa-trash-can"></i>
                         </button>
                     </div>
                 </>
