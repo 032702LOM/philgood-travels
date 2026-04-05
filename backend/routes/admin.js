@@ -34,7 +34,7 @@ router.get('/stats', async (req, res) => {
     }
 });
 
-// PUT: Update a booking status
+// PUT: Update a booking status & AUTOMATICALLY LOG IT
 router.put('/booking-status/:id', async (req, res) => {
     try {
         const { status } = req.body;
@@ -43,6 +43,18 @@ router.put('/booking-status/:id', async (req, res) => {
 
         booking.bookingStatus = status;
         await booking.save();
+        
+        // ⚡ NEW: Automated System Logging ⚡
+        if (booking.userId) {
+            const user = await User.findById(booking.userId);
+            if (user) {
+                user.adminNotes.push({
+                    text: `System: Booking #${booking._id.toString().substring(0,8).toUpperCase()} status updated to ${status}`,
+                    authorInitials: '⚙️' // Using a gear icon to represent the automated system
+                });
+                await user.save();
+            }
+        }
         
         res.status(200).json({ message: "Status updated successfully!", booking });
     } catch (error) {

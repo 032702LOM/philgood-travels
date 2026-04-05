@@ -17,8 +17,7 @@ const AdminDashboard = () => {
 
   const [selectedUser, setSelectedUser] = useState(null);
   
-  // ⚡ NEW: Advanced CRM Edit States ⚡
-  const [editMode, setEditMode] = useState(null); // 'contact', 'address', 'marketing', 'tax', or null
+  const [editMode, setEditMode] = useState(null);
   const [editUserData, setEditUserData] = useState({
       name: '', email: '', isAdmin: false,
       address: { phone: '', street: '', city: '', postalCode: '', country: '' },
@@ -38,7 +37,9 @@ const AdminDashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  useEffect(() => { setCurrentPage(1); }, [searchKeyword, filterStatus, filterPayment, filterPackage, dateFrom, dateTo]);
+  useEffect(() => { 
+    setCurrentPage(1); 
+  }, [searchKeyword, filterStatus, filterPayment, filterPackage, dateFrom, dateTo]);
 
   useEffect(() => {
     const fetchAdminData = async () => {
@@ -66,7 +67,8 @@ const AdminDashboard = () => {
     if (!window.confirm(`Are you sure you want to mark this booking as ${newStatus}?`)) return;
     try {
       await axios.put(`https://philgood-travels.onrender.com/api/admin/booking-status/${bookingId}`, { status: newStatus });
-      setStats(prevStats => ({ ...prevStats, allBookings: prevStats.allBookings.map(b => b._id === bookingId ? { ...b, bookingStatus: newStatus } : b) }));
+      const response = await axios.get('https://philgood-travels.onrender.com/api/admin/stats');
+      setStats(response.data);
     } catch (error) { alert('❌ Failed to update status.'); }
   };
 
@@ -82,7 +84,6 @@ const AdminDashboard = () => {
     } catch (error) { alert('❌ Failed to delete user.'); }
   };
 
-  // ⚡ UPDATED: Pre-fill all new forms when opening a user CRM ⚡
   const handleOpenUserCRM = (user) => {
       setSelectedUser(user);
       setEditUserData({ 
@@ -173,22 +174,25 @@ const AdminDashboard = () => {
   let userTotalSpent = 0;
   let daysSince = 0;
   
-  if (selectedUser && stats) {
-      userBookings = stats.allBookings.filter(b => b.userId && b.userId._id === selectedUser._id);
+  const activeUserToRender = selectedUser ? (stats?.allUsers?.find(u => u._id === selectedUser._id) || selectedUser) : null;
+
+  if (activeUserToRender && stats) {
+      userBookings = stats.allBookings.filter(b => b.userId && b.userId._id === activeUserToRender._id);
       userTotalSpent = userBookings.reduce((sum, b) => {
           if (b.bookingStatus === 'Cancelled') return sum;
           const paid = b.payments?.reduce((s, p) => p.status === 'Paid' ? s + p.amountDue : s, 0) || 0;
           return sum + paid;
       }, 0);
-      const createdDate = new Date(selectedUser.createdAt);
+      const createdDate = new Date(activeUserToRender.createdAt);
       const today = new Date();
       daysSince = Math.floor((today - createdDate) / (1000 * 60 * 60 * 24));
   }
 
   if (isLoading) return <div className="fade-in d-flex align-items-center justify-content-center" style={{ minHeight: '80vh', backgroundColor: 'var(--bg-dark)' }}><h3 className="text-navy fw-bold font-montserrat"><i className="fa-solid fa-spinner fa-spin text-accent me-2"></i> Loading Dashboard...</h3></div>;
   if (error) return <div className="fade-in d-flex align-items-center justify-content-center" style={{ minHeight: '80vh', backgroundColor: 'var(--bg-dark)' }}><h3 className="text-danger fw-bold font-montserrat">{error}</h3></div>;
+  if (!stats) return null;
 
-  const unreadCount = stats.allMessages?.filter(m => m.status === 'Unread').length || 0;
+  const unreadCount = stats?.allMessages?.filter(m => m.status === 'Unread').length || 0;
   const adminInitials = JSON.parse(localStorage.getItem('user'))?.name?.substring(0, 2).toUpperCase() || 'AD';
 
   return (
@@ -355,7 +359,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* CRM USER DETAILS MODAL */}
-      {selectedUser && (
+      {activeUserToRender && (
           <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)', zIndex: 1060 }}>
               <div className="modal-dialog modal-dialog-centered modal-xl" style={{ maxWidth: '1100px' }}> 
                   <div className="modal-content border-0 shadow-lg" style={{ backgroundColor: '#f4f6f8', borderRadius: '12px', overflow: 'hidden' }}>
@@ -364,7 +368,7 @@ const AdminDashboard = () => {
                           <div className="d-flex align-items-center">
                               <button className="btn btn-sm btn-light border me-3" onClick={() => setSelectedUser(null)}><i className="fa-solid fa-arrow-left"></i></button>
                               <h4 className="modal-title fw-bold text-dark m-0 d-flex align-items-center" style={{ fontSize: '1.25rem' }}>
-                                  <i className="fa-regular fa-user me-2 text-muted"></i> {selectedUser.name}
+                                  <i className="fa-regular fa-user me-2 text-muted"></i> {activeUserToRender.name}
                               </h4>
                           </div>
                           <button className="btn btn-sm btn-light border fw-bold text-dark">More actions <i className="fa-solid fa-chevron-down ms-1" style={{ fontSize: '0.7rem' }}></i></button>
@@ -441,17 +445,31 @@ const AdminDashboard = () => {
                                           </div>
                                       </div>
 
-                                      {selectedUser.adminNotes && selectedUser.adminNotes.length > 0 ? (
-                                          <div className="ms-3 ps-4 border-start border-2 position-relative" style={{ borderColor: '#e1e3e5' }}>
-                                              {selectedUser.adminNotes.slice().reverse().map(note => (
-                                                  <div key={note._id} className="mb-4 position-relative">
-                                                      <div className="position-absolute rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center shadow-sm" style={{ width: '32px', height: '32px', left: '-40px', top: '0', fontSize: '0.75rem', fontWeight: 'bold', border: '2px solid #f4f6f8' }}>{note.authorInitials}</div>
-                                                      <div className="bg-white p-3 rounded-3 shadow-sm border">
-                                                          <p className="m-0 text-dark fw-medium" style={{ fontSize: '0.95rem' }}>{note.text}</p>
-                                                          <small className="text-muted mt-2 d-block">{new Date(note.createdAt).toLocaleString()}</small>
+                                      {activeUserToRender.adminNotes && activeUserToRender.adminNotes.length > 0 ? (
+                                          <div className="ms-3 position-relative" style={{ borderLeft: '2px solid #e1e3e5', paddingBottom: '20px' }}>
+                                              {activeUserToRender.adminNotes.slice().reverse().map(note => {
+                                                  const isSystem = note.authorInitials === '⚙️';
+                                                  return (
+                                                  <div key={note._id} className="mb-4 position-relative ps-4 pt-1">
+                                                      <div className={`position-absolute rounded-circle d-flex align-items-center justify-content-center shadow-sm ${isSystem ? 'bg-light text-muted border' : 'bg-secondary text-white'}`} style={{ width: '32px', height: '32px', left: '-17px', top: '0', fontSize: '0.75rem', fontWeight: 'bold', border: '2px solid #f4f6f8', zIndex: 1 }}>
+                                                          {note.authorInitials}
                                                       </div>
+                                                      {isSystem ? (
+                                                          <div className="d-flex justify-content-between align-items-start">
+                                                              <p className="m-0 text-muted" style={{ fontSize: '0.85rem' }}>{note.text}</p>
+                                                              <small className="text-muted" style={{ fontSize: '0.75rem' }}>{new Date(note.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</small>
+                                                          </div>
+                                                      ) : (
+                                                          <div className="bg-white p-3 rounded-3 shadow-sm border">
+                                                              <div className="d-flex justify-content-between mb-2">
+                                                                  <span className="fw-bold text-dark" style={{ fontSize: '0.85rem' }}>{note.authorInitials} (Staff)</span>
+                                                                  <small className="text-muted" style={{ fontSize: '0.75rem' }}>{new Date(note.createdAt).toLocaleString()}</small>
+                                                              </div>
+                                                              <p className="m-0 text-dark" style={{ fontSize: '0.95rem' }}>{note.text}</p>
+                                                          </div>
+                                                      )}
                                                   </div>
-                                              ))}
+                                              )})}
                                           </div>
                                       ) : (
                                           <p className="text-muted text-center py-3">Only you and other staff can see comments here.</p>
@@ -460,7 +478,6 @@ const AdminDashboard = () => {
                               </div>
 
                               <div className="col-lg-4">
-                                  {/* ⚡ UPDATED: Dynamic Customer Card with Multi-Form Editing ⚡ */}
                                   <div className="bg-white p-4 rounded-3 shadow-sm border mb-4">
                                       <div className="d-flex justify-content-between align-items-center mb-3">
                                           <h6 className="fw-bold text-dark m-0">Customer</h6>
@@ -474,30 +491,29 @@ const AdminDashboard = () => {
                                                       <li><button className="dropdown-item py-2" onClick={() => setEditMode('marketing')}>Edit marketing settings</button></li>
                                                       <li><button className="dropdown-item py-2" onClick={() => setEditMode('tax')}>Edit tax details</button></li>
                                                       <li><hr className="dropdown-divider" /></li>
-                                                      <li><button className="dropdown-item py-2 text-danger" onClick={(e) => { e.stopPropagation(); handleDeleteUser(selectedUser._id, selectedUser.name); }}>Delete customer</button></li>
+                                                      <li><button className="dropdown-item py-2 text-danger" onClick={(e) => { e.stopPropagation(); handleDeleteUser(activeUserToRender._id, activeUserToRender.name); }}>Delete customer</button></li>
                                                   </ul>
                                               </div>
                                           )}
                                       </div>
 
-                                      {/* VIEW MODE: Default state showing all data */}
                                       {!editMode && (
                                           <div className="fade-in">
                                               <h6 className="text-dark fw-bold mb-2">Contact information</h6>
                                               <div className="d-flex justify-content-between align-items-center mb-1">
-                                                  <a href={`mailto:${selectedUser.email}`} className="text-decoration-none text-primary">{selectedUser.email}</a>
+                                                  <a href={`mailto:${activeUserToRender.email}`} className="text-decoration-none text-primary">{activeUserToRender.email}</a>
                                                   <i className="fa-regular fa-copy text-muted" style={{ cursor: 'pointer' }}></i>
                                               </div>
-                                              <p className="m-0 text-dark mb-4">{selectedUser.address?.phone || 'No phone provided'}</p>
+                                              <p className="m-0 text-dark mb-4">{activeUserToRender.address?.phone || 'No phone provided'}</p>
 
                                               <h6 className="text-dark fw-bold mb-2">Default address</h6>
                                               <p className="m-0 text-dark mb-4" style={{ lineHeight: '1.5' }}>
-                                                  {selectedUser.name}<br/>
-                                                  {selectedUser.address?.street ? (
+                                                  {activeUserToRender.name}<br/>
+                                                  {activeUserToRender.address?.street ? (
                                                       <>
-                                                          {selectedUser.address.street}<br/>
-                                                          {selectedUser.address.city} {selectedUser.address.postalCode}<br/>
-                                                          {selectedUser.address.country}
+                                                          {activeUserToRender.address.street}<br/>
+                                                          {activeUserToRender.address.city} {activeUserToRender.address.postalCode}<br/>
+                                                          {activeUserToRender.address.country}
                                                       </>
                                                   ) : (
                                                       <span className="text-muted">No address provided</span>
@@ -506,19 +522,18 @@ const AdminDashboard = () => {
                                               
                                               <h6 className="text-dark fw-bold mb-2">Marketing</h6>
                                               <div className="d-flex gap-2 mb-4">
-                                                  <span className="badge bg-light text-dark border px-2 py-1"><i className={`fa-regular ${selectedUser.marketing?.email ? 'fa-circle-check text-success' : 'fa-circle text-muted'} me-1`} style={{fontSize:'0.6rem'}}></i> Email</span>
-                                                  <span className="badge bg-light text-dark border px-2 py-1"><i className={`fa-regular ${selectedUser.marketing?.sms ? 'fa-circle-check text-success' : 'fa-circle text-muted'} me-1`} style={{fontSize:'0.6rem'}}></i> SMS</span>
+                                                  <span className="badge bg-light text-dark border px-2 py-1"><i className={`fa-regular ${activeUserToRender.marketing?.email ? 'fa-circle-check text-success' : 'fa-circle text-muted'} me-1`} style={{fontSize:'0.6rem'}}></i> Email</span>
+                                                  <span className="badge bg-light text-dark border px-2 py-1"><i className={`fa-regular ${activeUserToRender.marketing?.sms ? 'fa-circle-check text-success' : 'fa-circle text-muted'} me-1`} style={{fontSize:'0.6rem'}}></i> SMS</span>
                                               </div>
 
                                               <h6 className="text-dark fw-bold mb-2">Tax details</h6>
                                               <p className="m-0 text-dark" style={{ lineHeight: '1.5' }}>
-                                                  VAT number: {selectedUser.tax?.vatNumber || 'Not provided'}<br/>
-                                                  {selectedUser.tax?.collectTax ? 'Collect tax' : 'Do not collect tax'}
+                                                  VAT number: {activeUserToRender.tax?.vatNumber || 'Not provided'}<br/>
+                                                  {activeUserToRender.tax?.collectTax ? 'Collect tax' : 'Do not collect tax'}
                                               </p>
                                           </div>
                                       )}
 
-                                      {/* EDIT MODE: Contact Info */}
                                       {editMode === 'contact' && (
                                           <div className="fade-in">
                                               <h6 className="text-dark fw-bold mb-3 border-bottom pb-2">Edit Contact Info</h6>
@@ -545,7 +560,6 @@ const AdminDashboard = () => {
                                           </div>
                                       )}
 
-                                      {/* EDIT MODE: Address */}
                                       {editMode === 'address' && (
                                           <div className="fade-in">
                                               <h6 className="text-dark fw-bold mb-3 border-bottom pb-2">Manage Address</h6>
@@ -574,7 +588,6 @@ const AdminDashboard = () => {
                                           </div>
                                       )}
 
-                                      {/* EDIT MODE: Marketing */}
                                       {editMode === 'marketing' && (
                                           <div className="fade-in">
                                               <h6 className="text-dark fw-bold mb-3 border-bottom pb-2">Marketing Settings</h6>
@@ -593,7 +606,6 @@ const AdminDashboard = () => {
                                           </div>
                                       )}
 
-                                      {/* EDIT MODE: Tax Details */}
                                       {editMode === 'tax' && (
                                           <div className="fade-in">
                                               <h6 className="text-dark fw-bold mb-3 border-bottom pb-2">Tax Details</h6>
