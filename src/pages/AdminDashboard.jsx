@@ -37,9 +37,7 @@ const AdminDashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  useEffect(() => { 
-    setCurrentPage(1); 
-  }, [searchKeyword, filterStatus, filterPayment, filterPackage, dateFrom, dateTo]);
+  useEffect(() => { setCurrentPage(1); }, [searchKeyword, filterStatus, filterPayment, filterPackage, dateFrom, dateTo]);
 
   useEffect(() => {
     const fetchAdminData = async () => {
@@ -67,8 +65,11 @@ const AdminDashboard = () => {
     if (!window.confirm(`Are you sure you want to mark this booking as ${newStatus}?`)) return;
     try {
       await axios.put(`https://philgood-travels.onrender.com/api/admin/booking-status/${bookingId}`, { status: newStatus });
+      
+      // We must refetch stats here so the new automated system note appears if the CRM modal is open!
       const response = await axios.get('https://philgood-travels.onrender.com/api/admin/stats');
       setStats(response.data);
+      
     } catch (error) { alert('❌ Failed to update status.'); }
   };
 
@@ -174,25 +175,28 @@ const AdminDashboard = () => {
   let userTotalSpent = 0;
   let daysSince = 0;
   
-  const activeUserToRender = selectedUser ? (stats?.allUsers?.find(u => u._id === selectedUser._id) || selectedUser) : null;
-
-  if (activeUserToRender && stats) {
-      userBookings = stats.allBookings.filter(b => b.userId && b.userId._id === activeUserToRender._id);
+  if (selectedUser && stats) {
+      // Re-find the user from stats in case it was updated by an automated booking log
+      const updatedSelectedUser = stats.allUsers.find(u => u._id === selectedUser._id) || selectedUser;
+      
+      userBookings = stats.allBookings.filter(b => b.userId && b.userId._id === updatedSelectedUser._id);
       userTotalSpent = userBookings.reduce((sum, b) => {
           if (b.bookingStatus === 'Cancelled') return sum;
           const paid = b.payments?.reduce((s, p) => p.status === 'Paid' ? s + p.amountDue : s, 0) || 0;
           return sum + paid;
       }, 0);
-      const createdDate = new Date(activeUserToRender.createdAt);
+      const createdDate = new Date(updatedSelectedUser.createdAt);
       const today = new Date();
       daysSince = Math.floor((today - createdDate) / (1000 * 60 * 60 * 24));
   }
 
+  // Helper: Use updatedSelectedUser for rendering below to ensure fresh logs show instantly
+  const activeUserToRender = selectedUser ? (stats?.allUsers.find(u => u._id === selectedUser._id) || selectedUser) : null;
+
   if (isLoading) return <div className="fade-in d-flex align-items-center justify-content-center" style={{ minHeight: '80vh', backgroundColor: 'var(--bg-dark)' }}><h3 className="text-navy fw-bold font-montserrat"><i className="fa-solid fa-spinner fa-spin text-accent me-2"></i> Loading Dashboard...</h3></div>;
   if (error) return <div className="fade-in d-flex align-items-center justify-content-center" style={{ minHeight: '80vh', backgroundColor: 'var(--bg-dark)' }}><h3 className="text-danger fw-bold font-montserrat">{error}</h3></div>;
-  if (!stats) return null;
 
-  const unreadCount = stats?.allMessages?.filter(m => m.status === 'Unread').length || 0;
+  const unreadCount = stats.allMessages?.filter(m => m.status === 'Unread').length || 0;
   const adminInitials = JSON.parse(localStorage.getItem('user'))?.name?.substring(0, 2).toUpperCase() || 'AD';
 
   return (
@@ -432,8 +436,11 @@ const AdminDashboard = () => {
                                       )}
                                   </div>
 
+                                  {/* ⚡ UPDATED: STYLED VERTICAL THREADED TIMELINE ⚡ */}
                                   <div className="mt-4">
                                       <h6 className="fw-bold text-dark mb-3">Timeline</h6>
+                                      
+                                      {/* Input Box */}
                                       <div className="bg-white p-3 rounded-3 shadow-sm border mb-4">
                                           <div className="d-flex align-items-center gap-3">
                                               <div className="rounded-circle bg-success text-white d-flex align-items-center justify-content-center fw-bold" style={{ width: '40px', height: '40px', flexShrink: 0 }}>{adminInitials}</div>
@@ -445,15 +452,20 @@ const AdminDashboard = () => {
                                           </div>
                                       </div>
 
+                                      {/* The Threaded Output */}
                                       {activeUserToRender.adminNotes && activeUserToRender.adminNotes.length > 0 ? (
                                           <div className="ms-3 position-relative" style={{ borderLeft: '2px solid #e1e3e5', paddingBottom: '20px' }}>
                                               {activeUserToRender.adminNotes.slice().reverse().map(note => {
                                                   const isSystem = note.authorInitials === '⚙️';
                                                   return (
                                                   <div key={note._id} className="mb-4 position-relative ps-4 pt-1">
+                                                      
+                                                      {/* The Thread Dot */}
                                                       <div className={`position-absolute rounded-circle d-flex align-items-center justify-content-center shadow-sm ${isSystem ? 'bg-light text-muted border' : 'bg-secondary text-white'}`} style={{ width: '32px', height: '32px', left: '-17px', top: '0', fontSize: '0.75rem', fontWeight: 'bold', border: '2px solid #f4f6f8', zIndex: 1 }}>
                                                           {note.authorInitials}
                                                       </div>
+                                                      
+                                                      {/* The Content */}
                                                       {isSystem ? (
                                                           <div className="d-flex justify-content-between align-items-start">
                                                               <p className="m-0 text-muted" style={{ fontSize: '0.85rem' }}>{note.text}</p>
