@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { usePreferences } from '../context/PreferencesContext';
+import { io } from 'socket.io-client';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -15,6 +16,10 @@ const AdminDashboard = () => {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [activeChats, setActiveChats] = useState([]); 
+  const [selectedChat, setSelectedChat] = useState(null); 
+  const [adminSocket, setAdminSocket] = useState(null);
+  const [adminChatInput, setAdminChatInput] = useState('');
   
   const [editMode, setEditMode] = useState(null);
   const [editUserData, setEditUserData] = useState({ 
@@ -73,6 +78,67 @@ const AdminDashboard = () => {
     };
     fetchAdminData();
   }, [navigate]);
+
+  // ⚡ PHASE 3: LIVE CHAT SOCKET LOGIC
+  useEffect(() => {
+    const fetchChats = async () => {
+      try {
+        // Fetches all active chat history from your database
+        const response = await axios.get('https://philgood-travels.onrender.com/api/admin/chats');
+        setActiveChats(response.data);
+      } catch (err) {
+        console.error("Error fetching chat sessions:", err);
+      }
+    };
+
+    fetchChats();
+
+    // Opens the persistent "phone line" to your server
+    const socket = io('https://philgood-travels.onrender.com');
+    setAdminSocket(socket);
+
+    // Listens for notifications when ANY visitor sends a message
+    socket.on('admin_notification', (data) => {
+      fetchChats(); // Refresh the list in the sidebar
+
+      // If you are currently viewing this specific chat, update it live
+      if (selectedChat?.sessionId === data.sessionId) {
+        setSelectedChat(prev => ({
+          ...prev,
+          messages: [...prev.messages, { sender: 'user', text: data.text, timestamp: new Date() }]
+        }));
+      }
+    });
+
+    return () => {
+      if (socket) socket.disconnect();
+    };
+  }, [selectedChat]); // Re-runs if you switch to a different customer
+
+  // ⚡ SEND REPLY TO USER
+  const handleAdminReply = () => {
+      if (!adminChatInput.trim() || !selectedChat || !adminSocket) return;
+
+      const replyData = {
+          sessionId: selectedChat.sessionId,
+          sender: 'admin',
+          text: adminChatInput
+      };
+
+      // Emit the message to the server via the open socket
+      adminSocket.emit('send_message', replyData);
+      
+      // Update your local state immediately so your message appears in the window
+      setSelectedChat(prev => ({
+          ...prev,
+          messages: [...prev.messages, { 
+              sender: 'admin', 
+              text: adminChatInput, 
+              timestamp: new Date() 
+          }]
+      }));
+      setAdminChatInput('');
+  };
 
   const handleStatusUpdate = async (bookingId, newStatus) => {
     if (!window.confirm(`Mark this booking as ${newStatus}?`)) return;
@@ -928,6 +994,79 @@ const AdminDashboard = () => {
     );
   };
 
+  // ⚡ PHASE 3: LIVE CHAT UI
+  const renderLiveChatTab = () => (
+    <div className="row g-0 fade-in" style={{ height: '600px', backgroundColor: '#fff' }}>
+        {/* Left Sidebar: List of Active Users */}
+        <div className="col-md-4 border-end overflow-auto p-3" style={{ backgroundColor: '#f8f9fa' }}>
+            <h6 className="fw-bold text-navy mb-3">Customer Inquiries</h6>
+            {activeChats.length === 0 ? (
+                <div className="text-center mt-5 opacity-50">
+                    <i className="fa-solid fa-cloud mb-2" style={{ fontSize: '2rem' }}></i>
+                    <p className="small">No active chats found.</p>
+                </div>
+            ) : (
+                activeChats.map(chat => (
+                    <div key={chat._id} 
+                         onClick={() => { 
+                             setSelectedChat(chat); 
+                             adminSocket.emit('join_chat', chat.sessionId); 
+                         }}
+                         className={`p-3 mb-2 rounded-3 border cursor-pointer shadow-sm ${selectedChat?.sessionId === chat.sessionId ? 'bg-primary text-white' : 'bg-white text-dark'}`}
+                         style={{ cursor: 'pointer', transition: 'all 0.2s ease' }}>
+                        <div className="d-flex justify-content-between align-items-center">
+                            <small className="fw-bold">Visitor {chat.sessionId.substring(8, 13)}</small>
+                            <small className="opacity-75" style={{ fontSize: '0.7rem' }}>
+                                {new Date(chat.updatedAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                            </small>
+                        </div>
+                        <div className="small text-truncate mt-1" style={{ opacity: 0.8 }}>
+                            {chat.messages[chat.messages.length - 1]?.text}
+                        </div>
+                    </div>
+                ))
+            )}
+        </div>
+
+        {/* Right Side: The Chat Conversation */}
+        <div className="col-md-8 d-flex flex-column p-0">
+            {selectedChat ? (
+                <>
+                    <div className="p-3 border-bottom bg-white fw-bold text-navy d-flex align-items-center">
+                        <div className="bg-success rounded-circle me-2" style={{ width: '10px', height: '10px' }}></div>
+                        Session: {selectedChat.sessionId}
+                    </div>
+                    <div className="flex-grow-1 overflow-auto p-4 d-flex flex-column gap-3" style={{ backgroundColor: '#f0f2f5' }}>
+                        {selectedChat.messages.map((m, i) => (
+                            <div key={i} className={`p-3 rounded-4 shadow-sm ${m.sender === 'admin' ? 'bg-primary text-white align-self-end' : 'bg-white text-dark align-self-start border'}`} style={{ maxWidth: '75%', fontSize: '0.9rem' }}>
+                                {m.text}
+                            </div>
+                        ))}
+                    </div>
+                    <div className="p-3 bg-white border-top d-flex gap-2">
+                        <input 
+                            type="text" 
+                            className="form-control border-0 bg-light" 
+                            placeholder="Type a message..." 
+                            value={adminChatInput} 
+                            onChange={e => setAdminChatInput(e.target.value)} 
+                            onKeyDown={e => e.key === 'Enter' && handleAdminReply()} 
+                        />
+                        <button className="btn btn-proceed px-4 fw-bold" onClick={handleAdminReply} disabled={!adminChatInput.trim()}>
+                            Send
+                        </button>
+                    </div>
+                </>
+            ) : (
+                <div className="h-100 d-flex flex-column align-items-center justify-content-center text-grey opacity-50">
+                    <i className="fa-solid fa-comments mb-3" style={{ fontSize: '4rem' }}></i>
+                    <p className="fw-bold">Select a conversation to start helping customers.</p>
+                </div>
+            )}
+        </div>
+    </div>
+  );
+
   // ==========================================
   // MAIN RENDER
   // ==========================================
@@ -961,6 +1100,9 @@ const AdminDashboard = () => {
               <i className="fa-solid fa-envelope me-2"></i> Inbox
               {unreadCount > 0 && <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-light">{unreadCount}</span>}
             </button>
+            <button className={`btn ${activeTab === 'chat' ? 'btn-proceed shadow' : 'btn-outline-custom'}`} onClick={() => setActiveTab('chat')} style={{ borderRadius: '50px', padding: '10px 25px' }}>
+  <i className="fa-solid fa-headset me-2"></i> Live Support
+</button>
         </div>
 
         {/* MAIN TABS CONTAINER */}
@@ -968,6 +1110,7 @@ const AdminDashboard = () => {
           {activeTab === 'bookings' && renderBookingsTab()}
           {activeTab === 'users' && renderUsersTab()}
           {activeTab === 'inbox' && renderInboxTab()}
+          {activeTab === 'chat' && renderLiveChatTab()}
         </div>
 
       </div>

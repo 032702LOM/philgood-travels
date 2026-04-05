@@ -166,4 +166,17 @@ router.post('/broadcast', async (req, res) => {
     }
 });
 
+const ChatSession = require('../models/ChatSession'); // ⚡ Import your new model
+
+// GET: All active chat sessions for the admin dashboard
+router.get('/chats', async (req, res) => {
+    try {
+        // Fetch sessions sorted by most recent activity
+        const chats = await ChatSession.find({ status: 'Active' }).sort({ updatedAt: -1 });
+        res.status(200).json(chats);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to load chat sessions." });
+    }
+});
+
 module.exports = router;
