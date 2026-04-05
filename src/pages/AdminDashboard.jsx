@@ -815,6 +815,7 @@ const AdminDashboard = () => {
                   </div>
               </div>
           </div>
+          </div>
       );
   };
 
@@ -866,6 +867,7 @@ const AdminDashboard = () => {
               </div>
           </div>
       </div>
+    
     );
   };
 
