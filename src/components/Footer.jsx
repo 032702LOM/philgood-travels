@@ -1,37 +1,91 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const Footer = () => {
-  const [isChatOpen, setIsChatOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState({ loading: false, message: '', type: '' });
 
+  // ⚡ NEW: In-App Messenger Widget States ⚡
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [widgetView, setWidgetView] = useState('menu'); // Views: 'menu', 'chat', 'email'
+  
+  // States for the Email Form
+  const [miniEmailData, setMiniEmailData] = useState({ name: '', email: '', message: '' });
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
+
+  // States for the Chat Interface
+  const [chatMessages, setChatMessages] = useState([
+      { sender: 'bot', text: 'Hi there! 👋 Welcome to PhilGood Travels. How can we help you today?' }
+  ]);
+  const [chatInput, setChatInput] = useState('');
+  const chatScrollRef = useRef(null);
+
+  // Auto-scroll chat to bottom
+  useEffect(() => {
+      if (chatScrollRef.current) {
+          chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
+      }
+  }, [chatMessages, widgetView]);
+
   const toggleChat = () => {
     setIsChatOpen(!isChatOpen);
+    if (!isChatOpen) setWidgetView('menu'); // Reset to menu when opening
   };
 
-  // ⚡ NEW: Newsletter Subscribe Logic ⚡
+  // Newsletter Subscribe Logic
   const handleSubscribe = async (e) => {
     e.preventDefault();
     if (!email) return;
-
     setStatus({ loading: true, message: '', type: '' });
 
     try {
         const response = await axios.post('https://philgood-travels.onrender.com/api/contact/subscribe', { email });
         setStatus({ loading: false, message: response.data.message, type: 'success' });
-        setEmail(''); // Clear input on success
-        
-        // Hide success message after 3 seconds
+        setEmail(''); 
         setTimeout(() => setStatus({ loading: false, message: '', type: '' }), 3000);
     } catch (error) {
         const errorMsg = error.response?.data?.error || "Failed to subscribe. Please try again.";
         setStatus({ loading: false, message: errorMsg, type: 'danger' });
-        
-        // Hide error message after 3 seconds
         setTimeout(() => setStatus({ loading: false, message: '', type: '' }), 3000);
     }
+  };
+
+  // ⚡ Handle In-Widget Email ⚡
+  const handleSendMiniEmail = async (e) => {
+      e.preventDefault();
+      setIsSendingEmail(true);
+      try {
+          // Hooks into your existing contact route!
+          await axios.post('https://philgood-travels.onrender.com/api/contact/send', {
+              ...miniEmailData,
+              subject: 'New Message from Website Widget'
+          });
+          alert("Message sent! We'll get back to you soon.");
+          setWidgetView('menu');
+          setMiniEmailData({ name: '', email: '', message: '' });
+      } catch (error) {
+          alert("Failed to send message. Please try again.");
+      } finally {
+          setIsSendingEmail(false);
+      }
+  };
+
+  // ⚡ Handle In-Widget Chat ⚡
+  const handleSendChat = () => {
+      if (!chatInput.trim()) return;
+
+      // 1. Show user's message
+      setChatMessages(prev => [...prev, { sender: 'user', text: chatInput }]);
+      setChatInput('');
+
+      // 2. Simulate bot typing & reply
+      setTimeout(() => {
+          setChatMessages(prev => [...prev, {
+              sender: 'bot',
+              text: "Thanks for reaching out! Our live agents are currently away. Please tap the back arrow and use the 'Send an Email' option so we can assist you right away!"
+          }]);
+      }, 1000);
   };
 
   return (
@@ -61,9 +115,9 @@ const Footer = () => {
                           Your gateway to unforgettable Philippine adventures. Discover pristine beaches, majestic mountains, and vibrant culture.
                       </p>
                       <div className="social-links">
-                          <a href="#" className="social-btn"><i className="fa-brands fa-facebook-f"></i></a>
-                          <a href="#" className="social-btn"><i className="fa-brands fa-instagram"></i></a>
-                          <a href="#" className="social-btn"><i className="fa-brands fa-twitter"></i></a>
+                          <a href="https://www.facebook.com/share/18YdGGJNhM/" target="_blank" rel="noopener noreferrer" className="social-btn"><i className="fa-brands fa-facebook-f"></i></a>
+                          <a href="https://www.instagram.com/philgoodtravels?igsh=bWQ3Z2s4bXY0Mzl6" target="_blank" rel="noopener noreferrer" className="social-btn"><i className="fa-brands fa-instagram"></i></a>
+                          <a href="https://x.com/techtacoder" target="_blank" rel="noopener noreferrer" className="social-btn"><i className="fa-brands fa-x-twitter"></i></a>
                       </div>
                   </div>
                   <div className="col-lg-2 col-md-6">
@@ -87,7 +141,6 @@ const Footer = () => {
                       <h5 className="footer-heading text-white">Newsletter</h5>
                       <p className="mb-3 text-white-50">Subscribe for exclusive deals!</p>
                       
-                      {/* ⚡ UPDATED SUBSCRIPTION FORM ⚡ */}
                       <form onSubmit={handleSubscribe} className="position-relative">
                           <input 
                               type="email" 
@@ -101,7 +154,6 @@ const Footer = () => {
                               {status.loading ? 'SUBSCRIBING...' : 'SUBSCRIBE'}
                           </button>
                           
-                          {/* Success/Error Message */}
                           {status.message && (
                               <div className={`text-${status.type} fw-bold small mt-2`}>
                                   {status.type === 'success' ? <i className="fa-solid fa-check me-1"></i> : <i className="fa-solid fa-circle-exclamation me-1"></i>}
@@ -112,29 +164,83 @@ const Footer = () => {
                   </div>
               </div>
               <div className="text-center mt-5 pt-4 border-top border-white border-opacity-25">
-                  <small className="text-white-50">&copy; {new Date().getFullYear()} PhilGood Travels. All rights reserved.</small>
+                  <small className="text-white-50">&copy; 2024 PhilGood Travels. All rights reserved.</small>
               </div>
           </div>
       </footer>
 
-      {/* FLOATING CHAT WIDGET */}
+      {/* ==========================================
+          ⚡ NATIVE IN-APP MESSAGE WIDGET ⚡
+          ========================================== */}
       <div className="chat-widget-container">
-          <div className={`chat-popup ${isChatOpen ? 'show' : ''}`}>
-              <div className="chat-popup-header">
-                  <h6 className="text-white mb-1 fw-bold font-montserrat">Need Help?</h6>
-                  <small className="text-white-50" style={{ fontSize: '0.8rem' }}>Chat directly with our team</small>
+          
+          <div className={`chat-popup ${isChatOpen ? 'show' : ''}`} style={{ width: '320px', bottom: '85px', borderRadius: '12px', overflow: 'hidden' }}>
+              
+              {/* Dynamic Header */}
+              <div className="chat-popup-header d-flex justify-content-between align-items-center" style={{ padding: '15px', backgroundColor: 'var(--primary-dark)', color: 'white' }}>
+                  <div className="d-flex align-items-center gap-2">
+                      {widgetView !== 'menu' && (
+                          <i className="fa-solid fa-arrow-left" style={{ cursor: 'pointer', fontSize: '1.1rem' }} onClick={() => setWidgetView('menu')} title="Back"></i>
+                      )}
+                      <h6 className="m-0 fw-bold font-montserrat">
+                          {widgetView === 'menu' ? 'Need Help?' : widgetView === 'chat' ? 'Live Chat' : 'Send an Email'}
+                      </h6>
+                  </div>
+                  <i className="fa-solid fa-xmark" style={{ cursor: 'pointer', fontSize: '1.2rem' }} onClick={() => setIsChatOpen(false)} title="Close"></i>
               </div>
-              <div className="chat-popup-body">
-                  <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" className="chat-platform-btn text-navy">
-                      <div className="platform-icon" style={{ backgroundColor: '#25D366' }}><i className="fa-brands fa-whatsapp text-white"></i></div>
-                      <span className="fw-bold font-montserrat" style={{ fontSize: '0.9rem' }}>WhatsApp</span>
-                  </a>
-                  <a href="viber://chat?number=%2B1234567890" target="_blank" rel="noopener noreferrer" className="chat-platform-btn text-navy">
-                      <div className="platform-icon" style={{ backgroundColor: '#7360F2' }}><i className="fa-brands fa-viber text-white"></i></div>
-                      <span className="fw-bold font-montserrat" style={{ fontSize: '0.9rem' }}>Viber</span>
-                  </a>
+
+              {/* Dynamic Body */}
+              <div className="chat-popup-body" style={{ height: '340px', backgroundColor: 'var(--card-bg)', position: 'relative' }}>
+                  
+                  {/* View 1: Menu Selection */}
+                  {widgetView === 'menu' && (
+                      <div className="d-flex flex-column justify-content-center h-100 p-3 gap-3">
+                          <p className="text-center text-grey small mb-2">How would you like to reach us?</p>
+                          <button className="btn btn-proceed fw-bold py-3 shadow-sm" onClick={() => setWidgetView('chat')}>
+                              <i className="fa-solid fa-comments me-2 fs-5"></i> Start a Chat
+                          </button>
+                          <button className="btn btn-outline-custom fw-bold py-3 shadow-sm" onClick={() => setWidgetView('email')}>
+                              <i className="fa-solid fa-envelope me-2 fs-5"></i> Send an Email
+                          </button>
+                      </div>
+                  )}
+
+                  {/* View 2: Email Form */}
+                  {widgetView === 'email' && (
+                      <form onSubmit={handleSendMiniEmail} className="d-flex flex-column h-100 p-3">
+                          <p className="text-grey small mb-3">Leave us a message and we will reply to your email shortly.</p>
+                          <input type="text" className="form-control form-control-sm mb-2" style={{ backgroundColor: 'var(--input-bg)', color: 'var(--dark-navy)' }} placeholder="Your Name" required value={miniEmailData.name} onChange={e => setMiniEmailData({...miniEmailData, name: e.target.value})} />
+                          <input type="email" className="form-control form-control-sm mb-2" style={{ backgroundColor: 'var(--input-bg)', color: 'var(--dark-navy)' }} placeholder="Your Email Address" required value={miniEmailData.email} onChange={e => setMiniEmailData({...miniEmailData, email: e.target.value})} />
+                          <textarea className="form-control form-control-sm flex-grow-1 mb-3" style={{ backgroundColor: 'var(--input-bg)', color: 'var(--dark-navy)', resize: 'none' }} placeholder="How can we help?" required value={miniEmailData.message} onChange={e => setMiniEmailData({...miniEmailData, message: e.target.value})}></textarea>
+                          <button type="submit" className="btn btn-proceed fw-bold w-100" disabled={isSendingEmail}>
+                              {isSendingEmail ? 'Sending...' : 'Send Message'}
+                          </button>
+                      </form>
+                  )}
+
+                  {/* View 3: Chat Interface */}
+                  {widgetView === 'chat' && (
+                      <div className="d-flex flex-column h-100 p-2" style={{ backgroundColor: 'rgba(0, 180, 216, 0.05)' }}>
+                          <div className="flex-grow-1 overflow-auto d-flex flex-column gap-2 p-2" ref={chatScrollRef} style={{ scrollBehavior: 'smooth' }}>
+                              {chatMessages.map((msg, i) => (
+                                  <div key={i} className={`p-2 rounded-3 shadow-sm ${msg.sender === 'bot' ? 'bg-white text-dark align-self-start border' : 'text-white align-self-end'}`} style={{ maxWidth: '85%', fontSize: '0.85rem', backgroundColor: msg.sender === 'bot' ? '' : 'var(--primary-color)' }}>
+                                      {msg.text}
+                                  </div>
+                              ))}
+                          </div>
+                          <div className="d-flex gap-2 mt-2 border-top pt-2">
+                              <input type="text" className="form-control form-control-sm" style={{ backgroundColor: 'var(--card-bg)', color: 'var(--dark-navy)', borderRadius: '20px' }} placeholder="Type a message..." value={chatInput} onChange={e => setChatInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSendChat()} />
+                              <button className="btn btn-sm btn-proceed rounded-circle d-flex align-items-center justify-content-center" style={{ width: '35px', height: '35px', flexShrink: 0 }} onClick={handleSendChat}>
+                                  <i className="fa-solid fa-paper-plane"></i>
+                              </button>
+                          </div>
+                      </div>
+                  )}
+
               </div>
           </div>
+          
+          {/* Floating Trigger Button */}
           <button className="chat-btn-main" onClick={toggleChat}>
               <i className={`fa-solid ${isChatOpen ? 'fa-xmark' : 'fa-comment-dots'}`}></i>
           </button>
