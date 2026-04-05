@@ -998,7 +998,7 @@ const AdminDashboard = () => {
   const renderLiveChatTab = () => (
     <div className="row g-0 fade-in" style={{ height: '600px', backgroundColor: '#fff' }}>
         {/* Left Sidebar: List of Active Users */}
-        <div className="col-md-4 border-end overflow-auto p-3" style={{ backgroundColor: '#f8f9fa' }}>
+        <div className="col-md-4 border-end overflow-auto p-3 h-100" style={{ backgroundColor: '#f8f9fa' }}>
             <h6 className="fw-bold text-navy mb-3">Customer Inquiries</h6>
             {activeChats.length === 0 ? (
                 <div className="text-center mt-5 opacity-50">
@@ -1029,7 +1029,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Right Side: The Chat Conversation */}
-        <div className="col-md-8 d-flex flex-column p-0">
+        <div className="col-md-8 d-flex flex-column p-0 h-100">
             {selectedChat ? (
                 <>
                     <div className="p-3 border-bottom bg-white fw-bold text-navy d-flex align-items-center">
