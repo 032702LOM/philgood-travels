@@ -17,10 +17,9 @@ const Booking = require('./models/Booking');
 const app = express();
 
 // ⚡ UPGRADE TO HTTP SERVER FOR WEBSOCKETS ⚡
-const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ['http://localhost:5173', 'http://localhost:5174', 'https://philgood-travels.vercel.app'],
+        origin: "*", // ⚡ This wildcard opens the gates for your WebSockets
         methods: ['GET', 'POST']
     }
 });
