@@ -140,7 +140,7 @@ router.post('/user/:id/notes', async (req, res) => {
     }
 });
 
-// POST: Send a marketing broadcast to all subscribers
+// POST: Send a marketing broadcast
 router.post('/broadcast', async (req, res) => {
     try {
         const { subject, htmlContent } = req.body;
@@ -149,25 +149,17 @@ router.post('/broadcast', async (req, res) => {
             return res.status(400).json({ error: "Subject and HTML content are required." });
         }
 
-        // 1. Fetch your master list of subscribers
-        const subscribers = await Subscriber.find({});
-        if (subscribers.length === 0) {
-            return res.status(400).json({ error: "Your subscriber list is empty!" });
-        }
-
-        // 2. Format the payload for Resend's Batch API
-        const emailBatch = subscribers.map(sub => ({
-            from: 'PhilGood Travels <onboarding@resend.dev>', // Update this once you add a custom domain to Resend
-            to: sub.email,
+        // We know this exact command works for our  booking emails!
+        // We are hardcoding our email just for this test to guarantee delivery.
+        await resend.emails.send({
+            from: 'PhilGood Travels <onboarding@resend.dev>', 
+            to: 'techtacoder@gmail.com', 
             subject: subject,
             html: htmlContent
-        }));
+        });
 
-        // Note: Resend's batch.send accepts up to 100 emails per call. 
-        // If your list grows beyond 100, you will need to slice the array into chunks of 100.
-        const response = await resend.batch.send(emailBatch);
-
-        res.status(200).json({ message: `Success! Blast sent to ${subscribers.length} subscribers.` });
+        console.log("✅ Newsletter sent successfully to Resend!");
+        res.status(200).json({ message: "Success!" });
     } catch (error) {
         console.error("Broadcast Error:", error);
         res.status(500).json({ error: "Failed to send newsletter blast." });
