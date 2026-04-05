@@ -28,6 +28,8 @@ const Footer = () => {
     } catch (error) {
         const errorMsg = error.response?.data?.error || "Failed to subscribe. Please try again.";
         setStatus({ loading: false, message: errorMsg, type: 'danger' });
+        
+        // Hide error message after 3 seconds
         setTimeout(() => setStatus({ loading: false, message: '', type: '' }), 3000);
     }
   };
@@ -85,7 +87,7 @@ const Footer = () => {
                       <h5 className="footer-heading text-white">Newsletter</h5>
                       <p className="mb-3 text-white-50">Subscribe for exclusive deals!</p>
                       
-                      {/* ⚡ UPDATED FORM ⚡ */}
+                      {/* ⚡ UPDATED SUBSCRIPTION FORM ⚡ */}
                       <form onSubmit={handleSubscribe} className="position-relative">
                           <input 
                               type="email" 
@@ -99,7 +101,7 @@ const Footer = () => {
                               {status.loading ? 'SUBSCRIBING...' : 'SUBSCRIBE'}
                           </button>
                           
-                          {/* Alert message directly underneath the form */}
+                          {/* Success/Error Message */}
                           {status.message && (
                               <div className={`text-${status.type} fw-bold small mt-2`}>
                                   {status.type === 'success' ? <i className="fa-solid fa-check me-1"></i> : <i className="fa-solid fa-circle-exclamation me-1"></i>}
@@ -110,12 +112,12 @@ const Footer = () => {
                   </div>
               </div>
               <div className="text-center mt-5 pt-4 border-top border-white border-opacity-25">
-                  <small className="text-white-50">&copy; 2024 PhilGood Travels. All rights reserved.</small>
+                  <small className="text-white-50">&copy; {new Date().getFullYear()} PhilGood Travels. All rights reserved.</small>
               </div>
           </div>
       </footer>
 
-      {/* --- FLOATING CHAT WIDGET (OVERLAY) --- */}
+      {/* FLOATING CHAT WIDGET */}
       <div className="chat-widget-container">
           <div className={`chat-popup ${isChatOpen ? 'show' : ''}`}>
               <div className="chat-popup-header">

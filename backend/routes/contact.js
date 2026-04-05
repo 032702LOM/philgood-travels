@@ -2,19 +2,21 @@ const express = require('express');
 const router = express.Router();
 const { Resend } = require('resend');
 const Message = require('../models/Message');
-const Subscriber = require('../models/Subscriber'); // ⚡ IMPORTED NEWSLETTER MODEL
+const Subscriber = require('../models/Subscriber'); // ⚡ Imported our new model
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// ⚡ NEW: Route to handle Newsletter Subscriptions 
+// ⚡ NEW: Route to handle Newsletter Subscriptions ⚡
 router.post('/subscribe', async (req, res) => {
     try {
         const { email } = req.body;
         if (!email) return res.status(400).json({ error: "Email is required." });
 
+        // Check if they are already subscribed
         const existing = await Subscriber.findOne({ email });
         if (existing) return res.status(400).json({ error: "This email is already subscribed!" });
 
+        // Save the new email
         const newSubscriber = new Subscriber({ email });
         await newSubscriber.save();
 
