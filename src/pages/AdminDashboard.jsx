@@ -7,7 +7,6 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const { formatPrice } = usePreferences();
   
-  // --- 1. STATE MANAGEMENT ---
   const [stats, setStats] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -37,7 +36,6 @@ const AdminDashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // --- 2. EFFECTS ---
   useEffect(() => { 
     setCurrentPage(1); 
   }, [searchKeyword, filterStatus, filterPayment, filterPackage, dateFrom, dateTo]);
@@ -51,6 +49,7 @@ const AdminDashboard = () => {
         navigate('/login'); 
         return; 
       }
+      
       if (!JSON.parse(userStr).isAdmin) { 
         alert("🚨 Unauthorized Access."); 
         navigate('/'); 
@@ -69,7 +68,6 @@ const AdminDashboard = () => {
     fetchAdminData();
   }, [navigate]);
 
-  // --- 3. HANDLERS ---
   const handleStatusUpdate = async (bookingId, newStatus) => {
     if (!window.confirm(`Mark this booking as ${newStatus}?`)) return;
     try {
@@ -80,9 +78,12 @@ const AdminDashboard = () => {
   };
 
   const handleDeleteUser = async (userId, userName) => {
-    const currentUser = JSON.parse(localStorage.getItem('user'));
-    if (userId === currentUser.id) return alert("❌ Cannot delete your own account!");
+    const userStr = localStorage.getItem('user');
+    const currentUser = userStr ? JSON.parse(userStr) : null;
+    
+    if (currentUser && userId === currentUser.id) return alert("❌ Cannot delete your own account!");
     if (!window.confirm(`PERMANENTLY delete: ${userName}?`)) return;
+    
     try {
       await axios.delete(`https://philgood-travels.onrender.com/api/admin/user/${userId}`);
       setStats(prev => ({ ...prev, allUsers: prev.allUsers.filter(u => u._id !== userId), totalUsers: prev.totalUsers - 1 }));
@@ -113,7 +114,10 @@ const AdminDashboard = () => {
       if (!newNote.trim()) return;
       setIsPostingNote(true);
       try {
-          const initials = JSON.parse(localStorage.getItem('user')).name.substring(0, 2).toUpperCase();
+          const userStr = localStorage.getItem('user');
+          const currentUser = userStr ? JSON.parse(userStr) : null;
+          const initials = currentUser && currentUser.name ? currentUser.name.substring(0, 2).toUpperCase() : 'AD';
+          
           const response = await axios.post(`https://philgood-travels.onrender.com/api/admin/user/${selectedUser._id}/notes`, { text: newNote, authorInitials: initials });
           setStats(prev => ({ ...prev, allUsers: prev.allUsers.map(u => u._id === response.data.user._id ? response.data.user : u) }));
           setSelectedUser(response.data.user); setNewNote('');
@@ -143,7 +147,29 @@ const AdminDashboard = () => {
     setSearchKeyword(''); setFilterStatus('All'); setFilterPayment('All'); setFilterPackage('All'); setDateFrom(''); setDateTo(''); 
   };
 
-  // --- 4. DERIVED DATA ---
+  // ==========================================
+  // EARLY RETURNS FOR LOADING AND ERROR
+  // This physically stops the code from crashing if 'stats' is null
+  // ==========================================
+  if (isLoading) {
+    return (
+      <div className="fade-in d-flex align-items-center justify-content-center" style={{ minHeight: '80vh', backgroundColor: 'var(--bg-dark)' }}>
+        <h3 className="text-navy fw-bold font-montserrat"><i className="fa-solid fa-spinner fa-spin text-accent me-2"></i> Loading Dashboard...</h3>
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="fade-in d-flex align-items-center justify-content-center" style={{ minHeight: '80vh', backgroundColor: 'var(--bg-dark)' }}>
+        <h3 className="text-danger fw-bold font-montserrat">{error}</h3>
+      </div>
+    );
+  }
+
+  // ==========================================
+  // SAFE DERIVED DATA (Only runs after loading is complete)
+  // ==========================================
   let filteredBookings = [];
   let uniquePackages = [];
   let paginatedBookings = [];
@@ -171,7 +197,7 @@ const AdminDashboard = () => {
   let userBookings = []; 
   let userTotalSpent = 0; 
   let daysSince = 0;
-  const activeUserToRender = selectedUser ? (stats?.allUsers.find(u => u._id === selectedUser._id) || selectedUser) : null;
+  const activeUserToRender = selectedUser && stats ? (stats.allUsers.find(u => u._id === selectedUser._id) || selectedUser) : null;
 
   if (activeUserToRender && stats) {
       userBookings = stats.allBookings.filter(b => b.userId && b.userId._id === activeUserToRender._id);
@@ -180,14 +206,25 @@ const AdminDashboard = () => {
   }
 
   const unreadCount = stats?.allMessages?.filter(m => m.status === 'Unread').length || 0;
-  const adminInitials = JSON.parse(localStorage.getItem('user'))?.name?.substring(0, 2).toUpperCase() || 'AD';
+  
+  // ⚡ Bulletproof Initials Extractor ⚡
+  let adminInitials = 'AD';
+  try {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+        const userObj = JSON.parse(userStr);
+        if (userObj && userObj.name) {
+            adminInitials = userObj.name.substring(0, 2).toUpperCase();
+        }
+    }
+  } catch (e) {
+    console.error("Could not parse user initials", e);
+  }
 
   // ==========================================
-  // --- 5. RENDER HELPER FUNCTIONS (MODULAR) ---
+  // RENDER HELPER FUNCTIONS
   // ==========================================
-
-  const renderStatsCards = () => {
-    return (
+  const renderStatsCards = () => (
       <div className="row g-4 mb-4">
         <div className="col-md-4">
           <div className="p-4 rounded-4 shadow-lg border border-primary border-opacity-25 h-100" style={{ backgroundColor: 'var(--card-bg)' }}>
@@ -217,138 +254,134 @@ const AdminDashboard = () => {
           </div>
         </div>
       </div>
-    );
-  };
+  );
 
-  const renderBookingsTab = () => {
-    return (
+  const renderBookingsTab = () => (
       <div className="row g-0 fade-in">
-        <div className="col-lg-9 p-4 border-end border-primary border-opacity-10">
-          <div className="d-flex justify-content-between align-items-center mb-4">
-            <h4 className="text-navy font-montserrat fw-bold m-0"><i className="fa-solid fa-table-list text-accent me-2"></i> All Orders</h4>
-            <span className="text-grey small fw-bold">{filteredBookings.length} results found</span>
-          </div>
-          <div className="table-responsive" style={{ minHeight: '400px' }}>
-            <table className="table table-hover align-middle" style={{ color: 'var(--text-grey)' }}>
-              <thead style={{ borderBottom: '2px solid var(--primary-color)' }}>
-                <tr>
-                  <th className="text-navy font-montserrat">Order ID</th>
-                  <th className="text-navy font-montserrat">Client / Email</th>
-                  <th className="text-navy font-montserrat">Package & Date</th>
-                  <th className="text-navy font-montserrat">Total Price</th>
-                  <th className="text-navy font-montserrat">Status</th>
-                  <th className="text-navy font-montserrat text-end">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedBookings.length === 0 ? (
-                  <tr><td colSpan="6" className="text-center py-5 text-grey fw-bold">No bookings match your exact filters.</td></tr>
-                ) : (
-                  paginatedBookings.map(booking => {
-                      const totalPaid = booking.payments?.reduce((sum, p) => p.status === 'Paid' ? sum + p.amountDue : sum, 0) || 0;
-                      const isFullyPaid = totalPaid >= booking.totalPrice;
-                      return (
-                        <tr key={booking._id}>
-                          <td className="fw-bold" style={{ fontSize: '0.85rem' }}>#{booking._id.substring(0, 8).toUpperCase()}</td>
-                          <td>
-                            <span className="d-block fw-bold text-navy">{booking.userId?.name || 'Unknown User / Deleted'}</span>
-                            <span className="small text-grey">{booking.userId?.email || 'N/A'}</span>
-                          </td>
-                          <td>
-                            <span className="d-block fw-bold text-primary-dark">{booking.packageName}</span>
-                            <span className="small text-grey"><i className="fa-regular fa-calendar text-accent me-1"></i> {booking.travelDate}</span>
-                          </td>
-                          <td>
-                            <span className="d-block fw-bold">{formatPrice(booking.totalPrice)}</span>
-                            <span className={`small fw-bold ${isFullyPaid ? 'text-success' : 'text-warning'}`}>{isFullyPaid ? 'PAID' : 'PENDING'}</span>
-                          </td>
-                          <td>
-                            {booking.bookingStatus === 'Confirmed' && <span className="badge bg-success">Confirmed</span>}
-                            {booking.bookingStatus === 'Pending' && <span className="badge text-dark" style={{ backgroundColor: '#FFD166' }}>Pending</span>}
-                            {booking.bookingStatus === 'Cancelled' && <span className="badge bg-danger">Cancelled</span>}
-                            {booking.bookingStatus === 'Postponed' && <span className="badge bg-warning text-dark">Postponed</span>}
-                          </td>
-                          <td className="text-end">
-                            <div className="dropdown">
-                              <button className="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">Manage</button>
-                              <ul className="dropdown-menu dropdown-menu-end shadow-sm border-0">
-                                <li><button className="dropdown-item text-primary fw-bold" onClick={() => setSelectedBooking(booking)}><i className="fa-solid fa-eye me-2"></i> View Details</button></li>
-                                <li><hr className="dropdown-divider" /></li>
-                                <li><button className="dropdown-item text-success fw-bold" onClick={() => handleStatusUpdate(booking._id, 'Confirmed')}><i className="fa-solid fa-check me-2"></i> Mark Confirmed</button></li>
-                                <li><button className="dropdown-item text-warning fw-bold" onClick={() => handleStatusUpdate(booking._id, 'Pending')}><i className="fa-solid fa-clock-rotate-left me-2"></i> Mark Pending</button></li>
-                                <li><button className="dropdown-item text-danger fw-bold" onClick={() => handleStatusUpdate(booking._id, 'Cancelled')}><i className="fa-solid fa-ban me-2"></i> Cancel Trip</button></li>
-                              </ul>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
-          {totalPages > 1 && (
-              <div className="d-flex justify-content-between align-items-center mt-4 border-top border-primary border-opacity-10 pt-3">
-                  <span className="text-grey small fw-bold">Page {currentPage} of {totalPages}</span>
-                  <div className="d-flex gap-2">
-                      <button className="btn btn-sm btn-outline-custom px-3 py-1" onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}><i className="fa-solid fa-chevron-left"></i></button>
-                      {[...Array(totalPages)].map((_, i) => (
-                        <button key={i} className={`btn btn-sm px-3 py-1 ${currentPage === i + 1 ? 'btn-proceed shadow-sm' : 'btn-outline-custom'}`} onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
-                      ))}
-                      <button className="btn btn-sm btn-outline-custom px-3 py-1" onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}><i className="fa-solid fa-chevron-right"></i></button>
-                  </div>
-              </div>
-          )}
-        </div>
-        <div className="col-lg-3 p-4" style={{ backgroundColor: 'rgba(0, 180, 216, 0.03)' }}>
+          <div className="col-lg-9 p-4 border-end border-primary border-opacity-10">
             <div className="d-flex justify-content-between align-items-center mb-4">
-              <h5 className="text-navy font-montserrat fw-bold m-0">Filters</h5>
-              <button className="btn btn-sm text-accent fw-bold p-0 text-decoration-underline" onClick={clearFilters}>Reset</button>
+              <h4 className="text-navy font-montserrat fw-bold m-0"><i className="fa-solid fa-table-list text-accent me-2"></i> All Orders</h4>
+              <span className="text-grey small fw-bold">{filteredBookings.length} results found</span>
             </div>
-            <div className="mb-3">
-              <label className="text-grey small fw-bold mb-1">Search ID, Name</label>
-              <input type="text" className="form-control-dark w-100" placeholder="Type here..." value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)} />
+            <div className="table-responsive" style={{ minHeight: '400px' }}>
+              <table className="table table-hover align-middle" style={{ color: 'var(--text-grey)' }}>
+                <thead style={{ borderBottom: '2px solid var(--primary-color)' }}>
+                  <tr>
+                    <th className="text-navy font-montserrat">Order ID</th>
+                    <th className="text-navy font-montserrat">Client / Email</th>
+                    <th className="text-navy font-montserrat">Package & Date</th>
+                    <th className="text-navy font-montserrat">Total Price</th>
+                    <th className="text-navy font-montserrat">Status</th>
+                    <th className="text-navy font-montserrat text-end">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {paginatedBookings.length === 0 ? (
+                    <tr><td colSpan="6" className="text-center py-5 text-grey fw-bold">No bookings match your exact filters.</td></tr>
+                  ) : (
+                    paginatedBookings.map(booking => {
+                        const totalPaid = booking.payments?.reduce((sum, p) => p.status === 'Paid' ? sum + p.amountDue : sum, 0) || 0;
+                        const isFullyPaid = totalPaid >= booking.totalPrice;
+                        return (
+                          <tr key={booking._id}>
+                            <td className="fw-bold" style={{ fontSize: '0.85rem' }}>#{booking._id.substring(0, 8).toUpperCase()}</td>
+                            <td>
+                              <span className="d-block fw-bold text-navy">{booking.userId?.name || 'Unknown User / Deleted'}</span>
+                              <span className="small text-grey">{booking.userId?.email || 'N/A'}</span>
+                            </td>
+                            <td>
+                              <span className="d-block fw-bold text-primary-dark">{booking.packageName}</span>
+                              <span className="small text-grey"><i className="fa-regular fa-calendar text-accent me-1"></i> {booking.travelDate}</span>
+                            </td>
+                            <td>
+                              <span className="d-block fw-bold">{formatPrice(booking.totalPrice)}</span>
+                              <span className={`small fw-bold ${isFullyPaid ? 'text-success' : 'text-warning'}`}>{isFullyPaid ? 'PAID' : 'PENDING'}</span>
+                            </td>
+                            <td>
+                              {booking.bookingStatus === 'Confirmed' && <span className="badge bg-success">Confirmed</span>}
+                              {booking.bookingStatus === 'Pending' && <span className="badge text-dark" style={{ backgroundColor: '#FFD166' }}>Pending</span>}
+                              {booking.bookingStatus === 'Cancelled' && <span className="badge bg-danger">Cancelled</span>}
+                              {booking.bookingStatus === 'Postponed' && <span className="badge bg-warning text-dark">Postponed</span>}
+                            </td>
+                            <td className="text-end">
+                              <div className="dropdown">
+                                <button className="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">Manage</button>
+                                <ul className="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                                  <li><button className="dropdown-item text-primary fw-bold" onClick={() => setSelectedBooking(booking)}><i className="fa-solid fa-eye me-2"></i> View Details</button></li>
+                                  <li><hr className="dropdown-divider" /></li>
+                                  <li><button className="dropdown-item text-success fw-bold" onClick={() => handleStatusUpdate(booking._id, 'Confirmed')}><i className="fa-solid fa-check me-2"></i> Mark Confirmed</button></li>
+                                  <li><button className="dropdown-item text-warning fw-bold" onClick={() => handleStatusUpdate(booking._id, 'Pending')}><i className="fa-solid fa-clock-rotate-left me-2"></i> Mark Pending</button></li>
+                                  <li><button className="dropdown-item text-danger fw-bold" onClick={() => handleStatusUpdate(booking._id, 'Cancelled')}><i className="fa-solid fa-ban me-2"></i> Cancel Trip</button></li>
+                                </ul>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                    })
+                  )}
+                </tbody>
+              </table>
             </div>
-            <div className="mb-3">
-              <label className="text-grey small fw-bold mb-1">Booking Status</label>
-              <select className="form-control-dark w-100" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
-                <option value="All">All</option>
-                <option value="Confirmed">Confirmed</option>
-                <option value="Pending">Pending</option>
-                <option value="Postponed">Postponed</option>
-                <option value="Cancelled">Cancelled</option>
-              </select>
-            </div>
-            <div className="mb-3">
-              <label className="text-grey small fw-bold mb-1">Payment Status</label>
-              <select className="form-control-dark w-100" value={filterPayment} onChange={(e) => setFilterPayment(e.target.value)}>
-                <option value="All">All</option>
-                <option value="Fully Paid">Fully Paid</option>
-                <option value="Pending/Partial">Pending / Partial</option>
-              </select>
-            </div>
-            <div className="mb-3">
-              <label className="text-grey small fw-bold mb-1">Destination / Package</label>
-              <select className="form-control-dark w-100" value={filterPackage} onChange={(e) => setFilterPackage(e.target.value)}>
-                <option value="All">All Packages</option>
-                {uniquePackages.map(pkg => (<option key={pkg} value={pkg}>{pkg}</option>))}
-              </select>
-            </div>
-            <div className="mb-3">
-              <label className="text-grey small fw-bold mb-1">Travel Date From</label>
-              <input type="date" className="form-control-dark w-100" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
-            </div>
-            <div className="mb-3">
-              <label className="text-grey small fw-bold mb-1">Travel Date To</label>
-              <input type="date" className="form-control-dark w-100" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
-            </div>
-        </div>
+            {totalPages > 1 && (
+                <div className="d-flex justify-content-between align-items-center mt-4 border-top border-primary border-opacity-10 pt-3">
+                    <span className="text-grey small fw-bold">Page {currentPage} of {totalPages}</span>
+                    <div className="d-flex gap-2">
+                        <button className="btn btn-sm btn-outline-custom px-3 py-1" onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}><i className="fa-solid fa-chevron-left"></i></button>
+                        {[...Array(totalPages)].map((_, i) => (
+                          <button key={i} className={`btn btn-sm px-3 py-1 ${currentPage === i + 1 ? 'btn-proceed shadow-sm' : 'btn-outline-custom'}`} onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
+                        ))}
+                        <button className="btn btn-sm btn-outline-custom px-3 py-1" onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}><i className="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            )}
+          </div>
+          <div className="col-lg-3 p-4" style={{ backgroundColor: 'rgba(0, 180, 216, 0.03)' }}>
+              <div className="d-flex justify-content-between align-items-center mb-4">
+                <h5 className="text-navy font-montserrat fw-bold m-0">Filters</h5>
+                <button className="btn btn-sm text-accent fw-bold p-0 text-decoration-underline" onClick={clearFilters}>Reset</button>
+              </div>
+              <div className="mb-3">
+                <label className="text-grey small fw-bold mb-1">Search ID, Name</label>
+                <input type="text" className="form-control-dark w-100" placeholder="Type here..." value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)} />
+              </div>
+              <div className="mb-3">
+                <label className="text-grey small fw-bold mb-1">Booking Status</label>
+                <select className="form-control-dark w-100" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
+                  <option value="All">All</option>
+                  <option value="Confirmed">Confirmed</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Postponed">Postponed</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
+              </div>
+              <div className="mb-3">
+                <label className="text-grey small fw-bold mb-1">Payment Status</label>
+                <select className="form-control-dark w-100" value={filterPayment} onChange={(e) => setFilterPayment(e.target.value)}>
+                  <option value="All">All</option>
+                  <option value="Fully Paid">Fully Paid</option>
+                  <option value="Pending/Partial">Pending / Partial</option>
+                </select>
+              </div>
+              <div className="mb-3">
+                <label className="text-grey small fw-bold mb-1">Destination / Package</label>
+                <select className="form-control-dark w-100" value={filterPackage} onChange={(e) => setFilterPackage(e.target.value)}>
+                  <option value="All">All Packages</option>
+                  {uniquePackages.map(pkg => (<option key={pkg} value={pkg}>{pkg}</option>))}
+                </select>
+              </div>
+              <div className="mb-3">
+                <label className="text-grey small fw-bold mb-1">Travel Date From</label>
+                <input type="date" className="form-control-dark w-100" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
+              </div>
+              <div className="mb-3">
+                <label className="text-grey small fw-bold mb-1">Travel Date To</label>
+                <input type="date" className="form-control-dark w-100" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
+              </div>
+          </div>
       </div>
-    );
-  };
+  );
 
-  const renderUsersTab = () => {
-    return (
+  const renderUsersTab = () => (
       <div className="table-responsive fade-in p-4">
         <table className="table table-hover align-middle" style={{ color: 'var(--text-grey)' }}>
           <thead style={{ borderBottom: '2px solid var(--primary-color)' }}>
@@ -379,11 +412,9 @@ const AdminDashboard = () => {
           </tbody>
         </table>
       </div>
-    );
-  };
+  );
 
-  const renderInboxTab = () => {
-    return (
+  const renderInboxTab = () => (
       <div className="table-responsive fade-in p-4">
         <table className="table table-hover align-middle" style={{ color: 'var(--text-grey)' }}>
           <thead style={{ borderBottom: '2px solid var(--primary-color)' }}>
@@ -418,8 +449,7 @@ const AdminDashboard = () => {
           </tbody>
         </table>
       </div>
-    );
-  };
+  );
 
   const renderCrmModal = () => {
     if (!activeUserToRender) return null;
@@ -816,7 +846,9 @@ const AdminDashboard = () => {
     );
   };
 
-  // --- 6. MAIN RENDER ---
+  // ==========================================
+  // MAIN RENDER
+  // ==========================================
   return (
     <div className="fade-in" style={{ paddingTop: '100px', minHeight: '100vh', backgroundColor: 'var(--bg-dark)' }}>
       <div className="container pb-5">
