@@ -20,7 +20,12 @@ router.post('/register', async (req, res) => {
         const newUser = new User({
             name: name,
             email: email,
-            password: hashedPassword 
+            password: hashedPassword,
+            // ⚡ NEW: Auto-generate the first timeline note upon creation ⚡
+            adminNotes: [{
+                text: `System: Customer account created for ${name}.`,
+                authorInitials: '⚙️'
+            }]
         });
 
         await newUser.save();
@@ -60,7 +65,7 @@ router.post('/login', async (req, res) => {
                 id: user._id,
                 name: user.name,
                 email: user.email,
-                isAdmin: user.isAdmin // ⚡ NEW: Admin flag
+                isAdmin: user.isAdmin // ⚡ Admin flag
             }
         });
 
