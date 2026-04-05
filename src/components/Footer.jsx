@@ -141,7 +141,9 @@ const Footer = () => {
                       <div className="social-links">
                           <a href="https://www.facebook.com/share/18YdGGJNhM/" target="_blank" rel="noopener noreferrer" className="social-btn"><i className="fa-brands fa-facebook-f"></i></a>
                           <a href="https://www.instagram.com/philgoodtravels?igsh=bWQ3Z2s4bXY0Mzl6" target="_blank" rel="noopener noreferrer" className="social-btn"><i className="fa-brands fa-instagram"></i></a>
-                          <a href="https://x.com/techtacoder" target="_blank" rel="noopener noreferrer" className="social-btn"><i className="fa-brands fa-x-twitter"></i></a>
+                          <a href="https://x.com/techtacoder" target="_blank" rel="noopener noreferrer" className="social-btn">
+    <i className="fa-brands fa-twitter"></i>
+</a>
                       </div>
                   </div>
                   <div className="col-lg-2 col-md-6">
