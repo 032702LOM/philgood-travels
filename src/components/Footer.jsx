@@ -1,14 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { io } from 'socket.io-client'; // ⚡ Real-time Socket Import
 
 const Footer = () => {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState({ loading: false, message: '', type: '' });
 
-  // ⚡ NEW: In-App Messenger Widget States ⚡
+  // ⚡ Messenger Widget States
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [widgetView, setWidgetView] = useState('menu'); // Views: 'menu', 'chat', 'email'
+  const [widgetView, setWidgetView] = useState('menu'); 
   
   // States for the Email Form
   const [miniEmailData, setMiniEmailData] = useState({ name: '', email: '', message: '' });
@@ -21,6 +22,35 @@ const Footer = () => {
   const [chatInput, setChatInput] = useState('');
   const chatScrollRef = useRef(null);
 
+  // ⚡ NEW: SOCKET CONNECTION STATES
+  const [socket, setSocket] = useState(null);
+  const [sessionId, setSessionId] = useState('');
+
+  // ⚡ SOCKET CONNECTION LOGIC
+  useEffect(() => {
+      // 1. Generate or retrieve a unique session ID for this visitor
+      let currentSessionId = localStorage.getItem('chatSessionId');
+      if (!currentSessionId) {
+          currentSessionId = 'session_' + Math.random().toString(36).substr(2, 9);
+          localStorage.setItem('chatSessionId', currentSessionId);
+      }
+      setSessionId(currentSessionId);
+
+      // 2. Connect to the backend WebSocket server
+      // NOTE: Switch to 'http://localhost:5000' if testing locally!
+      const newSocket = io('https://philgood-travels.onrender.com'); 
+      setSocket(newSocket);
+
+      newSocket.emit('join_chat', currentSessionId);
+
+      // 3. Listen for incoming messages (User or Admin)
+      newSocket.on('receive_message', (message) => {
+          setChatMessages((prev) => [...prev, message]);
+      });
+
+      return () => newSocket.disconnect(); // Cleanup on unmount
+  }, []);
+
   // Auto-scroll chat to bottom
   useEffect(() => {
       if (chatScrollRef.current) {
@@ -30,33 +60,29 @@ const Footer = () => {
 
   const toggleChat = () => {
     setIsChatOpen(!isChatOpen);
-    if (!isChatOpen) setWidgetView('menu'); // Reset to menu when opening
+    if (!isChatOpen) setWidgetView('menu'); 
   };
 
-  // Newsletter Subscribe Logic
   const handleSubscribe = async (e) => {
     e.preventDefault();
     if (!email) return;
     setStatus({ loading: true, message: '', type: '' });
-
     try {
         const response = await axios.post('https://philgood-travels.onrender.com/api/contact/subscribe', { email });
         setStatus({ loading: false, message: response.data.message, type: 'success' });
         setEmail(''); 
         setTimeout(() => setStatus({ loading: false, message: '', type: '' }), 3000);
     } catch (error) {
-        const errorMsg = error.response?.data?.error || "Failed to subscribe. Please try again.";
+        const errorMsg = error.response?.data?.error || "Failed to subscribe.";
         setStatus({ loading: false, message: errorMsg, type: 'danger' });
         setTimeout(() => setStatus({ loading: false, message: '', type: '' }), 3000);
     }
   };
 
-  // ⚡ Handle In-Widget Email ⚡
   const handleSendMiniEmail = async (e) => {
       e.preventDefault();
       setIsSendingEmail(true);
       try {
-          // Hooks into your existing contact route!
           await axios.post('https://philgood-travels.onrender.com/api/contact/send', {
               ...miniEmailData,
               subject: 'New Message from Website Widget'
@@ -65,27 +91,25 @@ const Footer = () => {
           setWidgetView('menu');
           setMiniEmailData({ name: '', email: '', message: '' });
       } catch (error) {
-          alert("Failed to send message. Please try again.");
+          alert("Failed to send message.");
       } finally {
           setIsSendingEmail(false);
       }
   };
 
-  // ⚡ Handle In-Widget Chat ⚡
+  // ⚡ UPDATED: REAL IN-WIDGET CHAT LOGIC
   const handleSendChat = () => {
-      if (!chatInput.trim()) return;
+      if (!chatInput.trim() || !socket) return;
 
-      // 1. Show user's message
-      setChatMessages(prev => [...prev, { sender: 'user', text: chatInput }]);
-      setChatInput('');
+      const messageData = {
+          sessionId: sessionId,
+          sender: 'user',
+          text: chatInput
+      };
 
-      // 2. Simulate bot typing & reply
-      setTimeout(() => {
-          setChatMessages(prev => [...prev, {
-              sender: 'bot',
-              text: "Thanks for reaching out! Our live agents are currently away. Please tap the back arrow and use the 'Send an Email' option so we can assist you right away!"
-          }]);
-      }, 1000);
+      // Emit the message to the server
+      socket.emit('send_message', messageData);
+      setChatInput(''); 
   };
 
   return (
@@ -140,7 +164,6 @@ const Footer = () => {
                   <div className="col-lg-3 col-md-6">
                       <h5 className="footer-heading text-white">Newsletter</h5>
                       <p className="mb-3 text-white-50">Subscribe for exclusive deals!</p>
-                      
                       <form onSubmit={handleSubscribe} className="position-relative">
                           <input 
                               type="email" 
@@ -153,7 +176,6 @@ const Footer = () => {
                           <button type="submit" className="footer-subscribe-btn" disabled={status.loading}>
                               {status.loading ? 'SUBSCRIBING...' : 'SUBSCRIBE'}
                           </button>
-                          
                           {status.message && (
                               <div className={`text-${status.type} fw-bold small mt-2`}>
                                   {status.type === 'success' ? <i className="fa-solid fa-check me-1"></i> : <i className="fa-solid fa-circle-exclamation me-1"></i>}
@@ -169,30 +191,22 @@ const Footer = () => {
           </div>
       </footer>
 
-      {/* ==========================================
-          ⚡ NATIVE IN-APP MESSAGE WIDGET ⚡
-          ========================================== */}
+      {/* Messenger Widget */}
       <div className="chat-widget-container">
-          
           <div className={`chat-popup ${isChatOpen ? 'show' : ''}`} style={{ width: '320px', bottom: '85px', borderRadius: '12px', overflow: 'hidden' }}>
-              
-              {/* Dynamic Header */}
               <div className="chat-popup-header d-flex justify-content-between align-items-center" style={{ padding: '15px', backgroundColor: 'var(--primary-dark)', color: 'white' }}>
                   <div className="d-flex align-items-center gap-2">
                       {widgetView !== 'menu' && (
-                          <i className="fa-solid fa-arrow-left" style={{ cursor: 'pointer', fontSize: '1.1rem' }} onClick={() => setWidgetView('menu')} title="Back"></i>
+                          <i className="fa-solid fa-arrow-left" style={{ cursor: 'pointer', fontSize: '1.1rem' }} onClick={() => setWidgetView('menu')}></i>
                       )}
                       <h6 className="m-0 fw-bold font-montserrat">
                           {widgetView === 'menu' ? 'Need Help?' : widgetView === 'chat' ? 'Live Chat' : 'Send an Email'}
                       </h6>
                   </div>
-                  <i className="fa-solid fa-xmark" style={{ cursor: 'pointer', fontSize: '1.2rem' }} onClick={() => setIsChatOpen(false)} title="Close"></i>
+                  <i className="fa-solid fa-xmark" style={{ cursor: 'pointer', fontSize: '1.2rem' }} onClick={() => setIsChatOpen(false)}></i>
               </div>
 
-              {/* Dynamic Body */}
               <div className="chat-popup-body" style={{ height: '340px', backgroundColor: 'var(--card-bg)', position: 'relative' }}>
-                  
-                  {/* View 1: Menu Selection */}
                   {widgetView === 'menu' && (
                       <div className="d-flex flex-column justify-content-center h-100 p-3 gap-3">
                           <p className="text-center text-grey small mb-2">How would you like to reach us?</p>
@@ -205,7 +219,6 @@ const Footer = () => {
                       </div>
                   )}
 
-                  {/* View 2: Email Form */}
                   {widgetView === 'email' && (
                       <form onSubmit={handleSendMiniEmail} className="d-flex flex-column h-100 p-3">
                           <p className="text-grey small mb-3">Leave us a message and we will reply to your email shortly.</p>
@@ -218,12 +231,11 @@ const Footer = () => {
                       </form>
                   )}
 
-                  {/* View 3: Chat Interface */}
                   {widgetView === 'chat' && (
                       <div className="d-flex flex-column h-100 p-2" style={{ backgroundColor: 'rgba(0, 180, 216, 0.05)' }}>
                           <div className="flex-grow-1 overflow-auto d-flex flex-column gap-2 p-2" ref={chatScrollRef} style={{ scrollBehavior: 'smooth' }}>
                               {chatMessages.map((msg, i) => (
-                                  <div key={i} className={`p-2 rounded-3 shadow-sm ${msg.sender === 'bot' ? 'bg-white text-dark align-self-start border' : 'text-white align-self-end'}`} style={{ maxWidth: '85%', fontSize: '0.85rem', backgroundColor: msg.sender === 'bot' ? '' : 'var(--primary-color)' }}>
+                                  <div key={i} className={`p-2 rounded-3 shadow-sm ${msg.sender === 'bot' || msg.sender === 'admin' ? 'bg-white text-dark align-self-start border' : 'text-white align-self-end'}`} style={{ maxWidth: '85%', fontSize: '0.85rem', backgroundColor: msg.sender === 'user' ? 'var(--primary-color)' : '' }}>
                                       {msg.text}
                                   </div>
                               ))}
@@ -236,11 +248,8 @@ const Footer = () => {
                           </div>
                       </div>
                   )}
-
               </div>
           </div>
-          
-          {/* Floating Trigger Button */}
           <button className="chat-btn-main" onClick={toggleChat}>
               <i className={`fa-solid ${isChatOpen ? 'fa-xmark' : 'fa-comment-dots'}`}></i>
           </button>
