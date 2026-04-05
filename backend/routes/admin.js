@@ -103,4 +103,23 @@ router.delete('/message/:id', async (req, res) => {
     }
 });
 
+// ⚡ NEW POST: Add a timeline note to a user
+router.post('/user/:id/notes', async (req, res) => {
+    try {
+        const { text, authorInitials } = req.body;
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).json({ error: "User not found" });
+
+        // Add the new note to the top of their timeline
+        user.adminNotes.push({ text, authorInitials });
+        await user.save();
+
+        // Return the freshly updated user to the frontend
+        const updatedUser = await User.findById(req.params.id).select('-password');
+        res.status(200).json({ message: "Note added!", user: updatedUser });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to add note." });
+    }
+});
+
 module.exports = router;

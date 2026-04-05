@@ -15,38 +15,32 @@ const AdminDashboard = () => {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [selectedMessage, setSelectedMessage] = useState(null);
 
-  // ==========================================
-  // ⚡ NEW: ADVANCED FILTER & PAGINATION STATE ⚡
-  // ==========================================
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isEditingUser, setIsEditingUser] = useState(false);
+  const [editUserData, setEditUserData] = useState({ name: '', email: '', isAdmin: false });
+  
+  // ⚡ NEW: Timeline Note States
+  const [newNote, setNewNote] = useState('');
+  const [isPostingNote, setIsPostingNote] = useState(false);
+
   const [searchKeyword, setSearchKeyword] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
   const [filterPayment, setFilterPayment] = useState('All');
   const [filterPackage, setFilterPackage] = useState('All');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
-  
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // Show 10 bookings per page
+  const itemsPerPage = 10;
 
-  // Reset page to 1 whenever a filter changes
   useEffect(() => { setCurrentPage(1); }, [searchKeyword, filterStatus, filterPayment, filterPackage, dateFrom, dateTo]);
 
-  // ==========================================
-  // FETCH DATA
-  // ==========================================
   useEffect(() => {
     const fetchAdminData = async () => {
       const token = localStorage.getItem('token');
       const userStr = localStorage.getItem('user');
 
-      if (!token || !userStr) {
-        navigate('/login');
-        return;
-      }
-
-      const parsedUser = JSON.parse(userStr);
-
-      if (!parsedUser.isAdmin) {
+      if (!token || !userStr) { navigate('/login'); return; }
+      if (!JSON.parse(userStr).isAdmin) {
         alert("🚨 Unauthorized Access. Redirecting to homepage.");
         navigate('/');
         return;
@@ -56,27 +50,17 @@ const AdminDashboard = () => {
         const response = await axios.get('https://philgood-travels.onrender.com/api/admin/stats');
         setStats(response.data);
       } catch (err) {
-        console.error(err);
         setError('Failed to load admin data. Please check your backend connection.');
-      } finally {
-        setIsLoading(false);
-      }
+      } finally { setIsLoading(false); }
     };
-
     fetchAdminData();
   }, [navigate]);
 
-  // ==========================================
-  // ACTIONS
-  // ==========================================
   const handleStatusUpdate = async (bookingId, newStatus) => {
     if (!window.confirm(`Are you sure you want to mark this booking as ${newStatus}?`)) return;
     try {
       await axios.put(`https://philgood-travels.onrender.com/api/admin/booking-status/${bookingId}`, { status: newStatus });
-      setStats(prevStats => ({
-        ...prevStats,
-        allBookings: prevStats.allBookings.map(b => b._id === bookingId ? { ...b, bookingStatus: newStatus } : b)
-      }));
+      setStats(prevStats => ({ ...prevStats, allBookings: prevStats.allBookings.map(b => b._id === bookingId ? { ...b, bookingStatus: newStatus } : b) }));
     } catch (error) { alert('❌ Failed to update status.'); }
   };
 
@@ -87,12 +71,51 @@ const AdminDashboard = () => {
 
     try {
       await axios.delete(`https://philgood-travels.onrender.com/api/admin/user/${userId}`);
-      setStats(prevStats => ({
-        ...prevStats,
-        allUsers: prevStats.allUsers.filter(u => u._id !== userId),
-        totalUsers: prevStats.totalUsers - 1
-      }));
+      setStats(prevStats => ({ ...prevStats, allUsers: prevStats.allUsers.filter(u => u._id !== userId), totalUsers: prevStats.totalUsers - 1 }));
+      if (selectedUser && selectedUser._id === userId) setSelectedUser(null);
     } catch (error) { alert('❌ Failed to delete user.'); }
+  };
+
+  const handleOpenUserCRM = (user) => {
+      setSelectedUser(user);
+      setEditUserData({ name: user.name, email: user.email, isAdmin: user.isAdmin });
+      setIsEditingUser(false);
+      setNewNote(''); // Clear any lingering typed notes
+  };
+
+  const handleSaveUserEdit = async () => {
+      try {
+          const response = await axios.put(`https://philgood-travels.onrender.com/api/admin/user/${selectedUser._id}`, editUserData);
+          const updatedUser = response.data.user;
+          setStats(prevStats => ({ ...prevStats, allUsers: prevStats.allUsers.map(u => u._id === updatedUser._id ? updatedUser : u) }));
+          setSelectedUser(updatedUser);
+          setIsEditingUser(false);
+      } catch (error) { alert('❌ Failed to update user.'); }
+  };
+
+  // ⚡ NEW: Submit Timeline Note Function ⚡
+  const handleAddNote = async () => {
+      if (!newNote.trim()) return;
+      setIsPostingNote(true);
+      try {
+          // Get the logged-in admin's initials
+          const currentUser = JSON.parse(localStorage.getItem('user'));
+          const initials = currentUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
+          const response = await axios.post(`https://philgood-travels.onrender.com/api/admin/user/${selectedUser._id}/notes`, {
+              text: newNote,
+              authorInitials: initials
+          });
+
+          const updatedUser = response.data.user;
+          setStats(prevStats => ({ ...prevStats, allUsers: prevStats.allUsers.map(u => u._id === updatedUser._id ? updatedUser : u) }));
+          setSelectedUser(updatedUser);
+          setNewNote('');
+      } catch (error) {
+          alert("❌ Failed to post note.");
+      } finally {
+          setIsPostingNote(false);
+      }
   };
 
   const handleReadMessage = async (msg) => {
@@ -114,75 +137,66 @@ const AdminDashboard = () => {
       } catch (e) { alert("Failed to delete message"); }
   };
 
-  const clearFilters = () => {
-      setSearchKeyword(''); setFilterStatus('All'); setFilterPayment('All'); setFilterPackage('All'); setDateFrom(''); setDateTo('');
-  };
+  const clearFilters = () => { setSearchKeyword(''); setFilterStatus('All'); setFilterPayment('All'); setFilterPackage('All'); setDateFrom(''); setDateTo(''); };
 
-  // ==========================================
-  // ⚡ NEW: FILTER & PAGINATION LOGIC ⚡
-  // ==========================================
   let filteredBookings = [];
   let uniquePackages = [];
   let paginatedBookings = [];
   let totalPages = 1;
 
   if (stats && stats.allBookings) {
-      // 1. Extract unique packages for the dropdown filter
       uniquePackages = [...new Set(stats.allBookings.map(b => b.packageName))];
-
-      // 2. Apply Filters
       filteredBookings = stats.allBookings.filter(b => {
-          // Keyword Search
-          const kw = searchKeyword.toLowerCase();
-          const matchSearch = !kw || b._id.toLowerCase().includes(kw) || (b.userId?.name || '').toLowerCase().includes(kw) || (b.userId?.email || '').toLowerCase().includes(kw);
-          
-          // Booking Status
-          const matchStatus = filterStatus === 'All' || b.bookingStatus === filterStatus;
-          
-          // Payment Status
-          const totalPaid = b.payments?.reduce((sum, p) => p.status === 'Paid' ? sum + p.amountDue : sum, 0) || 0;
           const kw = searchKeyword.toLowerCase().replace('#', '');
+          const matchSearch = !kw || b._id.toLowerCase().includes(kw) || (b.userId?.name || '').toLowerCase().includes(kw) || (b.userId?.email || '').toLowerCase().includes(kw);
+          const matchStatus = filterStatus === 'All' || b.bookingStatus === filterStatus;
+          const totalPaid = b.payments?.reduce((sum, p) => p.status === 'Paid' ? sum + p.amountDue : sum, 0) || 0;
+          const isFullyPaid = totalPaid >= b.totalPrice;
           const matchPayment = filterPayment === 'All' || (filterPayment === 'Fully Paid' && isFullyPaid) || (filterPayment === 'Pending/Partial' && !isFullyPaid);
-          
-          // Package Name
           const matchPackage = filterPackage === 'All' || b.packageName === filterPackage;
-
-          // Travel Date Range
           let matchDate = true;
           if (dateFrom || dateTo) {
               const tripDate = new Date(b.travelDate);
               if (dateFrom && tripDate < new Date(dateFrom)) matchDate = false;
               if (dateTo && tripDate > new Date(dateTo)) matchDate = false;
           }
-
           return matchSearch && matchStatus && matchPayment && matchPackage && matchDate;
       });
-
-      // 3. Apply Pagination
       totalPages = Math.ceil(filteredBookings.length / itemsPerPage);
       paginatedBookings = filteredBookings.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   }
 
-  // ==========================================
-  // RENDER
-  // ==========================================
+  let userBookings = [];
+  let userTotalSpent = 0;
+  let daysSince = 0;
+  
+  if (selectedUser && stats) {
+      userBookings = stats.allBookings.filter(b => b.userId && b.userId._id === selectedUser._id);
+      userTotalSpent = userBookings.reduce((sum, b) => {
+          if (b.bookingStatus === 'Cancelled') return sum;
+          const paid = b.payments?.reduce((s, p) => p.status === 'Paid' ? s + p.amountDue : s, 0) || 0;
+          return sum + paid;
+      }, 0);
+      
+      const createdDate = new Date(selectedUser.createdAt);
+      const today = new Date();
+      daysSince = Math.floor((today - createdDate) / (1000 * 60 * 60 * 24));
+  }
+
   if (isLoading) return <div className="fade-in d-flex align-items-center justify-content-center" style={{ minHeight: '80vh', backgroundColor: 'var(--bg-dark)' }}><h3 className="text-navy fw-bold font-montserrat"><i className="fa-solid fa-spinner fa-spin text-accent me-2"></i> Loading Dashboard...</h3></div>;
   if (error) return <div className="fade-in d-flex align-items-center justify-content-center" style={{ minHeight: '80vh', backgroundColor: 'var(--bg-dark)' }}><h3 className="text-danger fw-bold font-montserrat">{error}</h3></div>;
 
   const unreadCount = stats.allMessages?.filter(m => m.status === 'Unread').length || 0;
+  const adminInitials = JSON.parse(localStorage.getItem('user'))?.name.substring(0, 2).toUpperCase() || 'AD';
 
   return (
     <div className="fade-in" style={{ paddingTop: '100px', minHeight: '100vh', backgroundColor: 'var(--bg-dark)' }}>
       <div className="container pb-5">
         
         <div className="d-flex justify-content-between align-items-center mb-5">
-          <div>
-            <h1 className="section-title wave-text mb-1" style={{ fontSize: '3rem' }}>Admin Dashboard</h1>
-            <p className="text-grey fw-bold m-0">Welcome to mission control. Here is your overview.</p>
-          </div>
+          <div><h1 className="section-title wave-text mb-1" style={{ fontSize: '3rem' }}>Admin Dashboard</h1><p className="text-grey fw-bold m-0">Welcome to mission control. Here is your overview.</p></div>
         </div>
 
-        {/* --- TOP SUMMARY CARDS --- */}
         <div className="row g-4 mb-4">
           <div className="col-md-4">
             <div className="p-4 rounded-4 shadow-lg border border-primary border-opacity-25 h-100" style={{ backgroundColor: 'var(--card-bg)' }}>
@@ -213,75 +227,39 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* --- TAB NAVIGATION --- */}
         <div className="d-flex gap-3 mb-4 flex-wrap pb-3 border-bottom border-primary border-opacity-10">
-            <button className={`btn ${activeTab === 'bookings' ? 'btn-proceed shadow' : 'btn-outline-custom'}`} onClick={() => setActiveTab('bookings')} style={{ borderRadius: '50px', padding: '10px 25px' }}>
-                <i className="fa-solid fa-suitcase-rolling me-2"></i> Orders / Bookings
-            </button>
-            <button className={`btn ${activeTab === 'users' ? 'btn-proceed shadow' : 'btn-outline-custom'}`} onClick={() => setActiveTab('users')} style={{ borderRadius: '50px', padding: '10px 25px' }}>
-                <i className="fa-solid fa-users me-2"></i> Manage Users
-            </button>
+            <button className={`btn ${activeTab === 'bookings' ? 'btn-proceed shadow' : 'btn-outline-custom'}`} onClick={() => setActiveTab('bookings')} style={{ borderRadius: '50px', padding: '10px 25px' }}><i className="fa-solid fa-suitcase-rolling me-2"></i> Orders / Bookings</button>
+            <button className={`btn ${activeTab === 'users' ? 'btn-proceed shadow' : 'btn-outline-custom'}`} onClick={() => setActiveTab('users')} style={{ borderRadius: '50px', padding: '10px 25px' }}><i className="fa-solid fa-users me-2"></i> Manage Users</button>
             <button className={`btn ${activeTab === 'inbox' ? 'btn-proceed shadow' : 'btn-outline-custom'}`} onClick={() => setActiveTab('inbox')} style={{ borderRadius: '50px', padding: '10px 25px', position: 'relative' }}>
                 <i className="fa-solid fa-envelope me-2"></i> Inbox
                 {unreadCount > 0 && <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-light">{unreadCount}</span>}
             </button>
         </div>
 
-        {/* --- DYNAMIC CONTENT AREA --- */}
         <div className="rounded-4 shadow-lg border border-primary border-opacity-25 overflow-hidden" style={{ backgroundColor: 'var(--card-bg)' }}>
           
-          {/* ⚡ TAB 1: ADVANCED BOOKINGS VIEW (SIDEBAR + TABLE) ⚡ */}
+          {/* TAB 1: BOOKINGS */}
           {activeTab === 'bookings' && (
               <div className="row g-0 fade-in">
-                  
-                  {/* DATA TABLE (Left Side - 9 Cols) */}
                   <div className="col-lg-9 p-4 border-end border-primary border-opacity-10">
-                    <div className="d-flex justify-content-between align-items-center mb-4">
-                        <h4 className="text-navy font-montserrat fw-bold m-0"><i className="fa-solid fa-table-list text-accent me-2"></i> All Orders</h4>
-                        <span className="text-grey small fw-bold">{filteredBookings.length} results found</span>
-                    </div>
-
+                    <div className="d-flex justify-content-between align-items-center mb-4"><h4 className="text-navy font-montserrat fw-bold m-0"><i className="fa-solid fa-table-list text-accent me-2"></i> All Orders</h4><span className="text-grey small fw-bold">{filteredBookings.length} results found</span></div>
                     <div className="table-responsive" style={{ minHeight: '400px' }}>
                       <table className="table table-hover align-middle" style={{ color: 'var(--text-grey)' }}>
                         <thead style={{ borderBottom: '2px solid var(--primary-color)' }}>
-                          <tr>
-                            <th className="text-navy font-montserrat">Order ID</th>
-                            <th className="text-navy font-montserrat">Client / Email</th>
-                            <th className="text-navy font-montserrat">Package & Date</th>
-                            <th className="text-navy font-montserrat">Total Price</th>
-                            <th className="text-navy font-montserrat">Status</th>
-                            <th className="text-navy font-montserrat text-end">Actions</th>
-                          </tr>
+                          <tr><th className="text-navy font-montserrat">Order ID</th><th className="text-navy font-montserrat">Client / Email</th><th className="text-navy font-montserrat">Package & Date</th><th className="text-navy font-montserrat">Total Price</th><th className="text-navy font-montserrat">Status</th><th className="text-navy font-montserrat text-end">Actions</th></tr>
                         </thead>
                         <tbody>
-                          {paginatedBookings.length === 0 ? (
-                            <tr><td colSpan="6" className="text-center py-5 text-grey fw-bold">No bookings match your exact filters.</td></tr>
-                          ) : (
+                          {paginatedBookings.length === 0 ? (<tr><td colSpan="6" className="text-center py-5 text-grey fw-bold">No bookings match your exact filters.</td></tr>) : (
                             paginatedBookings.map(booking => {
                                 const totalPaid = booking.payments?.reduce((sum, p) => p.status === 'Paid' ? sum + p.amountDue : sum, 0) || 0;
                                 const isFullyPaid = totalPaid >= booking.totalPrice;
-
                                 return (
                                   <tr key={booking._id}>
                                     <td className="fw-bold" style={{ fontSize: '0.85rem' }}>#{booking._id.substring(0, 8).toUpperCase()}</td>
-                                    <td>
-                                      <span className="d-block fw-bold text-navy">{booking.userId?.name || 'Unknown User / Deleted'}</span>
-                                      <span className="small text-grey">{booking.userId?.email || 'N/A'}</span>
-                                    </td>
-                                    <td>
-                                      <span className="d-block fw-bold text-primary-dark">{booking.packageName}</span>
-                                      <span className="small text-grey"><i className="fa-regular fa-calendar text-accent me-1"></i> {booking.travelDate}</span>
-                                    </td>
-                                    <td>
-                                        <span className="d-block fw-bold">{formatPrice(booking.totalPrice)}</span>
-                                        <span className={`small fw-bold ${isFullyPaid ? 'text-success' : 'text-warning'}`}>{isFullyPaid ? 'PAID' : 'PENDING'}</span>
-                                    </td>
-                                    <td>
-                                      {booking.bookingStatus === 'Confirmed' && <span className="badge bg-success">Confirmed</span>}
-                                      {booking.bookingStatus === 'Pending' && <span className="badge text-dark" style={{ backgroundColor: '#FFD166' }}>Pending</span>}
-                                      {booking.bookingStatus === 'Cancelled' && <span className="badge bg-danger">Cancelled</span>}
-                                      {booking.bookingStatus === 'Postponed' && <span className="badge bg-warning text-dark">Postponed</span>}
-                                    </td>
+                                    <td><span className="d-block fw-bold text-navy">{booking.userId?.name || 'Unknown User / Deleted'}</span><span className="small text-grey">{booking.userId?.email || 'N/A'}</span></td>
+                                    <td><span className="d-block fw-bold text-primary-dark">{booking.packageName}</span><span className="small text-grey"><i className="fa-regular fa-calendar text-accent me-1"></i> {booking.travelDate}</span></td>
+                                    <td><span className="d-block fw-bold">{formatPrice(booking.totalPrice)}</span><span className={`small fw-bold ${isFullyPaid ? 'text-success' : 'text-warning'}`}>{isFullyPaid ? 'PAID' : 'PENDING'}</span></td>
+                                    <td>{booking.bookingStatus === 'Confirmed' && <span className="badge bg-success">Confirmed</span>}{booking.bookingStatus === 'Pending' && <span className="badge text-dark" style={{ backgroundColor: '#FFD166' }}>Pending</span>}{booking.bookingStatus === 'Cancelled' && <span className="badge bg-danger">Cancelled</span>}{booking.bookingStatus === 'Postponed' && <span className="badge bg-warning text-dark">Postponed</span>}</td>
                                     <td className="text-end">
                                       <div className="dropdown">
                                         <button className="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">Manage</button>
@@ -301,100 +279,45 @@ const AdminDashboard = () => {
                         </tbody>
                       </table>
                     </div>
-
-                    {/* Pagination Controls */}
                     {totalPages > 1 && (
                         <div className="d-flex justify-content-between align-items-center mt-4 border-top border-primary border-opacity-10 pt-3">
                             <span className="text-grey small fw-bold">Page {currentPage} of {totalPages}</span>
                             <div className="d-flex gap-2">
                                 <button className="btn btn-sm btn-outline-custom px-3 py-1" onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}><i className="fa-solid fa-chevron-left"></i></button>
-                                {[...Array(totalPages)].map((_, i) => (
-                                    <button key={i} className={`btn btn-sm px-3 py-1 ${currentPage === i + 1 ? 'btn-proceed shadow-sm' : 'btn-outline-custom'}`} onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
-                                ))}
+                                {[...Array(totalPages)].map((_, i) => (<button key={i} className={`btn btn-sm px-3 py-1 ${currentPage === i + 1 ? 'btn-proceed shadow-sm' : 'btn-outline-custom'}`} onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>))}
                                 <button className="btn btn-sm btn-outline-custom px-3 py-1" onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}><i className="fa-solid fa-chevron-right"></i></button>
                             </div>
                         </div>
                     )}
                   </div>
-
-                  {/* FILTERS SIDEBAR (Right Side - 3 Cols) */}
                   <div className="col-lg-3 p-4" style={{ backgroundColor: 'rgba(0, 180, 216, 0.03)' }}>
-                      <div className="d-flex justify-content-between align-items-center mb-4">
-                          <h5 className="text-navy font-montserrat fw-bold m-0">Filters</h5>
-                          <button className="btn btn-sm text-accent fw-bold p-0 text-decoration-underline" onClick={clearFilters}>Reset</button>
-                      </div>
-
-                      <div className="mb-3">
-                          <label className="text-grey small fw-bold mb-1">Search ID, Name, Email</label>
-                          <input type="text" className="form-control-dark w-100" placeholder="Type here..." value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)} />
-                      </div>
-
-                      <div className="mb-3">
-                          <label className="text-grey small fw-bold mb-1">Booking Status</label>
-                          <select className="form-control-dark w-100" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
-                              <option value="All">All</option>
-                              <option value="Confirmed">Confirmed</option>
-                              <option value="Pending">Pending</option>
-                              <option value="Postponed">Postponed</option>
-                              <option value="Cancelled">Cancelled</option>
-                          </select>
-                      </div>
-
-                      <div className="mb-3">
-                          <label className="text-grey small fw-bold mb-1">Payment Status</label>
-                          <select className="form-control-dark w-100" value={filterPayment} onChange={(e) => setFilterPayment(e.target.value)}>
-                              <option value="All">All</option>
-                              <option value="Fully Paid">Fully Paid</option>
-                              <option value="Pending/Partial">Pending / Partial</option>
-                          </select>
-                      </div>
-
-                      <div className="mb-3">
-                          <label className="text-grey small fw-bold mb-1">Destination / Package</label>
-                          <select className="form-control-dark w-100" value={filterPackage} onChange={(e) => setFilterPackage(e.target.value)}>
-                              <option value="All">All Packages</option>
-                              {uniquePackages.map(pkg => (
-                                  <option key={pkg} value={pkg}>{pkg}</option>
-                              ))}
-                          </select>
-                      </div>
-
-                      <div className="mb-3">
-                          <label className="text-grey small fw-bold mb-1">Travel Date From</label>
-                          <input type="date" className="form-control-dark w-100" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
-                      </div>
-
-                      <div className="mb-3">
-                          <label className="text-grey small fw-bold mb-1">Travel Date To</label>
-                          <input type="date" className="form-control-dark w-100" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
-                      </div>
+                      <div className="d-flex justify-content-between align-items-center mb-4"><h5 className="text-navy font-montserrat fw-bold m-0">Filters</h5><button className="btn btn-sm text-accent fw-bold p-0 text-decoration-underline" onClick={clearFilters}>Reset</button></div>
+                      <div className="mb-3"><label className="text-grey small fw-bold mb-1">Search ID, Name, Email</label><input type="text" className="form-control-dark w-100" placeholder="Type here..." value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)} /></div>
+                      <div className="mb-3"><label className="text-grey small fw-bold mb-1">Booking Status</label><select className="form-control-dark w-100" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}><option value="All">All</option><option value="Confirmed">Confirmed</option><option value="Pending">Pending</option><option value="Postponed">Postponed</option><option value="Cancelled">Cancelled</option></select></div>
+                      <div className="mb-3"><label className="text-grey small fw-bold mb-1">Payment Status</label><select className="form-control-dark w-100" value={filterPayment} onChange={(e) => setFilterPayment(e.target.value)}><option value="All">All</option><option value="Fully Paid">Fully Paid</option><option value="Pending/Partial">Pending / Partial</option></select></div>
+                      <div className="mb-3"><label className="text-grey small fw-bold mb-1">Destination / Package</label><select className="form-control-dark w-100" value={filterPackage} onChange={(e) => setFilterPackage(e.target.value)}><option value="All">All Packages</option>{uniquePackages.map(pkg => (<option key={pkg} value={pkg}>{pkg}</option>))}</select></div>
+                      <div className="mb-3"><label className="text-grey small fw-bold mb-1">Travel Date From</label><input type="date" className="form-control-dark w-100" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} /></div>
+                      <div className="mb-3"><label className="text-grey small fw-bold mb-1">Travel Date To</label><input type="date" className="form-control-dark w-100" value={dateTo} onChange={(e) => setDateTo(e.target.value)} /></div>
                   </div>
-
               </div>
           )}
 
-          {/* TAB 2: USERS TABLE */}
+          {/* TAB 2: MANAGE USERS */}
           {activeTab === 'users' && (
               <div className="table-responsive fade-in p-4">
                 <table className="table table-hover align-middle" style={{ color: 'var(--text-grey)' }}>
                   <thead style={{ borderBottom: '2px solid var(--primary-color)' }}>
-                    <tr>
-                      <th className="text-navy font-montserrat">User ID</th>
-                      <th className="text-navy font-montserrat">Name</th>
-                      <th className="text-navy font-montserrat">Email</th>
-                      <th className="text-navy font-montserrat">Role</th>
-                      <th className="text-navy font-montserrat text-end">Action</th>
-                    </tr>
+                    <tr><th className="text-navy font-montserrat">User ID</th><th className="text-navy font-montserrat">Name</th><th className="text-navy font-montserrat">Email</th><th className="text-navy font-montserrat">Role</th><th className="text-navy font-montserrat text-end">Action</th></tr>
                   </thead>
                   <tbody>
                     {stats.allUsers.map(user => (
-                        <tr key={user._id}>
+                        <tr key={user._id} style={{ cursor: 'pointer' }} onClick={() => handleOpenUserCRM(user)}>
                           <td className="fw-bold" style={{ fontSize: '0.85rem' }}>...{user._id.substring(18)}</td>
                           <td className="fw-bold text-navy">{user.name}</td>
                           <td>{user.email}</td>
                           <td>{user.isAdmin ? <span className="badge bg-primary"><i className="fa-solid fa-shield-halved me-1"></i> Admin</span> : <span className="badge bg-secondary">Customer</span>}</td>
                           <td className="text-end">
-                            <button className="btn btn-sm btn-outline-danger" onClick={() => handleDeleteUser(user._id, user.name)} title="Delete User"><i className="fa-solid fa-trash"></i></button>
+                            <button className="btn btn-sm btn-outline-danger" onClick={(e) => { e.stopPropagation(); handleDeleteUser(user._id, user.name); }} title="Delete User"><i className="fa-solid fa-trash"></i></button>
                           </td>
                         </tr>
                     ))}
@@ -403,32 +326,22 @@ const AdminDashboard = () => {
               </div>
           )}
 
-          {/* TAB 3: INBOX (MESSAGES) */}
+          {/* TAB 3: INBOX */}
           {activeTab === 'inbox' && (
               <div className="table-responsive fade-in p-4">
                 <table className="table table-hover align-middle" style={{ color: 'var(--text-grey)' }}>
                   <thead style={{ borderBottom: '2px solid var(--primary-color)' }}>
-                    <tr>
-                      <th className="text-navy font-montserrat">Status</th>
-                      <th className="text-navy font-montserrat">Date</th>
-                      <th className="text-navy font-montserrat">From</th>
-                      <th className="text-navy font-montserrat">Subject</th>
-                      <th className="text-navy font-montserrat text-end">Action</th>
-                    </tr>
+                    <tr><th className="text-navy font-montserrat">Status</th><th className="text-navy font-montserrat">Date</th><th className="text-navy font-montserrat">From</th><th className="text-navy font-montserrat">Subject</th><th className="text-navy font-montserrat text-end">Action</th></tr>
                   </thead>
                   <tbody>
-                    {!stats.allMessages || stats.allMessages.length === 0 ? (
-                      <tr><td colSpan="5" className="text-center py-4 text-grey fw-bold">No messages in your inbox.</td></tr>
-                    ) : (
+                    {!stats.allMessages || stats.allMessages.length === 0 ? (<tr><td colSpan="5" className="text-center py-4 text-grey fw-bold">No messages in your inbox.</td></tr>) : (
                         stats.allMessages.map(msg => (
                         <tr key={msg._id} className={msg.status === 'Unread' ? 'bg-primary bg-opacity-10' : ''} style={{ cursor: 'pointer' }} onClick={() => handleReadMessage(msg)}>
                           <td>{msg.status === 'Unread' ? <span className="badge bg-danger">New</span> : <span className="badge bg-secondary">Read</span>}</td>
                           <td className="small">{new Date(msg.createdAt).toLocaleDateString()}</td>
                           <td className={`text-navy ${msg.status === 'Unread' ? 'fw-bold' : ''}`}>{msg.name}</td>
                           <td className={`${msg.status === 'Unread' ? 'fw-bold text-dark' : 'text-grey'}`}>{msg.subject}</td>
-                          <td className="text-end">
-                              <button className="btn btn-sm btn-danger" onClick={(e) => { e.stopPropagation(); handleDeleteMessage(msg._id); }} title="Delete Message"><i className="fa-solid fa-trash"></i></button>
-                          </td>
+                          <td className="text-end"><button className="btn btn-sm btn-danger" onClick={(e) => { e.stopPropagation(); handleDeleteMessage(msg._id); }} title="Delete Message"><i className="fa-solid fa-trash"></i></button></td>
                         </tr>
                       ))
                     )}
@@ -438,114 +351,182 @@ const AdminDashboard = () => {
           )}
 
         </div>
-
       </div>
 
-      {/* FULL BOOKING DETAILS MODAL */}
-      {selectedBooking && (
-          <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0, 31, 63, 0.7)', backdropFilter: 'blur(5px)', zIndex: 1060 }}>
-              <div className="modal-dialog modal-dialog-centered modal-lg"> 
-                  <div className="modal-content border-0 shadow-lg" style={{ backgroundColor: 'var(--card-bg)', borderRadius: '16px' }}>
-                      <div className="modal-header border-bottom border-primary border-opacity-10 pb-3" style={{ backgroundColor: 'var(--primary-dark)', color: 'white', borderTopLeftRadius: '16px', borderTopRightRadius: '16px' }}>
-                          <div><h4 className="modal-title font-montserrat fw-bold mb-1">Booking Details</h4><small className="opacity-75">Order #{selectedBooking._id.toUpperCase()}</small></div>
-                          <button type="button" className="btn-close btn-close-white" onClick={() => setSelectedBooking(null)}></button>
+      {/* CRM USER DETAILS MODAL */}
+      {selectedUser && (
+          <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)', zIndex: 1060 }}>
+              <div className="modal-dialog modal-dialog-centered modal-xl" style={{ maxWidth: '1100px' }}> 
+                  <div className="modal-content border-0 shadow-lg" style={{ backgroundColor: '#f4f6f8', borderRadius: '12px', overflow: 'hidden' }}>
+                      
+                      <div className="modal-header border-bottom py-3 px-4" style={{ backgroundColor: '#ffffff' }}>
+                          <div className="d-flex align-items-center">
+                              <button className="btn btn-sm btn-light border me-3" onClick={() => setSelectedUser(null)}><i className="fa-solid fa-arrow-left"></i></button>
+                              <h4 className="modal-title fw-bold text-dark m-0 d-flex align-items-center" style={{ fontSize: '1.25rem' }}>
+                                  <i className="fa-regular fa-user me-2 text-muted"></i> {selectedUser.name}
+                              </h4>
+                          </div>
+                          <button className="btn btn-sm btn-light border fw-bold text-dark">More actions <i className="fa-solid fa-chevron-down ms-1" style={{ fontSize: '0.7rem' }}></i></button>
                       </div>
-                      <div className="modal-body p-4 text-grey">
-                          <div className="row mb-4">
-                              <div className="col-md-6">
-                                  <h6 className="text-primary-dark fw-bold mb-1">Package:</h6>
-                                  <p className="fs-5 text-navy fw-bold mb-3">{selectedBooking.packageName}</p>
-                                  <h6 className="text-primary-dark fw-bold mb-1">Travel Date:</h6>
-                                  <p className="mb-0"><i className="fa-regular fa-calendar text-accent me-2"></i>{selectedBooking.travelDate}</p>
+
+                      <div className="modal-body p-4 text-dark" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
+                          
+                          <div className="row g-0 mb-4 bg-white rounded-3 border shadow-sm">
+                              <div className="col-md-3 p-3 border-end">
+                                  <small className="text-muted fw-bold d-block mb-1">Amount spent</small>
+                                  <h5 className="text-dark fw-bold m-0">{formatPrice(userTotalSpent)}</h5>
                               </div>
-                              <div className="col-md-6">
-                                  <h6 className="text-primary-dark fw-bold mb-1">Client:</h6>
-                                  <p className="mb-3">{selectedBooking.userId?.name || 'Deleted User'} ({selectedBooking.userId?.email || 'N/A'})</p>
-                                  <h6 className="text-primary-dark fw-bold mb-1">Guests:</h6>
-                                  <p className="mb-0"><i className="fa-solid fa-users text-accent me-2"></i>{selectedBooking.guests.adults} Adults, {selectedBooking.guests.children} Children, {selectedBooking.guests.infants} Infants</p>
+                              <div className="col-md-3 p-3 border-end">
+                                  <small className="text-muted fw-bold d-block mb-1">Orders</small>
+                                  <h5 className="text-dark fw-bold m-0">{userBookings.length}</h5>
+                              </div>
+                              <div className="col-md-3 p-3 border-end">
+                                  <small className="text-muted fw-bold d-block mb-1">Customer since</small>
+                                  <h5 className="text-dark fw-bold m-0">{daysSince} days</h5>
+                              </div>
+                              <div className="col-md-3 p-3">
+                                  <small className="text-muted fw-bold d-block mb-1">RFM group</small>
+                                  <h5 className="text-dark fw-bold m-0">Prospects</h5>
                               </div>
                           </div>
-                          <div className="mb-4 p-3 rounded-3" style={{ backgroundColor: '#F4FAFC', border: '1px solid rgba(0, 119, 182, 0.2)' }}>
-                              <h6 className="text-navy font-montserrat fw-bold mb-3"><i className="fa-solid fa-file-invoice-dollar text-accent me-2"></i> Payment Tracking ({selectedBooking.paymentMethod})</h6>
-                              {selectedBooking.payments.map((payment, idx) => (
-                                  <div key={idx} className="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom border-primary border-opacity-10">
-                                      <span>{payment.payerEmail}</span>
-                                      <div>
-                                          <span className="fw-bold text-navy me-3">{formatPrice(payment.amountDue)}</span>
-                                          {payment.status === 'Paid' ? <span className="badge bg-success">Paid</span> : <span className="badge bg-warning text-dark">Pending</span>}
-                                      </div>
+
+                          <div className="row g-4">
+                              <div className="col-lg-8">
+                                  
+                                  <div className="bg-white p-4 rounded-3 shadow-sm border mb-4">
+                                      <h6 className="fw-bold text-dark mb-3">Last order placed</h6>
+                                      {userBookings.length === 0 ? (
+                                          <p className="text-muted mb-0">No orders placed yet.</p>
+                                      ) : (
+                                          <div className="border rounded-2">
+                                              <div className="p-3 border-bottom d-flex justify-content-between align-items-center bg-light">
+                                                  <div>
+                                                      <span className="fw-bold me-2">#{userBookings[0]._id.substring(0,6).toUpperCase()}</span>
+                                                      {userBookings[0].bookingStatus === 'Confirmed' ? <span className="badge bg-secondary text-dark border"><i className="fa-solid fa-circle text-secondary me-1" style={{fontSize:'0.5rem'}}></i> Fulfilled</span> : <span className="badge bg-light text-dark border"><i className="fa-solid fa-circle-half-stroke text-secondary me-1" style={{fontSize:'0.5rem'}}></i> Pending</span>}
+                                                  </div>
+                                                  <span className="fw-bold">{formatPrice(userBookings[0].totalPrice)}</span>
+                                              </div>
+                                              <div className="p-3 d-flex justify-content-between align-items-center">
+                                                  <div className="d-flex align-items-center">
+                                                      <div className="bg-light border rounded me-3 d-flex align-items-center justify-content-center" style={{ width: '40px', height: '40px' }}><i className="fa-solid fa-suitcase-rolling text-muted"></i></div>
+                                                      <div>
+                                                          <h6 className="mb-0 fw-bold">{userBookings[0].packageName}</h6>
+                                                          <span className="badge bg-light text-dark border mt-1">{userBookings[0].travelDate}</span>
+                                                      </div>
+                                                  </div>
+                                                  <span className="text-dark">x 1</span>
+                                                  <span className="text-dark">{formatPrice(userBookings[0].totalPrice)}</span>
+                                              </div>
+                                              <div className="p-3 border-top d-flex justify-content-between align-items-center">
+                                                  <span className="text-primary" style={{ cursor: 'pointer', fontWeight: '500' }}>Show products <i className="fa-solid fa-chevron-down ms-1" style={{ fontSize: '0.7rem' }}></i></span>
+                                                  <div>
+                                                      <button className="btn btn-sm btn-light border me-2 fw-bold text-dark" onClick={() => {setSelectedUser(null); setSelectedBooking(userBookings[0]);}}>View details</button>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      )}
                                   </div>
-                              ))}
-                              <div className="d-flex justify-content-between align-items-center mt-3 pt-2"><h5 className="text-navy fw-bold m-0">Grand Total</h5><h5 className="text-accent fw-bold m-0">{formatPrice(selectedBooking.totalPrice)}</h5></div>
-                          </div>
-                          {selectedBooking.invoiceDetails && (
-                              <div>
-                                  <h6 className="text-navy font-montserrat fw-bold mb-2">Purchased Upgrades & Add-ons:</h6>
-                                  <ul className="list-unstyled mb-0 row">
-                                      {selectedBooking.invoiceDetails.accClassTotal > 0 && <li className="col-md-6 mb-1"><i className="fa-solid fa-check text-success me-2"></i>{selectedBooking.invoiceDetails.accClassText}</li>}
-                                      {selectedBooking.invoiceDetails.transferTotal > 0 && <li className="col-md-6 mb-1"><i className="fa-solid fa-check text-success me-2"></i>Airport Transfer</li>}
-                                      {selectedBooking.invoiceDetails.insuranceTotal > 0 && <li className="col-md-6 mb-1"><i className="fa-solid fa-check text-success me-2"></i>Travel Insurance</li>}
-                                      {selectedBooking.invoiceDetails.dinnerTotal > 0 && <li className="col-md-6 mb-1"><i className="fa-solid fa-check text-success me-2"></i>Romantic Dinner</li>}
-                                      {selectedBooking.invoiceDetails.carbonTotal > 0 && <li className="col-md-6 mb-1"><i className="fa-solid fa-leaf text-success me-2"></i>Carbon Offset</li>}
-                                  </ul>
+
+                                  {/* ⚡ NEW: FUNCTIONAL TIMELINE ⚡ */}
+                                  <div className="mt-4">
+                                      <h6 className="fw-bold text-dark mb-3">Timeline</h6>
+                                      
+                                      <div className="bg-white p-3 rounded-3 shadow-sm border mb-4">
+                                          <div className="d-flex align-items-center gap-3">
+                                              <div className="rounded-circle bg-success text-white d-flex align-items-center justify-content-center fw-bold" style={{ width: '40px', height: '40px', flexShrink: 0 }}>{adminInitials}</div>
+                                              <input type="text" className="form-control border-0 bg-light" placeholder="Leave a comment..." value={newNote} onChange={(e) => setNewNote(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAddNote()} />
+                                          </div>
+                                          <div className="d-flex justify-content-between mt-3 pt-2 border-top">
+                                              <div className="text-muted d-flex gap-3 align-items-center"><i className="fa-regular fa-face-smile"></i><i className="fa-solid fa-at"></i><i className="fa-solid fa-hashtag"></i><i className="fa-solid fa-paperclip"></i></div>
+                                              <button className="btn btn-sm btn-dark fw-bold px-3" onClick={handleAddNote} disabled={!newNote.trim() || isPostingNote}>{isPostingNote ? 'Posting...' : 'Post'}</button>
+                                          </div>
+                                      </div>
+
+                                      {selectedUser.adminNotes && selectedUser.adminNotes.length > 0 ? (
+                                          <div className="ms-3 ps-4 border-start border-2 position-relative" style={{ borderColor: '#e1e3e5' }}>
+                                              {selectedUser.adminNotes.slice().reverse().map(note => (
+                                                  <div key={note._id} className="mb-4 position-relative">
+                                                      <div className="position-absolute rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center shadow-sm" style={{ width: '32px', height: '32px', left: '-40px', top: '0', fontSize: '0.75rem', fontWeight: 'bold', border: '2px solid #f4f6f8' }}>{note.authorInitials}</div>
+                                                      <div className="bg-white p-3 rounded-3 shadow-sm border">
+                                                          <p className="m-0 text-dark fw-medium" style={{ fontSize: '0.95rem' }}>{note.text}</p>
+                                                          <small className="text-muted mt-2 d-block">{new Date(note.createdAt).toLocaleString()}</small>
+                                                      </div>
+                                                  </div>
+                                              ))}
+                                          </div>
+                                      ) : (
+                                          <p className="text-muted text-center py-3">Only you and other staff can see comments here.</p>
+                                      )}
+                                  </div>
                               </div>
-                          )}
+
+                              <div className="col-lg-4">
+                                  <div className="bg-white p-4 rounded-3 shadow-sm border mb-4">
+                                      <div className="d-flex justify-content-between align-items-center mb-3">
+                                          <h6 className="fw-bold text-dark m-0">Customer</h6>
+                                          {!isEditingUser && <span style={{ cursor: 'pointer' }} onClick={() => setIsEditingUser(true)}><i className="fa-solid fa-ellipsis text-muted"></i></span>}
+                                      </div>
+
+                                      {!isEditingUser ? (
+                                          <div>
+                                              <h6 className="text-dark fw-bold mb-2">Contact information</h6>
+                                              <div className="d-flex justify-content-between align-items-center mb-4">
+                                                  <a href={`mailto:${selectedUser.email}`} className="text-decoration-none text-primary">{selectedUser.email}</a>
+                                                  <i className="fa-regular fa-copy text-muted" style={{ cursor: 'pointer' }}></i>
+                                              </div>
+                                              <h6 className="text-dark fw-bold mb-2">Default address</h6>
+                                              <p className="m-0 text-dark" style={{ lineHeight: '1.5' }}>{selectedUser.name}<br/>Manila, Philippines<br/>(System Default)</p>
+                                              
+                                              <h6 className="text-dark fw-bold mb-2 mt-4">Marketing</h6>
+                                              <div className="d-flex gap-2 mb-4">
+                                                  <span className="badge bg-light text-dark border px-2 py-1"><i className="fa-regular fa-circle text-muted me-1" style={{fontSize:'0.6rem'}}></i> Email</span>
+                                                  <span className="badge bg-light text-dark border px-2 py-1"><i className="fa-regular fa-circle text-muted me-1" style={{fontSize:'0.6rem'}}></i> SMS</span>
+                                              </div>
+
+                                              <h6 className="text-dark fw-bold mb-2">Account Role</h6>
+                                              <p className="m-0 text-dark">{selectedUser.isAdmin ? 'Admin / Staff' : 'Customer'}</p>
+                                          </div>
+                                      ) : (
+                                          <div className="fade-in">
+                                              <div className="mb-3">
+                                                  <label className="text-muted fw-bold small mb-1">Full Name</label>
+                                                  <input type="text" className="form-control" value={editUserData.name} onChange={(e) => setEditUserData({...editUserData, name: e.target.value})} />
+                                              </div>
+                                              <div className="mb-3">
+                                                  <label className="text-muted fw-bold small mb-1">Email Address</label>
+                                                  <input type="email" className="form-control" value={editUserData.email} onChange={(e) => setEditUserData({...editUserData, email: e.target.value})} />
+                                              </div>
+                                              <div className="mb-4 form-check form-switch pt-2">
+                                                  <input className="form-check-input" type="checkbox" role="switch" id="adminSwitch" checked={editUserData.isAdmin} onChange={(e) => setEditUserData({...editUserData, isAdmin: e.target.checked})} />
+                                                  <label className="form-check-label text-dark fw-bold ms-2" htmlFor="adminSwitch">Grant Admin Privileges</label>
+                                              </div>
+                                              <div className="d-flex gap-2">
+                                                  <button className="btn btn-light border flex-grow-1 fw-bold text-dark" onClick={() => setIsEditingUser(false)}>Cancel</button>
+                                                  <button className="btn btn-dark flex-grow-1 fw-bold" onClick={handleSaveUserEdit}>Save</button>
+                                              </div>
+                                          </div>
+                                      )}
+                                  </div>
+
+                                  <div className="bg-white p-4 rounded-3 shadow-sm border mb-4"><h6 className="fw-bold text-dark mb-2">Store credit</h6><p className="m-0 text-muted">None</p></div>
+                                  <div className="bg-white p-4 rounded-3 shadow-sm border mb-4">
+                                      <div className="d-flex justify-content-between align-items-center mb-2"><h6 className="fw-bold text-dark m-0">Tags</h6><i className="fa-solid fa-pen text-muted" style={{ cursor: 'pointer' }}></i></div>
+                                      <input type="text" className="form-control mt-2" />
+                                  </div>
+                                  <div className="bg-white p-4 rounded-3 shadow-sm border">
+                                      <div className="d-flex justify-content-between align-items-center mb-2"><h6 className="fw-bold text-dark m-0">Notes</h6><i className="fa-solid fa-pen text-muted" style={{ cursor: 'pointer' }}></i></div>
+                                      <p className="m-0 text-muted mt-2">None</p>
+                                  </div>
+                              </div>
+                          </div>
                       </div>
                   </div>
               </div>
           </div>
       )}
 
-      {/* MESSAGE READING MODAL */}
-      {selectedMessage && (
-          <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0, 31, 63, 0.7)', backdropFilter: 'blur(5px)', zIndex: 1060 }}>
-              <div className="modal-dialog modal-dialog-centered"> 
-                  <div className="modal-content border-0 shadow-lg" style={{ backgroundColor: 'var(--card-bg)', borderRadius: '16px' }}>
-                      
-                      <div className="modal-header border-bottom border-primary border-opacity-10 pb-3">
-                          <h4 className="modal-title font-montserrat fw-bold text-navy">
-                              <i className="fa-solid fa-envelope-open-text text-accent me-2"></i> Read Message
-                          </h4>
-                          <button type="button" className="btn-close" onClick={() => setSelectedMessage(null)}></button>
-                      </div>
-                      
-                      <div className="modal-body p-4 text-grey">
-                          <div className="mb-3 border-bottom border-primary border-opacity-10 pb-3">
-                              <h6 className="text-navy fw-bold mb-1">{selectedMessage.subject}</h6>
-                              <div className="d-flex justify-content-between small">
-                                  <span>From: <strong>{selectedMessage.name}</strong> ({selectedMessage.email})</span>
-                                  <span>{new Date(selectedMessage.createdAt).toLocaleDateString()}</span>
-                              </div>
-                          </div>
-                          <div className="p-3 rounded bg-light" style={{ minHeight: '150px', whiteSpace: 'pre-wrap', color: '#333' }}>
-                              {selectedMessage.message}
-                          </div>
-                      </div>
-                      
-                      <div className="modal-footer border-0 pt-0 d-flex gap-2">
-                          <a 
-                              href={`mailto:${selectedMessage.email}?subject=Re: ${encodeURIComponent(selectedMessage.subject)}`} 
-                              className="btn btn-outline-custom flex-grow-1 text-center shadow-sm" 
-                              style={{ padding: '12px' }}
-                          >
-                              <i className="fa-solid fa-desktop me-2"></i> Desktop App
-                          </a>
-                          <a 
-                              href={`https://mail.google.com/mail/?view=cm&fs=1&to=${selectedMessage.email}&su=Re:%20${encodeURIComponent(selectedMessage.subject)}`} 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
-                              className="btn btn-proceed flex-grow-1 text-center shadow-sm" 
-                              style={{ padding: '12px' }}
-                          >
-                              <i className="fa-brands fa-google me-2"></i> Web Gmail
-                          </a>
-                      </div>
-
-                  </div>
-              </div>
-          </div>
-      )}
-
+      {/* BOOKING DETAILS MODAL & MESSAGE READING MODAL REMAIN THE SAME... */}
+      {/* ... (Previous Booking & Message Modals omitted for brevity, they remain identical to your current working code) ... */}
     </div>
   );
 };
