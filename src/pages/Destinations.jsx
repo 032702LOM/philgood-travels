@@ -141,28 +141,29 @@ const Destinations = () => {
   if (view === 'detail' && selectedPlace) {
     return (
       <div id="destination-detail-view" className="fade-in" style={{ paddingTop: '76px' }}>
-        <div className="detail-hero" id="detailHeroBg" style={{ backgroundImage: `linear-gradient(to bottom, rgba(2, 26, 46, 0.4), var(--bg-dark)), url('${selectedPlace.img}')`, backgroundSize: 'cover', backgroundPosition: 'center', padding: '100px 0 50px' }}>
+        {/* ⚡ FIX: Removed the var(--bg-dark) gradient fade so it's just a uniform dark overlay for text readability ⚡ */}
+        <div className="detail-hero" id="detailHeroBg" style={{ backgroundImage: `linear-gradient(rgba(2, 26, 46, 0.4), rgba(2, 26, 46, 0.4)), url('${selectedPlace.img}')`, backgroundSize: 'cover', backgroundPosition: 'center', padding: '100px 0 50px' }}>
             <div className="container pt-5 pb-5">
                 <a href="#" className="back-link mb-3 d-inline-block text-decoration-none fw-bold" style={{ color: '#FF7F50' }} onClick={(e) => { e.preventDefault(); handleCloseDetail(); }}>{t('back_places', '← Back to All Places')}</a>
                 <h1 className="hero-title mb-3" id="detailTitle">{selectedPlace.name}</h1>
                 <div className="d-flex gap-3 align-items-center">
                     <span className="badge rounded-pill text-dark" style={{ backgroundColor: '#FF8C73' }} id="detailType">{selectedPlace.type}</span>
-                    <span className="text-grey font-montserrat"><i className="fa-solid fa-location-dot me-1"></i> <span id="detailRegion">{selectedPlace.region}</span></span>
+                    <span className="text-white font-montserrat"><i className="fa-solid fa-location-dot me-1 text-accent"></i> <span id="detailRegion">{selectedPlace.region}</span></span>
                 </div>
             </div>
         </div>
         <div className="container py-5">
             <div className="row g-5">
                 <div className="col-lg-8">
-                    <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box">
+                    <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box shadow-sm border border-primary border-opacity-10">
                         <h6 className="text-accent fw-bold mb-3 font-montserrat">{t('pay_offers', 'PAYMENT & OFFERS')}</h6>
                         <ul className="row list-unstyled text-grey m-0">{[...(selectedPlace.payment || []), ...(selectedPlace.roomOffers || [])].map((item, idx) => (<li key={idx} className="col-md-6 mb-2"><i className="fa-solid fa-check text-accent me-2"></i>{item}</li>))}</ul>
                     </div>
-                    <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box">
+                    <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box shadow-sm border border-primary border-opacity-10">
                         <h6 className="text-accent fw-bold mb-3 font-montserrat">{t('facilities', 'FACILITIES')}</h6>
                         <ul className="row list-unstyled text-grey m-0">{(selectedPlace.facilities || []).map((fac, idx) => (<li key={idx} className="col-md-6 mb-2"><i className="fa-solid fa-check text-accent me-2"></i>{fac}</li>))}</ul>
                     </div>
-                    <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box">
+                    <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box shadow-sm border border-primary border-opacity-10">
                         <h6 className="text-accent fw-bold mb-3 font-montserrat">{t('details', 'DETAILS')}</h6>
                         <ul className="list-unstyled text-grey m-0">
                             {selectedPlace.bed && <li className="mb-2"><strong>{t('bed_type', 'Bed Type')}:</strong> {selectedPlace.bed.join(', ')}</li>}
@@ -174,7 +175,7 @@ const Destinations = () => {
                         </ul>
                     </div>
                     
-                    <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box">
+                    <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box shadow-sm border border-primary border-opacity-10">
                         <div className="d-flex justify-content-between align-items-center mb-3">
                             <h6 className="text-accent fw-bold m-0 font-montserrat">{t('view_360', '360° VIEW')}</h6>
                             <button className="btn btn-sm btn-outline-custom" style={{ padding: '4px 12px', fontSize: '0.8rem' }} onClick={handleFullScreen}><i className="fa-solid fa-expand me-1"></i> {t('full_screen', 'Full Screen')}</button>
@@ -186,13 +187,13 @@ const Destinations = () => {
                 </div>
 
                 <div className="col-lg-4">
-                    <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box text-center">
+                    <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box text-center shadow-sm border border-primary border-opacity-10">
                         <h6 className="text-grey small mb-2">{t('starting_at', 'Starting at')}</h6>
                         <h2 className="fw-bold mb-0 text-accent">{formatPrice(selectedPlace.price)}</h2>
                         <small className="text-grey">{t('per_night', '/ night')}</small>
                     </div>
 
-                    <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box text-center">
+                    <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box text-center shadow-sm border border-primary border-opacity-10">
                         <div className="d-flex align-items-center justify-content-center gap-2 mb-3">
                             <i className="fa-solid fa-cloud text-grey"></i>
                             <h6 className="text-navy font-montserrat fw-bold m-0">{t('weather', 'Weather')}</h6>
@@ -200,7 +201,7 @@ const Destinations = () => {
                         </div>
                         <h1 className="fw-bold mb-1" style={{ fontSize: '3.5rem', color: '#FF8C73' }} id="weatherTemp">{weather}</h1>
                     </div>
-                    <a href={`/booking?package=${encodeURIComponent(selectedPlace.name)}`} className="btn btn-proceed w-100 py-3 text-uppercase font-montserrat fw-bold mb-3 d-block text-center text-decoration-none">{t('book_now', 'Book Now')}</a>
+                    <a href={`/booking?package=${encodeURIComponent(selectedPlace.name)}`} className="btn btn-proceed w-100 py-3 text-uppercase font-montserrat fw-bold mb-3 d-block text-center text-decoration-none shadow">{t('book_now', 'Book Now')}</a>
                 </div>
             </div>
         </div>
