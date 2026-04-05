@@ -36,11 +36,11 @@ const Footer = () => {
       setSessionId(currentSessionId);
 
       const newSocket = io('https://philgood-travels.onrender.com', {
-    transports: ['polling', 'websocket'],
-    reconnection: true,
-    reconnectionAttempts: 5,
-    reconnectionDelay: 1000
-});
+          transports: ['polling', 'websocket'],
+          reconnection: true,
+          reconnectionAttempts: 5,
+          reconnectionDelay: 1000
+      });
       setSocket(newSocket);
 
       // 1. ⚡ NEW: Always rejoin the room if the connection drops and reconnects
@@ -57,6 +57,37 @@ const Footer = () => {
 
       return () => newSocket.disconnect(); 
   }, []);
+
+  // ⚡ NEW: END CHAT FUNCTION (FOR USERS)
+  const handleEndChat = async () => {
+    if (!window.confirm("Are you sure you want to end and clear this chat? This will remove the conversation from our records.")) return;
+
+    try {
+        // 1. Delete the chat from the database (removes it from Admin Dashboard)
+        await axios.delete(`https://philgood-travels.onrender.com/api/admin/chats/${sessionId}`);
+    } catch (error) {
+        console.error("Error ending chat on server:", error);
+    }
+
+    // 2. Wipe the user's browser memory
+    localStorage.removeItem('chatSessionId');
+    
+    // 3. Clear the messages on their screen (keep only the bot greeting)
+    setChatMessages([{ sender: 'bot', text: 'Hi there! 👋 Welcome to PhilGood Travels. How can we help you today?' }]);
+    
+    // 4. Generate a brand new, empty session identity
+    const newSessionId = 'session_' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('chatSessionId', newSessionId);
+    setSessionId(newSessionId);
+    
+    // 5. Connect the socket to the new room 
+    if (socket) {
+        socket.emit('join_chat', newSessionId);
+    }
+
+    // 6. Send them back to the main menu
+    setWidgetView('menu');
+  };
 
   // Auto-scroll chat to bottom
   useEffect(() => {
@@ -104,7 +135,6 @@ const Footer = () => {
       }
   };
 
-  // ⚡ UPDATED: REAL IN-WIDGET CHAT LOGIC
   const handleSendChat = () => {
       if (!chatInput.trim() || !socket) return;
 
@@ -116,6 +146,9 @@ const Footer = () => {
 
       // Emit the message to the server
       socket.emit('send_message', messageData);
+
+      // Locally add the user's message so it appears instantly
+      setChatMessages(prev => [...prev, messageData]);
       setChatInput(''); 
   };
 
@@ -210,7 +243,18 @@ const Footer = () => {
                           {widgetView === 'menu' ? 'Need Help?' : widgetView === 'chat' ? 'Live Chat' : 'Send an Email'}
                       </h6>
                   </div>
-                  <i className="fa-solid fa-xmark" style={{ cursor: 'pointer', fontSize: '1.2rem' }} onClick={() => setIsChatOpen(false)}></i>
+                  <div className="d-flex align-items-center gap-3">
+                      {/* ⚡ TRASH BUTTON FOR USERS (Visible only in chat view) */}
+                      {widgetView === 'chat' && (
+                          <i 
+                            className="fa-solid fa-trash-can opacity-75" 
+                            style={{ cursor: 'pointer', fontSize: '1rem' }} 
+                            onClick={handleEndChat}
+                            title="End Chat"
+                          ></i>
+                      )}
+                      <i className="fa-solid fa-xmark" style={{ cursor: 'pointer', fontSize: '1.2rem' }} onClick={() => setIsChatOpen(false)}></i>
+                  </div>
               </div>
 
               <div className="chat-popup-body" style={{ height: '340px', backgroundColor: 'var(--card-bg)', position: 'relative' }}>
