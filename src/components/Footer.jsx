@@ -28,7 +28,6 @@ const Footer = () => {
 
   // ⚡ SOCKET CONNECTION LOGIC
   useEffect(() => {
-      // 1. Generate or retrieve a unique session ID for this visitor
       let currentSessionId = localStorage.getItem('chatSessionId');
       if (!currentSessionId) {
           currentSessionId = 'session_' + Math.random().toString(36).substr(2, 9);
@@ -36,19 +35,22 @@ const Footer = () => {
       }
       setSessionId(currentSessionId);
 
-      // 2. Connect to the backend WebSocket server
-      // NOTE: Switch to 'http://localhost:5000' if testing locally!
       const newSocket = io('https://philgood-travels.onrender.com'); 
       setSocket(newSocket);
 
-      newSocket.emit('join_chat', currentSessionId);
-
-      // 3. Listen for incoming messages (User or Admin)
-      newSocket.on('receive_message', (message) => {
-          setChatMessages((prev) => [...prev, message]);
+      // 1. ⚡ NEW: Always rejoin the room if the connection drops and reconnects
+      newSocket.on('connect', () => {
+          newSocket.emit('join_chat', currentSessionId);
       });
 
-      return () => newSocket.disconnect(); // Cleanup on unmount
+      // 2. ⚡ NEW: Only add messages from the Admin (prevents duplicate self-messages)
+      newSocket.on('receive_message', (message) => {
+          if (message.sender === 'admin') {
+              setChatMessages((prev) => [...prev, message]);
+          }
+      });
+
+      return () => newSocket.disconnect(); 
   }, []);
 
   // Auto-scroll chat to bottom
