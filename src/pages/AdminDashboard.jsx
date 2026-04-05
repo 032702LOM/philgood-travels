@@ -19,7 +19,6 @@ const AdminDashboard = () => {
   const [isEditingUser, setIsEditingUser] = useState(false);
   const [editUserData, setEditUserData] = useState({ name: '', email: '', isAdmin: false });
   
-  // ⚡ NEW: Timeline Note States
   const [newNote, setNewNote] = useState('');
   const [isPostingNote, setIsPostingNote] = useState(false);
 
@@ -80,7 +79,7 @@ const AdminDashboard = () => {
       setSelectedUser(user);
       setEditUserData({ name: user.name, email: user.email, isAdmin: user.isAdmin });
       setIsEditingUser(false);
-      setNewNote(''); // Clear any lingering typed notes
+      setNewNote(''); 
   };
 
   const handleSaveUserEdit = async () => {
@@ -93,12 +92,10 @@ const AdminDashboard = () => {
       } catch (error) { alert('❌ Failed to update user.'); }
   };
 
-  // ⚡ NEW: Submit Timeline Note Function ⚡
   const handleAddNote = async () => {
       if (!newNote.trim()) return;
       setIsPostingNote(true);
       try {
-          // Get the logged-in admin's initials
           const currentUser = JSON.parse(localStorage.getItem('user'));
           const initials = currentUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
 
@@ -237,7 +234,6 @@ const AdminDashboard = () => {
         </div>
 
         <div className="rounded-4 shadow-lg border border-primary border-opacity-25 overflow-hidden" style={{ backgroundColor: 'var(--card-bg)' }}>
-          
           {/* TAB 1: BOOKINGS */}
           {activeTab === 'bookings' && (
               <div className="row g-0 fade-in">
@@ -427,10 +423,8 @@ const AdminDashboard = () => {
                                       )}
                                   </div>
 
-                                  {/* ⚡ NEW: FUNCTIONAL TIMELINE ⚡ */}
                                   <div className="mt-4">
                                       <h6 className="fw-bold text-dark mb-3">Timeline</h6>
-                                      
                                       <div className="bg-white p-3 rounded-3 shadow-sm border mb-4">
                                           <div className="d-flex align-items-center gap-3">
                                               <div className="rounded-circle bg-success text-white d-flex align-items-center justify-content-center fw-bold" style={{ width: '40px', height: '40px', flexShrink: 0 }}>{adminInitials}</div>
@@ -461,10 +455,24 @@ const AdminDashboard = () => {
                               </div>
 
                               <div className="col-lg-4">
+                                  {/* ⚡ NEW: Customer Contact Card with Dropdown ⚡ */}
                                   <div className="bg-white p-4 rounded-3 shadow-sm border mb-4">
                                       <div className="d-flex justify-content-between align-items-center mb-3">
                                           <h6 className="fw-bold text-dark m-0">Customer</h6>
-                                          {!isEditingUser && <span style={{ cursor: 'pointer' }} onClick={() => setIsEditingUser(true)}><i className="fa-solid fa-ellipsis text-muted"></i></span>}
+                                          
+                                          {!isEditingUser && (
+                                              <div className="dropdown">
+                                                  <i className="fa-solid fa-ellipsis text-muted" style={{ cursor: 'pointer', padding: '0 5px' }} data-bs-toggle="dropdown"></i>
+                                                  <ul className="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-2" style={{ fontSize: '0.9rem', minWidth: '220px' }}>
+                                                      <li><button className="dropdown-item py-2" onClick={() => setIsEditingUser(true)}>Edit contact information</button></li>
+                                                      <li><button className="dropdown-item py-2 text-muted" onClick={() => alert('Address management coming soon!')}>Manage addresses</button></li>
+                                                      <li><button className="dropdown-item py-2 text-muted" onClick={() => alert('Marketing settings coming soon!')}>Edit marketing settings</button></li>
+                                                      <li><button className="dropdown-item py-2 text-muted" onClick={() => alert('Tax details coming soon!')}>Edit tax details</button></li>
+                                                      <li><hr className="dropdown-divider" /></li>
+                                                      <li><button className="dropdown-item py-2 text-danger" onClick={(e) => { e.stopPropagation(); handleDeleteUser(selectedUser._id, selectedUser.name); }}>Delete customer</button></li>
+                                                  </ul>
+                                              </div>
+                                          )}
                                       </div>
 
                                       {!isEditingUser ? (
@@ -522,8 +530,7 @@ const AdminDashboard = () => {
                       </div>
                   </div>
               </div>
-          </div>
-      )}
+          )}
 
       {/* BOOKING DETAILS MODAL & MESSAGE READING MODAL REMAIN THE SAME... */}
       {/* ... (Previous Booking & Message Modals omitted for brevity, they remain identical to your current working code) ... */}
