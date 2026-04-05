@@ -1,17 +1,22 @@
 const express = require('express');
 const router = express.Router();
 const { Resend } = require('resend');
+const Message = require('../models/Message'); // ⚡ NEW: Import the Message model
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// POST: Receive contact form data and send email to admin
 router.post('/send', async (req, res) => {
     try {
         const { name, email, subject, message } = req.body;
 
+        // ⚡ NEW: Save the message to MongoDB first!
+        const newMessage = new Message({ name, email, subject, message });
+        await newMessage.save();
+
+        // Then send the email via Resend
         await resend.emails.send({
-            from: 'Contact Form <onboarding@resend.dev>', // Must use this for testing
-            to: 'techtacoder@gmail.com', // Must match your Resend account email!
+            from: 'Contact Form <onboarding@resend.dev>', 
+            to: 'techtacoder@gmail.com', 
             reply_to: email, 
             subject: `New Message: ${subject}`,
             html: `
@@ -27,7 +32,7 @@ router.post('/send', async (req, res) => {
             `
         });
 
-        res.status(200).json({ message: "Email sent successfully!" });
+        res.status(200).json({ message: "Message saved and email sent successfully!" });
 
     } catch (error) {
         console.error("Contact Form Error:", error);
