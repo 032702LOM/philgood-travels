@@ -374,10 +374,14 @@ const AdminDashboard = () => {
           <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0, 31, 63, 0.7)', backdropFilter: 'blur(5px)', zIndex: 1060 }}>
               <div className="modal-dialog modal-dialog-centered"> 
                   <div className="modal-content border-0 shadow-lg" style={{ backgroundColor: 'var(--card-bg)', borderRadius: '16px' }}>
+                      
                       <div className="modal-header border-bottom border-primary border-opacity-10 pb-3">
-                          <h4 className="modal-title font-montserrat fw-bold text-navy"><i className="fa-solid fa-envelope-open-text text-accent me-2"></i> Read Message</h4>
+                          <h4 className="modal-title font-montserrat fw-bold text-navy">
+                              <i className="fa-solid fa-envelope-open-text text-accent me-2"></i> Read Message
+                          </h4>
                           <button type="button" className="btn-close" onClick={() => setSelectedMessage(null)}></button>
                       </div>
+                      
                       <div className="modal-body p-4 text-grey">
                           <div className="mb-3 border-bottom border-primary border-opacity-10 pb-3">
                               <h6 className="text-navy fw-bold mb-1">{selectedMessage.subject}</h6>
@@ -390,9 +394,32 @@ const AdminDashboard = () => {
                               {selectedMessage.message}
                           </div>
                       </div>
-                      <div className="modal-footer border-0 pt-0">
-                          <a href={`mailto:${selectedMessage.email}`} className="btn btn-proceed w-100 shadow-sm"><i className="fa-solid fa-reply me-2"></i> Reply via Email</a>
+                      
+                      {/* ⚡ FIX: Added dual options for Desktop Mail apps and Web Gmail ⚡ */}
+                      <div className="modal-footer border-0 pt-0 d-flex gap-2">
+                          
+                          {/* Option 1: Standard Desktop Mail App */}
+                          <a 
+                              href={`mailto:${selectedMessage.email}?subject=Re: ${encodeURIComponent(selectedMessage.subject)}`} 
+                              className="btn btn-outline-custom flex-grow-1 text-center shadow-sm" 
+                              style={{ padding: '12px' }}
+                          >
+                              <i className="fa-solid fa-desktop me-2"></i> Desktop App
+                          </a>
+                          
+                          {/* Option 2: Web Gmail Direct Compose */}
+                          <a 
+                              href={`https://mail.google.com/mail/?view=cm&fs=1&to=${selectedMessage.email}&su=Re:%20${encodeURIComponent(selectedMessage.subject)}`} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="btn btn-proceed flex-grow-1 text-center shadow-sm" 
+                              style={{ padding: '12px' }}
+                          >
+                              <i className="fa-brands fa-google me-2"></i> Web Gmail
+                          </a>
+                          
                       </div>
+
                   </div>
               </div>
           </div>
