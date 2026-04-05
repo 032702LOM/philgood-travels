@@ -17,9 +17,11 @@ const Booking = require('./models/Booking');
 const app = express();
 
 // ⚡ UPGRADE TO HTTP SERVER FOR WEBSOCKETS ⚡
+const server = http.createServer(app); // <-- THIS LINE WAS MISSING OR MOVED!
+
 const io = new Server(server, {
     cors: {
-        origin: "*", // ⚡ This wildcard opens the gates for your WebSockets
+        origin: "*", 
         methods: ['GET', 'POST']
     }
 });
