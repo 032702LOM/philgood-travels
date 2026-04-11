@@ -79,11 +79,10 @@ const AdminDashboard = () => {
     fetchAdminData();
   }, [navigate]);
 
-  // ⚡ PHASE 3: LIVE CHAT SOCKET LOGIC
+ // ⚡ PHASE 3: LIVE CHAT SOCKET LOGIC
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        // Fetches all active chat history from your database
         const response = await axios.get('https://philgood-travels.onrender.com/api/admin/chats');
         setActiveChats(response.data);
       } catch (err) {
@@ -93,32 +92,34 @@ const AdminDashboard = () => {
 
     fetchChats();
 
-    // Opens the persistent "phone line" to your server
     const socket = io('https://philgood-travels.onrender.com', {
-    transports: ['polling', 'websocket'],
-    reconnection: true,
-    reconnectionAttempts: 5,
-    reconnectionDelay: 1000
-});
+        transports: ['polling', 'websocket'],
+        reconnection: true,
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000
+    });
     setAdminSocket(socket);
 
-    // Listens for notifications when ANY visitor sends a message
     socket.on('admin_notification', (data) => {
-      fetchChats(); // Refresh the list in the sidebar
+      fetchChats(); // Refresh sidebar
 
-      // If you are currently viewing this specific chat, update it live
-      if (selectedChat?.sessionId === data.sessionId) {
-        setSelectedChat(prev => ({
-          ...prev,
-          messages: [...prev.messages, { sender: 'user', text: data.text, timestamp: new Date() }]
-        }));
-      }
+      // ⚡ FIX: We check 'prev.sessionId' INSIDE the state updater.
+      // This guarantees React always has the freshest state without needing selectedChat in the dependency array!
+      setSelectedChat(prev => {
+        if (prev && prev.sessionId === data.sessionId) {
+          return {
+            ...prev,
+            messages: [...prev.messages, { sender: 'user', text: data.text, timestamp: new Date() }]
+          };
+        }
+        return prev; // If it's a different chat, just return the current state unchanged
+      });
     });
 
     return () => {
       if (socket) socket.disconnect();
     };
-  }, [selectedChat]); // Re-runs if you switch to a different customer
+  }, []); // ⚡ FIX: Empty array! The socket will now stay permanently connected.
 
   // ⚡ SEND REPLY TO USER
   const handleAdminReply = () => {
