@@ -24,6 +24,8 @@ import AdminDashboard from './pages/AdminDashboard';
 import NotFound from './pages/NotFound';
 import ForgotPassword from './pages/ForgotPassword'; // ⚡ FIXED PATH
 import ResetPassword from './pages/ResetPassword';   // ⚡ FIXED PATH
+import Terms from './pages/Terms';
+import FAQ from './pages/FAQ';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -45,6 +47,8 @@ function App() {
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/connect" element={<Connect />} />
             <Route path="/booking" element={<Booking />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/faq" element={<FAQ />} />
             
             {/* ⚡ NEW: The hidden admin route */}
             <Route path="/admin" element={<AdminDashboard />} /> 

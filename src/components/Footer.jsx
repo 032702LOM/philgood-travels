@@ -192,12 +192,15 @@ const Footer = () => {
                   </div>
                   <div className="col-lg-2 col-md-6">
                       <h5 className="footer-heading text-white">Quick Links</h5>
-                      <ul className="footer-links">
-                          <li><Link to="/destinations">Destinations</Link></li>
-                          <li><Link to="/tours">Tour Packages</Link></li>
-                          <li><Link to="/gallery">Gallery</Link></li>
-                          <li><Link to="/booking">Book Now</Link></li>
-                      </ul>
+<ul className="footer-links">
+    <li><Link to="/destinations">Destinations</Link></li>
+    <li><Link to="/tours">Tour Packages</Link></li>
+    <li><Link to="/gallery">Gallery</Link></li>
+    <li><Link to="/booking">Book Now</Link></li>
+    {/* ⚡ NEW LINKS ADDED HERE ⚡ */}
+    <li><Link to="/faq">FAQ</Link></li>
+    <li><Link to="/terms">Terms & Conditions</Link></li>
+</ul>
                   </div>
                   <div className="col-lg-3 col-md-6">
                       <h5 className="footer-heading text-white">Contact</h5>
