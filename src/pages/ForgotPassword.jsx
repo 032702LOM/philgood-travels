@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  // ⚡ NEW: Added state to track if the message is an error or a success
+  const [isError, setIsError] = useState(false); 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -15,9 +17,11 @@ const ForgotPassword = () => {
     try {
       const response = await axios.post('https://philgood-travels.onrender.com/api/auth/forgot-password', { email });
       setMessage(response.data.message);
+      setIsError(false); // ⚡ It worked! Set error to false
       setEmail('');
     } catch (err) {
       setMessage(err.response?.data?.error || "Failed to process request. Please try again.");
+      setIsError(true); // ⚡ It failed! Set error to true
     } finally {
       setIsSubmitting(false);
     }
@@ -63,8 +67,12 @@ const ForgotPassword = () => {
             <small className="text-grey"><Link to="/login" className="text-accent fw-bold text-decoration-none"><i className="fa-solid fa-arrow-left me-1"></i> Back to Login</Link></small>
         </div>
 
+        {/* ⚡ UPDATED: Dynamically changes color based on isError state */}
         {message && (
-          <div className="mt-4 p-3 rounded text-center fw-bold small text-success" style={{ backgroundColor: 'rgba(0, 255, 0, 0.1)' }}>
+          <div 
+            className={`mt-4 p-3 rounded text-center fw-bold small ${isError ? 'text-danger' : 'text-success'}`} 
+            style={{ backgroundColor: isError ? 'rgba(255, 0, 0, 0.1)' : 'rgba(0, 255, 0, 0.1)' }}
+          >
             {message}
           </div>
         )}
