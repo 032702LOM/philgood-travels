@@ -121,6 +121,15 @@ const AdminDashboard = () => {
     };
   }, []); // ⚡ FIX: Empty array! The socket will now stay permanently connected.
 
+
+  // ⚡ NEW: Ensure Admin strictly joins the room only AFTER state updates
+  useEffect(() => {
+    if (selectedChat && adminSocket) {
+        adminSocket.emit('join_chat', selectedChat.sessionId);
+    }
+  }, [selectedChat, adminSocket]);
+
+
   // ⚡ SEND REPLY TO USER
   const handleAdminReply = () => {
       if (!adminChatInput.trim() || !selectedChat || !adminSocket) return;
@@ -1037,12 +1046,9 @@ const AdminDashboard = () => {
             ) : (
                 activeChats.map(chat => (
                     <div key={chat._id} 
-                         onClick={() => { 
-                             setSelectedChat(chat); 
-                             adminSocket.emit('join_chat', chat.sessionId); 
-                         }}
-                         className={`p-3 mb-2 rounded-3 border cursor-pointer shadow-sm ${selectedChat?.sessionId === chat.sessionId ? 'bg-primary text-white' : 'bg-white text-dark'}`}
-                         style={{ cursor: 'pointer', transition: 'all 0.2s ease' }}>
+     onClick={() => setSelectedChat(chat)}
+     className={`p-3 mb-2 rounded-3 border cursor-pointer shadow-sm ${selectedChat?.sessionId === chat.sessionId ? 'bg-primary text-white' : 'bg-white text-dark'}`}
+     style={{ cursor: 'pointer', transition: 'all 0.2s ease' }}>
                         <div className="d-flex justify-content-between align-items-center">
                             <small className="fw-bold">Visitor {chat.sessionId.substring(8, 13)}</small>
                             <small className="opacity-75" style={{ fontSize: '0.7rem' }}>
