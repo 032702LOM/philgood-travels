@@ -5,10 +5,11 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     
-    // ⚡ NEW: Email Verification Fields ⚡
+    // ⚡ Email Verification Fields
     isVerified: { type: Boolean, default: false },
     verificationToken: { type: String },
-    
+
+    // ⚡ Password Reset Fields
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date },
 
