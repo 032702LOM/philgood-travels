@@ -43,13 +43,19 @@ const Footer = () => {
       });
       setSocket(newSocket);
 
-      // 1. ⚡ NEW: Always rejoin the room if the connection drops and reconnects
+      // ⚡ CRITICAL FIX 1: Emit the join event IMMEDIATELY.
+      // Socket.io automatically buffers this and sends it the moment it connects.
+      newSocket.emit('join_chat', currentSessionId);
+
+      // ⚡ CRITICAL FIX 2: Keep the .on('connect') ONLY for internet drops/reconnects.
       newSocket.on('connect', () => {
+          console.log("✅ Chat Widget Connected to Room:", currentSessionId);
           newSocket.emit('join_chat', currentSessionId);
       });
 
-      // 2. ⚡ NEW: Only add messages from the Admin (prevents duplicate self-messages)
+      // Listen for the Admin's reply
       newSocket.on('receive_message', (message) => {
+          console.log("📥 New message received in Widget:", message); // Added for your console debugging
           if (message.sender === 'admin') {
               setChatMessages((prev) => [...prev, message]);
           }
