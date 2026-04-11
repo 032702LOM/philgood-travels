@@ -17,8 +17,9 @@ import Tours from './pages/Tours';
 import Gallery from './pages/Gallery';
 import Connect from './pages/Connect';
 import Booking from './pages/Booking';
-import AdminDashboard from './pages/AdminDashboard'; // ⚡ NEW: Import the admin dashboard
+import AdminDashboard from './pages/AdminDashboard'; 
 import NotFound from './pages/NotFound';
+import VerifyEmail from './components/VerifyEmail'; 
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -47,6 +48,7 @@ function App() {
             <Route path="*" element={<NotFound />} /> 
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />8/
             <Route path="/profile" element={<Profile />} />
           </Routes>
         </main>

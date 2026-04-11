@@ -3,12 +3,15 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 const Register = () => {
-  const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // ⚡ NEW: Real-time password validation tracker
+  // ⚡ NEW: State to toggle password visibility
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [passwordRules, setPasswordRules] = useState({
     length: false,
     uppercase: false,
@@ -20,7 +23,6 @@ const Register = () => {
     const val = e.target.value;
     setFormData({ ...formData, password: val });
 
-    // ⚡ NEW: Test the password against our creation limitations
     setPasswordRules({
       length: val.length >= 8,
       uppercase: /[A-Z]/.test(val),
@@ -29,8 +31,8 @@ const Register = () => {
     });
   };
 
-  // ⚡ NEW: Check if all rules are passed
   const isPasswordValid = Object.values(passwordRules).every(Boolean);
+  const passwordsMatch = formData.password === formData.confirmPassword;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,13 +43,23 @@ const Register = () => {
         return;
     }
 
+    if (!passwordsMatch) {
+        setMessage("Passwords do not match. Please try again.");
+        setIsError(true);
+        return;
+    }
+
     setIsSubmitting(true);
     try {
-      const response = await axios.post('https://philgood-travels.onrender.com/api/auth/register', formData);
+      const { name, email, password } = formData;
+      const response = await axios.post('https://philgood-travels.onrender.com/api/auth/register', { name, email, password });
+      
       setMessage(response.data.message);
       setIsError(false);
-      setFormData({ name: '', email: '', password: '' }); 
+      setFormData({ name: '', email: '', password: '', confirmPassword: '' }); 
       setPasswordRules({ length: false, uppercase: false, number: false, special: false });
+      setShowPassword(false);
+      setShowConfirmPassword(false);
     } catch (err) {
       setMessage(err.response?.data?.error || "Registration failed");
       setIsError(true);
@@ -91,18 +103,30 @@ const Register = () => {
             />
           </div>
           
+          {/* Main Password Field */}
           <div className="position-relative">
             <input 
-              type="password" 
+              // ⚡ UPDATED: Toggle type based on state
+              type={showPassword ? "text" : "password"} 
               className="form-control-dark w-100 shadow-none" 
               placeholder="Create Password" 
               value={formData.password}
               onChange={handlePasswordChange}
+              style={{ paddingRight: '40px' }} // Prevent text from hiding behind the icon
               required 
             />
+            {/* ⚡ NEW: Eye Icon Toggle */}
+            <button 
+              type="button" 
+              className="btn position-absolute end-0 top-50 translate-middle-y border-0 shadow-none" 
+              style={{ color: 'var(--text-grey)' }}
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              <i className={`fa-solid ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+            </button>
           </div>
 
-          {/* ⚡ NEW: Visual Validation Checklist */}
+          {/* Validation Checklist */}
           {formData.password && (
             <div className="p-3 rounded-3 mt-1" style={{ backgroundColor: 'var(--input-bg)', border: '1px solid var(--border-color)' }}>
               <p className="text-navy small fw-bold mb-2">Password Requirements:</p>
@@ -123,11 +147,41 @@ const Register = () => {
             </div>
           )}
 
-          {/* ⚡ NEW: Button is disabled until all rules are met */}
+          {/* Confirm Password Field */}
+          <div className="position-relative">
+            <input 
+              // ⚡ UPDATED: Toggle type based on state
+              type={showConfirmPassword ? "text" : "password"} 
+              className={`form-control-dark w-100 shadow-none ${formData.confirmPassword && !passwordsMatch ? 'border-danger' : ''}`} 
+              placeholder="Confirm Password" 
+              value={formData.confirmPassword}
+              onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+              style={{ paddingRight: '40px' }} // Prevent text from hiding behind the icon
+              required 
+            />
+            {/* ⚡ NEW: Eye Icon Toggle for Confirm Password */}
+            <button 
+              type="button" 
+              className="btn position-absolute end-0 top-0 mt-1 border-0 shadow-none" 
+              style={{ color: 'var(--text-grey)' }}
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            >
+              <i className={`fa-solid ${showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+            </button>
+            
+            {/* Feedback messages */}
+            {formData.confirmPassword && !passwordsMatch && (
+              <small className="text-danger mt-1 d-block fw-bold"><i className="fa-solid fa-triangle-exclamation me-1"></i> Passwords do not match.</small>
+            )}
+            {formData.confirmPassword && passwordsMatch && formData.password.length > 0 && (
+              <small className="text-success mt-1 d-block fw-bold"><i className="fa-solid fa-check me-1"></i> Passwords match!</small>
+            )}
+          </div>
+
           <button 
             type="submit" 
             className="btn btn-proceed w-100 mt-3 py-3 text-uppercase font-montserrat fw-bold shadow"
-            disabled={isSubmitting || (formData.password.length > 0 && !isPasswordValid)}
+            disabled={isSubmitting || (formData.password.length > 0 && (!isPasswordValid || !passwordsMatch))}
           >
             {isSubmitting ? "Processing..." : "Sign Up"}
           </button>

@@ -4,6 +4,11 @@ const userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    
+    // ⚡ NEW: Email Verification Fields ⚡
+    isVerified: { type: Boolean, default: false },
+    verificationToken: { type: String },
+
     bookmarks: [{ type: String }],
     isAdmin: { type: Boolean, default: false },
     adminNotes: [{
@@ -11,7 +16,6 @@ const userSchema = new mongoose.Schema({
         authorInitials: String,
         createdAt: { type: Date, default: Date.now }
     }],
-    // ⚡ NEW: Extended CRM Fields
     address: {
         phone: { type: String, default: '' },
         street: { type: String, default: '' },
