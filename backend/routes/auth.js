@@ -136,4 +136,90 @@ router.post('/login', async (req, res) => {
     }
 });
 
+// ⚡ NEW: POST Route to handle "Forgot Password" request
+router.post('/forgot-password', async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            // For security, we don't tell the user if the email exists or not to prevent email scraping
+            return res.status(200).json({ message: "If that email is registered, a reset link has been sent." });
+        }
+
+        // 1. Generate a random reset token
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        
+        // 2. Set the token and expiration (1 hour from now) on the user
+        user.resetPasswordToken = resetToken;
+        user.resetPasswordExpires = Date.now() + 3600000; // 1 hour in milliseconds
+        await user.save();
+
+        // 3. Email the link using Resend
+        // Note: Change localhost to your Vercel URL when deploying
+        const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+
+        await resend.emails.send({
+            from: 'PhilGood Travels <onboarding@resend.dev>', // MUST use onboarding@resend.dev on free tier
+            to: user.email, 
+            subject: 'Password Reset Request - PhilGood Travels',
+            html: `
+                <div style="font-family: sans-serif; padding: 20px; text-align: center;">
+                    <h2 style="color: #00B4D8;">Password Reset</h2>
+                    <p>You requested to reset your password. Click the button below to create a new one.</p>
+                    <p><strong>This link will expire in 1 hour.</strong></p>
+                    <a href="${resetUrl}" style="display: inline-block; background-color: #FF9F1C; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 20px;">Reset Password</a>
+                    <p style="margin-top: 20px; font-size: 12px; color: #777;">If you did not request this, please ignore this email and your password will remain unchanged.</p>
+                </div>
+            `
+        });
+
+        res.status(200).json({ message: "If that email is registered, a reset link has been sent." });
+
+    } catch (error) {
+        console.error("Forgot Password Error:", error);
+        res.status(500).json({ error: "Failed to process request." });
+    }
+});
+
+// ⚡ NEW: POST Route to actually SAVE the new password
+router.post('/reset-password/:token', async (req, res) => {
+    try {
+        const { password } = req.body;
+        const { token } = req.params;
+
+        // 1. Find user with the matching token AND ensure it hasn't expired yet
+        const user = await User.findOne({ 
+            resetPasswordToken: token, 
+            resetPasswordExpires: { $gt: Date.now() } 
+        });
+
+        if (!user) {
+            return res.status(400).json({ error: "Password reset token is invalid or has expired." });
+        }
+
+        // 2. Hash the new password
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(password, salt);
+
+        // 3. Clear the reset token fields so they can't be used again
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+        
+        // Log it in their CRM timeline
+        user.adminNotes.push({
+            text: `System: Customer successfully reset their password.`,
+            authorInitials: '⚙️'
+        });
+
+        await user.save();
+
+        res.status(200).json({ message: "✅ Password has been successfully reset! You can now log in." });
+
+    } catch (error) {
+        console.error("Reset Password Error:", error);
+        res.status(500).json({ error: "Failed to reset password." });
+    }
+});
+
 module.exports = router;

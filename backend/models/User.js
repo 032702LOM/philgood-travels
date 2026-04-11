@@ -8,6 +8,9 @@ const userSchema = new mongoose.Schema({
     // ⚡ NEW: Email Verification Fields ⚡
     isVerified: { type: Boolean, default: false },
     verificationToken: { type: String },
+    
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date },
 
     bookmarks: [{ type: String }],
     isAdmin: { type: Boolean, default: false },

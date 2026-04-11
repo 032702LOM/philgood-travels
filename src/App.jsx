@@ -5,12 +5,15 @@ import './PhilGood.css';
 // Context Provider
 import { PreferencesProvider } from './context/PreferencesContext'; 
 
-// Layout & Pages
+// Components (From your 'components' folder)
 import Navbar from './components/Navbar';
 import Footer from './components/Footer'; 
 import Register from './components/Register';
 import Login from './components/Login';
 import Profile from './components/Profile'; 
+import VerifyEmail from './components/VerifyEmail'; 
+
+// Pages (From your 'pages' folder)
 import Home from './pages/Home';
 import Destinations from './pages/Destinations';
 import Tours from './pages/Tours';
@@ -19,7 +22,8 @@ import Connect from './pages/Connect';
 import Booking from './pages/Booking';
 import AdminDashboard from './pages/AdminDashboard'; 
 import NotFound from './pages/NotFound';
-import VerifyEmail from './components/VerifyEmail'; 
+import ForgotPassword from './pages/ForgotPassword'; // ⚡ FIXED PATH
+import ResetPassword from './pages/ResetPassword';   // ⚡ FIXED PATH
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -45,11 +49,16 @@ function App() {
             {/* ⚡ NEW: The hidden admin route */}
             <Route path="/admin" element={<AdminDashboard />} /> 
             
-            <Route path="*" element={<NotFound />} /> 
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/verify-email" element={<VerifyEmail />} />8/
+            <Route path="/verify-email" element={<VerifyEmail />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            {/* Notice the :token parameter below! This matches the logic in ResetPassword.jsx */}
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="/profile" element={<Profile />} />
+
+            {/* 404 Route should generally go at the very bottom as a catch-all */}
+            <Route path="*" element={<NotFound />} /> 
           </Routes>
         </main>
         <Footer />
