@@ -36,7 +36,7 @@ const FAQ = () => {
       <div className="container" style={{ maxWidth: '800px' }}>
         
         <div className="text-center mb-5">
-          <h1 className="text-navy font-montserrat fw-bold mb-3">Frequently Asked Questions</h1>
+          <h1 className="text-navy font-montserrat fw-bold mb-3 text-uppercase">Frequently Asked Questions</h1>
           <p className="text-grey">Everything you need to know about booking, payments, and managing your PhilGood adventure.</p>
         </div>
 
@@ -51,8 +51,9 @@ const FAQ = () => {
                 className="w-100 text-start p-4 border-0 bg-transparent d-flex justify-content-between align-items-center"
                 onClick={() => toggleFAQ(index)}
               >
-                <span className="text-white font-montserrat fw-bold fs-5">{faq.question}</span>
-                <i className={`fa-solid ${openIndex === index ? 'fa-minus text-accent' : 'fa-plus text-grey'} fs-5 transition-all`}></i>
+                {/* ⚡ FIX: Changed text-white to text-navy so it shows up in Light Mode! ⚡ */}
+                <span className="text-navy font-montserrat fw-bold fs-5">{faq.question}</span>
+                <i className={`fa-solid ${openIndex === index ? 'fa-minus text-accent' : 'fa-plus text-navy'} fs-5 transition-all`}></i>
               </button>
               
               <div 
