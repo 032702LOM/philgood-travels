@@ -47,7 +47,7 @@ router.post('/register', async (req, res) => {
 
         // ⚡ NEW: Send the Verification Email via Resend
         // Note: Change 'http://localhost:5173' to your Vercel URL when deploying
-        const verificationUrl = `http://localhost:5173/verify-email?token=${verificationToken}`;
+        const verificationUrl = `https://philgood-travels.vercel.app/verify-email?token=${verificationToken}`;
         
         await resend.emails.send({
             from: 'PhilGood Travels <onboarding@resend.dev>', // MUST use onboarding@resend.dev unless you verify a custom domain
@@ -157,7 +157,7 @@ router.post('/forgot-password', async (req, res) => {
 
         // 3. Email the link using Resend
         // Note: Change localhost to your Vercel URL when deploying
-        const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+        const resetUrl = `https://philgood-travels.vercel.app/reset-password/${resetToken}`;
 
         await resend.emails.send({
             from: 'PhilGood Travels <onboarding@resend.dev>', // MUST use onboarding@resend.dev on free tier
