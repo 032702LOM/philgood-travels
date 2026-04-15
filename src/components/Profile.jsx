@@ -208,7 +208,7 @@ const Profile = () => {
           <div className="col-lg-8">
             <div className="p-4 rounded-4 shadow-lg border border-primary border-opacity-10 h-100" style={{ backgroundColor: 'var(--card-bg)' }}>
               <h4 className="text-navy font-montserrat fw-bold border-bottom border-primary border-opacity-10 pb-3 mb-4">
-                <i className="fa-solid fa-suitcase-rolling text-accent me-2"></i> My Bookings
+                <i className="fa-solid fa-suitcase-rolling text-accent me-2"></i> My Trips
               </h4>
               
               {bookings.length === 0 ? (
