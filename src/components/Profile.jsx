@@ -11,10 +11,6 @@ const Profile = () => {
   const [user, setUser] = useState(null);
   const [bookings, setBookings] = useState([]);
 
-  // ⚡ NEW: State to manage the Checkout Modal
-  const [paymentModal, setPaymentModal] = useState({ show: false, payment: null, booking: null });
-  const [selectedMethod, setSelectedMethod] = useState('Card (Debit/Credit)');
-
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userStr = localStorage.getItem('user');
@@ -35,6 +31,8 @@ const Profile = () => {
     const params = new URLSearchParams(location.search);
     if (params.get('payment') === 'success') {
         alert("✅ Payment successful! Your dashboard will update shortly.");
+        // Optional: Clean up the URL so it doesn't keep showing the alert on refresh
+        window.history.replaceState(null, '', window.location.pathname);
     }
   }, [navigate, location]);
 
@@ -163,7 +161,7 @@ const Profile = () => {
           <div class="box"><h3>Order Info</h3><p><strong>PACKAGE:</strong> ${booking.packageName}</p><p><strong>ORDER NO:</strong> #${booking._id.substring(0, 8).toUpperCase()}</p><p><strong>DATE:</strong> ${new Date(booking.createdAt || Date.now()).toLocaleDateString()}</p></div>
         </div>
         <table>
-          <thead><tr><th>Item</th><th>Payment Method</th><th style="text-align: right;">Cost</th></tr></thead>
+          <thead><tr><th>Item</th><th>Status</th><th style="text-align: right;">Cost</th></tr></thead>
           <tbody>
             ${itemizedRows}
           </tbody>
@@ -171,7 +169,7 @@ const Profile = () => {
         <div class="totals">
           <table class="totals-table">
             <tr><td>GRAND TOTAL</td><td style="text-align: right;">${formatPrice(booking.totalPrice)}</td></tr>
-            <tr><td>PAID (${booking.paymentMethod})</td><td style="text-align: right;">${formatPrice(actualPaid)}</td></tr>
+            <tr><td>PAID TO DATE</td><td style="text-align: right;">${formatPrice(actualPaid)}</td></tr>
             <tr><td>AMOUNT DUE</td><td style="text-align: right;">${formatPrice(actualDue)}</td></tr>
           </table>
         </div>
@@ -208,7 +206,7 @@ const Profile = () => {
           <div className="col-lg-8">
             <div className="p-4 rounded-4 shadow-lg border border-primary border-opacity-10 h-100" style={{ backgroundColor: 'var(--card-bg)' }}>
               <h4 className="text-navy font-montserrat fw-bold border-bottom border-primary border-opacity-10 pb-3 mb-4">
-                <i className="fa-solid fa-suitcase-rolling text-accent me-2"></i> My Trips
+                <i className="fa-solid fa-suitcase-rolling text-accent me-2"></i> My Bookings
               </h4>
               
               {bookings.length === 0 ? (
@@ -281,25 +279,25 @@ const Profile = () => {
                         {/* Individual Payment Links (Hide if cancelled) */}
                         {booking.bookingStatus !== 'Cancelled' && booking.payments && booking.payments.length > 0 && (
                           <div className="p-3 rounded-3" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid rgba(0, 119, 182, 0.1)' }}>
-                              <h6 className="text-grey mb-3" style={{ fontSize: '0.8rem', textTransform: 'uppercase' }}>Individual Shares</h6>
+                              <h6 className="text-grey mb-3" style={{ fontSize: '0.8rem', textTransform: 'uppercase' }}>Checkout / Payment Links</h6>
                               <div className="d-flex flex-column gap-2">
                                   {booking.payments.map((payment, index) => (
-                                      <div key={index} className="d-flex justify-content-between align-items-center p-2 rounded border border-primary border-opacity-10" style={{ backgroundColor: '#F4FAFC' }}>
+                                      <div key={index} className="d-flex justify-content-between align-items-center p-3 rounded-3 border border-primary border-opacity-10 shadow-sm" style={{ backgroundColor: '#ffffff' }}>
                                           <div>
-                                              <span className="text-grey small d-block">{payment.payerEmail}</span>
-                                              <span className="text-navy fw-bold">{formatPrice(payment.amountDue)}</span>
+                                              <span className="text-grey small d-block mb-1">{payment.payerEmail}</span>
+                                              <span className="text-navy fw-bold fs-5">{formatPrice(payment.amountDue)}</span>
                                           </div>
+                                          
+                                          {/* ⚡ DIRECT GATEWAY LINK - CLEANED UP ⚡ */}
                                           {payment.status === 'Paid' ? (
-                                              <span className="text-success small fw-bold"><i className="fa-solid fa-circle-check me-1"></i> PAID</span>
+                                              <span className="badge bg-success py-2 px-3 fw-bold fs-6"><i className="fa-solid fa-circle-check me-2"></i> PAID</span>
                                           ) : (
-                                              // ⚡ NEW: Opens the Checkout Selection Modal instead of directly routing
-                                              <button 
-                                                className="btn btn-sm text-white shadow-sm" 
-                                                style={{ backgroundColor: 'var(--primary-color)' }}
-                                                onClick={() => setPaymentModal({ show: true, payment: payment, booking: booking })}
+                                              <a 
+                                                  href={payment.paymentUrl} 
+                                                  className="btn btn-proceed fw-bold py-2 px-4 shadow" 
                                               >
-                                                  Pay Share <i className="fa-solid fa-arrow-up-right-from-square ms-1" style={{ fontSize: '0.6rem' }}></i>
-                                              </button>
+                                                  <i className="fa-solid fa-lock me-2"></i> Pay Now
+                                              </a>
                                           )}
                                       </div>
                                   ))}
@@ -342,69 +340,6 @@ const Profile = () => {
           </div>
         </div>
       </div>
-
-      {/* ⚡ NEW: SECURE PAYMENT CHECKOUT MODAL ⚡ */}
-      {paymentModal.show && paymentModal.payment && (
-        <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0, 31, 63, 0.7)', backdropFilter: 'blur(5px)', zIndex: 1060 }}>
-            <div className="modal-dialog modal-dialog-centered">
-                <div className="modal-content border-0 shadow-lg" style={{ backgroundColor: 'var(--card-bg)', borderRadius: '16px' }}>
-                    <div className="modal-header border-bottom border-primary border-opacity-10 pb-3" style={{ borderTopLeftRadius: '16px', borderTopRightRadius: '16px' }}>
-                        <div>
-                            <h4 className="modal-title font-montserrat fw-bold mb-1 text-navy">Checkout</h4>
-                            <small className="text-grey">Order #{paymentModal.booking?._id?.substring(0, 8).toUpperCase()}</small>
-                        </div>
-                        <button type="button" className="btn-close" onClick={() => setPaymentModal({ show: false, payment: null, booking: null })}></button>
-                    </div>
-                    
-                    <div className="modal-body p-4">
-                        <div className="text-center mb-4 pb-3 border-bottom border-primary border-opacity-10">
-                            <span className="text-grey small d-block mb-1">Amount Due</span>
-                            <h2 className="text-accent fw-bold m-0">{formatPrice(paymentModal.payment.amountDue)}</h2>
-                        </div>
-
-                        <h6 className="text-navy fw-bold font-montserrat mb-3">Select Payment Method</h6>
-                        
-                        <div className="d-flex flex-column gap-2 mb-4">
-                            {['PayMongo', 'Stripe', 'GCash', 'Maya', 'Card (Debit/Credit)', 'PayPal'].map((method) => (
-                                <div 
-                                    key={method} 
-                                    onClick={() => setSelectedMethod(method)} 
-                                    className={`border rounded-3 px-4 py-3 d-flex align-items-center gap-3 shadow-sm ${selectedMethod === method ? 'border-primary' : 'border-primary border-opacity-25'}`} 
-                                    style={{ 
-                                        backgroundColor: selectedMethod === method ? 'rgba(0, 180, 216, 0.1)' : '#F4FAFC', 
-                                        cursor: 'pointer', 
-                                        transition: 'all 0.2s ease' 
-                                    }}
-                                >
-                                    <div className="text-center" style={{ width: '30px' }}>
-                                        {method === 'Card (Debit/Credit)' && <i className="fa-regular fa-credit-card text-navy fs-5"></i>}
-                                        {method === 'PayPal' && <i className="fa-brands fa-paypal text-navy fs-5"></i>}
-                                        {method === 'Stripe' && <i className="fa-brands fa-stripe text-navy fs-4"></i>}
-                                        {method === 'PayMongo' && <i className="fa-solid fa-money-bill-transfer text-navy fs-5"></i>}
-                                        {(method === 'GCash' || method === 'Maya') && <i className="fa-solid fa-mobile-screen text-navy fs-5"></i>}
-                                    </div>
-                                    <span className={`fw-bold ${selectedMethod === method ? 'text-primary-dark' : 'text-grey'}`}>
-                                        {method}
-                                    </span>
-                                    {selectedMethod === method && <i className="fa-solid fa-circle-check text-accent ms-auto"></i>}
-                                </div>
-                            ))}
-                        </div>
-
-                        <a 
-                            href={paymentModal.payment.paymentUrl} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            className="btn btn-proceed w-100 py-3 text-uppercase font-montserrat fw-bold shadow d-flex align-items-center justify-content-center" 
-                            onClick={() => setPaymentModal({ show: false, payment: null, booking: null })}
-                        >
-                            Proceed with {selectedMethod} <i className="fa-solid fa-lock ms-2"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-      )}
     </div>
   );
 };
