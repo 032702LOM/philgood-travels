@@ -10,7 +10,6 @@ const ChatSession = require('./models/ChatSession');
 dotenv.config();
 
 // Initialize Stripe
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const Booking = require('./models/Booking');
 
 // 2. Initialize the Express application
@@ -37,51 +36,6 @@ app.use(cors({
     credentials: true
 }));
 
-// THE STRIPE WEBHOOK
-app.post('/api/bookings/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
-    console.log("🔔 WEBHOOK CALLED! Signal received from Stripe.");
-    const sig = req.headers['stripe-signature'];
-    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
-    let event;
-
-    try {
-        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-    } catch (err) {
-        console.error('⚠️ Webhook signature verification failed.', err.message);
-        return res.status(400).send(`Webhook Error: ${err.message}`);
-    }
-
-    if (event.type === 'checkout.session.completed') {
-        const session = event.data.object;
-        const sessionId = session.id; 
-
-        try {
-            const booking = await Booking.findOne({ "payments.paymentUrl": { $regex: sessionId } });
-            
-            if (booking) {
-                booking.payments.forEach(payment => {
-                    if (payment.paymentUrl && payment.paymentUrl.includes(sessionId)) {
-                        payment.status = 'Paid';
-                        payment.amountPaid = payment.amountDue;
-                    }
-                });
-
-                const allPaid = booking.payments.every(p => p.status === 'Paid');
-                if (allPaid) {
-                    booking.bookingStatus = 'Confirmed'; 
-                }
-
-                await booking.save();
-                console.log(`✅ Payment logged successfully for session: ${sessionId}`);
-            }
-        } catch (error) {
-            console.error("❌ Error updating database from webhook:", error);
-        }
-    }
-
-    res.status(200).send();
-});
 
 // 4. Set up Middleware
 app.use(express.json()); 
