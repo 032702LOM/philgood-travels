@@ -16,7 +16,6 @@ const Booking = () => {
   const [personalInfo, setPersonalInfo] = useState({ name: '', email: '', phone: '' });
   const [guests, setGuests] = useState({ adults: 1, children: 0, infants: 0 });
   const [accClass, setAccClass] = useState('Standard'); 
-  const [paymentMethod, setPaymentMethod] = useState('Card');
   const [addons, setAddons] = useState({ airportTransfer: false, insurance: false, romanticDinner: false, carbonOffset: false });
   
   const [splitBetween, setSplitBetween] = useState(1);
@@ -52,7 +51,7 @@ const Booking = () => {
   const childTotal = (basePrice * 0.5) * guests.children; 
   const packageTotal = adultTotal + childTotal;
   
-  // ⚡ UPDATED: 50% Child Discount for Accommodation Class
+  // 50% Child Discount for Accommodation Class
   const adultAccTotal = accClassRates[accClass] * guests.adults;
   const childAccTotal = (accClassRates[accClass] * 0.5) * guests.children;
   const accClassTotal = adultAccTotal + childAccTotal;
@@ -83,7 +82,6 @@ const Booking = () => {
     setIsSubmitting(true);
     const user = JSON.parse(userStr);
 
-    // ⚡ UPDATED: Removed the multiplier text since math is now split
     const invoiceDetails = {
         basePriceTotal: adultTotal + childTotal,
         accClassText: `${accClass} Class`,
@@ -101,7 +99,8 @@ const Booking = () => {
         travelDate: date,
         guests: guests,
         totalPrice: grandTotal,
-        paymentMethod: paymentMethod,
+        // ⚡ Hardcoded for now to prevent backend crash. User selects actual method in Dashboard checkout.
+        paymentMethod: 'Pending Checkout', 
         splitBetween: parseInt(splitBetween), 
         friendEmails: payerEmails,
         invoiceDetails: invoiceDetails
@@ -111,9 +110,9 @@ const Booking = () => {
         await axios.post('https://philgood-travels.onrender.com/api/bookings/create', bookingData);
         
         if (splitBetween > 1) {
-            alert("Booking successful!\n\nYour split payment links have been generated and saved to your dashboard.");
+            alert("Trip added successfully!\n\nYour split payment links have been generated. Please proceed to your dashboard to pay your share.");
         } else {
-            alert("Booking successful!");
+            alert("Trip added successfully!\n\nPlease proceed to your dashboard to complete the payment.");
         }
         
         navigate('/profile');
@@ -198,7 +197,6 @@ const Booking = () => {
                 </div>
               </div>
 
-              {/* ⚡ UPDATED: Carbon Footprint Link uses translations */}
               <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 mb-4 teal-hover-box" style={{ borderLeft: '4px solid #4CAF50 !important' }}>
                 <h4 className="fw-bold mb-2 font-montserrat text-navy">
                   <i className="fa-solid fa-leaf text-success me-2"></i> 
@@ -282,17 +280,6 @@ const Booking = () => {
                 </div>
               </div>
 
-              <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 teal-hover-box">
-                <h4 className="fw-bold mb-4 font-montserrat text-navy"><i className="fa-solid fa-wallet text-accent me-2"></i> {t('payment_method', 'Payment Method')}</h4>
-                <div className="d-flex flex-wrap gap-3">
-                  {['Card', 'Paypal', 'GCash', 'Maya', 'Stripe'].map((method) => (
-                    <div key={method} onClick={() => setPaymentMethod(method)} className={`border rounded-pill px-4 py-2 ${paymentMethod === method ? 'border-primary text-white' : 'border-primary border-opacity-25 text-grey'}`} style={{ backgroundColor: paymentMethod === method ? 'var(--primary-color)' : '#F4FAFC', cursor: 'pointer', transition: 'all 0.3s', fontWeight: paymentMethod === method ? 'bold' : 'normal' }}>
-                        {method === 'Card' && <i className="fa-regular fa-credit-card me-2"></i>}{method === 'Paypal' && <i className="fa-brands fa-paypal me-2"></i>}{method === 'Stripe' && <i className="fa-brands fa-stripe-s me-2"></i>}{(method === 'GCash' || method === 'Maya') && <i className="fa-solid fa-mobile-screen me-2"></i>}{method}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
             </div>
 
             <div className="col-lg-4 scroll-reveal visible">
@@ -307,7 +294,6 @@ const Booking = () => {
                         <div className="d-flex justify-content-between mb-2"><span className="text-grey small">Base Price (x{guests.adults})</span><span className="text-navy fw-bold">{formatPrice(adultTotal)}</span></div>
                         {guests.children > 0 && (<div className="d-flex justify-content-between mb-2"><span className="text-accent small">Children (50% Off)</span><span className="text-navy fw-bold">{formatPrice(childTotal)}</span></div>)}
                         
-                        {/* ⚡ UPDATED: Split Accommodation Class UI */}
                         {accClass !== 'Standard' && (<div className="d-flex justify-content-between mb-2"><span className="text-accent small">{t('acc_class', 'Class')} (x{guests.adults})</span><span className="text-navy fw-bold">{formatPrice(adultAccTotal)}</span></div>)}
                         {accClass !== 'Standard' && guests.children > 0 && (<div className="d-flex justify-content-between mb-2"><span className="text-accent small">{t('acc_class', 'Class')} Child (50% Off)</span><span className="text-navy fw-bold">{formatPrice(childAccTotal)}</span></div>)}
                         
@@ -336,13 +322,11 @@ const Booking = () => {
                     </div>
                 )}
 
-                <div className="text-grey small mb-3 text-center">{t('payment_method', 'Payment Method')}: <strong className="text-navy">{paymentMethod}</strong></div>
-
                 <button type="submit" className="btn btn-proceed w-100 py-3 text-uppercase font-montserrat fw-bold shadow" disabled={isSubmitting}>
                     {isSubmitting ? (
                         <><i className="fa-solid fa-spinner fa-spin me-2"></i> {t('processing', 'Processing...')}</>
                     ) : (
-                        <>{t('confirm', 'Confirm Booking')} <i className="fa-solid fa-arrow-right ms-2"></i></>
+                        <>{t('add_to_trips', 'Add to My Trips')} <i className="fa-solid fa-arrow-right ms-2"></i></>
                     )}
                 </button>
 
