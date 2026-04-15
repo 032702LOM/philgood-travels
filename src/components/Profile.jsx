@@ -7,8 +7,13 @@ const Profile = () => {
   const navigate = useNavigate();
   const location = useLocation(); 
   const { formatPrice } = usePreferences();
+  
   const [user, setUser] = useState(null);
   const [bookings, setBookings] = useState([]);
+
+  // ⚡ NEW: State to manage the Checkout Modal
+  const [paymentModal, setPaymentModal] = useState({ show: false, payment: null, booking: null });
+  const [selectedMethod, setSelectedMethod] = useState('Card (Debit/Credit)');
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -108,17 +113,12 @@ const Profile = () => {
       }
   };
 
-  // ==========================================
-  // ⚡ UPDATED INVOICE GENERATOR
-  // ==========================================
   const handleDownloadInvoice = (booking) => {
     let actualPaid = booking.payments?.filter(p => p.status === 'Paid').reduce((acc, curr) => acc + curr.amountDue, 0) || 0;
     const actualDue = booking.totalPrice - actualPaid;
     
-    // Safely pull invoiceDetails (or empty object if old booking)
     const inv = booking.invoiceDetails || {};
 
-    // Dynamically generate the rows based on what they bought
     let itemizedRows = `<tr><td><strong>Base Price</strong></td><td></td><td style="text-align: right;">${formatPrice(inv.basePriceTotal || booking.totalPrice)}</td></tr>`;
     
     if (inv.accClassTotal) itemizedRows += `<tr><td>${inv.accClassText || 'Room Upgrade'}</td><td></td><td style="text-align: right;">${formatPrice(inv.accClassTotal)}</td></tr>`;
@@ -271,7 +271,7 @@ const Profile = () => {
                                 <p className="text-grey small mb-0"><i className="fa-solid fa-user-group text-accent me-2"></i> {booking.guests.adults} Adults, {booking.guests.children} Children</p>
                             </div>
                             <div className="col-md-6 text-end">
-                                <span className="text-grey small d-block">Method: {booking.paymentMethod}</span>
+                                <span className="text-grey small d-block">Total Cost</span>
                                 <h4 className="text-navy fw-bold m-0" style={{ textDecoration: booking.bookingStatus === 'Cancelled' ? 'line-through' : 'none' }}>
                                     {formatPrice(booking.totalPrice)}
                                 </h4>
@@ -292,9 +292,14 @@ const Profile = () => {
                                           {payment.status === 'Paid' ? (
                                               <span className="text-success small fw-bold"><i className="fa-solid fa-circle-check me-1"></i> PAID</span>
                                           ) : (
-                                              <a href={payment.paymentUrl} target="_blank" rel="noopener noreferrer" className="btn btn-sm text-white shadow-sm" style={{ backgroundColor: 'var(--primary-color)' }}>
+                                              // ⚡ NEW: Opens the Checkout Selection Modal instead of directly routing
+                                              <button 
+                                                className="btn btn-sm text-white shadow-sm" 
+                                                style={{ backgroundColor: 'var(--primary-color)' }}
+                                                onClick={() => setPaymentModal({ show: true, payment: payment, booking: booking })}
+                                              >
                                                   Pay Share <i className="fa-solid fa-arrow-up-right-from-square ms-1" style={{ fontSize: '0.6rem' }}></i>
-                                              </a>
+                                              </button>
                                           )}
                                       </div>
                                   ))}
@@ -302,7 +307,7 @@ const Profile = () => {
                           </div>
                         )}
 
-                        {/* ⚡ ADVANCED ACTION BUTTONS ⚡ */}
+                        {/* ADVANCED ACTION BUTTONS */}
                         <div className="d-flex justify-content-end gap-2 mt-4 pt-3 border-top border-primary border-opacity-10">
                             
                             {booking.bookingStatus === 'Cancelled' && isWithinRebookWindow(booking.cancelledAt) && (
@@ -335,9 +340,71 @@ const Profile = () => {
               )}
             </div>
           </div>
-
         </div>
       </div>
+
+      {/* ⚡ NEW: SECURE PAYMENT CHECKOUT MODAL ⚡ */}
+      {paymentModal.show && paymentModal.payment && (
+        <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0, 31, 63, 0.7)', backdropFilter: 'blur(5px)', zIndex: 1060 }}>
+            <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-content border-0 shadow-lg" style={{ backgroundColor: 'var(--card-bg)', borderRadius: '16px' }}>
+                    <div className="modal-header border-bottom border-primary border-opacity-10 pb-3" style={{ borderTopLeftRadius: '16px', borderTopRightRadius: '16px' }}>
+                        <div>
+                            <h4 className="modal-title font-montserrat fw-bold mb-1 text-navy">Checkout</h4>
+                            <small className="text-grey">Order #{paymentModal.booking?._id?.substring(0, 8).toUpperCase()}</small>
+                        </div>
+                        <button type="button" className="btn-close" onClick={() => setPaymentModal({ show: false, payment: null, booking: null })}></button>
+                    </div>
+                    
+                    <div className="modal-body p-4">
+                        <div className="text-center mb-4 pb-3 border-bottom border-primary border-opacity-10">
+                            <span className="text-grey small d-block mb-1">Amount Due</span>
+                            <h2 className="text-accent fw-bold m-0">{formatPrice(paymentModal.payment.amountDue)}</h2>
+                        </div>
+
+                        <h6 className="text-navy fw-bold font-montserrat mb-3">Select Payment Method</h6>
+                        
+                        <div className="d-flex flex-column gap-2 mb-4">
+                            {['PayMongo', 'Stripe', 'GCash', 'Maya', 'Card (Debit/Credit)', 'PayPal'].map((method) => (
+                                <div 
+                                    key={method} 
+                                    onClick={() => setSelectedMethod(method)} 
+                                    className={`border rounded-3 px-4 py-3 d-flex align-items-center gap-3 shadow-sm ${selectedMethod === method ? 'border-primary' : 'border-primary border-opacity-25'}`} 
+                                    style={{ 
+                                        backgroundColor: selectedMethod === method ? 'rgba(0, 180, 216, 0.1)' : '#F4FAFC', 
+                                        cursor: 'pointer', 
+                                        transition: 'all 0.2s ease' 
+                                    }}
+                                >
+                                    <div className="text-center" style={{ width: '30px' }}>
+                                        {method === 'Card (Debit/Credit)' && <i className="fa-regular fa-credit-card text-navy fs-5"></i>}
+                                        {method === 'PayPal' && <i className="fa-brands fa-paypal text-navy fs-5"></i>}
+                                        {method === 'Stripe' && <i className="fa-brands fa-stripe text-navy fs-4"></i>}
+                                        {method === 'PayMongo' && <i className="fa-solid fa-money-bill-transfer text-navy fs-5"></i>}
+                                        {(method === 'GCash' || method === 'Maya') && <i className="fa-solid fa-mobile-screen text-navy fs-5"></i>}
+                                    </div>
+                                    <span className={`fw-bold ${selectedMethod === method ? 'text-primary-dark' : 'text-grey'}`}>
+                                        {method}
+                                    </span>
+                                    {selectedMethod === method && <i className="fa-solid fa-circle-check text-accent ms-auto"></i>}
+                                </div>
+                            ))}
+                        </div>
+
+                        <a 
+                            href={paymentModal.payment.paymentUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="btn btn-proceed w-100 py-3 text-uppercase font-montserrat fw-bold shadow d-flex align-items-center justify-content-center" 
+                            onClick={() => setPaymentModal({ show: false, payment: null, booking: null })}
+                        >
+                            Proceed with {selectedMethod} <i className="fa-solid fa-lock ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+      )}
     </div>
   );
 };
