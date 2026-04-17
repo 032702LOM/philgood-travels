@@ -26,6 +26,7 @@ import ForgotPassword from './pages/ForgotPassword'; // ⚡ FIXED PATH
 import ResetPassword from './pages/ResetPassword';   // ⚡ FIXED PATH
 import Terms from './pages/Terms';
 import FAQ from './pages/FAQ';
+import Checkout from './pages/Checkout';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -60,6 +61,7 @@ function App() {
             {/* Notice the :token parameter below! This matches the logic in ResetPassword.jsx */}
             <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/checkout" element={<Checkout />} />
 
             {/* 404 Route should generally go at the very bottom as a catch-all */}
             <Route path="*" element={<NotFound />} /> 

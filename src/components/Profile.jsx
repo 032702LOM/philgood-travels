@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { usePreferences } from '../context/PreferencesContext';
+import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -292,12 +293,19 @@ const Profile = () => {
                                           {payment.status === 'Paid' ? (
                                               <span className="badge bg-success py-2 px-3 fw-bold fs-6"><i className="fa-solid fa-circle-check me-2"></i> PAID</span>
                                           ) : (
-                                              <a 
-                                                  href={payment.paymentUrl} 
-                                                  className="btn btn-proceed fw-bold py-2 px-4 shadow" 
-                                              >
-                                                  <i className="fa-solid fa-lock me-2"></i> Pay Now
-                                              </a>
+                                              <button 
+    onClick={() => navigate('/checkout', { 
+        state: { 
+            bookingId: selectedBooking._id, 
+            paymentIndex: index, 
+            amountDue: payment.amountDue, 
+            packageName: selectedBooking.packageName 
+        } 
+    })}
+    className="btn btn-proceed fw-bold py-2 px-4 shadow" 
+>
+    <i className="fa-solid fa-lock me-2"></i> Pay Now
+</button>
                                           )}
                                       </div>
                                   ))}
