@@ -23,35 +23,24 @@ const Checkout = () => {
     );
   }
 
-  const handlePayment = async () => {
+ const handlePayment = async () => {
     if (!selectedMethod) return alert("Please select a payment method first.");
-    
     setIsProcessing(true);
     
-    console.log(`Processing ${formatPrice(amountDue)} via ${selectedMethod} for Booking: ${bookingId}`);
-    
     try {
-        // ⚡ We will connect this to your backend Paymongo integration in the next phase!
-        /*
-        const response = await axios.post('https://philgood-travels.onrender.com/api/paymongo/checkout', {
+        const response = await axios.post('https://philgood-travels.onrender.com/api/bookings/paymongo/checkout', {
             bookingId,
             paymentIndex,
-            method: selectedMethod,
+            method: selectedMethod, // 'card', 'gcash', or 'maya'
             amount: amountDue
         });
         
+        // Redirect the user to the real PayMongo page
         window.location.href = response.data.checkoutUrl;
-        */
-       
-       // Temporary simulation so you can test the UI
-       setTimeout(() => {
-           alert(`Simulation: Redirecting to ${selectedMethod} gateway...`);
-           setIsProcessing(false);
-       }, 1500);
 
     } catch (error) {
         console.error(error);
-        alert("Failed to initialize payment gateway.");
+        alert("Failed to initialize payment gateway. Check console for details.");
         setIsProcessing(false);
     }
   };

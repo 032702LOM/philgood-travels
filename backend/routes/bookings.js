@@ -233,4 +233,52 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+// ==========================================
+// POST: Generate a PayMongo Session for existing booking
+// ==========================================
+router.post('/paymongo/checkout', async (req, res) => {
+    try {
+        const { bookingId, paymentIndex, method, amount } = req.body;
+        const booking = await Booking.findById(bookingId);
+        
+        if (!booking) return res.status(404).json({ error: "Booking not found" });
+
+        // Encode Auth Header
+        const paymongoAuth = Buffer.from(`${process.env.PAYMONGO_SECRET_KEY}:`).toString('base64');
+
+        // Create Checkout Session
+        const response = await axios.post('https://api.paymongo.com/v1/checkout_sessions', {
+            data: {
+                attributes: {
+                    send_email_receipt: true,
+                    show_description: true,
+                    show_line_items: true,
+                    payment_method_types: [method === 'card' ? 'card' : method], // 'card', 'gcash', or 'paymaya'
+                    line_items: [{
+                        name: `Payment for ${booking.packageName}`,
+                        amount: Math.round(amount * 100), // In centavos
+                        currency: 'PHP',
+                        quantity: 1
+                    }],
+                    success_url: `https://philgood-travels.vercel.app/profile?payment=success`,
+                    cancel_url: `https://philgood-travels.vercel.app/profile`,
+                    description: `Booking ID: ${bookingId}`
+                }
+            }
+        }, {
+            headers: {
+                accept: 'application/json',
+                'Content-Type': 'application/json',
+                authorization: `Basic ${paymongoAuth}`
+            }
+        });
+
+        res.status(200).json({ checkoutUrl: response.data.data.attributes.checkout_url });
+
+    } catch (error) {
+        console.error("PayMongo Error:", error.response?.data || error.message);
+        res.status(500).json({ error: "Failed to create payment session" });
+    }
+});
+
 module.exports = router;
