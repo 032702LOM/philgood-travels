@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { usePreferences } from '../context/PreferencesContext';
+import axios from 'axios';
 
 const Checkout = () => {
   const location = useLocation();
