@@ -292,13 +292,13 @@ const Profile = () => {
                                           {payment.status === 'Paid' ? (
                                               <span className="badge bg-success py-2 px-3 fw-bold fs-6"><i className="fa-solid fa-circle-check me-2"></i> PAID</span>
                                           ) : (
-                                              <button 
+                                             <button 
     onClick={() => navigate('/checkout', { 
         state: { 
-            bookingId: selectedBooking._id, 
+            bookingId: booking._id, // ✅ Fixed
             paymentIndex: index, 
             amountDue: payment.amountDue, 
-            packageName: selectedBooking.packageName 
+            packageName: booking.packageName // ✅ Fixed
         } 
     })}
     className="btn btn-proceed fw-bold py-2 px-4 shadow" 
