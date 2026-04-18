@@ -83,10 +83,6 @@ router.post('/create', async (req, res) => {
                 paymentUrl: checkoutUrl,
                 stripeSessionId: checkoutId // Kept this name so Mongoose doesn't break, but stores PayMongo ID
             });
-
-            // --- SEND EMAIL VIA RESEND ---
-            const isLead = (payerEmail === leadUser.email);
-            const subject = isLead ? `Your Booking for ${packageName} is Pending` : `You've been invited on a trip to ${packageName}!`;
             
             // --- FORMAT CURRENCY HELPER ---
             const formatPrice = (num) => `₱${Number(num).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
@@ -147,6 +143,19 @@ router.post('/create', async (req, res) => {
                     </div>
                 </div>
             `;
+            
+            // ⚡ ACTUALLY SEND THE EMAIL ⚡
+            try {
+                await resend.emails.send({
+                    from: 'PhilGood Travels <hello@philgoodtravels.com>', // Update with your verified Resend domain if needed
+                    to: payerEmail,
+                    subject: subject,
+                    html: htmlContent
+                });
+            } catch (emailErr) {
+                console.error("Failed to send email to", payerEmail, emailErr);
+            }
+        }
 
         const newBooking = new Booking({
             userId,
@@ -154,7 +163,7 @@ router.post('/create', async (req, res) => {
             travelDate,
             guests,
             totalPrice,
-            paymentMethod: 'PayMongo Checkout', // Updated text
+            paymentMethod: 'PayMongo Checkout', 
             splitBetween,
             payments: paymentsArray,
             invoiceDetails: invoiceDetails,
@@ -310,7 +319,7 @@ router.post('/paymongo/checkout', async (req, res) => {
                     show_description: true,
                     show_line_items: true,
                     payment_method_types: [method === 'maya' ? 'paymaya' : method], 
-                    line_items: items, // ⚡ We inject the itemized array here!
+                    line_items: items, 
                     success_url: `https://philgood-travels.vercel.app/profile?payment=success`,
                     cancel_url: `https://philgood-travels.vercel.app/profile`,
                     description: `Booking ID: ${bookingId}`
