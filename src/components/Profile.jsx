@@ -295,10 +295,12 @@ const Profile = () => {
                                              <button 
     onClick={() => navigate('/checkout', { 
         state: { 
-            bookingId: booking._id, // ✅ Fixed
+            bookingId: booking._id, 
             paymentIndex: index, 
             amountDue: payment.amountDue, 
-            packageName: booking.packageName // ✅ Fixed
+            packageName: booking.packageName,
+            invoiceDetails: booking.invoiceDetails, // ⚡ NEW
+            splitBetween: booking.splitBetween // ⚡ NEW
         } 
     })}
     className="btn btn-proceed fw-bold py-2 px-4 shadow" 

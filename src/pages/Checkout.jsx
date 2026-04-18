@@ -9,7 +9,12 @@ const Checkout = () => {
   const { formatPrice } = usePreferences();
   
   // Retrieve the data passed from the Profile page
-  const { bookingId, paymentIndex, amountDue, packageName } = location.state || {};
+  const { bookingId, paymentIndex, amountDue, packageName, invoiceDetails, splitBetween } = location.state || {};
+
+  // Setup safe defaults for the invoice breakdown
+  const safeInvoice = invoiceDetails || {};
+  const split = splitBetween || 1;
+  const splitText = split > 1 ? ` (Split ${split} ways)` : '';
 
   const [selectedMethod, setSelectedMethod] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -165,18 +170,64 @@ const Checkout = () => {
 
               <hr className="border-primary border-opacity-10 my-4" />
 
-              <div className="d-flex justify-content-between mb-3">
-                  <span className="text-grey">Subtotal</span>
-                  <span className="text-navy fw-bold">{formatPrice(amountDue)}</span>
-              </div>
-              <div className="d-flex justify-content-between mb-3">
-                  <span className="text-grey">Platform Fees</span>
-                  <span className="text-success fw-bold">Free</span>
+              {/* ITEMIZED BREAKDOWN */}
+              {safeInvoice.basePriceTotal > 0 && (
+                <div className="d-flex justify-content-between mb-2">
+                    <span className="text-grey small">Base Price{splitText}</span>
+                    <span className="text-navy fw-bold">{formatPrice(safeInvoice.basePriceTotal / split)}</span>
+                </div>
+              )}
+              {safeInvoice.accClassTotal > 0 && (
+                <div className="d-flex justify-content-between mb-2">
+                    <span className="text-grey small">{safeInvoice.accClassText || 'Room Upgrade'}{splitText}</span>
+                    <span className="text-navy fw-bold">{formatPrice(safeInvoice.accClassTotal / split)}</span>
+                </div>
+              )}
+              {safeInvoice.transferTotal > 0 && (
+                <div className="d-flex justify-content-between mb-2">
+                    <span className="text-grey small">Airport Transfer{splitText}</span>
+                    <span className="text-navy fw-bold">{formatPrice(safeInvoice.transferTotal / split)}</span>
+                </div>
+              )}
+              {safeInvoice.insuranceTotal > 0 && (
+                <div className="d-flex justify-content-between mb-2">
+                    <span className="text-grey small">Travel Insurance{splitText}</span>
+                    <span className="text-navy fw-bold">{formatPrice(safeInvoice.insuranceTotal / split)}</span>
+                </div>
+              )}
+              {safeInvoice.dinnerTotal > 0 && (
+                <div className="d-flex justify-content-between mb-2">
+                    <span className="text-grey small">Romantic Dinner{splitText}</span>
+                    <span className="text-navy fw-bold">{formatPrice(safeInvoice.dinnerTotal / split)}</span>
+                </div>
+              )}
+              {safeInvoice.carbonTotal > 0 && (
+                <div className="d-flex justify-content-between mb-2">
+                    <span className="text-success small">Carbon Offset{splitText}</span>
+                    <span className="text-success fw-bold">{formatPrice(safeInvoice.carbonTotal / split)}</span>
+                </div>
+              )}
+              {safeInvoice.vatTotal > 0 && (
+                <div className="d-flex justify-content-between mb-2 pb-2 border-bottom border-primary border-opacity-10">
+                    <span className="text-grey small">VAT (12%){splitText}</span>
+                    <span className="text-navy fw-bold">{formatPrice(safeInvoice.vatTotal / split)}</span>
+                </div>
+              )}
+
+              {/* FALLBACK IF NO INVOICE DETAILS */}
+              {Object.keys(safeInvoice).length === 0 && (
+                <div className="d-flex justify-content-between mb-2">
+                    <span className="text-grey small">Subtotal</span>
+                    <span className="text-navy fw-bold">{formatPrice(amountDue)}</span>
+                </div>
+              )}
+
+              <div className="d-flex justify-content-between mb-3 mt-3">
+                  <span className="text-grey small">Platform Fees</span>
+                  <span className="text-success fw-bold small">Free</span>
               </div>
 
-              <hr className="border-primary border-opacity-10 my-4" />
-
-              <div className="d-flex justify-content-between align-items-center">
+              <div className="d-flex justify-content-between align-items-center mt-4">
                   <span className="text-navy fw-bold fs-5">Total Due</span>
                   <span className="fw-bold text-accent font-montserrat" style={{ fontSize: '2.5rem', lineHeight: '1' }}>
                       {formatPrice(amountDue)}
