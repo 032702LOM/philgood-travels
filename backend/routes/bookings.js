@@ -147,7 +147,7 @@ router.post('/create', async (req, res) => {
             // ⚡ ACTUALLY SEND THE EMAIL ⚡
             try {
                 await resend.emails.send({
-                    from: 'PhilGood Travels <hello@philgoodtravels.com>', // Update with your verified Resend domain if needed
+                    from: 'PhilGood Travels <onboarding@resend.dev>', // Update with your verified Resend domain if needed
                     to: payerEmail,
                     subject: subject,
                     html: htmlContent
