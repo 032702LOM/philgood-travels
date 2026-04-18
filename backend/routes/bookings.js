@@ -246,6 +246,27 @@ router.post('/paymongo/checkout', async (req, res) => {
         // Encode Auth Header
         const paymongoAuth = Buffer.from(`${process.env.PAYMONGO_SECRET_KEY}:`).toString('base64');
 
+        // --- Build Itemized List ---
+        const split = booking.splitBetween || 1;
+        const splitText = split > 1 ? ` (Split ${split} ways)` : '';
+        const safeInvoice = booking.invoiceDetails || {};
+        const items = [];
+
+        // Push individual items if they exist in the invoice
+        if (safeInvoice.basePriceTotal > 0) items.push({ name: `Base Price${splitText}`, amount: Math.round((safeInvoice.basePriceTotal / split) * 100), currency: 'PHP', quantity: 1 });
+        if (safeInvoice.accClassTotal > 0) items.push({ name: `${safeInvoice.accClassText || 'Room Upgrade'}${splitText}`, amount: Math.round((safeInvoice.accClassTotal / split) * 100), currency: 'PHP', quantity: 1 });
+        if (safeInvoice.transferTotal > 0) items.push({ name: `Airport Transfer${splitText}`, amount: Math.round((safeInvoice.transferTotal / split) * 100), currency: 'PHP', quantity: 1 });
+        if (safeInvoice.insuranceTotal > 0) items.push({ name: `Travel Insurance${splitText}`, amount: Math.round((safeInvoice.insuranceTotal / split) * 100), currency: 'PHP', quantity: 1 });
+        if (safeInvoice.dinnerTotal > 0) items.push({ name: `Romantic Dinner${splitText}`, amount: Math.round((safeInvoice.dinnerTotal / split) * 100), currency: 'PHP', quantity: 1 });
+        if (safeInvoice.carbonTotal > 0) items.push({ name: `Carbon Offset${splitText}`, amount: Math.round((safeInvoice.carbonTotal / split) * 100), currency: 'PHP', quantity: 1 });
+        if (safeInvoice.vatTotal > 0) items.push({ name: `VAT (12%)${splitText}`, amount: Math.round((safeInvoice.vatTotal / split) * 100), currency: 'PHP', quantity: 1 });
+
+        // Fallback just in case the database didn't have the itemized breakdown
+        if (items.length === 0) {
+            items.push({ name: `Payment for ${booking.packageName}`, amount: Math.round(amount * 100), currency: 'PHP', quantity: 1 });
+        }
+        // ---------------------------
+
         // Create Checkout Session
         const response = await axios.post('https://api.paymongo.com/v1/checkout_sessions', {
             data: {
@@ -253,13 +274,8 @@ router.post('/paymongo/checkout', async (req, res) => {
                     send_email_receipt: true,
                     show_description: true,
                     show_line_items: true,
-                    payment_method_types: [method === 'maya' ? 'paymaya' : method], // 'card', 'gcash', or 'paymaya'
-                    line_items: [{
-                        name: `Payment for ${booking.packageName}`,
-                        amount: Math.round(amount * 100), // In centavos
-                        currency: 'PHP',
-                        quantity: 1
-                    }],
+                    payment_method_types: [method === 'maya' ? 'paymaya' : method], 
+                    line_items: items, // ⚡ We inject the itemized array here!
                     success_url: `https://philgood-travels.vercel.app/profile?payment=success`,
                     cancel_url: `https://philgood-travels.vercel.app/profile`,
                     description: `Booking ID: ${bookingId}`
