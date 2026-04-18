@@ -88,30 +88,65 @@ router.post('/create', async (req, res) => {
             const isLead = (payerEmail === leadUser.email);
             const subject = isLead ? `Your Booking for ${packageName} is Pending` : `You've been invited on a trip to ${packageName}!`;
             
+            // --- FORMAT CURRENCY HELPER ---
+            const formatPrice = (num) => `₱${Number(num).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+            // --- BUILD ITEMIZED HTML ROWS ---
+            let itemizedHtml = '';
+            if (safeInvoice.basePriceTotal > 0) itemizedHtml += `<tr><td style="padding: 8px 0; color: #555;">Base Price</td><td align="right" style="padding: 8px 0; color: #333; font-weight: bold;">${formatPrice(safeInvoice.basePriceTotal)}</td></tr>`;
+            if (safeInvoice.accClassTotal > 0) itemizedHtml += `<tr><td style="padding: 8px 0; color: #555;">${safeInvoice.accClassText || 'Room Upgrade'}</td><td align="right" style="padding: 8px 0; color: #333; font-weight: bold;">${formatPrice(safeInvoice.accClassTotal)}</td></tr>`;
+            if (safeInvoice.transferTotal > 0) itemizedHtml += `<tr><td style="padding: 8px 0; color: #555;">Airport Transfer</td><td align="right" style="padding: 8px 0; color: #333; font-weight: bold;">${formatPrice(safeInvoice.transferTotal)}</td></tr>`;
+            if (safeInvoice.insuranceTotal > 0) itemizedHtml += `<tr><td style="padding: 8px 0; color: #555;">Travel Insurance</td><td align="right" style="padding: 8px 0; color: #333; font-weight: bold;">${formatPrice(safeInvoice.insuranceTotal)}</td></tr>`;
+            if (safeInvoice.dinnerTotal > 0) itemizedHtml += `<tr><td style="padding: 8px 0; color: #555;">Romantic Dinner</td><td align="right" style="padding: 8px 0; color: #333; font-weight: bold;">${formatPrice(safeInvoice.dinnerTotal)}</td></tr>`;
+            if (safeInvoice.carbonTotal > 0) itemizedHtml += `<tr><td style="padding: 8px 0; color: #4CAF50;">Carbon Offset</td><td align="right" style="padding: 8px 0; color: #4CAF50; font-weight: bold;">${formatPrice(safeInvoice.carbonTotal)}</td></tr>`;
+            if (safeInvoice.vatTotal > 0) itemizedHtml += `<tr><td style="padding: 8px 0; color: #555;">VAT (12%)</td><td align="right" style="padding: 8px 0; color: #333; font-weight: bold;">${formatPrice(safeInvoice.vatTotal)}</td></tr>`;
+
+            // --- SEND EMAIL VIA RESEND ---
+            const isLead = (payerEmail === leadUser.email);
+            const subject = isLead ? `Your Booking for ${packageName} is Pending` : `You've been invited on a trip to ${packageName}!`;
+            
+            const introText = isLead 
+                ? `You are planning an adventure to <strong style="color: #00B4D8;">${packageName}</strong> on <strong>${travelDate}</strong>! Let's get everything locked in.` 
+                : `<strong>${leadName}</strong> is planning an adventure to <strong style="color: #00B4D8;">${packageName}</strong> on <strong>${travelDate}</strong> and has invited you to join!`;
+
             const htmlContent = `
-                <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
-                    <h2>${isLead ? 'Hi ' + leadUser.name + ',' : 'Hi there!'}</h2>
-                    <p>${isLead ? `Your trip to <strong>${packageName}</strong> is almost set!` : `<strong>${leadName}</strong> is inviting you on a trip to <strong>${packageName}</strong>!`}</p>
-                    <p><strong>Travel Date:</strong> ${travelDate}</p>
-                    <p>Your share of the trip comes out to <strong>₱${amountDue.toLocaleString()}</strong>.</p>
-                    <a href="${checkoutUrl}" style="background-color: #00B4D8; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 15px; font-weight: bold;">
-                        Pay Your Share Securely
-                    </a>
-                    <p style="margin-top: 20px; font-size: 0.9em; color: #666;">If the button doesn't work, copy and paste this link: <br/>${checkoutUrl}</p>
+                <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; color: #333; line-height: 1.6;">
+                    
+                    <h2 style="text-align: center; color: #003B5C; letter-spacing: 1px; text-transform: uppercase;">PHILGOOD TRAVELS</h2>
+                    
+                    <p>Hi there!</p>
+                    <p>${introText}</p>
+
+                    <div style="border: 1px solid #00B4D8; border-radius: 8px; padding: 20px; margin-top: 25px; background-color: #FAFAFA;">
+                        <h3 style="color: #003B5C; margin-top: 0;">Price Summary</h3>
+                        <table width="100%" cellpadding="0" cellspacing="0" style="font-size: 14px;">
+                            ${itemizedHtml}
+                            <tr>
+                                <td colspan="2"><hr style="border: none; border-top: 1px solid #D0EBEF; margin: 15px 0;"></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px 0; color: #003B5C; font-weight: bold; font-size: 16px;">Grand Total</td>
+                                <td align="right" style="padding: 8px 0; color: #F69928; font-weight: bold; font-size: 16px;">${formatPrice(totalPrice)}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div style="background-color: #003B5C; border-radius: 8px; padding: 25px 20px; text-align: center; margin-top: 20px;">
+                        <p style="color: #FFFFFF; font-size: 14px; margin: 0 0 10px 0;">Your Split Share (${splitBetween} ways):</p>
+                        <h1 style="color: #F69928; margin: 0; font-size: 28px;">${formatPrice(amountDue)}</h1>
+                    </div>
+
+                    <p style="text-align: center; font-size: 14px; color: #555; margin-top: 20px;">
+                        To secure your spot and confirm the group booking, please pay your share via our secure PayMongo link:
+                    </p>
+
+                    <div style="text-align: center; margin-top: 15px;">
+                        <a href="${checkoutUrl}" style="background-color: #00B4D8; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">
+                            Pay Your Share
+                        </a>
+                    </div>
                 </div>
             `;
-
-            try {
-                await resend.emails.send({
-                    from: 'PhilGood Travels <onboarding@resend.dev>',
-                    to: payerEmail, 
-                    subject: subject,
-                    html: htmlContent
-                });
-            } catch (emailErr) {
-                console.error(`Failed to send email to ${payerEmail}:`, emailErr);
-            }
-        }
 
         const newBooking = new Booking({
             userId,
