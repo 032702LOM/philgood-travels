@@ -312,7 +312,7 @@ router.post('/paymongo/checkout', async (req, res) => {
         }
         // ---------------------------
 
-        // Create Checkout Session
+       // Create Checkout Session
         const response = await axios.post('https://api.paymongo.com/v1/checkout_sessions', {
             data: {
                 attributes: {
@@ -322,7 +322,7 @@ router.post('/paymongo/checkout', async (req, res) => {
                     payment_method_types: [method === 'maya' ? 'paymaya' : method], 
                     line_items: items, 
                     success_url: `https://philgood-travels.vercel.app/profile?payment=success`,
-                    cancel_url: `https://philgood-travels.vercel.app/checkout`, // ⚡ UPDATED: Now goes back to checkout
+                    cancel_url: `https://philgood-travels.vercel.app/checkout`,
                     description: `Booking ID: ${bookingId}`
                 }
             }
@@ -333,6 +333,11 @@ router.post('/paymongo/checkout', async (req, res) => {
                 authorization: `Basic ${paymongoAuth}`
             }
         });
+
+        // ⚡ NEW CODE: Update the database with the newly generated PayMongo ID!
+        booking.payments[paymentIndex].stripeSessionId = response.data.data.id;
+        booking.payments[paymentIndex].paymentUrl = response.data.data.attributes.checkout_url;
+        await booking.save();
 
         res.status(200).json({ checkoutUrl: response.data.data.attributes.checkout_url });
 
