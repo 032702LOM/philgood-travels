@@ -321,7 +321,7 @@ router.post('/paymongo/checkout', async (req, res) => {
                     payment_method_types: [method === 'maya' ? 'paymaya' : method], 
                     line_items: items, 
                     success_url: `https://philgood-travels.vercel.app/profile?payment=success`,
-                    cancel_url: `https://philgood-travels.vercel.app/profile`,
+cancel_url: `https://philgood-travels.vercel.app/checkout`, // ⚡ UPDATED: Now goes back to checkout
                     description: `Booking ID: ${bookingId}`
                 }
             }
