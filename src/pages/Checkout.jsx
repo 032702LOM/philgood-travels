@@ -24,24 +24,30 @@ const Checkout = () => {
     );
   }
 
- const handlePayment = async () => {
+  const handlePayment = async () => {
     if (!selectedMethod) return alert("Please select a payment method first.");
+    
     setIsProcessing(true);
     
     try {
+        // 🚀 LIVE CONNECTION 🚀
         const response = await axios.post('https://philgood-travels.onrender.com/api/bookings/paymongo/checkout', {
             bookingId,
             paymentIndex,
-            method: selectedMethod, // 'card', 'gcash', or 'maya'
+            method: selectedMethod, 
             amount: amountDue
         });
         
-        // Redirect the user to the real PayMongo page
-        window.location.href = response.data.checkoutUrl;
+        // Redirect the user to the actual PayMongo portal
+        if (response.data.checkoutUrl) {
+            window.location.href = response.data.checkoutUrl;
+        } else {
+            throw new Error("No checkout URL returned");
+        }
 
     } catch (error) {
-        console.error(error);
-        alert("Failed to initialize payment gateway. Check console for details.");
+        console.error("Payment Error:", error.response?.data || error.message);
+        alert("Failed to initialize payment. Check your Render logs for details.");
         setIsProcessing(false);
     }
   };
@@ -50,77 +56,137 @@ const Checkout = () => {
     <div className="fade-in" style={{ minHeight: '80vh', paddingTop: '100px', paddingBottom: '60px', backgroundColor: 'var(--bg-dark)' }}>
       <div className="container">
         
-        <div className="row justify-content-center">
-          <div className="col-lg-6">
-            
-            <button className="btn btn-link text-navy fw-bold text-decoration-none p-0 mb-4 opacity-75" onClick={() => navigate(-1)}>
-              <i className="fa-solid fa-arrow-left me-2"></i> Back to Dashboard
-            </button>
+        <button className="btn btn-link text-navy fw-bold text-decoration-none p-0 mb-4 opacity-75" onClick={() => navigate(-1)}>
+            <i className="fa-solid fa-arrow-left me-2"></i> Back to Dashboard
+        </button>
 
-            <div className="bg-card-dark p-5 rounded-4 shadow-lg border border-primary border-opacity-10" style={{ backgroundColor: 'var(--card-bg)' }}>
+        <div className="row g-5">
+          
+          {/* =========================================
+              LEFT COLUMN: PAYMENT METHODS
+          ========================================= */}
+          <div className="col-lg-7">
+            <div className="bg-card-dark p-4 p-md-5 rounded-4 shadow-lg border border-primary border-opacity-10" style={{ backgroundColor: 'var(--card-bg)' }}>
               
-              <div className="text-center mb-4 border-bottom border-primary border-opacity-10 pb-4">
-                <h4 className="text-navy font-montserrat fw-bold mb-1">Complete Your Payment</h4>
-                <p className="text-grey mb-3">{packageName}</p>
-                <h1 className="text-accent font-montserrat fw-bold mb-0" style={{ fontSize: '3rem' }}>
-                  {formatPrice(amountDue)}
-                </h1>
-              </div>
-
-              <h6 className="text-navy font-montserrat fw-bold mb-3">Select Payment Method</h6>
+              <h3 className="text-navy font-montserrat fw-bold mb-4 border-bottom border-primary border-opacity-10 pb-3">
+                  Select Payment Method
+              </h3>
               
-              <div className="d-flex flex-column gap-3 mb-4">
+              <div className="d-flex flex-column gap-3 mb-5">
                 
                 {/* DEBIT / CREDIT CARD */}
-                <label className={`p-3 rounded-3 border ${selectedMethod === 'card' ? 'border-primary' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: selectedMethod === 'card' ? 'rgba(0, 180, 216, 0.1)' : 'var(--input-bg)', cursor: 'pointer', transition: 'all 0.2s' }}>
+                <label className={`p-4 rounded-4 border ${selectedMethod === 'card' ? 'border-primary shadow-sm' : 'border-primary border-opacity-25'}`} 
+                       style={{ backgroundColor: selectedMethod === 'card' ? 'rgba(0, 180, 216, 0.05)' : 'var(--input-bg)', cursor: 'pointer', transition: 'all 0.2s' }}>
                   <div className="d-flex align-items-center">
-                    <input type="radio" name="paymentMethod" className="form-check-input mt-0 me-3" checked={selectedMethod === 'card'} onChange={() => setSelectedMethod('card')} />
-                    <i className="fa-solid fa-credit-card fs-4 text-primary me-3"></i>
-                    <span className="text-navy fw-bold flex-grow-1">Debit / Credit Card</span>
-                    <span className="badge bg-secondary opacity-50">Powered by Paymongo</span>
+                    <input type="radio" name="paymentMethod" className="form-check-input mt-0 me-3" 
+                           style={{ transform: 'scale(1.2)' }}
+                           checked={selectedMethod === 'card'} onChange={() => setSelectedMethod('card')} />
+                    <i className="fa-solid fa-credit-card fs-3 text-primary me-3"></i>
+                    <div className="flex-grow-1">
+                        <span className="text-navy fw-bold d-block" style={{ fontSize: '1.1rem' }}>Debit / Credit Card</span>
+                        <span className="text-grey small">Visa, Mastercard, JCB</span>
+                    </div>
+                    <span className="badge bg-secondary opacity-50 ms-auto">Paymongo</span>
                   </div>
                 </label>
 
                 {/* GCASH */}
-                <label className={`p-3 rounded-3 border ${selectedMethod === 'gcash' ? 'border-primary' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: selectedMethod === 'gcash' ? 'rgba(0, 180, 216, 0.1)' : 'var(--input-bg)', cursor: 'pointer', transition: 'all 0.2s' }}>
+                <label className={`p-4 rounded-4 border ${selectedMethod === 'gcash' ? 'border-primary shadow-sm' : 'border-primary border-opacity-25'}`} 
+                       style={{ backgroundColor: selectedMethod === 'gcash' ? 'rgba(0, 180, 216, 0.05)' : 'var(--input-bg)', cursor: 'pointer', transition: 'all 0.2s' }}>
                   <div className="d-flex align-items-center">
-                    <input type="radio" name="paymentMethod" className="form-check-input mt-0 me-3" checked={selectedMethod === 'gcash'} onChange={() => setSelectedMethod('gcash')} />
-                    <i className="fa-solid fa-wallet fs-4 text-primary me-3" style={{ color: '#0052fe' }}></i>
-                    <span className="text-navy fw-bold flex-grow-1">GCash</span>
+                    <input type="radio" name="paymentMethod" className="form-check-input mt-0 me-3" 
+                           style={{ transform: 'scale(1.2)' }}
+                           checked={selectedMethod === 'gcash'} onChange={() => setSelectedMethod('gcash')} />
+                    <i className="fa-solid fa-wallet fs-3 me-3" style={{ color: '#0052fe' }}></i>
+                    <div className="flex-grow-1">
+                        <span className="text-navy fw-bold d-block" style={{ fontSize: '1.1rem' }}>GCash</span>
+                        <span className="text-grey small">Pay using your GCash wallet</span>
+                    </div>
                   </div>
                 </label>
 
                 {/* MAYA */}
-                <label className={`p-3 rounded-3 border ${selectedMethod === 'maya' ? 'border-primary' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: selectedMethod === 'maya' ? 'rgba(0, 180, 216, 0.1)' : 'var(--input-bg)', cursor: 'pointer', transition: 'all 0.2s' }}>
+                <label className={`p-4 rounded-4 border ${selectedMethod === 'maya' ? 'border-primary shadow-sm' : 'border-primary border-opacity-25'}`} 
+                       style={{ backgroundColor: selectedMethod === 'maya' ? 'rgba(0, 180, 216, 0.05)' : 'var(--input-bg)', cursor: 'pointer', transition: 'all 0.2s' }}>
                   <div className="d-flex align-items-center">
-                    <input type="radio" name="paymentMethod" className="form-check-input mt-0 me-3" checked={selectedMethod === 'maya'} onChange={() => setSelectedMethod('maya')} />
-                    <i className="fa-solid fa-mobile-screen fs-4 text-primary me-3" style={{ color: '#1a1a1a' }}></i>
-                    <span className="text-navy fw-bold flex-grow-1">Maya</span>
+                    <input type="radio" name="paymentMethod" className="form-check-input mt-0 me-3" 
+                           style={{ transform: 'scale(1.2)' }}
+                           checked={selectedMethod === 'maya'} onChange={() => setSelectedMethod('maya')} />
+                    <i className="fa-solid fa-mobile-screen fs-3 me-3" style={{ color: '#1a1a1a' }}></i>
+                    <div className="flex-grow-1">
+                        <span className="text-navy fw-bold d-block" style={{ fontSize: '1.1rem' }}>Maya</span>
+                        <span className="text-grey small">Pay using your Maya account</span>
+                    </div>
                   </div>
                 </label>
 
               </div>
 
               <button 
-                className="btn btn-proceed w-100 py-3 text-uppercase font-montserrat fw-bold shadow" 
+                className="btn btn-proceed w-100 py-3 text-uppercase font-montserrat fw-bold shadow-lg" 
+                style={{ fontSize: '1.1rem' }}
                 onClick={handlePayment}
                 disabled={isProcessing || !selectedMethod}
               >
                 {isProcessing ? (
-                    <><i className="fa-solid fa-spinner fa-spin me-2"></i> Processing...</>
+                    <><i className="fa-solid fa-spinner fa-spin me-2"></i> Processing Securely...</>
                 ) : (
-                    <><i className="fa-solid fa-lock me-2"></i> Secure Checkout</>
+                    <><i className="fa-solid fa-lock me-2"></i> Pay {formatPrice(amountDue)}</>
                 )}
               </button>
-
-              <div className="text-center mt-3">
-                <small className="text-grey"><i className="fa-solid fa-shield-halved text-success me-1"></i> Your transaction is secure and encrypted.</small>
+              
+              <div className="text-center mt-4">
+                <small className="text-grey"><i className="fa-solid fa-shield-halved text-success me-1"></i> Payments are processed securely via PayMongo.</small>
               </div>
 
             </div>
           </div>
-        </div>
 
+          {/* =========================================
+              RIGHT COLUMN: ORDER DETAILS
+          ========================================= */}
+          <div className="col-lg-5">
+            <div className="bg-card-dark p-4 p-md-5 rounded-4 shadow-sm border border-primary border-opacity-10 sticky-top" 
+                 style={{ backgroundColor: 'var(--card-bg)', top: '100px' }}>
+              
+              <h4 className="text-navy font-montserrat fw-bold mb-4">Order Details</h4>
+              
+              <div className="mb-4">
+                  <p className="text-grey small mb-1 text-uppercase fw-bold letter-spacing-1">Package</p>
+                  <h5 className="text-primary-dark fw-bold mb-0">{packageName}</h5>
+              </div>
+
+              <div className="mb-4">
+                  <p className="text-grey small mb-1 text-uppercase fw-bold letter-spacing-1">Booking Reference</p>
+                  <p className="text-navy font-monospace bg-light p-2 rounded-2 border border-secondary mb-0" style={{ fontSize: '0.9rem' }}>
+                      {bookingId}
+                  </p>
+              </div>
+
+              <hr className="border-primary border-opacity-10 my-4" />
+
+              <div className="d-flex justify-content-between mb-3">
+                  <span className="text-grey">Subtotal</span>
+                  <span className="text-navy fw-bold">{formatPrice(amountDue)}</span>
+              </div>
+              <div className="d-flex justify-content-between mb-3">
+                  <span className="text-grey">Platform Fees</span>
+                  <span className="text-success fw-bold">Free</span>
+              </div>
+
+              <hr className="border-primary border-opacity-10 my-4" />
+
+              <div className="d-flex justify-content-between align-items-center">
+                  <span className="text-navy fw-bold fs-5">Total Due</span>
+                  <span className="fw-bold text-accent font-montserrat" style={{ fontSize: '2.5rem', lineHeight: '1' }}>
+                      {formatPrice(amountDue)}
+                  </span>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
   );
