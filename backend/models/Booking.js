@@ -40,7 +40,8 @@ const bookingSchema = new mongoose.Schema({
             amountDue: { type: Number, required: true }, 
             amountPaid: { type: Number, default: 0 },    
             status: { type: String, enum: ['Pending', 'Paid'], default: 'Pending' },
-            paymentUrl: { type: String }
+            paymentUrl: { type: String },
+            stripeSessionId: { type: String } 
         }
     ]
 }, { timestamps: true });
