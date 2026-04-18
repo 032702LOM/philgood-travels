@@ -133,12 +133,12 @@ router.post('/create', async (req, res) => {
                     </div>
 
                     <p style="text-align: center; font-size: 14px; color: #555; margin-top: 20px;">
-                        To secure your spot and confirm the group booking, please pay your share via our secure PayMongo link:
+                        To secure your spot and confirm the group booking, please securely pay your share via PayMongo:
                     </p>
 
                     <div style="text-align: center; margin-top: 15px;">
                         <a href="${checkoutUrl}" style="background-color: #00B4D8; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">
-                            Pay Your Share
+                            PAY MY SHARE NOW
                         </a>
                     </div>
                 </div>
@@ -321,7 +321,7 @@ router.post('/paymongo/checkout', async (req, res) => {
                     payment_method_types: [method === 'maya' ? 'paymaya' : method], 
                     line_items: items, 
                     success_url: `https://philgood-travels.vercel.app/profile?payment=success`,
-cancel_url: `https://philgood-travels.vercel.app/checkout`, // ⚡ UPDATED: Now goes back to checkout
+                    cancel_url: `https://philgood-travels.vercel.app/checkout`, // ⚡ UPDATED: Now goes back to checkout
                     description: `Booking ID: ${bookingId}`
                 }
             }
