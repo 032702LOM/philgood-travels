@@ -58,7 +58,7 @@ router.post('/create', async (req, res) => {
                         send_email_receipt: true,
                         show_description: true,
                         show_line_items: true,
-                        payment_method_types: ['card', 'gcash', 'paymaya', 'grabpay'],
+                        payment_method_types: ['card', 'gcash', 'paymaya'],
                         line_items: paymongoItems,
                         success_url: `https://philgood-travels.vercel.app/profile?payment=success`,
                         cancel_url: `https://philgood-travels.vercel.app/profile`,
