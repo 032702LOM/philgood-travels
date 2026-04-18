@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { usePreferences } from '../context/PreferencesContext';
 import axios from 'axios';
@@ -8,8 +8,21 @@ const Checkout = () => {
   const navigate = useNavigate();
   const { formatPrice } = usePreferences();
   
-  // Retrieve the data passed from the Profile page
-  const { bookingId, paymentIndex, amountDue, packageName, invoiceDetails, splitBetween } = location.state || {};
+  // ⚡ 1. Pull data from location.state (if coming from Profile) OR Session Storage (if coming back from PayMongo)
+  let checkoutData = location.state;
+  if (!checkoutData) {
+      const storedData = sessionStorage.getItem('philgoodCheckout');
+      if (storedData) checkoutData = JSON.parse(storedData);
+  }
+
+  const { bookingId, paymentIndex, amountDue, packageName, invoiceDetails, splitBetween } = checkoutData || {};
+
+  // ⚡ 2. Save the data to Session Storage so it survives the trip to PayMongo
+  useEffect(() => {
+      if (checkoutData && amountDue) {
+          sessionStorage.setItem('philgoodCheckout', JSON.stringify(checkoutData));
+      }
+  }, [checkoutData, amountDue]);
 
   // Setup safe defaults for the invoice breakdown
   const safeInvoice = invoiceDetails || {};
