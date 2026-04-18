@@ -292,17 +292,8 @@ const Profile = () => {
                                           {payment.status === 'Paid' ? (
                                               <span className="badge bg-success py-2 px-3 fw-bold fs-6"><i className="fa-solid fa-circle-check me-2"></i> PAID</span>
                                           ) : (
-                                             <button 
-    onClick={() => navigate('/checkout', { 
-        state: { 
-            bookingId: booking._id, 
-            paymentIndex: index, 
-            amountDue: payment.amountDue, 
-            packageName: booking.packageName,
-            invoiceDetails: booking.invoiceDetails, // ⚡ NEW
-            splitBetween: booking.splitBetween // ⚡ NEW
-        } 
-    })}
+                                         <button 
+    onClick={() => window.location.href = payment.paymentUrl}
     className="btn btn-proceed fw-bold py-2 px-4 shadow" 
 >
     <i className="fa-solid fa-lock me-2"></i> Pay Now
