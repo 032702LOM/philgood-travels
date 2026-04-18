@@ -253,7 +253,7 @@ router.post('/paymongo/checkout', async (req, res) => {
                     send_email_receipt: true,
                     show_description: true,
                     show_line_items: true,
-                    payment_method_types: [method === 'card' ? 'card' : method], // 'card', 'gcash', or 'paymaya'
+                    payment_method_types: [method === 'maya' ? 'paymaya' : method], // 'card', 'gcash', or 'paymaya'
                     line_items: [{
                         name: `Payment for ${booking.packageName}`,
                         amount: Math.round(amount * 100), // In centavos
