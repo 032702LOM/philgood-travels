@@ -296,7 +296,7 @@ const Profile = () => {
     onClick={() => window.location.href = payment.paymentUrl}
     className="btn btn-proceed fw-bold py-2 px-4 shadow" 
 >
-    <i className="fa-solid fa-lock me-2"></i> Pay Now
+    <i className="fa-solid fa-lock me-2"></i> Pay Share Now
 </button>
                                           )}
                                       </div>

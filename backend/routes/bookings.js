@@ -4,6 +4,7 @@ const axios = require('axios');
 const Booking = require('../models/Booking');
 const User = require('../models/User'); 
 const { Resend } = require('resend'); 
+const crypto = require('crypto');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -338,6 +339,87 @@ router.post('/paymongo/checkout', async (req, res) => {
     } catch (error) {
         console.error("PayMongo Error:", error.response?.data || error.message);
         res.status(500).json({ error: "Failed to create payment session" });
+    }
+});
+
+// ==========================================
+// POST: PayMongo Webhook Listener (SECURED)
+// ==========================================
+router.post('/webhook', async (req, res) => {
+    try {
+        const signatureHeader = req.headers['paymongo-signature'];
+        const webhookSecret = process.env.PAYMONGO_WEBHOOK_SECRET;
+
+        // 🔒 SECURITY CHECK: Verify the signature
+        if (signatureHeader && webhookSecret && req.rawBody) {
+            const parts = signatureHeader.split(',');
+            let timestamp, testSignature, liveSignature;
+
+            parts.forEach(part => {
+                const [key, value] = part.split('=');
+                if (key === 't') timestamp = value;
+                if (key === 'te') testSignature = value;
+                if (key === 'li') liveSignature = value;
+            });
+
+            // Use test signature for sandbox, live signature for production
+            const expectedSignature = testSignature || liveSignature;
+            
+            // Combine timestamp and the raw unparsed body
+            const payload = timestamp + '.' + req.rawBody;
+            
+            // Do the cryptographic math
+            const hash = crypto.createHmac('sha256', webhookSecret).update(payload).digest('hex');
+
+            // If the math doesn't match, slam the door shut!
+            if (hash !== expectedSignature) {
+                console.error("🛑 SEC_ERR: Invalid PayMongo Webhook Signature!");
+                return res.status(400).send("Invalid signature");
+            }
+        } else {
+             console.log("⚠️ Warning: Skipping signature verification (Secret key or rawBody missing).");
+        }
+        // -------------------------------------------
+
+        const event = req.body;
+
+        // 1. Check if the event is a successful payment
+        if (event?.data?.attributes?.type === 'checkout_session.payment.paid') {
+            
+            const checkoutId = event.data.attributes.data.id;
+            const booking = await Booking.findOne({ "payments.stripeSessionId": checkoutId });
+
+            if (booking) {
+                let allPaid = true;
+
+                // Update that specific user's payment to "Paid"
+                booking.payments.forEach(payment => {
+                    if (payment.stripeSessionId === checkoutId) {
+                        payment.status = 'Paid';
+                    }
+                    if (payment.status !== 'Paid') {
+                        allPaid = false; 
+                    }
+                });
+
+                // If everyone in the group has paid, automatically confirm the whole trip!
+                if (allPaid) {
+                    booking.bookingStatus = 'Confirmed';
+                }
+
+                await booking.save();
+                console.log(`✅ Success: Payment securely marked as Paid for Booking ID: ${booking._id}`);
+            } else {
+                console.log(`⚠️ Webhook received, but no matching booking found for ID: ${checkoutId}`);
+            }
+        }
+
+        // Always send a 200 OK back so PayMongo knows you received the message
+        res.status(200).send('Webhook received successfully');
+
+    } catch (error) {
+        console.error("Webhook processing error:", error);
+        res.status(500).send("Webhook processing failed");
     }
 });
 

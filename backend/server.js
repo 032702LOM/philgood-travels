@@ -37,7 +37,9 @@ app.use(cors({
 }));
 
 // 4. Set up Middleware
-app.use(express.json()); 
+app.use(express.json({ 
+    verify: (req, res, buf) => { req.rawBody = buf.toString(); } 
+}));
 
 // 👉 Normal API Routes
 app.use('/api/auth', require('./routes/auth'));
