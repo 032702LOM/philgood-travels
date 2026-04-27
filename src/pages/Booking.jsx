@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { tourPackages, allPlaces } from '../data/placesData';
 import { usePreferences } from '../context/PreferencesContext';
-import React, { useState, useEffect } from 'react';
+
 
 const Booking = () => {
   const location = useLocation();
