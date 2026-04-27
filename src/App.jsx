@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import './PhilGood.css';
-import { AuthProvider } from './context/AuthContext';
 
-// Context Provider
+// Context Providers
+import { AuthProvider } from './context/AuthContext';
 import { PreferencesProvider } from './context/PreferencesContext'; 
 
 // Components (From your 'components' folder)
@@ -23,8 +23,8 @@ import Connect from './pages/Connect';
 import Booking from './pages/Booking';
 import AdminDashboard from './pages/AdminDashboard'; 
 import NotFound from './pages/NotFound';
-import ForgotPassword from './pages/ForgotPassword'; // ⚡ FIXED PATH
-import ResetPassword from './pages/ResetPassword';   // ⚡ FIXED PATH
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Terms from './pages/Terms';
 import FAQ from './pages/FAQ';
 import Checkout from './pages/Checkout';
@@ -37,57 +37,41 @@ const ScrollToTop = () => {
 
 function App() {
   return (
-    // 2. Wrap everything in the AuthProvider
     <AuthProvider>
       <PreferencesProvider> 
         <div className="App">
           <ScrollToTop />
           <Navbar />
-          {/* ... Routes ... */}
+          <main>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/destinations" element={<Destinations />} />
+              <Route path="/tours" element={<Tours />} />
+              <Route path="/gallery" element={<Gallery />} />
+              <Route path="/connect" element={<Connect />} />
+              <Route path="/booking" element={<Booking />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/faq" element={<FAQ />} />
+              
+              {/* ⚡ The hidden admin route */}
+              <Route path="/admin" element={<AdminDashboard />} /> 
+              
+              <Route path="/register" element={<Register />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/verify-email" element={<VerifyEmail />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password/:token" element={<ResetPassword />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/checkout" element={<Checkout />} />
+
+              {/* Catch-all 404 Route */}
+              <Route path="*" element={<NotFound />} /> 
+            </Routes>
+          </main>
           <Footer />
         </div>
       </PreferencesProvider>
     </AuthProvider>
-  );
-}
-
-export default App;
-function App() {
-  return (
-    <PreferencesProvider> 
-      <div className="App">
-        <ScrollToTop />
-        <Navbar />
-        <main>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/destinations" element={<Destinations />} />
-            <Route path="/tours" element={<Tours />} />
-            <Route path="/gallery" element={<Gallery />} />
-            <Route path="/connect" element={<Connect />} />
-            <Route path="/booking" element={<Booking />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/faq" element={<FAQ />} />
-            
-            {/* ⚡ NEW: The hidden admin route */}
-            <Route path="/admin" element={<AdminDashboard />} /> 
-            
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/verify-email" element={<VerifyEmail />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            {/* Notice the :token parameter below! This matches the logic in ResetPassword.jsx */}
-            <Route path="/reset-password/:token" element={<ResetPassword />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/checkout" element={<Checkout />} />
-
-            {/* 404 Route should generally go at the very bottom as a catch-all */}
-            <Route path="*" element={<NotFound />} /> 
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </PreferencesProvider>
   );
 }
 
