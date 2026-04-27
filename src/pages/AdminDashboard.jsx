@@ -695,7 +695,16 @@ const AdminDashboard = () => {
                                               <span className="text-dark">{formatPrice(userBookings[0]?.totalPrice || 0)}</span>
                                           </div>
                                           <div className="p-3 border-top d-flex justify-content-between align-items-center">
-                                              <span className="text-primary" style={{ cursor: 'pointer', fontWeight: '500' }}>Show products</span>
+                                              <span 
+    className="text-primary" 
+    style={{ cursor: 'pointer', fontWeight: '500' }}
+    onClick={() => {
+        setSelectedUser(null); 
+        setSelectedBooking(userBookings[0]);
+    }}
+>
+    Show products
+</span>
                                               <div>
                                                   <button className="btn btn-sm btn-light border me-2 fw-bold text-dark" onClick={() => {setSelectedUser(null); setSelectedBooking(userBookings[0]);}}>View details</button>
                                               </div>
