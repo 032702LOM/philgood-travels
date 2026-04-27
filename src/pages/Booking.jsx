@@ -77,7 +77,7 @@ const [personalInfo, setPersonalInfo] = useState({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!selectedPackage || !date) { toast.error("Please select a destination and a travel date."); return; }
+    if (!selectedPackage || !date) { toast("Please select a destination and a travel date."); return; }
 
     const userStr = localStorage.getItem('user');
     if (!userStr) {
@@ -123,9 +123,9 @@ const [personalInfo, setPersonalInfo] = useState({
       await axios.post(`${import.meta.env.VITE_API_URL}/api/bookings/create/`, bookingData);
         
         if (splitBetween > 1) {
-            toast.error("Trip added successfully!\n\nYour split payment links have been generated. Please proceed to your dashboard to pay your share.");
+            toast("Trip added successfully!\n\nYour split payment links have been generated. Please proceed to your dashboard to pay your share.");
         } else {
-            toast.error("Trip added successfully!\n\nPlease proceed to your dashboard to complete the payment.");
+            toast("Trip added successfully!\n\nPlease proceed to your dashboard to complete the payment.");
         }
         
         navigate('/profile');

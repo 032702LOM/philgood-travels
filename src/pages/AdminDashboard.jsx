@@ -299,7 +299,7 @@ const AdminDashboard = () => {
  const handleCopyEmail = (email) => {
     if (!email) return;
     navigator.clipboard.writeText(email).then(() => {
-          toast.error(`✅ Copied to clipboard: ${email}`);
+          toast(`✅ Copied to clipboard: ${email}`);
       }).catch(err => {
           console.error("Failed to copy text: ", err);
       });
@@ -321,7 +321,7 @@ const AdminDashboard = () => {
           });
           toast("Newsletter sent successfully!");
       } catch (error) {
-          alert("Failed to send newsletter.");
+          toast.error("Failed to send newsletter.");
       }
   };
  
@@ -437,22 +437,94 @@ const AdminDashboard = () => {
   );
 
   const renderBookingsTab = () => (
-      <div className="row g-0 fade-in">
-          <div className="col-lg-9 p-4 border-end border-primary border-opacity-10">
-            <div className="d-flex justify-content-between align-items-center mb-4">
-              <h4 className="text-navy font-montserrat fw-bold m-0"><i className="fa-solid fa-table-list text-accent me-2"></i> All Orders</h4>
-              <span className="text-grey small fw-bold">{filteredBookings.length} results found</span>
+      <div className="fade-in p-4">
+          
+          {/* HEADER */}
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h4 className="text-navy font-montserrat fw-bold m-0">
+              <i className="fa-solid fa-table-list text-accent me-2"></i> All Orders
+            </h4>
+            <span className="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-bold border border-primary border-opacity-25">
+              {filteredBookings.length} results found
+            </span>
+          </div>
+
+          {/* ⚡ NEW: TOP FILTER BAR ⚡ */}
+          <div className="card shadow-sm border-0 mb-4 rounded-4" style={{ backgroundColor: '#f8f9fa' }}>
+            <div className="card-body p-3">
+              <div className="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                <h6 className="text-navy fw-bold m-0"><i className="fa-solid fa-filter text-muted me-2"></i> Filter & Search</h6>
+                <button className="btn btn-sm btn-link text-accent fw-bold p-0 text-decoration-none" onClick={clearFilters}>
+                   Reset All
+                </button>
+              </div>
+
+              <div className="row g-3">
+                {/* Search */}
+                <div className="col-lg-3 col-md-6">
+                  <label className="text-muted small fw-bold mb-1">Search Keyword</label>
+                  <div className="input-group input-group-sm shadow-sm">
+                    <span className="input-group-text bg-white border-end-0"><i className="fa-solid fa-magnifying-glass text-muted"></i></span>
+                    <input type="text" className="form-control border-start-0 ps-0" placeholder="ID, Name, Email..." value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)} />
+                  </div>
+                </div>
+
+                {/* Status */}
+                <div className="col-lg-2 col-md-6">
+                  <label className="text-muted small fw-bold mb-1">Booking Status</label>
+                  <select className="form-select form-select-sm shadow-sm" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
+                    <option value="All">All Statuses</option>
+                    <option value="Confirmed">Confirmed</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Postponed">Postponed</option>
+                    <option value="Cancelled">Cancelled</option>
+                  </select>
+                </div>
+
+                {/* Payment */}
+                <div className="col-lg-2 col-md-6">
+                  <label className="text-muted small fw-bold mb-1">Payment Status</label>
+                  <select className="form-select form-select-sm shadow-sm" value={filterPayment} onChange={(e) => setFilterPayment(e.target.value)}>
+                    <option value="All">All Payments</option>
+                    <option value="Fully Paid">Fully Paid</option>
+                    <option value="Pending/Partial">Pending / Partial</option>
+                  </select>
+                </div>
+
+                {/* Package */}
+                <div className="col-lg-2 col-md-6">
+                  <label className="text-muted small fw-bold mb-1">Destination</label>
+                  <select className="form-select form-select-sm shadow-sm" value={filterPackage} onChange={(e) => setFilterPackage(e.target.value)}>
+                    <option value="All">All Packages</option>
+                    {uniquePackages.map(pkg => (<option key={pkg} value={pkg}>{pkg}</option>))}
+                  </select>
+                </div>
+
+                {/* Dates */}
+                <div className="col-lg-3 col-md-12">
+                  <label className="text-muted small fw-bold mb-1">Travel Date Range</label>
+                  <div className="d-flex gap-2">
+                    <input type="date" className="form-control form-control-sm shadow-sm" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
+                    <span className="text-muted align-self-center">-</span>
+                    <input type="date" className="form-control form-control-sm shadow-sm" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
+
+          {/* ⚡ FULL WIDTH TABLE ⚡ */}
+          <div className="card shadow-sm border border-primary border-opacity-10 rounded-4 overflow-hidden" style={{ backgroundColor: 'var(--card-bg)' }}>
             <div className="table-responsive" style={{ minHeight: '400px' }}>
-              <table className="table table-hover align-middle" style={{ color: 'var(--text-grey)' }}>
-                <thead style={{ borderBottom: '2px solid var(--primary-color)' }}>
+              <table className="table table-hover align-middle mb-0" style={{ color: 'var(--text-grey)' }}>
+                <thead style={{ borderBottom: '2px solid var(--primary-color)', backgroundColor: 'rgba(0, 119, 182, 0.03)' }}>
                   <tr>
-                    <th className="text-navy font-montserrat">Order ID</th>
-                    <th className="text-navy font-montserrat">Client / Email</th>
-                    <th className="text-navy font-montserrat">Package & Date</th>
-                    <th className="text-navy font-montserrat">Total Price</th>
-                    <th className="text-navy font-montserrat">Status</th>
-                    <th className="text-navy font-montserrat text-end">Actions</th>
+                    <th className="text-navy font-montserrat py-3 px-4">Order ID</th>
+                    <th className="text-navy font-montserrat py-3">Client / Email</th>
+                    <th className="text-navy font-montserrat py-3">Package & Date</th>
+                    <th className="text-navy font-montserrat py-3">Total Price</th>
+                    <th className="text-navy font-montserrat py-3">Status</th>
+                    <th className="text-navy font-montserrat py-3 px-4 text-end">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -464,9 +536,9 @@ const AdminDashboard = () => {
                         const isFullyPaid = totalPaid >= (booking?.totalPrice || 0);
                         return (
                           <tr key={booking?._id}>
-                            <td className="fw-bold" style={{ fontSize: '0.85rem' }}>#{booking?._id?.substring(0, 8)?.toUpperCase() || 'N/A'}</td>
+                            <td className="fw-bold px-4" style={{ fontSize: '0.85rem' }}>#{booking?._id?.substring(0, 8)?.toUpperCase() || 'N/A'}</td>
                             <td>
-                              <span className="d-block fw-bold text-navy">{booking?.userId?.name || 'Unknown User / Deleted'}</span>
+                              <span className="d-block fw-bold text-navy">{booking?.userId?.name || 'Unknown User'}</span>
                               <span className="small text-grey">{booking?.userId?.email || 'N/A'}</span>
                             </td>
                             <td>
@@ -483,7 +555,7 @@ const AdminDashboard = () => {
                               {booking?.bookingStatus === 'Cancelled' && <span className="badge bg-danger">Cancelled</span>}
                               {booking?.bookingStatus === 'Postponed' && <span className="badge bg-warning text-dark">Postponed</span>}
                             </td>
-                            <td className="text-end">
+                            <td className="text-end px-4">
                               <div className="dropdown">
                                 <button className="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">Manage</button>
                                 <ul className="dropdown-menu dropdown-menu-end shadow-sm border-0">
@@ -502,8 +574,10 @@ const AdminDashboard = () => {
                 </tbody>
               </table>
             </div>
+            
+            {/* PAGINATION */}
             {totalPages > 1 && (
-                <div className="d-flex justify-content-between align-items-center mt-4 border-top border-primary border-opacity-10 pt-3">
+                <div className="d-flex justify-content-between align-items-center p-3 border-top bg-light">
                     <span className="text-grey small fw-bold">Page {currentPage} of {totalPages}</span>
                     <div className="d-flex gap-2">
                         <button className="btn btn-sm btn-outline-custom px-3 py-1" onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}><i className="fa-solid fa-chevron-left"></i></button>
@@ -514,49 +588,6 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             )}
-          </div>
-          <div className="col-lg-3 p-4" style={{ backgroundColor: 'rgba(0, 180, 216, 0.03)' }}>
-              <div className="d-flex justify-content-between align-items-center mb-4">
-                <h5 className="text-navy font-montserrat fw-bold m-0">Filters</h5>
-                <button className="btn btn-sm text-accent fw-bold p-0 text-decoration-underline" onClick={clearFilters}>Reset</button>
-              </div>
-              <div className="mb-3">
-                <label className="text-grey small fw-bold mb-1">Search ID, Name, Email</label>
-                <input type="text" className="form-control-dark w-100" placeholder="Type here..." value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)} />
-              </div>
-              <div className="mb-3">
-                <label className="text-grey small fw-bold mb-1">Booking Status</label>
-                <select className="form-control-dark w-100" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
-                  <option value="All">All</option>
-                  <option value="Confirmed">Confirmed</option>
-                  <option value="Pending">Pending</option>
-                  <option value="Postponed">Postponed</option>
-                  <option value="Cancelled">Cancelled</option>
-                </select>
-              </div>
-              <div className="mb-3">
-                <label className="text-grey small fw-bold mb-1">Payment Status</label>
-                <select className="form-control-dark w-100" value={filterPayment} onChange={(e) => setFilterPayment(e.target.value)}>
-                  <option value="All">All</option>
-                  <option value="Fully Paid">Fully Paid</option>
-                  <option value="Pending/Partial">Pending / Partial</option>
-                </select>
-              </div>
-              <div className="mb-3">
-                <label className="text-grey small fw-bold mb-1">Destination / Package</label>
-                <select className="form-control-dark w-100" value={filterPackage} onChange={(e) => setFilterPackage(e.target.value)}>
-                  <option value="All">All Packages</option>
-                  {uniquePackages.map(pkg => (<option key={pkg} value={pkg}>{pkg}</option>))}
-                </select>
-              </div>
-              <div className="mb-3">
-                <label className="text-grey small fw-bold mb-1">Travel Date From</label>
-                <input type="date" className="form-control-dark w-100" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
-              </div>
-              <div className="mb-3">
-                <label className="text-grey small fw-bold mb-1">Travel Date To</label>
-                <input type="date" className="form-control-dark w-100" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
-              </div>
           </div>
       </div>
   );
