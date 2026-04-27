@@ -295,9 +295,9 @@ const AdminDashboard = () => {
   };
 
   // ⚡ NEW: CLICK-TO-COPY FEATURE ⚡
-  const handleCopyEmail = (email) => {
-      if (!email) return;
-      navigator.clipboard.writeText(email).then(() => {
+ const handleCopyEmail = (email) => {
+    if (!email) return;
+    navigator.clipboard.writeText(email).then(() => {
           alert(`✅ Copied to clipboard: ${email}`);
       }).catch(err => {
           console.error("Failed to copy text: ", err);
