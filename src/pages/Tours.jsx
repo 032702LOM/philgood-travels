@@ -269,6 +269,19 @@ const Tours = () => {
                         <div className="modal-body pt-1">
                             <h5 id="modalPackageName" className="text-primary-dark fw-bold mb-1 font-montserrat text-uppercase">{selectedTour.name}</h5>
                             <p id="modalDuration" className="text-grey fw-bold small mb-4">{selectedTour.duration}</p>
+                            {selectedTour.itinerary && (
+        <div className="mb-4 p-3 rounded-3 border border-primary border-opacity-25" style={{ backgroundColor: 'rgba(0, 180, 216, 0.05)' }}>
+            <h6 className="fw-bold text-navy mb-2" style={{ fontSize: '0.85rem' }}><i className="fa-solid fa-utensils text-accent me-2"></i>Meals Included:</h6>
+            <p className="small text-grey mb-3">{selectedTour.foodDetails}</p>
+
+            <h6 className="fw-bold text-navy mb-2" style={{ fontSize: '0.85rem' }}><i className="fa-solid fa-map-location-dot text-accent me-2"></i>Itinerary Overview:</h6>
+            <ul className="list-unstyled small text-grey mb-0" style={{ fontSize: '0.8rem' }}>
+                {selectedTour.itinerary.map((item, i) => (
+                    <li key={i} className="mb-1"><strong>{item.day}:</strong> {item.desc}</li>
+                ))}
+            </ul>
+        </div>
+    )}
                             
                             <div className="mb-4">
                                 <label className="text-navy fw-bold small mb-2 d-block">{t('num_people', 'Number of People')}</label>

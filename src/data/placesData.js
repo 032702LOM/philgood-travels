@@ -148,10 +148,67 @@ export const allPlaces = [
 // TOUR PACKAGES (Featured Tours & Homepage)
 // ==========================================
 export const tourPackages = [
-    { id: 'Tour-ElNido', name: 'El Nido Island Paradise', price: 34999, duration: '4 Days / 3 Nights', img: 'https://www.elnidoparadise.com/wp-content/uploads/pasandigan-beach.jpeg', type: 'Diving / Beach' },
-    { id: 'Tour-Bohol', name: 'Bohol Adventure Package', price: 25999, duration: '3 Days / 2 Nights', img: 'https://thesweetwanderlust.com/wp-content/uploads/2018/09/Screen-Shot-2018-08-20-at-3.22.09-PM.jpg.webp', type: 'Nature / Sightseeing' },
-    { id: 'Tour-Boracay', name: 'Boracay Beach Escape', price: 39999, duration: '5 Days / 4 Nights', img: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjHMierP49f26a64uN3vekaYGii5NxYXU4w0xZDQ4Kyk01pQjaqf2wCLvjFIljnW7A7HikYICKVBMxVtL2k5beN98Ab5WmFcg2ciOTzdfDlchqXvJMhpdhGmsS5v0SKpUFWzpAK93SgJANjMBLjRhcEXjYaYJxFQzAYoZYTy16UQ8JECl51CJ73htSLPiU/s2048/puka-beach-with-jan.jpg', type: 'Beach / Relaxation' },
-    { id: 'Tour-Cebu', name: 'Cebu Canyoneering', price: 22999, duration: '3 Days / 2 Nights', img: 'https://travelraro.com/wp-content/uploads/2023/09/Untitled-design.png', type: 'Adventure / Diving' },
-    { id: 'Tour-Manila', name: 'Manila City Escape', price: 16999, duration: '2 Days / 1 Night', img: 'https://www.aworldtotravel.com/wp-content/uploads/2023/08/manila-skyline-from-harbour-square.jpg', type: 'City / History' },
-    { id: 'Tour-Banaue', name: 'Banaue Heritage Tour', price: 28999, duration: '4 Days / 3 Nights', img: 'https://www.vacationhive.com/images/hives/11/11-banaue-terraces-main-img-new.jpg', type: 'Culture / Mountains' }
+    { 
+        id: 'Tour-ElNido', name: 'El Nido Island Paradise', price: 34999, duration: '4 Days / 3 Nights', 
+        img: 'https://www.elnidoparadise.com/wp-content/uploads/pasandigan-beach.jpeg', type: 'Diving / Beach',
+        foodDetails: 'Daily Buffet Breakfast at hotel, 2 Packed Lunches during Island Hopping.',
+        itinerary: [
+            { day: 'Day 1', desc: 'Arrival at Puerto Princesa/El Nido, Hotel Check-in, Free Time.' },
+            { day: 'Day 2', desc: 'Island Hopping Tour A (Big Lagoon, Secret Lagoon, Shimizu Island).' },
+            { day: 'Day 3', desc: 'Island Hopping Tour C (Hidden Beach, Matinloc Shrine).' },
+            { day: 'Day 4', desc: 'Breakfast, Souvenir Shopping, Airport Transfer & Departure.' }
+        ]
+    },
+    { 
+        id: 'Tour-Bohol', name: 'Bohol Adventure Package', price: 25999, duration: '3 Days / 2 Nights', 
+        img: 'https://thesweetwanderlust.com/wp-content/uploads/2018/09/Screen-Shot-2018-08-20-at-3.22.09-PM.jpg.webp', type: 'Nature / Sightseeing',
+        foodDetails: 'Daily Buffet Breakfast, 1 Buffet Lunch on Loboc River Cruise.',
+        itinerary: [
+            { day: 'Day 1', desc: 'Arrival at Tagbilaran, Check-in at Panglao Resort, Beach Leisure.' },
+            { day: 'Day 2', desc: 'Countryside Tour: Chocolate Hills, Tarsier Sanctuary, Loboc River Cruise.' },
+            { day: 'Day 3', desc: 'Breakfast, Optional Alona Beach Walk, Airport Transfer.' }
+        ]
+    },
+    { 
+        id: 'Tour-Boracay', name: 'Boracay Beach Escape', price: 39999, duration: '5 Days / 4 Nights', 
+        img: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjHMierP49f26a64uN3vekaYGii5NxYXU4w0xZDQ4Kyk01pQjaqf2wCLvjFIljnW7A7HikYICKVBMxVtL2k5beN98Ab5WmFcg2ciOTzdfDlchqXvJMhpdhGmsS5v0SKpUFWzpAK93SgJANjMBLjRhcEXjYaYJxFQzAYoZYTy16UQ8JECl51CJ73htSLPiU/s2048/puka-beach-with-jan.jpg', type: 'Beach / Relaxation',
+        foodDetails: 'Daily Buffet Breakfast, 1 Welcome Dinner Buffet.',
+        itinerary: [
+            { day: 'Day 1', desc: 'Arrival at Caticlan, Boat Transfer to Boracay, Check-in, Welcome Dinner.' },
+            { day: 'Day 2', desc: 'Island Hopping & Snorkeling (Puka Shell Beach, Crocodile Island).' },
+            { day: 'Day 3', desc: 'Free Leisure Day / Optional Water Sports (Parasailing, Helmet Dive).' },
+            { day: 'Day 4', desc: 'Sunset Paraw Sailing & Nightlife exploration.' },
+            { day: 'Day 5', desc: 'Breakfast, Checkout, Transfer to Airport.' }
+        ]
+    },
+    { 
+        id: 'Tour-Cebu', name: 'Cebu Canyoneering', price: 22999, duration: '3 Days / 2 Nights', 
+        img: 'https://travelraro.com/wp-content/uploads/2023/09/Untitled-design.png', type: 'Adventure / Diving',
+        foodDetails: 'Daily Breakfast, 1 Heavy Packed Lunch after Canyoneering.',
+        itinerary: [
+            { day: 'Day 1', desc: 'Arrival at Cebu City, Travel to Moalboal/Badian, Check-in.' },
+            { day: 'Day 2', desc: 'Kawasan Falls Canyoneering Adventure & Kawasan Falls Swim.' },
+            { day: 'Day 3', desc: 'Moalboal Sardine Run Snorkeling, Transfer back to Cebu Airport.' }
+        ]
+    },
+    { 
+        id: 'Tour-Manila', name: 'Manila City Escape', price: 16999, duration: '2 Days / 1 Night', 
+        img: 'https://www.aworldtotravel.com/wp-content/uploads/2023/08/manila-skyline-from-harbour-square.jpg', type: 'City / History',
+        foodDetails: '1 Buffet Breakfast, 1 Traditional Filipino Lunch in Intramuros.',
+        itinerary: [
+            { day: 'Day 1', desc: 'Arrival, Intramuros Walking Tour (Fort Santiago, Manila Cathedral), Lunch.' },
+            { day: 'Day 2', desc: 'Breakfast, Rizal Park Visit, National Museum, Checkout.' }
+        ]
+    },
+    { 
+        id: 'Tour-Banaue', name: 'Banaue Heritage Tour', price: 28999, duration: '4 Days / 3 Nights', 
+        img: 'https://www.vacationhive.com/images/hives/11/11-banaue-terraces-main-img-new.jpg', type: 'Culture / Mountains',
+        foodDetails: 'Daily Breakfast, 2 Local Homestay Dinners.',
+        itinerary: [
+            { day: 'Day 1', desc: 'Overnight journey / Arrival in Banaue, Check-in, Viewpoint Tour.' },
+            { day: 'Day 2', desc: 'Trek to Batad Rice Terraces and Tappiya Falls.' },
+            { day: 'Day 3', desc: 'Explore Bangaan Terraces, Cultural immersion with locals.' },
+            { day: 'Day 4', desc: 'Breakfast, Souvenir Shopping, Departure.' }
+        ]
+    }
 ];

@@ -13,7 +13,13 @@ const Booking = () => {
 
   const [selectedPackage, setSelectedPackage] = useState('');
   const [date, setDate] = useState('');
-  const [personalInfo, setPersonalInfo] = useState({ name: '', email: '', phone: '' });
+const [personalInfo, setPersonalInfo] = useState({ 
+      name: '', 
+      email: '', 
+      phone: '', 
+      countryCode: '+63', // Default to PH
+      specialRequests: '' // New state for instructions
+  });
   const [guests, setGuests] = useState({ adults: 1, children: 0, infants: 0 });
   const [accClass, setAccClass] = useState('Standard'); 
   const [addons, setAddons] = useState({ airportTransfer: false, insurance: false, romanticDinner: false, carbonOffset: false });
@@ -99,11 +105,17 @@ const Booking = () => {
         travelDate: date,
         guests: guests,
         totalPrice: grandTotal,
-        // ⚡ Hardcoded for now to prevent backend crash. User selects actual method in Dashboard checkout.
         paymentMethod: 'Pending Checkout', 
         splitBetween: parseInt(splitBetween), 
         friendEmails: payerEmails,
-        invoiceDetails: invoiceDetails
+        invoiceDetails: invoiceDetails,
+        // ⚡ NEW: Pass the combined phone and special requests ⚡
+        contactInfo: {
+            name: personalInfo.name,
+            email: personalInfo.email,
+            phone: `${personalInfo.countryCode} ${personalInfo.phone}`
+        },
+        specialRequests: personalInfo.specialRequests
     };
 
     try {
@@ -188,15 +200,68 @@ const Booking = () => {
                 </div>
               </div>
 
+              {/* --- LEAD GUEST DETAILS SECTION --- */}
               <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 mb-4 teal-hover-box">
                 <h4 className="fw-bold mb-4 font-montserrat text-navy"><i className="fa-solid fa-address-card text-accent me-2"></i> {t('lead_guest', 'Lead Guest Details')}</h4>
                 <div className="row g-3">
                   <div className="col-md-12"><label className="text-grey fw-bold small mb-2">{t('full_name', 'Full Name')}</label><input type="text" name="name" className="form-control-dark w-100" placeholder="Juan Dela Cruz" value={personalInfo.name} onChange={handleInfoChange} style={{ paddingLeft: '20px' }} required /></div>
                   <div className="col-md-6"><label className="text-grey fw-bold small mb-2">{t('email_addr', 'Email Address')}</label><input type="email" name="email" className="form-control-dark w-100" placeholder="juan@example.com" value={personalInfo.email} onChange={handleInfoChange} style={{ paddingLeft: '20px' }} required /></div>
-                  <div className="col-md-6"><label className="text-grey fw-bold small mb-2">{t('phone', 'Phone Number')}</label><input type="tel" name="phone" className="form-control-dark w-100" placeholder="+63 900 000 0000" value={personalInfo.phone} onChange={handleInfoChange} style={{ paddingLeft: '20px' }} required /></div>
+                  
+                  {/* ⚡ UPDATED: PHONE NUMBER WITH COUNTRY CODE ⚡ */}
+                  <div className="col-md-6">
+                    <label className="text-grey fw-bold small mb-2">{t('phone', 'Phone Number')}</label>
+                    <div className="d-flex">
+                        <select 
+                            className="form-control-dark border-end-0" 
+                            style={{ width: '110px', paddingLeft: '10px', paddingRight: '10px', borderTopRightRadius: '0', borderBottomRightRadius: '0' }}
+                            value={personalInfo.countryCode}
+                            onChange={(e) => setPersonalInfo({ ...personalInfo, countryCode: e.target.value })}
+                        >
+                            <option value="+63">+63 (PH)</option>
+                            <option value="+1">+1 (US/CA)</option>
+                            <option value="+44">+44 (UK)</option>
+                            <option value="+61">+61 (AU)</option>
+                            <option value="+81">+81 (JP)</option>
+                            <option value="+65">+65 (SG)</option>
+                            <option value="+971">+971 (AE)</option>
+                        </select>
+                        <input 
+                            type="tel" 
+                            name="phone" 
+                            className="form-control-dark w-100" 
+                            placeholder="900 000 0000" 
+                            value={personalInfo.phone} 
+                            onChange={handleInfoChange} 
+                            style={{ paddingLeft: '15px', borderTopLeftRadius: '0', borderBottomLeftRadius: '0' }} 
+                            required 
+                        />
+                    </div>
+                  </div>
                 </div>
               </div>
 
+              {/* ⚡ NEW: SPECIAL REQUESTS SECTION ⚡ */}
+              <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 mb-4 teal-hover-box">
+                <h4 className="fw-bold mb-3 font-montserrat text-navy"><i className="fa-solid fa-bell-concierge text-accent me-2"></i> Special Requests & Instructions</h4>
+                <div className="row">
+                    <div className="col-md-12">
+                        <textarea 
+                            name="specialRequests" 
+                            className="form-control-dark w-100" 
+                            placeholder="E.g. Vegetarian/Halal food requirements, wheelchair accessibility, allergies, or special celebrations..." 
+                            value={personalInfo.specialRequests} 
+                            onChange={handleInfoChange} 
+                            rows="3"
+                            style={{ resize: 'none', padding: '15px' }}
+                        ></textarea>
+                        <p className="text-grey mt-2 mb-0" style={{ fontSize: '0.8rem' }}>
+                            <i className="fa-solid fa-circle-info text-primary-dark me-1"></i> 
+                            <strong>Note:</strong> We will do our absolute best to accommodate dietary restrictions (such as full Halal or Vegetarian meals). However, please be aware that full availability is subject to the specific destination and our local tour partners.
+                        </p>
+                    </div>
+                </div>
+              </div>
+              
               <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 mb-4 teal-hover-box" style={{ borderLeft: '4px solid #4CAF50 !important' }}>
                 <h4 className="fw-bold mb-2 font-montserrat text-navy">
                   <i className="fa-solid fa-leaf text-success me-2"></i> 
