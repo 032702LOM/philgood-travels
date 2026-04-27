@@ -10,6 +10,7 @@ const Profile = () => {
   
   const [user, setUser] = useState(null);
   const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -18,20 +19,31 @@ const Profile = () => {
     if (!token || !userStr) {
       navigate('/login');
     } else {
-      const parsedUser = JSON.parse(userStr);
-      setUser(parsedUser);
+      try {
+        const parsedUser = JSON.parse(userStr);
+        setUser(parsedUser);
 
-      aaxios.get(`${import.meta.env.VITE_API_URL}/api/bookings/user/${parsedUser.id}`)
-        .then(response => {
-            setBookings(response.data);
-        })
-        .catch(err => console.error("Failed to fetch bookings", err));
+        // Fixed the 'aaxios' typo here ⚡
+        axios.get(`${import.meta.env.VITE_API_URL}/api/bookings/user/${parsedUser.id || parsedUser._id}`)
+          .then(response => {
+              setBookings(response.data);
+              setLoading(false);
+          })
+          .catch(err => {
+              console.error("Failed to fetch bookings", err);
+              setLoading(false);
+          });
+      } catch (error) {
+        console.error("Auth error", error);
+        navigate('/login');
+      }
     }
 
     const params = new URLSearchParams(location.search);
     if (params.get('payment') === 'success') {
-        alert("✅ Payment successful! Your dashboard will update shortly.");
-        // Optional: Clean up the URL so it doesn't keep showing the alert on refresh
+        setTimeout(() => {
+            alert("✅ Payment successful! Your dashboard will update shortly.");
+        }, 500);
         window.history.replaceState(null, '', window.location.pathname);
     }
   }, [navigate, location]);
@@ -114,7 +126,6 @@ const Profile = () => {
   const handleDownloadInvoice = (booking) => {
     let actualPaid = booking.payments?.filter(p => p.status === 'Paid').reduce((acc, curr) => acc + curr.amountDue, 0) || 0;
     const actualDue = booking.totalPrice - actualPaid;
-    
     const inv = booking.invoiceDetails || {};
 
     let itemizedRows = `<tr><td><strong>Base Price</strong></td><td></td><td style="text-align: right;">${formatPrice(inv.basePriceTotal || booking.totalPrice)}</td></tr>`;
@@ -157,14 +168,12 @@ const Profile = () => {
           <div class="company"><strong>PhilGood Travels</strong><br/>Travel Street, Manila<br/>hello@philgoodtravels.com</div>
         </div>
         <div class="meta">
-          <div class="box"><h3>Client Details</h3><p><strong>${user.name}</strong></p><p>${user.email}</p></div>
+          <div class="box"><h3>Client Details</h3><p><strong>${user?.name}</strong></p><p>${user?.email}</p></div>
           <div class="box"><h3>Order Info</h3><p><strong>PACKAGE:</strong> ${booking.packageName}</p><p><strong>ORDER NO:</strong> #${booking._id.substring(0, 8).toUpperCase()}</p><p><strong>DATE:</strong> ${new Date(booking.createdAt || Date.now()).toLocaleDateString()}</p></div>
         </div>
         <table>
           <thead><tr><th>Item</th><th>Status</th><th style="text-align: right;">Cost</th></tr></thead>
-          <tbody>
-            ${itemizedRows}
-          </tbody>
+          <tbody>${itemizedRows}</tbody>
         </table>
         <div class="totals">
           <table class="totals-table">
@@ -181,7 +190,17 @@ const Profile = () => {
     setTimeout(() => { invoiceWindow.print(); }, 250);
   };
 
-  if (!user) return null; 
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh', backgroundColor: 'var(--bg-dark)' }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading Profile...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) return null;
 
   return (
     <div className="fade-in" style={{ paddingTop: '100px', minHeight: '80vh', backgroundColor: 'var(--bg-dark)' }}>
@@ -193,7 +212,7 @@ const Profile = () => {
             <div className="p-4 rounded-4 shadow-lg border border-primary border-opacity-10 text-center h-100" style={{ backgroundColor: 'var(--card-bg)' }}>
               <div className="text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3 shadow" 
                 style={{ width: '80px', height: '80px', fontSize: '2.5rem', backgroundColor: 'var(--primary-color)' }}>
-                {user.name.charAt(0).toUpperCase()}
+                {user.name?.charAt(0).toUpperCase()}
               </div>
               <h4 className="text-navy font-montserrat fw-bold mb-1">{user.name}</h4>
               <p className="text-grey mb-4">{user.email}</p>
@@ -217,38 +236,34 @@ const Profile = () => {
                 <div className="d-flex flex-column gap-4">
                   {bookings.map((booking) => {
                     const totalPaid = booking.payments?.reduce((acc, p) => p.status === 'Paid' ? acc + p.amountDue : acc, 0) || 0;
-                    const progressPercent = Math.round((totalPaid / booking.totalPrice) * 100);
+                    const progressPercent = Math.round((totalPaid / (booking.totalPrice || 1)) * 100);
                     const postponeCount = booking.postponeCount || 0;
 
                     return (
                       <div key={booking._id} className="p-4 border border-primary border-opacity-10 rounded-4 shadow-sm" style={{ backgroundColor: '#F4FAFC' }}>
                         
-                        {/* Header & Invoice */}
                         <div className="d-flex justify-content-between align-items-center mb-3">
-                          <div className="d-flex align-items-center gap-3">
+                          <div className="d-flex align-items-center gap-3 flex-wrap">
                               <h5 className="fw-bold m-0" style={{ color: 'var(--accent-color)' }}>{booking.packageName}</h5>
                               
-                              {/* STATUS BADGES */}
                               {booking.bookingStatus === 'Cancelled' ? (
-                                  <span className="badge bg-danger"><i className="fa-solid fa-ban me-1"></i> Cancelled</span>
+                                  <span className="badge bg-danger">Cancelled</span>
                               ) : booking.bookingStatus === 'Postponed' ? (
-                                  <span className="badge bg-warning text-dark"><i className="fa-regular fa-calendar-days me-1"></i> Postponed ({postponeCount}/2)</span>
+                                  <span className="badge bg-warning text-dark">Postponed ({postponeCount}/2)</span>
                               ) : booking.bookingStatus === 'Confirmed' ? (
-                                  <span className="badge bg-success"><i className="fa-solid fa-check me-1"></i> Fully Paid</span>
+                                  <span className="badge bg-success">Fully Paid</span>
                               ) : (
                                   <span className="badge text-dark" style={{ backgroundColor: '#FFD166' }}>{progressPercent}% Collected</span>
                               )}
                           </div>
                           
-                          {/* Only show invoice if the trip is NOT cancelled */}
                           {booking.bookingStatus !== 'Cancelled' && (
                               <button className="btn btn-sm btn-outline-custom" onClick={() => handleDownloadInvoice(booking)}>
-                                  <i className="fa-solid fa-download me-2"></i> Invoice
+                                  Invoice
                               </button>
                           )}
                         </div>
 
-                        {/* Progress Bar */}
                         {booking.bookingStatus !== 'Cancelled' && (
                             <div className="mb-4">
                                 <div className="d-flex justify-content-between mb-1">
@@ -262,13 +277,12 @@ const Profile = () => {
                             </div>
                         )}
 
-                        {/* Booking Details */}
                         <div className="row mb-3">
                             <div className="col-md-6">
                                 <p className="text-grey small mb-1"><i className="fa-regular fa-calendar text-accent me-2"></i> {booking.travelDate}</p>
-                                <p className="text-grey small mb-0"><i className="fa-solid fa-user-group text-accent me-2"></i> {booking.guests.adults} Adults, {booking.guests.children} Children</p>
+                                <p className="text-grey small mb-0"><i className="fa-solid fa-user-group text-accent me-2"></i> {booking.guests?.adults || 0} Adults, {booking.guests?.children || 0} Children</p>
                             </div>
-                            <div className="col-md-6 text-end">
+                            <div className="col-md-6 text-md-end mt-2 mt-md-0">
                                 <span className="text-grey small d-block">Total Cost</span>
                                 <h4 className="text-navy fw-bold m-0" style={{ textDecoration: booking.bookingStatus === 'Cancelled' ? 'line-through' : 'none' }}>
                                     {formatPrice(booking.totalPrice)}
@@ -276,28 +290,20 @@ const Profile = () => {
                             </div>
                         </div>
                         
-                        {/* Individual Payment Links (Hide if cancelled) */}
                         {booking.bookingStatus !== 'Cancelled' && booking.payments && booking.payments.length > 0 && (
                           <div className="p-3 rounded-3" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid rgba(0, 119, 182, 0.1)' }}>
-                              <h6 className="text-grey mb-3" style={{ fontSize: '0.8rem', textTransform: 'uppercase' }}>Checkout / Payment Links</h6>
+                              <h6 className="text-grey mb-3" style={{ fontSize: '0.8rem', textTransform: 'uppercase' }}>Payment Links</h6>
                               <div className="d-flex flex-column gap-2">
                                   {booking.payments.map((payment, index) => (
-                                      <div key={index} className="d-flex justify-content-between align-items-center p-3 rounded-3 border border-primary border-opacity-10 shadow-sm" style={{ backgroundColor: '#ffffff' }}>
+                                      <div key={index} className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center p-3 rounded-3 border border-primary border-opacity-10 gap-3" style={{ backgroundColor: '#ffffff' }}>
                                           <div>
                                               <span className="text-grey small d-block mb-1">{payment.payerEmail}</span>
                                               <span className="text-navy fw-bold fs-5">{formatPrice(payment.amountDue)}</span>
                                           </div>
-                                          
-                                          {/* ⚡ DIRECT GATEWAY LINK - CLEANED UP ⚡ */}
                                           {payment.status === 'Paid' ? (
-                                              <span className="badge bg-success py-2 px-3 fw-bold fs-6"><i className="fa-solid fa-circle-check me-2"></i> PAID</span>
+                                              <span className="badge bg-success py-2 px-3 fw-bold fs-6">PAID</span>
                                           ) : (
-                                         <button 
-    onClick={() => window.location.href = payment.paymentUrl}
-    className="btn btn-proceed fw-bold py-2 px-4 shadow" 
->
-    <i className="fa-solid fa-lock me-2"></i> Pay Share Now
-</button>
+                                            <button onClick={() => window.location.href = payment.paymentUrl} className="btn btn-proceed fw-bold py-2 px-4 shadow">Pay Share</button>
                                           )}
                                       </div>
                                   ))}
@@ -305,32 +311,18 @@ const Profile = () => {
                           </div>
                         )}
 
-                        {/* ADVANCED ACTION BUTTONS */}
-                        <div className="d-flex justify-content-end gap-2 mt-4 pt-3 border-top border-primary border-opacity-10">
-                            
+                        <div className="d-flex flex-wrap justify-content-end gap-2 mt-4 pt-3 border-top border-primary border-opacity-10">
                             {booking.bookingStatus === 'Cancelled' && isWithinRebookWindow(booking.cancelledAt) && (
-                                <button className="btn btn-sm btn-outline-success" onClick={() => handleRebook(booking._id)}>
-                                    <i className="fa-solid fa-rotate-right me-1"></i> Rebook
-                                </button>
+                                <button className="btn btn-sm btn-outline-success" onClick={() => handleRebook(booking._id)}>Rebook</button>
                             )}
-
                             {canModify(booking.travelDate) && booking.bookingStatus !== 'Cancelled' && postponeCount < 2 && (
-                                <button className="btn btn-sm btn-outline-warning" onClick={() => handlePostpone(booking._id, booking.travelDate)}>
-                                    <i className="fa-regular fa-calendar-days me-1"></i> Postpone
-                                </button>
+                                <button className="btn btn-sm btn-outline-warning" onClick={() => handlePostpone(booking._id, booking.travelDate)}>Postpone</button>
                             )}
-
                             {canModify(booking.travelDate) && booking.bookingStatus !== 'Cancelled' && (
-                                <button className="btn btn-sm btn-outline-danger" onClick={() => handleCancel(booking._id, booking.travelDate)}>
-                                    <i className="fa-solid fa-ban me-1"></i> Cancel Trip
-                                </button>
+                                <button className="btn btn-sm btn-outline-danger" onClick={() => handleCancel(booking._id, booking.travelDate)}>Cancel Trip</button>
                             )}
-                            
-                            <button className="btn btn-sm btn-danger" onClick={() => handleDelete(booking._id)}>
-                                <i className="fa-solid fa-trash me-1"></i> Delete
-                            </button>
+                            <button className="btn btn-sm btn-danger" onClick={() => handleDelete(booking._id)}>Delete Record</button>
                         </div>
-
                       </div>
                     );
                   })}

@@ -120,7 +120,7 @@ const [personalInfo, setPersonalInfo] = useState({
 };
 
     try {
-       await axios.post(`${import.meta.env.VITE_API_URL}/api/bookings/create`, bookingData);
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/bookings/create/`, bookingData);
         
         if (splitBetween > 1) {
             alert("Trip added successfully!\n\nYour split payment links have been generated. Please proceed to your dashboard to pay your share.");
