@@ -946,10 +946,15 @@ const AdminDashboard = () => {
 
   const renderBookingModal = () => {
     if (!selectedBooking) return null;
+
+    // ⚡ Extract invoice details safely
+    const safeInvoice = selectedBooking?.invoiceDetails || {};
+
     return (
       <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0, 31, 63, 0.7)', backdropFilter: 'blur(5px)', zIndex: 1060 }}>
           <div className="modal-dialog modal-dialog-centered modal-lg"> 
               <div className="modal-content border-0 shadow-lg" style={{ backgroundColor: 'var(--card-bg)', borderRadius: '16px' }}>
+                  
                   <div className="modal-header border-bottom border-primary border-opacity-10 pb-3" style={{ backgroundColor: 'var(--primary-dark)', color: 'white', borderTopLeftRadius: '16px', borderTopRightRadius: '16px' }}>
                       <div>
                         <h4 className="modal-title font-montserrat fw-bold mb-1">Booking Details</h4>
@@ -957,6 +962,7 @@ const AdminDashboard = () => {
                       </div>
                       <button type="button" className="btn-close btn-close-white" onClick={() => setSelectedBooking(null)}></button>
                   </div>
+                  
                   <div className="modal-body p-4 text-grey">
                       <div className="row mb-4">
                           <div className="col-md-6">
@@ -967,16 +973,88 @@ const AdminDashboard = () => {
                           </div>
                           <div className="col-md-6">
                               <h6 className="text-primary-dark fw-bold mb-1">Client:</h6>
-                              <p className="mb-3">{selectedBooking?.userId?.name || 'Deleted User'} ({selectedBooking?.userId?.email || 'N/A'})</p>
+                              <p className="mb-3">
+                                  <span className="fw-bold">{selectedBooking?.contactInfo?.name || selectedBooking?.userId?.name || 'Deleted User'}</span><br/>
+                                  {selectedBooking?.contactInfo?.email || selectedBooking?.userId?.email || 'N/A'}<br/>
+                                  <small><i className="fa-solid fa-phone text-accent me-1"></i> {selectedBooking?.contactInfo?.phone || 'No phone provided'}</small>
+                              </p>
                               <h6 className="text-primary-dark fw-bold mb-1">Guests:</h6>
                               <p className="mb-0"><i className="fa-solid fa-users text-accent me-2"></i>{selectedBooking?.guests?.adults || 0} Adults, {selectedBooking?.guests?.children || 0} Children, {selectedBooking?.guests?.infants || 0} Infants</p>
                           </div>
                       </div>
-                      <div className="mb-4 p-3 rounded-3" style={{ backgroundColor: '#F4FAFC', border: '1px solid rgba(0, 119, 182, 0.2)' }}>
+
+                      {/* ⚡ NEW: SPECIAL REQUESTS DISPLAY ⚡ */}
+                      {selectedBooking?.specialRequests && (
+                          <div className="mb-4 p-3 rounded-3" style={{ backgroundColor: 'rgba(255, 159, 28, 0.1)', border: '1px solid rgba(255, 159, 28, 0.3)' }}>
+                              <h6 className="text-navy font-montserrat fw-bold mb-2"><i className="fa-solid fa-bell-concierge text-accent me-2"></i> Special Requests & Instructions</h6>
+                              <p className="small text-navy mb-0">{selectedBooking.specialRequests}</p>
+                          </div>
+                      )}
+
+                      {/* ⚡ NEW: ITEMIZED PRICE BREAKDOWN ⚡ */}
+                      <div className="mb-4 p-3 rounded-3" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid rgba(0, 119, 182, 0.2)' }}>
+                          <h6 className="text-navy font-montserrat fw-bold mb-3"><i className="fa-solid fa-receipt text-accent me-2"></i> Price Breakdown</h6>
+                          
+                          {safeInvoice.basePriceTotal > 0 && (
+                            <div className="d-flex justify-content-between mb-2">
+                                <span className="text-grey small">Base Price</span>
+                                <span className="text-navy fw-bold">{formatPrice(safeInvoice.basePriceTotal)}</span>
+                            </div>
+                          )}
+                          {safeInvoice.accClassTotal > 0 && (
+                            <div className="d-flex justify-content-between mb-2">
+                                <span className="text-grey small">{safeInvoice.accClassText || 'Room Upgrade'}</span>
+                                <span className="text-navy fw-bold">{formatPrice(safeInvoice.accClassTotal)}</span>
+                            </div>
+                          )}
+                          {safeInvoice.transferTotal > 0 && (
+                            <div className="d-flex justify-content-between mb-2">
+                                <span className="text-grey small">Airport Transfer</span>
+                                <span className="text-navy fw-bold">{formatPrice(safeInvoice.transferTotal)}</span>
+                            </div>
+                          )}
+                          {safeInvoice.insuranceTotal > 0 && (
+                            <div className="d-flex justify-content-between mb-2">
+                                <span className="text-grey small">Travel Insurance</span>
+                                <span className="text-navy fw-bold">{formatPrice(safeInvoice.insuranceTotal)}</span>
+                            </div>
+                          )}
+                          {safeInvoice.dinnerTotal > 0 && (
+                            <div className="d-flex justify-content-between mb-2">
+                                <span className="text-grey small">Romantic Dinner</span>
+                                <span className="text-navy fw-bold">{formatPrice(safeInvoice.dinnerTotal)}</span>
+                            </div>
+                          )}
+                          {safeInvoice.carbonTotal > 0 && (
+                            <div className="d-flex justify-content-between mb-2">
+                                <span className="text-success small">Carbon Offset</span>
+                                <span className="text-success fw-bold">{formatPrice(safeInvoice.carbonTotal)}</span>
+                            </div>
+                          )}
+                          {safeInvoice.vatTotal > 0 && (
+                            <div className="d-flex justify-content-between mb-2 pb-2 border-bottom border-primary border-opacity-10">
+                                <span className="text-grey small">VAT (12%)</span>
+                                <span className="text-navy fw-bold">{formatPrice(safeInvoice.vatTotal)}</span>
+                            </div>
+                          )}
+                          {Object.keys(safeInvoice).length === 0 && (
+                            <div className="d-flex justify-content-between mb-2 pb-2 border-bottom border-primary border-opacity-10">
+                                <span className="text-grey small">Subtotal</span>
+                                <span className="text-navy fw-bold">{formatPrice(selectedBooking?.totalPrice || 0)}</span>
+                            </div>
+                          )}
+                          
+                          <div className="d-flex justify-content-between align-items-center mt-3">
+                              <h6 className="text-navy fw-bold m-0">Total Package Price</h6>
+                              <h6 className="text-navy fw-bold m-0">{formatPrice(selectedBooking?.totalPrice || 0)}</h6>
+                          </div>
+                      </div>
+
+                      <div className="mb-2 p-3 rounded-3" style={{ backgroundColor: '#F4FAFC', border: '1px solid rgba(0, 119, 182, 0.2)' }}>
                           <h6 className="text-navy font-montserrat fw-bold mb-3"><i className="fa-solid fa-file-invoice-dollar text-accent me-2"></i> Payment Tracking ({selectedBooking?.paymentMethod || 'N/A'})</h6>
                           {selectedBooking?.payments?.map((payment, idx) => (
                               <div key={idx} className="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom border-primary border-opacity-10">
-                                  <span>{payment?.payerEmail || 'N/A'}</span>
+                                  <span className="small">{payment?.payerEmail || 'N/A'}</span>
                                   <div>
                                       <span className="fw-bold text-navy me-3">{formatPrice(payment?.amountDue || 0)}</span>
                                       {payment?.status === 'Paid' ? <span className="badge bg-success">Paid</span> : <span className="badge bg-warning text-dark">Pending</span>}
@@ -992,7 +1070,6 @@ const AdminDashboard = () => {
               </div>
           </div>
       </div>
-    
     );
   };
 
