@@ -1,99 +1,23 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { io } from 'socket.io-client'; // ⚡ Real-time Socket Import
+import { useChat } from '../context/ChatContext'; // ⚡ NEW: Import the Context
 
 const Footer = () => {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState({ loading: false, message: '', type: '' });
 
-  // ⚡ Messenger Widget States
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [widgetView, setWidgetView] = useState('menu'); 
-  
-  // States for the Email Form
+  // Temporary UI states
   const [miniEmailData, setMiniEmailData] = useState({ name: '', email: '', message: '' });
   const [isSendingEmail, setIsSendingEmail] = useState(false);
-
-  // States for the Chat Interface
-  const [chatMessages, setChatMessages] = useState([
-      { sender: 'bot', text: 'Hi there! 👋 Welcome to PhilGood Travels. How can we help you today?' }
-  ]);
   const [chatInput, setChatInput] = useState('');
   const chatScrollRef = useRef(null);
 
-  // ⚡ NEW: SOCKET CONNECTION STATES
-  const [socket, setSocket] = useState(null);
-  const [sessionId, setSessionId] = useState('');
-
-  // ⚡ SOCKET CONNECTION LOGIC
-  useEffect(() => {
-      let currentSessionId = localStorage.getItem('chatSessionId');
-      if (!currentSessionId) {
-          currentSessionId = 'session_' + Math.random().toString(36).substr(2, 9);
-          localStorage.setItem('chatSessionId', currentSessionId);
-      }
-      setSessionId(currentSessionId);
-
-      const newSocket = io(import.meta.env.VITE_API_URL, {
-    transports: ['polling', 'websocket'],
-    reconnection: true,
-    reconnectionAttempts: 5,
-    reconnectionDelay: 1000
-});
-      setSocket(newSocket);
-
-      // ⚡ CRITICAL FIX 1: Emit the join event IMMEDIATELY.
-      // Socket.io automatically buffers this and sends it the moment it connects.
-      newSocket.emit('join_chat', currentSessionId);
-
-      // ⚡ CRITICAL FIX 2: Keep the .on('connect') ONLY for internet drops/reconnects.
-      newSocket.on('connect', () => {
-          console.log("✅ Chat Widget Connected to Room:", currentSessionId);
-          newSocket.emit('join_chat', currentSessionId);
-      });
-
-      // Listen for the Admin's reply
-      newSocket.on('receive_message', (message) => {
-          console.log("📥 New message received in Widget:", message); // Added for your console debugging
-          if (message.sender === 'admin') {
-              setChatMessages((prev) => [...prev, message]);
-          }
-      });
-
-      return () => newSocket.disconnect(); 
-  }, []);
-
-  // ⚡ NEW: END CHAT FUNCTION (FOR USERS)
-  const handleEndChat = async () => {
-    if (!window.confirm("Are you sure you want to end and clear this chat? This will remove the conversation from our records.")) return;
-
-    try {
-        // 1. Delete the chat from the database (removes it from Admin Dashboard)
-        await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/chats/${sessionId}`);
-    } catch (error) {
-        console.error("Error ending chat on server:", error);
-    }
-
-    // 2. Wipe the user's browser memory
-    localStorage.removeItem('chatSessionId');
-    
-    // 3. Clear the messages on their screen (keep only the bot greeting)
-    setChatMessages([{ sender: 'bot', text: 'Hi there! 👋 Welcome to PhilGood Travels. How can we help you today?' }]);
-    
-    // 4. Generate a brand new, empty session identity
-    const newSessionId = 'session_' + Math.random().toString(36).substr(2, 9);
-    localStorage.setItem('chatSessionId', newSessionId);
-    setSessionId(newSessionId);
-    
-    // 5. Connect the socket to the new room 
-    if (socket) {
-        socket.emit('join_chat', newSessionId);
-    }
-
-    // 6. Send them back to the main menu
-    setWidgetView('menu');
-  };
+  // ⚡ NEW: Grab all the heavy lifting from the Context!
+  const { 
+      chatMessages, isChatOpen, widgetView, setWidgetView, 
+      toggleChat, sendMessage, endChat 
+  } = useChat();
 
   // Auto-scroll chat to bottom
   useEffect(() => {
@@ -101,11 +25,6 @@ const Footer = () => {
           chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
       }
   }, [chatMessages, widgetView]);
-
-  const toggleChat = () => {
-    setIsChatOpen(!isChatOpen);
-    if (!isChatOpen) setWidgetView('menu'); 
-  };
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
@@ -142,19 +61,8 @@ const Footer = () => {
   };
 
   const handleSendChat = () => {
-      if (!chatInput.trim() || !socket) return;
-
-      const messageData = {
-          sessionId: sessionId,
-          sender: 'user',
-          text: chatInput
-      };
-
-      // Emit the message to the server
-      socket.emit('send_message', messageData);
-
-      // Locally add the user's message so it appears instantly
-      setChatMessages(prev => [...prev, messageData]);
+      if (!chatInput.trim()) return;
+      sendMessage(chatInput); // Call context function
       setChatInput(''); 
   };
 
@@ -192,15 +100,14 @@ const Footer = () => {
                   </div>
                   <div className="col-lg-2 col-md-6">
                       <h5 className="footer-heading text-white">Quick Links</h5>
-<ul className="footer-links">
-    <li><Link to="/destinations">Destinations</Link></li>
-    <li><Link to="/tours">Tour Packages</Link></li>
-    <li><Link to="/gallery">Gallery</Link></li>
-    <li><Link to="/booking">Book Now</Link></li>
-    {/* ⚡ NEW LINKS ADDED HERE ⚡ */}
-    <li><Link to="/faq">FAQ</Link></li>
-    <li><Link to="/terms">Terms & Conditions</Link></li>
-</ul>
+                      <ul className="footer-links">
+                          <li><Link to="/destinations">Destinations</Link></li>
+                          <li><Link to="/tours">Tour Packages</Link></li>
+                          <li><Link to="/gallery">Gallery</Link></li>
+                          <li><Link to="/booking">Book Now</Link></li>
+                          <li><Link to="/faq">FAQ</Link></li>
+                          <li><Link to="/terms">Terms & Conditions</Link></li>
+                      </ul>
                   </div>
                   <div className="col-lg-3 col-md-6">
                       <h5 className="footer-heading text-white">Contact</h5>
@@ -253,16 +160,15 @@ const Footer = () => {
                       </h6>
                   </div>
                   <div className="d-flex align-items-center gap-3">
-                      {/* ⚡ TRASH BUTTON FOR USERS (Visible only in chat view) */}
                       {widgetView === 'chat' && (
                           <i 
                             className="fa-solid fa-trash-can opacity-75" 
                             style={{ cursor: 'pointer', fontSize: '1rem' }} 
-                            onClick={handleEndChat}
+                            onClick={endChat}
                             title="End Chat"
                           ></i>
                       )}
-                      <i className="fa-solid fa-xmark" style={{ cursor: 'pointer', fontSize: '1.2rem' }} onClick={() => setIsChatOpen(false)}></i>
+                      <i className="fa-solid fa-xmark" style={{ cursor: 'pointer', fontSize: '1.2rem' }} onClick={toggleChat}></i>
                   </div>
               </div>
 

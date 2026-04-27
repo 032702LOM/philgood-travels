@@ -3,9 +3,11 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import './PhilGood.css';
 import { Toaster } from 'react-hot-toast';
 
+
 // Context Providers
 import { AuthProvider } from './context/AuthContext';
 import { PreferencesProvider } from './context/PreferencesContext'; 
+import { ChatProvider } from './context/ChatContext';
 
 // Components
 import Navbar from './components/Navbar';
@@ -40,6 +42,7 @@ function App() {
   return (
     <AuthProvider>
       <PreferencesProvider> 
+        <ChatProvider>
         <div className="App">
           <ScrollToTop />
           <Toaster position="top-center" reverseOrder={false} />
@@ -67,6 +70,7 @@ function App() {
           </main>
           <Footer />
         </div>
+        </ChatProvider>
       </PreferencesProvider>
     </AuthProvider>
   );
