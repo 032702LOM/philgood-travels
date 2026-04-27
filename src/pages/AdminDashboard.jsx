@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { usePreferences } from '../context/PreferencesContext';
 import { io } from 'socket.io-client';
+import toast from 'react-hot-toast';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -58,7 +59,7 @@ const AdminDashboard = () => {
       try {
         const parsedUser = JSON.parse(userStr);
         if (!parsedUser?.isAdmin) { 
-          alert("🚨 Unauthorized Access."); 
+          toast.error("🚨 Unauthorized Access."); 
           navigate('/'); 
           return; 
         }
@@ -174,7 +175,7 @@ const AdminDashboard = () => {
           setActiveChats(response.data);
       } catch (err) {
           console.error("Error deleting chat:", err);
-          alert("Failed to delete chat. Check console for details.");
+          toast.error("Failed to delete chat. Check console for details.");
       }
   };
 
@@ -185,14 +186,14 @@ const AdminDashboard = () => {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/stats`);
       setStats(response.data);
     } catch (error) { 
-      alert('❌ Failed to update status.'); 
+      toast.error('❌ Failed to update status.'); 
     }
   };
 
   const handleDeleteUser = async (userId, userName) => {
     const userStr = localStorage.getItem('user');
     const currentUser = userStr ? JSON.parse(userStr) : null;
-    if (currentUser && userId === currentUser.id) return alert("❌ Cannot delete your own account!");
+    if (currentUser && userId === currentUser.id) return toast.error("❌ Cannot delete your own account!");
     if (!window.confirm(`PERMANENTLY delete: ${userName}?`)) return;
     
     try {
@@ -204,7 +205,7 @@ const AdminDashboard = () => {
       }));
       if (selectedUser && selectedUser._id === userId) setSelectedUser(null);
     } catch (error) { 
-      alert('❌ Failed to delete user.'); 
+      toast.error('❌ Failed to delete user.'); 
     }
   };
 
@@ -232,7 +233,7 @@ const AdminDashboard = () => {
           setSelectedUser(response.data.user); 
           setEditMode(null);
       } catch (error) { 
-        alert('❌ Failed to update user.'); 
+        toast.error('❌ Failed to update user.'); 
       }
   };
 
@@ -255,7 +256,7 @@ const AdminDashboard = () => {
           setSelectedUser(response.data.user); 
           setNewNote('');
       } catch (error) { 
-        alert("❌ Failed to post note."); 
+        toast.error("❌ Failed to post note."); 
       } finally { 
         setIsPostingNote(false); 
       }
@@ -286,7 +287,7 @@ const AdminDashboard = () => {
           }));
           setSelectedMessage(null);
       } catch (e) { 
-        alert("Failed to delete message"); 
+        toast.error("Failed to delete message"); 
       }
   };
 
@@ -298,7 +299,7 @@ const AdminDashboard = () => {
  const handleCopyEmail = (email) => {
     if (!email) return;
     navigator.clipboard.writeText(email).then(() => {
-          alert(`✅ Copied to clipboard: ${email}`);
+          toast.error(`✅ Copied to clipboard: ${email}`);
       }).catch(err => {
           console.error("Failed to copy text: ", err);
       });
@@ -318,9 +319,9 @@ const AdminDashboard = () => {
                   </div>
               `
           });
-          alert("Newsletter sent successfully!");
+          toast.error("Newsletter sent successfully!");
       } catch (error) {
-          alert("Failed to send newsletter.");
+          toast.error("Failed to send newsletter.");
       }
   };
  

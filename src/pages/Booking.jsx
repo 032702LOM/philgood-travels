@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { tourPackages, allPlaces } from '../data/placesData';
 import { usePreferences } from '../context/PreferencesContext';
-
+import toast from 'react-hot-toast';
 
 const Booking = () => {
   const location = useLocation();
@@ -77,11 +77,11 @@ const [personalInfo, setPersonalInfo] = useState({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!selectedPackage || !date) { alert("Please select a destination and a travel date."); return; }
+    if (!selectedPackage || !date) { toast.error("Please select a destination and a travel date."); return; }
 
     const userStr = localStorage.getItem('user');
     if (!userStr) {
-        alert("You must be logged in to book a trip!");
+        toast.error("You must be logged in to book a trip!");
         navigate('/login');
         return;
     }
@@ -123,16 +123,16 @@ const [personalInfo, setPersonalInfo] = useState({
       await axios.post(`${import.meta.env.VITE_API_URL}/api/bookings/create/`, bookingData);
         
         if (splitBetween > 1) {
-            alert("Trip added successfully!\n\nYour split payment links have been generated. Please proceed to your dashboard to pay your share.");
+            toast.error("Trip added successfully!\n\nYour split payment links have been generated. Please proceed to your dashboard to pay your share.");
         } else {
-            alert("Trip added successfully!\n\nPlease proceed to your dashboard to complete the payment.");
+            toast.error("Trip added successfully!\n\nPlease proceed to your dashboard to complete the payment.");
         }
         
         navigate('/profile');
         
     } catch (err) {
         console.error(err);
-        alert("❌ Failed to process booking.");
+        toast.error("❌ Failed to process booking.");
     } finally {
         setIsSubmitting(false);
     }
