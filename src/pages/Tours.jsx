@@ -305,7 +305,7 @@ const Tours = () => {
                         </div>
                         <div className="modal-footer border-0 pt-0 d-flex gap-3">
                             <button type="button" className="btn-cancel flex-grow-1" onClick={handleCloseModal}>{t('cancel', 'Cancel')}</button>
-                            <button type="button" className="btn-proceed flex-grow-1" onClick={() => window.location.href=`/booking?package=${encodeURIComponent(selectedTour.name)}&pax=${pax}`}>{t('proceed_booking', 'Proceed to Booking')}</button>
+                            <button type="button" className="btn-proceed flex-grow-1" onClick={() => navigate(`/booking?package=${encodeURIComponent(selectedTour.name)}&pax=${pax}`)}>{t('proceed_booking', 'Proceed to Booking')}</button>
                         </div>
                     </div>
                 </div>

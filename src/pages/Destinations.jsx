@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { useLocation, useNavigate, Link } from 'react-router-dom'; 
 import { allPlaces, regions } from '../data/placesData';
 import { usePreferences } from '../context/PreferencesContext';
 import heroImg from '../assets/img/Find Your Place.png';
@@ -10,7 +10,6 @@ const Destinations = () => {
   const { t, formatPrice } = usePreferences();
 
   const [view, setView] = useState('main'); 
-  const [filteredPlaces, setFilteredPlaces] = useState(allPlaces);
   const [selectedRegion, setSelectedRegion] = useState('All');
   const [selectedHotel, setSelectedHotel] = useState('');
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -75,26 +74,30 @@ const Destinations = () => {
     });
   };
 
-  const baseFilteredPlaces = allPlaces.filter(p => {
-    let match = true;
-    if (selectedRegion !== 'All' && p.region.toLowerCase().trim() !== selectedRegion.toLowerCase().trim()) match = false;
-    if (selectedHotel !== '' && p.id !== selectedHotel) match = false;
-    if (searchKeyword) {
-      const lowerKw = searchKeyword.toLowerCase();
-      match = match && (p.name.toLowerCase().includes(lowerKw) || p.type.toLowerCase().includes(lowerKw) || p.region.toLowerCase().includes(lowerKw) || (p.facilities && p.facilities.some(f => f.toLowerCase().includes(lowerKw))));
-    }
-    return match;
-  });
-  
-  useEffect(() => {
-    let result = baseFilteredPlaces;
-    if (activeCheckboxes.length > 0) {
-      result = result.filter(place => {
-        const placeAttribs = [...(place.payment || []), ...(place.travelStyle || []), ...(place.roomOffers || []), ...(place.facilities || []), ...(place.bed || []), ...(place.bedrooms || []), place.family, place.distance, place.beachAccess].filter(Boolean); 
-        return activeCheckboxes.every(filter => placeAttribs.includes(filter));
+  // ⚡ NEW: Cached Base Search Logic
+  const baseFilteredPlaces = useMemo(() => {
+      return allPlaces.filter(p => {
+          let match = true;
+          if (selectedRegion !== 'All' && p.region.toLowerCase().trim() !== selectedRegion.toLowerCase().trim()) match = false;
+          if (selectedHotel !== '' && p.id !== selectedHotel) match = false;
+          if (searchKeyword) {
+            const lowerKw = searchKeyword.toLowerCase();
+            match = match && (p.name.toLowerCase().includes(lowerKw) || p.type.toLowerCase().includes(lowerKw) || p.region.toLowerCase().includes(lowerKw) || (p.facilities && p.facilities.some(f => f.toLowerCase().includes(lowerKw))));
+          }
+          return match;
       });
-    }
-    setFilteredPlaces(result);
+  }, [selectedRegion, selectedHotel, searchKeyword]);
+
+  // ⚡ NEW: Cached Checkbox Filter Logic
+  const filteredPlaces = useMemo(() => {
+      let result = baseFilteredPlaces;
+      if (activeCheckboxes.length > 0) {
+        result = result.filter(place => {
+          const placeAttribs = [...(place.payment || []), ...(place.travelStyle || []), ...(place.roomOffers || []), ...(place.facilities || []), ...(place.bed || []), ...(place.bedrooms || []), place.family, place.distance, place.beachAccess].filter(Boolean); 
+          return activeCheckboxes.every(filter => placeAttribs.includes(filter));
+        });
+      }
+      return result;
   }, [baseFilteredPlaces, activeCheckboxes]);
 
   const getCount = (option) => {
@@ -141,7 +144,6 @@ const Destinations = () => {
   if (view === 'detail' && selectedPlace) {
     return (
       <div id="destination-detail-view" className="fade-in" style={{ paddingTop: '76px' }}>
-        {/* ⚡ FIX: Removed the var(--bg-dark) gradient fade so it's just a uniform dark overlay for text readability ⚡ */}
         <div className="detail-hero" id="detailHeroBg" style={{ backgroundImage: `linear-gradient(rgba(2, 26, 46, 0.4), rgba(2, 26, 46, 0.4)), url('${selectedPlace.img}')`, backgroundSize: 'cover', backgroundPosition: 'center', padding: '100px 0 50px' }}>
             <div className="container pt-5 pb-5">
                 <a href="#" className="back-link mb-3 d-inline-block text-decoration-none fw-bold" style={{ color: '#FF7F50' }} onClick={(e) => { e.preventDefault(); handleCloseDetail(); }}>{t('back_places', '← Back to All Places')}</a>
@@ -201,7 +203,8 @@ const Destinations = () => {
                         </div>
                         <h1 className="fw-bold mb-1" style={{ fontSize: '3.5rem', color: '#FF8C73' }} id="weatherTemp">{weather}</h1>
                     </div>
-                    <a href={`/booking?package=${encodeURIComponent(selectedPlace.name)}`} className="btn btn-proceed w-100 py-3 text-uppercase font-montserrat fw-bold mb-3 d-block text-center text-decoration-none shadow">{t('book_now', 'Book Now')}</a>
+                    {/* ⚡ FIX: Replaced <a> tag with React Router <Link> */}
+                    <Link to={`/booking?package=${encodeURIComponent(selectedPlace.name)}`} className="btn btn-proceed w-100 py-3 text-uppercase font-montserrat fw-bold mb-3 d-block text-center text-decoration-none shadow">{t('book_now', 'Book Now')}</Link>
                 </div>
             </div>
         </div>
