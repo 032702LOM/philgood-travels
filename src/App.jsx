@@ -6,7 +6,7 @@ import './PhilGood.css';
 import { AuthProvider } from './context/AuthContext';
 import { PreferencesProvider } from './context/PreferencesContext'; 
 
-// Components (From your 'components' folder)
+// Components
 import Navbar from './components/Navbar';
 import Footer from './components/Footer'; 
 import Register from './components/Register';
@@ -14,7 +14,7 @@ import Login from './components/Login';
 import Profile from './components/Profile'; 
 import VerifyEmail from './components/VerifyEmail'; 
 
-// Pages (From your 'pages' folder)
+// Pages
 import Home from './pages/Home';
 import Destinations from './pages/Destinations';
 import Tours from './pages/Tours';
@@ -52,10 +52,7 @@ function App() {
               <Route path="/booking" element={<Booking />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/faq" element={<FAQ />} />
-              
-              {/* ⚡ The hidden admin route */}
               <Route path="/admin" element={<AdminDashboard />} /> 
-              
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
               <Route path="/verify-email" element={<VerifyEmail />} />
@@ -63,8 +60,6 @@ function App() {
               <Route path="/reset-password/:token" element={<ResetPassword />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/checkout" element={<Checkout />} />
-
-              {/* Catch-all 404 Route */}
               <Route path="*" element={<NotFound />} /> 
             </Routes>
           </main>
