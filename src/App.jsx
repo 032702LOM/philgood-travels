@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import './PhilGood.css';
+import { AuthProvider } from './context/AuthContext';
 
 // Context Provider
 import { PreferencesProvider } from './context/PreferencesContext'; 
@@ -34,6 +35,23 @@ const ScrollToTop = () => {
   return null;
 };
 
+function App() {
+  return (
+    // 2. Wrap everything in the AuthProvider
+    <AuthProvider>
+      <PreferencesProvider> 
+        <div className="App">
+          <ScrollToTop />
+          <Navbar />
+          {/* ... Routes ... */}
+          <Footer />
+        </div>
+      </PreferencesProvider>
+    </AuthProvider>
+  );
+}
+
+export default App;
 function App() {
   return (
     <PreferencesProvider> 

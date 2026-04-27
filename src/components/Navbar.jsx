@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, Link, useLocation } from 'react-router-dom';
+import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom';
 import { usePreferences } from '../context/PreferencesContext';
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation(); 
+  const navigate = useNavigate(); // ⚡ NEW: Added for smooth logout routing
   
   // Modal State
   const [showPrefModal, setShowPrefModal] = useState(false);
@@ -19,25 +21,13 @@ const Navbar = () => {
   // ==========================================
   // --- AUTHENTICATION STATE ---
   // ==========================================
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [firstName, setFirstName] = useState('');
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userStr = localStorage.getItem('user');
-    
-    if (token && userStr) {
-      setIsLoggedIn(true);
-      const userObj = JSON.parse(userStr);
-      setFirstName(userObj.name.split(' ')[0]); 
-    }
-  }, []);
+  // ⚡ REPLACED: All local state and useEffects are replaced by this single hook!
+  const { user, isLoggedIn, logout } = useAuth();
+  const firstName = user?.name ? user.name.split(' ')[0] : '';
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setIsLoggedIn(false);
-    window.location.href = '/'; 
+    logout(); // Clears the context and localStorage automatically
+    navigate('/'); // Smoothly redirects the user to the homepage
   };
   // ==========================================
 

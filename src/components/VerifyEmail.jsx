@@ -22,7 +22,7 @@ const VerifyEmail = () => {
 
       // 3. Send the token to our backend to validate
       try {
-        const response = await axios.post('https://philgood-travels.onrender.com/api/auth/verify-email', { token });
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/verify-email`, { token });
         setStatus('success');
         setMessage(response.data.message);
       } catch (err) {

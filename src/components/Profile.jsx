@@ -21,7 +21,7 @@ const Profile = () => {
       const parsedUser = JSON.parse(userStr);
       setUser(parsedUser);
 
-      axios.get(`https://philgood-travels.onrender.com/api/bookings/user/${parsedUser.id}`)
+      aaxios.get(`${import.meta.env.VITE_API_URL}/api/bookings/user/${parsedUser.id}`)
         .then(response => {
             setBookings(response.data);
         })
@@ -54,7 +54,7 @@ const Profile = () => {
   const handleDelete = async (bookingId) => {
       if (window.confirm("Are you sure you want to permanently delete this booking?")) {
           try {
-              await axios.delete(`https://philgood-travels.onrender.com/api/bookings/${bookingId}`);
+              await axios.delete(`${import.meta.env.VITE_API_URL}/api/bookings/${bookingId}`);
               setBookings(prev => prev.filter(b => b._id !== bookingId));
               alert("Booking deleted!");
           } catch (error) {
@@ -69,7 +69,7 @@ const Profile = () => {
       }
       if (window.confirm("Are you sure you want to cancel this trip?")) {
           try {
-              const response = await axios.put(`https://philgood-travels.onrender.com/api/bookings/cancel/${bookingId}`);
+              const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/bookings/cancel/${bookingId}`);
               setBookings(prev => prev.map(b => b._id === bookingId ? response.data.booking : b));
               alert("Trip cancelled successfully.");
           } catch (error) {
@@ -86,7 +86,7 @@ const Profile = () => {
       if (newDate) {
           if (window.confirm(`Are you sure you want to move your trip to ${newDate}?`)) {
               try {
-                  const response = await axios.put(`https://philgood-travels.onrender.com/api/bookings/postpone/${bookingId}`, { newDate });
+                  const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/bookings/postpone/${bookingId}`, { newDate });
                   setBookings(prev => prev.map(b => b._id === bookingId ? response.data.booking : b));
                   alert("Trip postponed successfully.");
               } catch (error) {
@@ -101,7 +101,7 @@ const Profile = () => {
       if (newDate) {
           if (window.confirm(`Are you sure you want to rebook this trip to ${newDate}?`)) {
               try {
-                  const response = await axios.put(`https://philgood-travels.onrender.com/api/bookings/rebook/${bookingId}`, { newDate });
+                  const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/bookings/rebook/${bookingId}`, { newDate });
                   setBookings(prev => prev.map(b => b._id === bookingId ? response.data.booking : b));
                   alert("Trip rebooked successfully!");
               } catch (error) {

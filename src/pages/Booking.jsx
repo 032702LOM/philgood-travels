@@ -100,26 +100,26 @@ const [personalInfo, setPersonalInfo] = useState({
     };
 
     const bookingData = {
-        userId: user.id,
-        packageName: selectedPackage,
-        travelDate: date,
-        guests: guests,
-        totalPrice: grandTotal,
-        paymentMethod: 'Pending Checkout', 
-        splitBetween: parseInt(splitBetween), 
-        friendEmails: payerEmails,
-        invoiceDetails: invoiceDetails,
-        // ⚡ NEW: Pass the combined phone and special requests ⚡
-        contactInfo: {
-            name: personalInfo.name,
-            email: personalInfo.email,
-            phone: `${personalInfo.countryCode} ${personalInfo.phone}`
-        },
-        specialRequests: personalInfo.specialRequests
-    };
+    userId: user.id,
+    packageId: currentItem.id, // ⚡ Use the ID so the backend can look up the real price
+    travelDate: date,
+    guests: guests,           // Includes adults, children, infants
+    accClass: accClass,       // 'Standard', 'Deluxe', or 'Luxury'
+    addons: addons,           // The object containing your booleans (insurance, etc.)
+    paymentMethod: 'Pending Checkout', 
+    splitBetween: parseInt(splitBetween), 
+    friendEmails: payerEmails,
+    contactInfo: {
+        name: personalInfo.name,
+        email: personalInfo.email,
+        phone: `${personalInfo.countryCode} ${personalInfo.phone}`
+    },
+    specialRequests: personalInfo.specialRequests
+    // 🛡️ NOTICE: We removed totalPrice! The backend will calculate this itself.
+};
 
     try {
-        await axios.post('https://philgood-travels.onrender.com/api/bookings/create', bookingData);
+       await axios.post(`${import.meta.env.VITE_API_URL}/api/bookings/create`, bookingData);
         
         if (splitBetween > 1) {
             alert("Trip added successfully!\n\nYour split payment links have been generated. Please proceed to your dashboard to pay your share.");
@@ -261,7 +261,7 @@ const [personalInfo, setPersonalInfo] = useState({
                     </div>
                 </div>
               </div>
-              
+
               <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 mb-4 teal-hover-box" style={{ borderLeft: '4px solid #4CAF50 !important' }}>
                 <h4 className="fw-bold mb-2 font-montserrat text-navy">
                   <i className="fa-solid fa-leaf text-success me-2"></i> 

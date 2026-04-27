@@ -35,12 +35,12 @@ const Footer = () => {
       }
       setSessionId(currentSessionId);
 
-      const newSocket = io('https://philgood-travels.onrender.com', {
-          transports: ['polling', 'websocket'],
-          reconnection: true,
-          reconnectionAttempts: 5,
-          reconnectionDelay: 1000
-      });
+      const newSocket = io(import.meta.env.VITE_API_URL, {
+    transports: ['polling', 'websocket'],
+    reconnection: true,
+    reconnectionAttempts: 5,
+    reconnectionDelay: 1000
+});
       setSocket(newSocket);
 
       // ⚡ CRITICAL FIX 1: Emit the join event IMMEDIATELY.
@@ -70,7 +70,7 @@ const Footer = () => {
 
     try {
         // 1. Delete the chat from the database (removes it from Admin Dashboard)
-        await axios.delete(`https://philgood-travels.onrender.com/api/admin/chats/${sessionId}`);
+        await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/chats/${sessionId}`);
     } catch (error) {
         console.error("Error ending chat on server:", error);
     }
@@ -112,7 +112,7 @@ const Footer = () => {
     if (!email) return;
     setStatus({ loading: true, message: '', type: '' });
     try {
-        const response = await axios.post('https://philgood-travels.onrender.com/api/contact/subscribe', { email });
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/contact/subscribe`, { email });
         setStatus({ loading: false, message: response.data.message, type: 'success' });
         setEmail(''); 
         setTimeout(() => setStatus({ loading: false, message: '', type: '' }), 3000);
@@ -127,7 +127,7 @@ const Footer = () => {
       e.preventDefault();
       setIsSendingEmail(true);
       try {
-          await axios.post('https://philgood-travels.onrender.com/api/contact/send', {
+          await axios.post(`${import.meta.env.VITE_API_URL}/api/contact/send`, {
               ...miniEmailData,
               subject: 'New Message from Website Widget'
           });

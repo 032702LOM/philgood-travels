@@ -15,7 +15,7 @@ const ForgotPassword = () => {
     setMessage('');
 
     try {
-      const response = await axios.post('https://philgood-travels.onrender.com/api/auth/forgot-password', { email });
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/forgot-password`, { email });
       setMessage(response.data.message);
       setIsError(false); // ⚡ It worked! Set error to false
       setEmail('');

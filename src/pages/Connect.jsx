@@ -16,7 +16,7 @@ const Connect = () => {
 
     try {
         // ⚡ NEW: Send the form data to our backend API!
-        await axios.post('https://philgood-travels.onrender.com/api/contact/send', formData);
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/contact/send`, formData);
         
         alert(`Thank you, ${formData.name}! Your message has been sent successfully.`);
         setFormData({ name: '', email: '', subject: '', message: '' }); 

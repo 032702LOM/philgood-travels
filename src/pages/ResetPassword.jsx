@@ -45,7 +45,7 @@ const ResetPassword = () => {
     setIsSubmitting(true);
     try {
       // ⚡ Send the new password to our backend, using the token in the URL parameter
-      const response = await axios.post(`https://philgood-travels.onrender.com/api/auth/reset-password/${token}`, { 
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/reset-password/${token}`, { 
           password: formData.password 
       });
       

@@ -1,35 +1,32 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom'; // ⚡ NEW: Imported Link for navigation
+import { Link, useNavigate } from 'react-router-dom'; // ⚡ ADDED useNavigate
+import { useAuth } from '../context/AuthContext'; // ⚡ ADDED useAuth
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false); // ⚡ NEW: Loading state
-  const [showPassword, setShowPassword] = useState(false); // ⚡ NEW: Toggle eye icon
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  // ⚡ Hook into our Auth Context and Router
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     
     try {
-      const response = await axios.post('https://philgood-travels.onrender.com/api/auth/login', formData);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, formData);
       
-      // 1. Show success message
       setMessage(response.data.message);
       setIsError(false);
       
-      // 2. Save the "VIP Wristband" (JWT Token) to the browser's local storage
-      localStorage.setItem('token', response.data.token);
-      
-      // 3. Save basic user info to display their name later
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-
-      // 4. Force a hard refresh to the homepage so the Navbar updates instantly!
-      setTimeout(() => {
-        window.location.href = '/'; 
-      }, 1500);
+      // ⚡ Replace the manual localStorage and window.location.href with this:
+      login(response.data.token, response.data.user);
+      navigate('/'); // Instantly routes to home without a page reload!
 
     } catch (err) {
       setMessage(err.response?.data?.error || "Login failed");

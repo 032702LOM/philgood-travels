@@ -68,7 +68,7 @@ const AdminDashboard = () => {
       }
       
       try {
-        const response = await axios.get('https://philgood-travels.onrender.com/api/admin/stats');
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/stats`);
         setStats(response.data);
       } catch (err) { 
         setError('Failed to load admin data. Please check your backend connection.'); 
@@ -83,7 +83,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const response = await axios.get('https://philgood-travels.onrender.com/api/admin/chats');
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/chats`);
         setActiveChats(response.data);
       } catch (err) {
         console.error("Error fetching chat sessions:", err);
@@ -92,7 +92,7 @@ const AdminDashboard = () => {
 
     fetchChats();
 
-    const socket = io('https://philgood-travels.onrender.com', {
+    const socket = io(import.meta.env.VITE_API_URL, {
         transports: ['polling', 'websocket'],
         reconnection: true,
         reconnectionAttempts: 5,
@@ -164,13 +164,13 @@ const AdminDashboard = () => {
 
       try {
           // Tell the backend to delete it
-          await axios.delete(`https://philgood-travels.onrender.com/api/admin/chats/${selectedChat.sessionId}`);
+          await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/chats/${selectedChat.sessionId}`);
           
           // Clear it from the main chat window
           setSelectedChat(null);
           
           // Refresh the sidebar list to remove the deleted chat
-          const response = await axios.get('https://philgood-travels.onrender.com/api/admin/chats');
+         const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/chats`);
           setActiveChats(response.data);
       } catch (err) {
           console.error("Error deleting chat:", err);
@@ -181,8 +181,8 @@ const AdminDashboard = () => {
   const handleStatusUpdate = async (bookingId, newStatus) => {
     if (!window.confirm(`Mark this booking as ${newStatus}?`)) return;
     try {
-      await axios.put(`https://philgood-travels.onrender.com/api/admin/booking-status/${bookingId}`, { status: newStatus });
-      const response = await axios.get('https://philgood-travels.onrender.com/api/admin/stats');
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/booking-status/${bookingId}`, { status: newStatus });
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/stats`);
       setStats(response.data);
     } catch (error) { 
       alert('❌ Failed to update status.'); 
@@ -196,7 +196,7 @@ const AdminDashboard = () => {
     if (!window.confirm(`PERMANENTLY delete: ${userName}?`)) return;
     
     try {
-      await axios.delete(`https://philgood-travels.onrender.com/api/admin/user/${userId}`);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/user/${userId}`);
       setStats(prev => ({ 
         ...prev, 
         allUsers: prev.allUsers?.filter(u => u._id !== userId) || [], 
@@ -224,7 +224,7 @@ const AdminDashboard = () => {
 
   const handleSaveUserEdit = async () => {
       try {
-          const response = await axios.put(`https://philgood-travels.onrender.com/api/admin/user/${selectedUser._id}`, editUserData);
+         const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/user/${selectedUser._id}`, editUserData);
           setStats(prev => ({ 
             ...prev, 
             allUsers: prev.allUsers?.map(u => u._id === response.data.user._id ? response.data.user : u) || []
@@ -244,7 +244,7 @@ const AdminDashboard = () => {
           const currentUser = userStr ? JSON.parse(userStr) : null;
           const initials = currentUser?.name ? currentUser.name.substring(0, 2).toUpperCase() : 'AD';
 
-          const response = await axios.post(`https://philgood-travels.onrender.com/api/admin/user/${selectedUser._id}/notes`, { 
+          const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/user/${selectedUser._id}/notes`, { 
             text: newNote, 
             authorInitials: initials 
           });
@@ -265,7 +265,7 @@ const AdminDashboard = () => {
       setSelectedMessage(msg);
       if (msg.status === 'Unread') {
           try {
-              await axios.put(`https://philgood-travels.onrender.com/api/admin/message/${msg._id}`);
+              await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/message/${msg._id}`);
               setStats(prev => ({ 
                 ...prev, 
                 allMessages: prev.allMessages?.map(m => m._id === msg._id ? { ...m, status: 'Read' } : m) || []
@@ -279,7 +279,7 @@ const AdminDashboard = () => {
   const handleDeleteMessage = async (msgId) => {
       if (!window.confirm("Delete this message permanently?")) return;
       try {
-          await axios.delete(`https://philgood-travels.onrender.com/api/admin/message/${msgId}`);
+          await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/message/${msgId}`);
           setStats(prev => ({ 
             ...prev, 
             allMessages: prev.allMessages?.filter(m => m._id !== msgId) || []
@@ -308,7 +308,7 @@ const AdminDashboard = () => {
       if (!window.confirm("Are you sure you want to email ALL subscribers?")) return;
       
       try {
-          await axios.post('https://philgood-travels.onrender.com/api/admin/broadcast', {
+         await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/broadcast`, {
               subject: "Our Monsoon Special is Here! 🌧️",
               htmlContent: `
                   <div style="font-family: sans-serif; padding: 20px;">

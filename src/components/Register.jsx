@@ -52,7 +52,7 @@ const Register = () => {
     setIsSubmitting(true);
     try {
       const { name, email, password } = formData;
-      const response = await axios.post('https://philgood-travels.onrender.com/api/auth/register', { name, email, password });
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, { name, email, password });
       
       setMessage(response.data.message);
       setIsError(false);
