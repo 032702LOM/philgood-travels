@@ -3,12 +3,20 @@ const router = express.Router();
 const Booking = require('../models/Booking');
 const User = require('../models/User');
 const Message = require('../models/Message');
+const ChatSession = require('../models/ChatSession');
 const { Resend } = require('resend');
-const Subscriber = require('../models/Subscriber');
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// ⚡ IMPORT THE NEW BOUNCERS ⚡
+const { verifyToken, isAdmin } = require('../middleware/authMiddleware');
+
+// ==========================================
+// PROTECTED ROUTES
+// We add [verifyToken, isAdmin] to every sensitive route.
+// ==========================================
+
 // GET: Fetch all dashboard statistics
-router.get('/stats', async (req, res) => {
+router.get('/stats', verifyToken, isAdmin, async (req, res) => {
     try {
         const allBookings = await Booking.find().sort({ createdAt: -1 }).populate('userId', 'name email');
         const allUsers = await User.find().sort({ createdAt: -1 }).select('-password'); 
@@ -30,15 +38,40 @@ router.get('/stats', async (req, res) => {
             allUsers: allUsers,
             allMessages: allMessages
         });
-
     } catch (error) {
-        console.error("Admin Stats Error:", error);
         res.status(500).json({ error: "Failed to fetch admin statistics." });
     }
 });
 
-// PUT: Update a booking status & AUTOMATICALLY LOG IT
-router.put('/booking-status/:id', async (req, res) => {
+// GET: All active chat sessions
+router.get('/chats', verifyToken, isAdmin, async (req, res) => {
+    try {
+        const chats = await ChatSession.find({ status: 'Active' }).sort({ updatedAt: -1 });
+        res.status(200).json(chats);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to load chat sessions." });
+    }
+});
+
+// POST: Add a timeline note to a user
+router.post('/user/:id/notes', verifyToken, isAdmin, async (req, res) => {
+    try {
+        const { text, authorInitials } = req.body;
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).json({ error: "User not found" });
+
+        user.adminNotes.push({ text, authorInitials });
+        await user.save();
+
+        const updatedUser = await User.findById(req.params.id).select('-password');
+        res.status(200).json({ message: "Note added!", user: updatedUser });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to add note." });
+    }
+});
+
+// PUT: Update a booking status
+router.put('/booking-status/:id', verifyToken, isAdmin, async (req, res) => {
     try {
         const { status } = req.body;
         const booking = await Booking.findById(req.params.id);
@@ -47,50 +80,24 @@ router.put('/booking-status/:id', async (req, res) => {
         booking.bookingStatus = status;
         await booking.save();
         
-        // ⚡ NEW: Automated System Logging ⚡
         if (booking.userId) {
             const user = await User.findById(booking.userId);
             if (user) {
                 user.adminNotes.push({
                     text: `System: Booking #${booking._id.toString().substring(0,8).toUpperCase()} status updated to ${status}`,
-                    authorInitials: '⚙️' // Using a gear icon to represent the automated system
+                    authorInitials: '⚙️'
                 });
                 await user.save();
             }
         }
-        
         res.status(200).json({ message: "Status updated successfully!", booking });
     } catch (error) {
         res.status(500).json({ error: "Failed to update status." });
     }
 });
 
-// ⚡ UPDATED PUT: Edit User Details (Now includes Address, Marketing, Tax) ⚡
-router.put('/user/:id', async (req, res) => {
-    try {
-        const { name, email, isAdmin, address, marketing, tax } = req.body;
-        const user = await User.findById(req.params.id);
-        if (!user) return res.status(404).json({ error: "User not found" });
-
-        user.name = name || user.name;
-        user.email = email || user.email;
-        if (isAdmin !== undefined) user.isAdmin = isAdmin;
-        
-        if (address) user.address = address;
-        if (marketing) user.marketing = marketing;
-        if (tax) user.tax = tax;
-
-        await user.save();
-        
-        const updatedUser = await User.findById(req.params.id).select('-password');
-        res.status(200).json({ message: "User updated successfully!", user: updatedUser });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to update user." });
-    }
-});
-
 // DELETE: Delete user
-router.delete('/user/:id', async (req, res) => {
+router.delete('/user/:id', verifyToken, isAdmin, async (req, res) => {
     try {
         await User.findByIdAndDelete(req.params.id);
         res.status(200).json({ message: "User deleted successfully!" });
