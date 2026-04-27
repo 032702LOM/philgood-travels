@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import './PhilGood.css';
+import { Toaster } from 'react-hot-toast';
 
 // Context Providers
 import { AuthProvider } from './context/AuthContext';
@@ -41,6 +42,7 @@ function App() {
       <PreferencesProvider> 
         <div className="App">
           <ScrollToTop />
+          <Toaster position="top-center" reverseOrder={false} />
           <Navbar />
           <main>
             <Routes>

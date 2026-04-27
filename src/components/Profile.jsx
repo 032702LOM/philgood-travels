@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { usePreferences } from '../context/PreferencesContext';
+import toast from 'react-hot-toast';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ const Profile = () => {
     const params = new URLSearchParams(location.search);
     if (params.get('payment') === 'success') {
         setTimeout(() => {
-            alert("✅ Payment successful! Your dashboard will update shortly.");
+            toast.success("Payment successful! Your dashboard will update shortly.");
         }, 500);
         window.history.replaceState(null, '', window.location.pathname);
     }
@@ -68,24 +69,24 @@ const Profile = () => {
           try {
               await axios.delete(`${import.meta.env.VITE_API_URL}/api/bookings/${bookingId}`);
               setBookings(prev => prev.filter(b => b._id !== bookingId));
-              alert("Booking deleted!");
+              toast.success("Booking deleted!");
           } catch (error) {
-              alert("Failed to delete booking.");
+              toast.error("Failed to delete booking.");
           }
       }
   };
 
   const handleCancel = async (bookingId, travelDate) => {
       if (!canModify(travelDate)) {
-          return alert("Sorry, you can only cancel at least 2 days before your trip.");
+         return toast.error("Sorry, you can only cancel at least 2 days before your trip.");
       }
       if (window.confirm("Are you sure you want to cancel this trip?")) {
           try {
               const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/bookings/cancel/${bookingId}`);
               setBookings(prev => prev.map(b => b._id === bookingId ? response.data.booking : b));
-              alert("Trip cancelled successfully.");
+              toast.success("Trip cancelled successfully.");
           } catch (error) {
-              alert(error.response?.data?.error || "Failed to cancel.");
+              toast.error(error.response?.data?.error || "Failed to cancel.");
           }
       }
   };
