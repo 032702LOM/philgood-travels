@@ -226,4 +226,20 @@ router.post('/logout', (req, res) => {
     res.status(200).json({ message: "Logged out successfully" });
 });
 
+const { verifyToken } = require('../middleware/authMiddleware'); // ⚡ Import your middleware
+
+// GET Route to check if user is logged in (Persistence)
+router.get('/me', verifyToken, async (req, res) => {
+    try {
+        // Find the user by the ID we extracted from the secure cookie
+        const user = await User.findById(req.user.id).select('-password');
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        res.status(200).json({ user });
+    } catch (error) {
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
 module.exports = router;
