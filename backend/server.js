@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const http = require('http');
 const { Server } = require('socket.io');
+const cookieParser = require('cookie-parser'); // ⚡ 1. ADD THE IMPORT HERE
 
 // Models
 const ChatSession = require('./models/ChatSession');
@@ -33,13 +34,16 @@ app.use(cors({
         'https://philgood-travels.vercel.app'
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true
+    credentials: true // <-- Because this is true, our secure cookies will work!
 }));
+
+app.use(cookieParser()); // MIDDLEWARE 
 
 // 4. Set up Middleware
 app.use(express.json({ 
     verify: (req, res, buf) => { req.rawBody = buf.toString(); } 
 }));
+
 
 // 👉 Normal API Routes
 app.use('/api/auth', require('./routes/auth'));
