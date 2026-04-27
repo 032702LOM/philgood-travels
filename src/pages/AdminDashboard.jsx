@@ -319,9 +319,9 @@ const AdminDashboard = () => {
                   </div>
               `
           });
-          toast.error("Newsletter sent successfully!");
+          toast("Newsletter sent successfully!");
       } catch (error) {
-          toast.error("Failed to send newsletter.");
+          alert("Failed to send newsletter.");
       }
   };
  
