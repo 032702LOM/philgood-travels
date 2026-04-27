@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { usePreferences } from '../context/PreferencesContext';
+import { useAuth } from '../context/AuthContext'; // ⚡ NEW: Import the Auth Context
 import toast from 'react-hot-toast';
 
 const Profile = () => {
@@ -9,37 +10,36 @@ const Profile = () => {
   const location = useLocation(); 
   const { formatPrice } = usePreferences();
   
-  const [user, setUser] = useState(null);
+  // ⚡ NEW: Grab user and loading state directly from Context!
+  const { user, loading: authLoading } = useAuth(); 
+  
   const [bookings, setBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingBookings, setLoadingBookings] = useState(true);
 
+  // 1. Handle Authentication & Data Fetching
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userStr = localStorage.getItem('user');
+    if (authLoading) return; // Wait for context to finish checking storage
 
-    if (!token || !userStr) {
-      navigate('/login');
-    } else {
-      try {
-        const parsedUser = JSON.parse(userStr);
-        setUser(parsedUser);
-
-        // Fixed the 'aaxios' typo here ⚡
-        axios.get(`${import.meta.env.VITE_API_URL}/api/bookings/user/${parsedUser.id || parsedUser._id}`)
-          .then(response => {
-              setBookings(response.data);
-              setLoading(false);
-          })
-          .catch(err => {
-              console.error("Failed to fetch bookings", err);
-              setLoading(false);
-          });
-      } catch (error) {
-        console.error("Auth error", error);
-        navigate('/login');
-      }
+    if (!user) {
+      navigate('/login'); // Kick out unauthenticated users
+      return;
     }
 
+    // If user exists, fetch their data
+    axios.get(`${import.meta.env.VITE_API_URL}/api/bookings/user/${user.id || user._id}`)
+      .then(response => {
+          setBookings(response.data);
+          setLoadingBookings(false);
+      })
+      .catch(err => {
+          console.error("Failed to fetch bookings", err);
+          setLoadingBookings(false);
+          toast.error("Failed to load your bookings.");
+      });
+  }, [user, authLoading, navigate]);
+
+  // 2. Handle Payment Success Popups
+  useEffect(() => {
     const params = new URLSearchParams(location.search);
     if (params.get('payment') === 'success') {
         setTimeout(() => {
@@ -47,7 +47,7 @@ const Profile = () => {
         }, 500);
         window.history.replaceState(null, '', window.location.pathname);
     }
-  }, [navigate, location]);
+  }, [location]);
 
   const canModify = (travelDate) => {
       const tripDate = new Date(travelDate);
@@ -93,7 +93,7 @@ const Profile = () => {
 
   const handlePostpone = async (bookingId, travelDate) => {
       if (!canModify(travelDate)) {
-          return alert("Sorry, you can only postpone at least 2 days before your trip.");
+          return toast.error("Sorry, you can only postpone at least 2 days before your trip.");
       }
       const newDate = window.prompt("Enter your new travel date (YYYY-MM-DD):");
       if (newDate) {
@@ -101,9 +101,9 @@ const Profile = () => {
               try {
                   const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/bookings/postpone/${bookingId}`, { newDate });
                   setBookings(prev => prev.map(b => b._id === bookingId ? response.data.booking : b));
-                  alert("Trip postponed successfully.");
+                  toast.success("Trip postponed successfully.");
               } catch (error) {
-                  alert(error.response?.data?.error || "Failed to postpone.");
+                  toast.error(error.response?.data?.error || "Failed to postpone.");
               }
           }
       }
@@ -116,9 +116,9 @@ const Profile = () => {
               try {
                   const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/bookings/rebook/${bookingId}`, { newDate });
                   setBookings(prev => prev.map(b => b._id === bookingId ? response.data.booking : b));
-                  alert("Trip rebooked successfully!");
+                  toast.success("Trip rebooked successfully!");
               } catch (error) {
-                  alert(error.response?.data?.error || "Failed to rebook.");
+                  toast.error(error.response?.data?.error || "Failed to rebook.");
               }
           }
       }
@@ -191,7 +191,8 @@ const Profile = () => {
     setTimeout(() => { invoiceWindow.print(); }, 250);
   };
 
-  if (loading) {
+  // ⚡ UPDATED: We wait for BOTH the Auth to load AND the bookings to load
+  if (authLoading || loadingBookings) {
     return (
       <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh', backgroundColor: 'var(--bg-dark)' }}>
         <div className="spinner-border text-primary" role="status">

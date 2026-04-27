@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { tourPackages, allPlaces } from '../data/placesData';
 import { usePreferences } from '../context/PreferencesContext';
+import { useAuth } from '../context/AuthContext'; // ⚡ NEW: Import Auth Context
 import toast from 'react-hot-toast';
 
 const Booking = () => {
@@ -11,15 +12,16 @@ const Booking = () => {
   const allBookableItems = [...tourPackages, ...allPlaces];
   
   const { formatPrice, t } = usePreferences();
+  const { user } = useAuth(); // ⚡ NEW: Grab user from Context
 
   const [selectedPackage, setSelectedPackage] = useState('');
   const [date, setDate] = useState('');
-const [personalInfo, setPersonalInfo] = useState({ 
+  const [personalInfo, setPersonalInfo] = useState({ 
       name: '', 
       email: '', 
       phone: '', 
-      countryCode: '+63', // Default to PH
-      specialRequests: '' // New state for instructions
+      countryCode: '+63',
+      specialRequests: '' 
   });
   const [guests, setGuests] = useState({ adults: 1, children: 0, infants: 0 });
   const [accClass, setAccClass] = useState('Standard'); 
@@ -58,7 +60,6 @@ const [personalInfo, setPersonalInfo] = useState({
   const childTotal = (basePrice * 0.5) * guests.children; 
   const packageTotal = adultTotal + childTotal;
   
-  // 50% Child Discount for Accommodation Class
   const adultAccTotal = accClassRates[accClass] * guests.adults;
   const childAccTotal = (accClassRates[accClass] * 0.5) * guests.children;
   const accClassTotal = adultAccTotal + childAccTotal;
@@ -79,53 +80,40 @@ const [personalInfo, setPersonalInfo] = useState({
     e.preventDefault();
     if (!selectedPackage || !date) { toast("Please select a destination and a travel date."); return; }
 
-    const userStr = localStorage.getItem('user');
-    if (!userStr) {
+    // ⚡ UPDATED: Use context user instead of parsing localStorage
+    if (!user) {
         toast.error("You must be logged in to book a trip!");
         navigate('/login');
         return;
     }
     
     setIsSubmitting(true);
-    const user = JSON.parse(userStr);
-
-    const invoiceDetails = {
-        basePriceTotal: adultTotal + childTotal,
-        accClassText: `${accClass} Class`,
-        accClassTotal: accClassTotal,
-        transferTotal: transferTotal,
-        insuranceTotal: insuranceTotal,
-        dinnerTotal: dinnerTotal,
-        carbonTotal: carbonTotal,
-        vatTotal: vatTotal
-    };
 
     const bookingData = {
-    userId: user.id,
-    packageId: currentItem.id, // ⚡ Use the ID so the backend can look up the real price
-    travelDate: date,
-    guests: guests,           // Includes adults, children, infants
-    accClass: accClass,       // 'Standard', 'Deluxe', or 'Luxury'
-    addons: addons,           // The object containing your booleans (insurance, etc.)
-    paymentMethod: 'Pending Checkout', 
-    splitBetween: parseInt(splitBetween), 
-    friendEmails: payerEmails,
-    contactInfo: {
-        name: personalInfo.name,
-        email: personalInfo.email,
-        phone: `${personalInfo.countryCode} ${personalInfo.phone}`
-    },
-    specialRequests: personalInfo.specialRequests
-    // 🛡️ NOTICE: We removed totalPrice! The backend will calculate this itself.
-};
+        userId: user.id || user._id, // ⚡ Updated
+        packageId: currentItem.id,
+        travelDate: date,
+        guests: guests,           
+        accClass: accClass,       
+        addons: addons,           
+        paymentMethod: 'Pending Checkout', 
+        splitBetween: parseInt(splitBetween), 
+        friendEmails: payerEmails,
+        contactInfo: {
+            name: personalInfo.name,
+            email: personalInfo.email,
+            phone: `${personalInfo.countryCode} ${personalInfo.phone}`
+        },
+        specialRequests: personalInfo.specialRequests
+    };
 
     try {
       await axios.post(`${import.meta.env.VITE_API_URL}/api/bookings/create/`, bookingData);
         
         if (splitBetween > 1) {
-            toast("Trip added successfully!\n\nYour split payment links have been generated. Please proceed to your dashboard to pay your share.");
+            toast.success("Trip added successfully!\n\nYour split payment links have been generated.");
         } else {
-            toast("Trip added successfully!\n\nPlease proceed to your dashboard to complete the payment.");
+            toast.success("Trip added successfully!\n\nPlease proceed to your dashboard to complete the payment.");
         }
         
         navigate('/profile');
@@ -208,7 +196,6 @@ const [personalInfo, setPersonalInfo] = useState({
                   <div className="col-md-12"><label className="text-grey fw-bold small mb-2">{t('full_name', 'Full Name')}</label><input type="text" name="name" className="form-control-dark w-100" placeholder="Juan Dela Cruz" value={personalInfo.name} onChange={handleInfoChange} style={{ paddingLeft: '20px' }} required /></div>
                   <div className="col-md-6"><label className="text-grey fw-bold small mb-2">{t('email_addr', 'Email Address')}</label><input type="email" name="email" className="form-control-dark w-100" placeholder="juan@example.com" value={personalInfo.email} onChange={handleInfoChange} style={{ paddingLeft: '20px' }} required /></div>
                   
-                  {/* ⚡ UPDATED: PHONE NUMBER WITH COUNTRY CODE ⚡ */}
                   <div className="col-md-6">
                     <label className="text-grey fw-bold small mb-2">{t('phone', 'Phone Number')}</label>
                     <div className="d-flex">
@@ -241,7 +228,6 @@ const [personalInfo, setPersonalInfo] = useState({
                 </div>
               </div>
 
-              {/* ⚡ NEW: SPECIAL REQUESTS SECTION ⚡ */}
               <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 mb-4 teal-hover-box">
                 <h4 className="fw-bold mb-3 font-montserrat text-navy"><i className="fa-solid fa-bell-concierge text-accent me-2"></i> Special Requests & Instructions</h4>
                 <div className="row">

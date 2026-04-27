@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { usePreferences } from '../context/PreferencesContext';
+import { useAuth } from '../context/AuthContext'; // ⚡ NEW: Import Auth Context
 import { io } from 'socket.io-client';
 import toast from 'react-hot-toast';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const { formatPrice } = usePreferences();
+  const { user, loading: authLoading } = useAuth(); // ⚡ NEW: Grab user and loading state
   
   const [stats, setStats] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -46,26 +48,20 @@ const AdminDashboard = () => {
     setCurrentPage(1); 
   }, [searchKeyword, filterStatus, filterPayment, filterPackage, dateFrom, dateTo]);
 
+  // 1. Handle Admin Authentication & Data Fetching
   useEffect(() => {
     const fetchAdminData = async () => {
-      const token = localStorage.getItem('token');
-      const userStr = localStorage.getItem('user');
-      
-      if (!token || !userStr) { 
+      if (authLoading) return; // ⚡ Wait for context to finish loading
+
+      if (!user) { 
         navigate('/login'); 
         return; 
       }
       
-      try {
-        const parsedUser = JSON.parse(userStr);
-        if (!parsedUser?.isAdmin) { 
-          toast.error("🚨 Unauthorized Access."); 
-          navigate('/'); 
-          return; 
-        }
-      } catch (e) {
-        navigate('/login');
-        return;
+      if (!user.isAdmin) { 
+        toast.error("🚨 Unauthorized Access."); 
+        navigate('/'); 
+        return; 
       }
       
       try {
@@ -78,9 +74,9 @@ const AdminDashboard = () => {
       }
     };
     fetchAdminData();
-  }, [navigate]);
+  }, [navigate, user, authLoading]);
 
- // ⚡ PHASE 3: LIVE CHAT SOCKET LOGIC
+  // 2. Handle Live Chat Socket Logic
   useEffect(() => {
     const fetchChats = async () => {
       try {
@@ -102,10 +98,7 @@ const AdminDashboard = () => {
     setAdminSocket(socket);
 
     socket.on('admin_notification', (data) => {
-      fetchChats(); // Refresh sidebar
-
-      // ⚡ FIX: We check 'prev.sessionId' INSIDE the state updater.
-      // This guarantees React always has the freshest state without needing selectedChat in the dependency array!
+      fetchChats(); 
       setSelectedChat(prev => {
         if (prev && prev.sessionId === data.sessionId) {
           return {
@@ -113,25 +106,21 @@ const AdminDashboard = () => {
             messages: [...prev.messages, { sender: 'user', text: data.text, timestamp: new Date() }]
           };
         }
-        return prev; // If it's a different chat, just return the current state unchanged
+        return prev; 
       });
     });
 
     return () => {
       if (socket) socket.disconnect();
     };
-  }, []); // ⚡ FIX: Empty array! The socket will now stay permanently connected.
+  }, []);
 
-
-  // ⚡ NEW: Ensure Admin strictly joins the room only AFTER state updates
   useEffect(() => {
     if (selectedChat && adminSocket) {
         adminSocket.emit('join_chat', selectedChat.sessionId);
     }
   }, [selectedChat, adminSocket]);
 
-
-  // ⚡ SEND REPLY TO USER
   const handleAdminReply = () => {
       if (!adminChatInput.trim() || !selectedChat || !adminSocket) return;
 
@@ -141,10 +130,8 @@ const AdminDashboard = () => {
           text: adminChatInput
       };
 
-      // Emit the message to the server via the open socket
       adminSocket.emit('send_message', replyData);
       
-      // Update your local state immediately so your message appears in the window
       setSelectedChat(prev => ({
           ...prev,
           messages: [...prev.messages, { 
@@ -156,25 +143,16 @@ const AdminDashboard = () => {
       setAdminChatInput('');
   };
 
-  // ⚡ END AND DELETE CHAT FUNCTION
   const handleDeleteChat = async () => {
       if (!selectedChat) return;
-      
-      // Double-check before deleting
       if (!window.confirm('Are you sure you want to end and delete this chat session?')) return;
 
       try {
-          // Tell the backend to delete it
           await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/chats/${selectedChat.sessionId}`);
-          
-          // Clear it from the main chat window
           setSelectedChat(null);
-          
-          // Refresh the sidebar list to remove the deleted chat
-         const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/chats`);
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/chats`);
           setActiveChats(response.data);
       } catch (err) {
-          console.error("Error deleting chat:", err);
           toast.error("Failed to delete chat. Check console for details.");
       }
   };
@@ -185,15 +163,16 @@ const AdminDashboard = () => {
       await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/booking-status/${bookingId}`, { status: newStatus });
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/stats`);
       setStats(response.data);
+      toast.success("Booking status updated!");
     } catch (error) { 
       toast.error('❌ Failed to update status.'); 
     }
   };
 
   const handleDeleteUser = async (userId, userName) => {
-    const userStr = localStorage.getItem('user');
-    const currentUser = userStr ? JSON.parse(userStr) : null;
-    if (currentUser && userId === currentUser.id) return toast.error("❌ Cannot delete your own account!");
+    // ⚡ UPDATED: Check context user instead of localStorage
+    if (user && userId === (user.id || user._id)) return toast.error("❌ Cannot delete your own account!");
+    
     if (!window.confirm(`PERMANENTLY delete: ${userName}?`)) return;
     
     try {
@@ -204,6 +183,7 @@ const AdminDashboard = () => {
         totalUsers: (prev.totalUsers || 1) - 1 
       }));
       if (selectedUser && selectedUser._id === userId) setSelectedUser(null);
+      toast.success("User deleted.");
     } catch (error) { 
       toast.error('❌ Failed to delete user.'); 
     }
@@ -232,6 +212,7 @@ const AdminDashboard = () => {
           }));
           setSelectedUser(response.data.user); 
           setEditMode(null);
+          toast.success("User details updated.");
       } catch (error) { 
         toast.error('❌ Failed to update user.'); 
       }
@@ -241,9 +222,8 @@ const AdminDashboard = () => {
       if (!newNote.trim()) return;
       setIsPostingNote(true);
       try {
-          const userStr = localStorage.getItem('user');
-          const currentUser = userStr ? JSON.parse(userStr) : null;
-          const initials = currentUser?.name ? currentUser.name.substring(0, 2).toUpperCase() : 'AD';
+          // ⚡ UPDATED: Grab initials safely from Context user
+          const initials = user?.name ? user.name.substring(0, 2).toUpperCase() : 'AD';
 
           const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/user/${selectedUser._id}/notes`, { 
             text: newNote, 
@@ -286,6 +266,7 @@ const AdminDashboard = () => {
             allMessages: prev.allMessages?.filter(m => m._id !== msgId) || []
           }));
           setSelectedMessage(null);
+          toast.success("Message deleted.");
       } catch (e) { 
         toast.error("Failed to delete message"); 
       }
@@ -295,11 +276,10 @@ const AdminDashboard = () => {
     setSearchKeyword(''); setFilterStatus('All'); setFilterPayment('All'); setFilterPackage('All'); setDateFrom(''); setDateTo(''); 
   };
 
-  // ⚡ NEW: CLICK-TO-COPY FEATURE ⚡
- const handleCopyEmail = (email) => {
+  const handleCopyEmail = (email) => {
     if (!email) return;
     navigator.clipboard.writeText(email).then(() => {
-          toast(`✅ Copied to clipboard: ${email}`);
+          toast.success(`Copied to clipboard: ${email}`);
       }).catch(err => {
           console.error("Failed to copy text: ", err);
       });
@@ -319,7 +299,7 @@ const AdminDashboard = () => {
                   </div>
               `
           });
-          toast("Newsletter sent successfully!");
+          toast.success("Newsletter sent successfully!");
       } catch (error) {
           toast.error("Failed to send newsletter.");
       }
@@ -329,7 +309,7 @@ const AdminDashboard = () => {
   // ==========================================
   // SAFE EARLY RETURNS
   // ==========================================
-  if (isLoading) {
+  if (authLoading || isLoading) {
     return (
       <div className="fade-in d-flex align-items-center justify-content-center" style={{ minHeight: '80vh', backgroundColor: 'var(--bg-dark)' }}>
         <h3 className="text-navy fw-bold font-montserrat"><i className="fa-solid fa-spinner fa-spin text-accent me-2"></i> Loading Dashboard...</h3>
@@ -392,14 +372,8 @@ const AdminDashboard = () => {
 
   const unreadCount = stats?.allMessages?.filter(m => m?.status === 'Unread').length || 0;
   
-  let adminInitials = 'AD';
-  try {
-    const userStr = localStorage.getItem('user');
-    if (userStr) {
-        const userObj = JSON.parse(userStr);
-        if (userObj?.name) adminInitials = userObj.name.substring(0, 2).toUpperCase();
-    }
-  } catch (e) { console.error("Initials error", e); }
+  // ⚡ UPDATED: Use context user directly
+  const adminInitials = user?.name ? user.name.substring(0, 2).toUpperCase() : 'AD';
 
   // ==========================================
   // RENDER HELPER FUNCTIONS
@@ -438,8 +412,6 @@ const AdminDashboard = () => {
 
   const renderBookingsTab = () => (
       <div className="fade-in p-4">
-          
-          {/* HEADER */}
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h4 className="text-navy font-montserrat fw-bold m-0">
               <i className="fa-solid fa-table-list text-accent me-2"></i> All Orders
@@ -449,7 +421,6 @@ const AdminDashboard = () => {
             </span>
           </div>
 
-          {/* ⚡ NEW: TOP FILTER BAR ⚡ */}
           <div className="card shadow-sm border-0 mb-4 rounded-4" style={{ backgroundColor: '#f8f9fa' }}>
             <div className="card-body p-3">
               <div className="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
@@ -460,7 +431,6 @@ const AdminDashboard = () => {
               </div>
 
               <div className="row g-3">
-                {/* Search */}
                 <div className="col-lg-3 col-md-6">
                   <label className="text-muted small fw-bold mb-1">Search Keyword</label>
                   <div className="input-group input-group-sm shadow-sm">
@@ -469,7 +439,6 @@ const AdminDashboard = () => {
                   </div>
                 </div>
 
-                {/* Status */}
                 <div className="col-lg-2 col-md-6">
                   <label className="text-muted small fw-bold mb-1">Booking Status</label>
                   <select className="form-select form-select-sm shadow-sm" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
@@ -481,7 +450,6 @@ const AdminDashboard = () => {
                   </select>
                 </div>
 
-                {/* Payment */}
                 <div className="col-lg-2 col-md-6">
                   <label className="text-muted small fw-bold mb-1">Payment Status</label>
                   <select className="form-select form-select-sm shadow-sm" value={filterPayment} onChange={(e) => setFilterPayment(e.target.value)}>
@@ -491,7 +459,6 @@ const AdminDashboard = () => {
                   </select>
                 </div>
 
-                {/* Package */}
                 <div className="col-lg-2 col-md-6">
                   <label className="text-muted small fw-bold mb-1">Destination</label>
                   <select className="form-select form-select-sm shadow-sm" value={filterPackage} onChange={(e) => setFilterPackage(e.target.value)}>
@@ -500,7 +467,6 @@ const AdminDashboard = () => {
                   </select>
                 </div>
 
-                {/* Dates */}
                 <div className="col-lg-3 col-md-12">
                   <label className="text-muted small fw-bold mb-1">Travel Date Range</label>
                   <div className="d-flex gap-2">
@@ -513,7 +479,6 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* ⚡ FULL WIDTH TABLE ⚡ */}
           <div className="card shadow-sm border border-primary border-opacity-10 rounded-4 overflow-hidden" style={{ backgroundColor: 'var(--card-bg)' }}>
             <div className="table-responsive" style={{ minHeight: '400px' }}>
               <table className="table table-hover align-middle mb-0" style={{ color: 'var(--text-grey)' }}>
@@ -575,7 +540,6 @@ const AdminDashboard = () => {
               </table>
             </div>
             
-            {/* PAGINATION */}
             {totalPages > 1 && (
                 <div className="d-flex justify-content-between align-items-center p-3 border-top bg-light">
                     <span className="text-grey small fw-bold">Page {currentPage} of {totalPages}</span>
@@ -727,16 +691,7 @@ const AdminDashboard = () => {
                                               <span className="text-dark">{formatPrice(userBookings[0]?.totalPrice || 0)}</span>
                                           </div>
                                           <div className="p-3 border-top d-flex justify-content-between align-items-center">
-                                              <span 
-    className="text-primary" 
-    style={{ cursor: 'pointer', fontWeight: '500' }}
-    onClick={() => {
-        setSelectedUser(null); 
-        setSelectedBooking(userBookings[0]);
-    }}
->
-    Show products
-</span>
+                                              <span className="text-primary" style={{ cursor: 'pointer', fontWeight: '500' }} onClick={() => { setSelectedUser(null); setSelectedBooking(userBookings[0]); }}>Show products</span>
                                               <div>
                                                   <button className="btn btn-sm btn-light border me-2 fw-bold text-dark" onClick={() => {setSelectedUser(null); setSelectedBooking(userBookings[0]);}}>View details</button>
                                               </div>
@@ -753,17 +708,8 @@ const AdminDashboard = () => {
                                           <div className="rounded-circle bg-success text-white d-flex align-items-center justify-content-center fw-bold" style={{ width: '40px', height: '40px', flexShrink: 0 }}>
                                             {adminInitials}
                                           </div>
-                                          <input 
-                                            type="text" 
-                                            className="form-control border-0 bg-light" 
-                                            placeholder="Leave a comment..." 
-                                            value={newNote} 
-                                            onChange={(e) => setNewNote(e.target.value)} 
-                                            onKeyDown={(e) => e.key === 'Enter' && handleAddNote()} 
-                                          />
-                                          <button className="btn btn-sm btn-dark fw-bold px-3" onClick={handleAddNote} disabled={!newNote.trim() || isPostingNote}>
-                                            {isPostingNote ? 'Posting...' : 'Post'}
-                                          </button>
+                                          <input type="text" className="form-control border-0 bg-light" placeholder="Leave a comment..." value={newNote} onChange={(e) => setNewNote(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAddNote()} />
+                                          <button className="btn btn-sm btn-dark fw-bold px-3" onClick={handleAddNote} disabled={!newNote.trim() || isPostingNote}>{isPostingNote ? 'Posting...' : 'Post'}</button>
                                       </div>
                                   </div>
 
@@ -826,13 +772,7 @@ const AdminDashboard = () => {
                                           <h6 className="text-dark fw-bold mb-2">Contact information</h6>
                                           <div className="d-flex justify-content-between align-items-center mb-1">
                                               <a href={`mailto:${activeUserToRender?.email}`} className="text-decoration-none text-primary">{activeUserToRender?.email || 'N/A'}</a>
-                                              {/* ⚡ CLICK-TO-COPY EMAIL ⚡ */}
-                                              <i 
-                                                className="fa-regular fa-copy text-muted ms-2" 
-                                                style={{ cursor: 'pointer' }} 
-                                                title="Copy Email"
-                                                onClick={() => handleCopyEmail(activeUserToRender?.email)}
-                                              ></i>
+                                              <i className="fa-regular fa-copy text-muted ms-2" style={{ cursor: 'pointer' }} title="Copy Email" onClick={() => handleCopyEmail(activeUserToRender?.email)}></i>
                                           </div>
                                           <p className="m-0 text-dark mb-4">{activeUserToRender?.address?.phone || 'No phone provided'}</p>
 
@@ -988,7 +928,6 @@ const AdminDashboard = () => {
   const renderBookingModal = () => {
     if (!selectedBooking) return null;
 
-    // ⚡ Extract invoice details safely
     const safeInvoice = selectedBooking?.invoiceDetails || {};
 
     return (
@@ -1024,7 +963,6 @@ const AdminDashboard = () => {
                           </div>
                       </div>
 
-                      {/* ⚡ NEW: SPECIAL REQUESTS DISPLAY ⚡ */}
                       {selectedBooking?.specialRequests && (
                           <div className="mb-4 p-3 rounded-3" style={{ backgroundColor: 'rgba(255, 159, 28, 0.1)', border: '1px solid rgba(255, 159, 28, 0.3)' }}>
                               <h6 className="text-navy font-montserrat fw-bold mb-2"><i className="fa-solid fa-bell-concierge text-accent me-2"></i> Special Requests & Instructions</h6>
@@ -1032,7 +970,6 @@ const AdminDashboard = () => {
                           </div>
                       )}
 
-                      {/* ⚡ NEW: ITEMIZED PRICE BREAKDOWN ⚡ */}
                       <div className="mb-4 p-3 rounded-3" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid rgba(0, 119, 182, 0.2)' }}>
                           <h6 className="text-navy font-montserrat fw-bold mb-3"><i className="fa-solid fa-receipt text-accent me-2"></i> Price Breakdown</h6>
                           
@@ -1150,10 +1087,8 @@ const AdminDashboard = () => {
     );
   };
 
-  // ⚡ PHASE 3: LIVE CHAT UI
   const renderLiveChatTab = () => (
     <div className="row g-0 fade-in" style={{ height: '600px', backgroundColor: '#fff' }}>
-        {/* Left Sidebar: List of Active Users */}
         <div className="col-md-4 border-end overflow-auto p-3 h-100" style={{ backgroundColor: '#f8f9fa' }}>
             <h6 className="fw-bold text-navy mb-3">Customer Inquiries</h6>
             {activeChats.length === 0 ? (
@@ -1181,7 +1116,6 @@ const AdminDashboard = () => {
             )}
         </div>
 
-        {/* Right Side: The Chat Conversation */}
         <div className="col-md-8 d-flex flex-column p-0 h-100">
             {selectedChat ? (
                 <>
@@ -1222,9 +1156,6 @@ const AdminDashboard = () => {
     </div>
   );
 
-  // ==========================================
-  // MAIN RENDER
-  // ==========================================
   return (
     <div className="fade-in" style={{ paddingTop: '100px', minHeight: '100vh', backgroundColor: 'var(--bg-dark)' }}>
       <div className="container pb-5">
@@ -1260,7 +1191,6 @@ const AdminDashboard = () => {
 </button>
         </div>
 
-        {/* MAIN TABS CONTAINER */}
         <div className="rounded-4 shadow-lg border border-primary border-opacity-25 overflow-hidden" style={{ backgroundColor: 'var(--card-bg)' }}>
           {activeTab === 'bookings' && renderBookingsTab()}
           {activeTab === 'users' && renderUsersTab()}
@@ -1270,7 +1200,6 @@ const AdminDashboard = () => {
 
       </div>
 
-      {/* FLOATING MODALS */}
       {renderCrmModal()}
       {renderBookingModal()}
       {renderMessageModal()}
