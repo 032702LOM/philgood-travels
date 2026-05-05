@@ -84,26 +84,51 @@ router.post('/user/:id/notes', verifyToken, isAdmin, async (req, res) => {
 // ⚡ NEW PUT: Update User Profile (Admin Action) with Auto-logging
 router.put('/user/:id', verifyToken, isAdmin, async (req, res) => {
     try {
-        const { name, email, isAdminStatus } = req.body;
+        // 1. Grab everything the frontend is sending
+        const { name, email, isAdmin, address, marketing, tax } = req.body;
         const user = await User.findById(req.params.id);
         
         if (!user) return res.status(404).json({ error: "User not found" });
 
-        // Track what changed for a detailed log
+        // 2. Track exactly what changed for a highly detailed CRM log
         let changes = [];
+        
+        // Basic Info
         if (name && user.name !== name) { user.name = name; changes.push('Name'); }
         if (email && user.email !== email) { user.email = email; changes.push('Email'); }
-        if (isAdminStatus !== undefined && user.isAdmin !== isAdminStatus) { user.isAdmin = isAdminStatus; changes.push('Role'); }
+        if (isAdmin !== undefined && user.isAdmin !== isAdmin) { user.isAdmin = isAdmin; changes.push('Admin Role'); }
 
-        // Auto-generate a comment in the User's Profile if changes were made
+        // Address Details
+        if (address) {
+            if (user.address.phone !== address.phone) { user.address.phone = address.phone; changes.push('Phone'); }
+            if (user.address.street !== address.street) { user.address.street = address.street; changes.push('Street'); }
+            if (user.address.city !== address.city) { user.address.city = address.city; changes.push('City'); }
+            if (user.address.postalCode !== address.postalCode) { user.address.postalCode = address.postalCode; changes.push('Postal Code'); }
+            if (user.address.country !== address.country) { user.address.country = address.country; changes.push('Country'); }
+        }
+
+        // Marketing Preferences
+        if (marketing) {
+            if (user.marketing.email !== marketing.email) { user.marketing.email = marketing.email; changes.push('Email Marketing'); }
+            if (user.marketing.sms !== marketing.sms) { user.marketing.sms = marketing.sms; changes.push('SMS Marketing'); }
+        }
+
+        // Tax Details
+        if (tax) {
+            if (user.tax.vatNumber !== tax.vatNumber) { user.tax.vatNumber = tax.vatNumber; changes.push('VAT Number'); }
+            if (user.tax.collectTax !== tax.collectTax) { user.tax.collectTax = tax.collectTax; changes.push('Tax Collection'); }
+        }
+
+        // 3. Auto-generate a comment ONLY if changes were actually made
         if (changes.length > 0) {
             user.adminNotes.push({
                 text: `System: Admin updated the following profile details: ${changes.join(', ')}.`,
                 authorInitials: '⚙️'
             });
+            await user.save(); // Save the new data and the note
         }
 
-        await user.save();
+        // 4. Return the fresh user object back to AdminDashboard.jsx
         const updatedUser = await User.findById(req.params.id).select('-password');
         res.status(200).json({ message: "User updated successfully", user: updatedUser });
 
