@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom'; // ⚡ ADDED useNavigate
-import { useAuth } from '../context/AuthContext'; // ⚡ ADDED useAuth
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext'; 
+import toast from 'react-hot-toast'; // ⚡ Using toast for consistency
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
-  const [message, setMessage] = useState('');
-  const [isError, setIsError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  // ⚡ Hook into our Auth Context and Router
+  // ⚡ Hook into our updated Auth Context
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -19,18 +18,26 @@ const Login = () => {
     setIsSubmitting(true);
     
     try {
+      // ⚡ The token is now automatically handled by the backend cookie
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, formData);
       
-      setMessage(response.data.message);
-      setIsError(false);
+      const userData = response.data.user;
+
+      // ⚡ UPDATED: Passing only user data to the global state
+      login(userData);
       
-      // ⚡ Replace the manual localStorage and window.location.href with this:
-      login(response.data.token, response.data.user);
-      navigate('/'); // Instantly routes to home without a page reload!
+      toast.success(response.data.message || "Welcome back!");
+
+      // ⚡ AUTOMATION: Direct the user based on their role
+      if (userData.isAdmin) {
+          navigate('/admin'); // No more manual typing needed!
+      } else {
+          navigate('/'); 
+      }
 
     } catch (err) {
-      setMessage(err.response?.data?.error || "Login failed");
-      setIsError(true);
+      console.error("Login error:", err);
+      toast.error(err.response?.data?.error || "Login failed. Please check your credentials.");
     } finally {
       setIsSubmitting(false);
     }
@@ -51,10 +58,11 @@ const Login = () => {
         
         <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
           <div>
+            <label className="text-grey small fw-bold mb-1">Email Address</label>
             <input 
               type="email" 
               className="form-control-dark w-100 shadow-none" 
-              placeholder="Email Address" 
+              placeholder="juan@example.com" 
               value={formData.email}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
               required 
@@ -62,52 +70,43 @@ const Login = () => {
           </div>
           
           <div className="position-relative">
-            <input 
-              type={showPassword ? "text" : "password"} // ⚡ NEW: Dynamic type
-              className="form-control-dark w-100 shadow-none" 
-              placeholder="Password" 
-              value={formData.password}
-              onChange={(e) => setFormData({...formData, password: e.target.value})}
-              style={{ paddingRight: '40px' }} // Prevent text from hiding behind the icon
-              required 
-            />
-            {/* ⚡ NEW: Eye Icon Toggle */}
-            <button 
-              type="button" 
-              className="btn position-absolute end-0 top-50 translate-middle-y border-0 shadow-none" 
-              style={{ color: 'var(--text-grey)' }}
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              <i className={`fa-solid ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
-            </button>
-          </div>
-
-          {/* ⚡ NEW: Forgot Password Link */}
-          <div className="text-end mt-1 mb-1">
-              <Link to="/forgot-password" className="text-grey small text-decoration-none fw-bold" style={{ fontSize: '0.8rem' }}>
-                  Forgot Password?
-              </Link>
+            <div className="d-flex justify-content-between">
+                <label className="text-grey small fw-bold mb-1">Password</label>
+                <Link to="/forgot-password" style={{ fontSize: '0.75rem', color: 'var(--accent-color)', textDecoration: 'none' }}>Forgot Password?</Link>
+            </div>
+            <div className="position-relative">
+                <input 
+                  type={showPassword ? "text" : "password"} 
+                  className="form-control-dark w-100 shadow-none" 
+                  placeholder="••••••••" 
+                  value={formData.password}
+                  onChange={(e) => setFormData({...formData, password: e.target.value})}
+                  style={{ paddingRight: '40px' }} 
+                  required 
+                />
+                <button 
+                  type="button" 
+                  className="btn position-absolute end-0 top-50 translate-middle-y border-0 shadow-none" 
+                  style={{ color: 'var(--text-grey)' }}
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  <i className={`fa-solid ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                </button>
+            </div>
           </div>
 
           <button 
             type="submit" 
             className="btn btn-proceed w-100 mt-2 py-3 text-uppercase font-montserrat fw-bold shadow"
-            disabled={isSubmitting} // ⚡ Disable spam clicking
+            disabled={isSubmitting}
           >
-            {isSubmitting ? "Logging in..." : "Log In"}
+            {isSubmitting ? <><i className="fa-solid fa-spinner fa-spin me-2"></i> Logging in...</> : "Log In"}
           </button>
         </form>
 
-        {/* ⚡ NEW: Sign Up Link for new users */}
         <div className="text-center mt-4">
             <small className="text-grey">Don't have an account? <Link to="/register" className="text-accent fw-bold text-decoration-none">Sign Up</Link></small>
         </div>
-
-        {message && (
-          <div className={`mt-3 text-center fw-bold small ${isError ? 'text-danger' : 'text-success'}`}>
-            {message}
-          </div>
-        )}
       </div>
     </div>
   );
