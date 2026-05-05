@@ -173,7 +173,6 @@ router.post('/broadcast', async (req, res) => {
     }
 });
 
-const ChatSession = require('../models/ChatSession'); // ⚡ Import your new model
 
 // GET: All active chat sessions for the admin dashboard
 router.get('/chats', async (req, res) => {
