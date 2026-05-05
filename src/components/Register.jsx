@@ -115,14 +115,14 @@ const Register = () => {
                   style={{ paddingLeft: '45px', paddingRight: '45px' }}
                   required 
                 />
-                {/* ⚡ FIX: Added zIndex: 10 so it is never blocked by the input field */}
+                {/* ⚡ FIX: Added pointerEvents: 'auto' to override global CSS blocking clicks */}
                 <button 
                   type="button" 
                   className="btn btn-link position-absolute text-muted p-0" 
-                  style={{ right: '15px', top: '50%', transform: 'translateY(-50%)', textDecoration: 'none', zIndex: 10 }}
+                  style={{ right: '15px', top: '50%', transform: 'translateY(-50%)', textDecoration: 'none', zIndex: 100, pointerEvents: 'auto' }}
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  <i className={`fa-solid ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                  <i className={`fa-solid ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`} style={{ pointerEvents: 'none' }}></i>
                 </button>
             </div>
             
@@ -169,14 +169,14 @@ const Register = () => {
                   style={{ paddingLeft: '45px', paddingRight: '45px' }}
                   required 
                 />
-                {/* ⚡ FIX: Added zIndex: 10 so it is never blocked by the input field */}
+                {/* ⚡ FIX: Added pointerEvents: 'auto' here as well */}
                 <button 
                   type="button" 
                   className="btn btn-link position-absolute text-muted p-0" 
-                  style={{ right: '15px', top: '50%', transform: 'translateY(-50%)', textDecoration: 'none', zIndex: 10 }}
+                  style={{ right: '15px', top: '50%', transform: 'translateY(-50%)', textDecoration: 'none', zIndex: 100, pointerEvents: 'auto' }}
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 >
-                  <i className={`fa-solid ${showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                  <i className={`fa-solid ${showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'}`} style={{ pointerEvents: 'none' }}></i>
                 </button>
             </div>
             
