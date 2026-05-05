@@ -53,6 +53,17 @@ router.get('/chats', verifyToken, isAdmin, async (req, res) => {
     }
 });
 
+// ⚡ DELETE A CHAT SESSION
+router.delete('/chats/:sessionId', verifyToken, isAdmin, async (req, res) => {
+    try {
+        await ChatSession.findOneAndDelete({ sessionId: req.params.sessionId });
+        res.status(200).json({ message: 'Chat session deleted successfully' });
+    } catch (error) {
+        console.error("Error deleting chat:", error);
+        res.status(500).json({ error: 'Failed to delete chat session' });
+    }
+});
+
 // POST: Add a timeline note to a user
 router.post('/user/:id/notes', verifyToken, isAdmin, async (req, res) => {
     try {
@@ -67,6 +78,48 @@ router.post('/user/:id/notes', verifyToken, isAdmin, async (req, res) => {
         res.status(200).json({ message: "Note added!", user: updatedUser });
     } catch (error) {
         res.status(500).json({ error: "Failed to add note." });
+    }
+});
+
+// ⚡ NEW PUT: Update User Profile (Admin Action) with Auto-logging
+router.put('/user/:id', verifyToken, isAdmin, async (req, res) => {
+    try {
+        const { name, email, isAdminStatus } = req.body;
+        const user = await User.findById(req.params.id);
+        
+        if (!user) return res.status(404).json({ error: "User not found" });
+
+        // Track what changed for a detailed log
+        let changes = [];
+        if (name && user.name !== name) { user.name = name; changes.push('Name'); }
+        if (email && user.email !== email) { user.email = email; changes.push('Email'); }
+        if (isAdminStatus !== undefined && user.isAdmin !== isAdminStatus) { user.isAdmin = isAdminStatus; changes.push('Role'); }
+
+        // Auto-generate a comment in the User's Profile if changes were made
+        if (changes.length > 0) {
+            user.adminNotes.push({
+                text: `System: Admin updated the following profile details: ${changes.join(', ')}.`,
+                authorInitials: '⚙️'
+            });
+        }
+
+        await user.save();
+        const updatedUser = await User.findById(req.params.id).select('-password');
+        res.status(200).json({ message: "User updated successfully", user: updatedUser });
+
+    } catch (error) {
+        console.error("Admin Update Error:", error);
+        res.status(500).json({ error: "Failed to update user profile." });
+    }
+});
+
+// DELETE: Delete user
+router.delete('/user/:id', verifyToken, isAdmin, async (req, res) => {
+    try {
+        await User.findByIdAndDelete(req.params.id);
+        res.status(200).json({ message: "User deleted successfully!" });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to delete user." });
     }
 });
 
@@ -96,18 +149,8 @@ router.put('/booking-status/:id', verifyToken, isAdmin, async (req, res) => {
     }
 });
 
-// DELETE: Delete user
-router.delete('/user/:id', verifyToken, isAdmin, async (req, res) => {
-    try {
-        await User.findByIdAndDelete(req.params.id);
-        res.status(200).json({ message: "User deleted successfully!" });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to delete user." });
-    }
-});
-
 // PUT: Mark message as read
-router.put('/message/:id', async (req, res) => {
+router.put('/message/:id', verifyToken, isAdmin, async (req, res) => {
     try {
         const message = await Message.findById(req.params.id);
         message.status = 'Read';
@@ -119,7 +162,7 @@ router.put('/message/:id', async (req, res) => {
 });
 
 // DELETE: Delete message
-router.delete('/message/:id', async (req, res) => {
+router.delete('/message/:id', verifyToken, isAdmin, async (req, res) => {
     try {
         await Message.findByIdAndDelete(req.params.id);
         res.status(200).json({ message: "Message deleted." });
@@ -128,27 +171,8 @@ router.delete('/message/:id', async (req, res) => {
     }
 });
 
-// ⚡ NEW POST: Add a timeline note to a user
-router.post('/user/:id/notes', async (req, res) => {
-    try {
-        const { text, authorInitials } = req.body;
-        const user = await User.findById(req.params.id);
-        if (!user) return res.status(404).json({ error: "User not found" });
-
-        // Add the new note to the top of their timeline
-        user.adminNotes.push({ text, authorInitials });
-        await user.save();
-
-        // Return the freshly updated user to the frontend
-        const updatedUser = await User.findById(req.params.id).select('-password');
-        res.status(200).json({ message: "Note added!", user: updatedUser });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to add note." });
-    }
-});
-
 // POST: Send a marketing broadcast
-router.post('/broadcast', async (req, res) => {
+router.post('/broadcast', verifyToken, isAdmin, async (req, res) => {
     try {
         const { subject, htmlContent } = req.body;
 
@@ -156,8 +180,6 @@ router.post('/broadcast', async (req, res) => {
             return res.status(400).json({ error: "Subject and HTML content are required." });
         }
 
-        // We know this exact command works for our  booking emails!
-        // We are hardcoding our email just for this test to guarantee delivery.
         await resend.emails.send({
             from: 'PhilGood Travels <onboarding@resend.dev>', 
             to: 'techtacoder@gmail.com', 
@@ -173,26 +195,4 @@ router.post('/broadcast', async (req, res) => {
     }
 });
 
-
-// GET: All active chat sessions for the admin dashboard
-router.get('/chats', async (req, res) => {
-    try {
-        // Fetch sessions sorted by most recent activity
-        const chats = await ChatSession.find({ status: 'Active' }).sort({ updatedAt: -1 });
-        res.status(200).json(chats);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to load chat sessions." });
-    }
-});
-
-// ⚡ DELETE A CHAT SESSION
-router.delete('/chats/:sessionId', async (req, res) => {
-    try {
-        await ChatSession.findOneAndDelete({ sessionId: req.params.sessionId });
-        res.status(200).json({ message: 'Chat session deleted successfully' });
-    } catch (error) {
-        console.error("Error deleting chat:", error);
-        res.status(500).json({ error: 'Failed to delete chat session' });
-    }
-});
 module.exports = router;

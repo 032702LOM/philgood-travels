@@ -467,7 +467,7 @@ router.post('/webhook', async (req, res) => {
 
         const event = req.body;
 
-        // 1. Check if the event is a successful payment
+                // 1. Check if the event is a successful payment
         if (event?.data?.attributes?.type === 'checkout_session.payment.paid') {
             
             const checkoutId = event.data.attributes.data.id;
@@ -493,6 +493,17 @@ router.post('/webhook', async (req, res) => {
 
                 await booking.save();
                 console.log(`✅ Success: Payment securely marked as Paid for Booking ID: ${booking._id}`);
+
+                // ⚡ NEW: Auto-generate a comment in the User's Profile
+                const user = await User.findById(booking.userId);
+                if (user) {
+                    user.adminNotes.push({
+                        text: `System: Customer successfully made a payment for their trip to ${booking.packageName}.`,
+                        authorInitials: '⚙️' // Gear icon represents the automated system
+                    });
+                    await user.save();
+                }
+
             } else {
                 console.log(`⚠️ Webhook received, but no matching booking found for ID: ${checkoutId}`);
             }
