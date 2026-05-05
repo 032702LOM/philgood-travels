@@ -294,10 +294,54 @@ router.put('/rebook/:id', async (req, res) => {
 // ==========================================
 router.get('/user/:userId', async (req, res) => {
     try {
+        const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
+        // AUTO-CLEANUP: Find and delete any archived trips older than 30 days 
+        // WHERE no payment in the array has the status 'Paid' (Meaning it is completely UNPAID)
+        await Booking.deleteMany({
+            userId: req.params.userId,
+            isArchived: true,
+            archivedAt: { $lt: thirtyDaysAgo },
+            payments: { $not: { $elemMatch: { status: 'Paid' } } }
+        });
+
+        // Fetch the remaining bookings
         const bookings = await Booking.find({ userId: req.params.userId }).sort({ createdAt: -1 });
         res.status(200).json(bookings);
     } catch (error) {
         res.status(500).json({ error: "Failed to fetch bookings." });
+    }
+});
+
+// ==========================================
+// PUT: Archive a Trip
+// ==========================================
+router.put('/:id/archive', async (req, res) => {
+    try {
+        const booking = await Booking.findByIdAndUpdate(
+            req.params.id, 
+            { isArchived: true, archivedAt: new Date() }, 
+            { new: true }
+        );
+        res.status(200).json({ message: "Trip archived", booking });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to archive trip' });
+    }
+});
+
+// ==========================================
+// PUT: Retrieve (Unarchive) a Trip
+// ==========================================
+router.put('/:id/retrieve', async (req, res) => {
+    try {
+        const booking = await Booking.findByIdAndUpdate(
+            req.params.id, 
+            { isArchived: false, archivedAt: null }, 
+            { new: true }
+        );
+        res.status(200).json({ message: "Trip retrieved", booking });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to retrieve trip' });
     }
 });
 

@@ -12,7 +12,7 @@ const bookingSchema = new mongoose.Schema({
     totalPrice: { type: Number, required: true },
     paymentMethod: { type: String, required: true },
     
-    // ⚡ NEW: Stores the exact price breakdown for the invoice email ⚡
+    // ⚡ Stores the exact price breakdown for the invoice email 
     invoiceDetails: {
         basePriceTotal: { type: Number, default: 0 },
         accClassText: { type: String, default: '' },
@@ -32,6 +32,10 @@ const bookingSchema = new mongoose.Schema({
     
     postponeCount: { type: Number, default: 0 }, 
     cancelledAt: { type: Date }, 
+
+    // ⚡ NEW: Fields for the Archive System ⚡
+    isArchived: { type: Boolean, default: false },
+    archivedAt: { type: Date, default: null },
 
     splitBetween: { type: Number, default: 1 },
     payments: [

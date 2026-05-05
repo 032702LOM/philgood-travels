@@ -2,30 +2,32 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { usePreferences } from '../context/PreferencesContext';
-import { useAuth } from '../context/AuthContext'; // ⚡ NEW: Import the Auth Context
+import { useAuth } from '../context/AuthContext'; 
 import toast from 'react-hot-toast';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const Profile = () => {
   const navigate = useNavigate();
   const location = useLocation(); 
   const { formatPrice } = usePreferences();
   
-  // ⚡ NEW: Grab user and loading state directly from Context!
   const { user, loading: authLoading } = useAuth(); 
   
   const [bookings, setBookings] = useState([]);
   const [loadingBookings, setLoadingBookings] = useState(true);
 
-  // 1. Handle Authentication & Data Fetching
+  // ⚡ NEW: State to handle tabs (Planned vs Archives)
+  const [activeTab, setActiveTab] = useState('planned'); 
+
   useEffect(() => {
-    if (authLoading) return; // Wait for context to finish checking storage
+    if (authLoading) return; 
 
     if (!user) {
-      navigate('/login'); // Kick out unauthenticated users
+      navigate('/login'); 
       return;
     }
 
-    // If user exists, fetch their data
     axios.get(`${import.meta.env.VITE_API_URL}/api/bookings/user/${user.id || user._id}`)
       .then(response => {
           setBookings(response.data);
@@ -38,13 +40,10 @@ const Profile = () => {
       });
   }, [user, authLoading, navigate]);
 
-  // 2. Handle Payment Success Popups
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     if (params.get('payment') === 'success') {
-        setTimeout(() => {
-            toast.success("Payment successful! Your dashboard will update shortly.");
-        }, 500);
+        setTimeout(() => { toast.success("Payment successful! Your dashboard will update shortly."); }, 500);
         window.history.replaceState(null, '', window.location.pathname);
     }
   }, [location]);
@@ -52,9 +51,7 @@ const Profile = () => {
   const canModify = (travelDate) => {
       const tripDate = new Date(travelDate);
       const today = new Date();
-      const diffTime = tripDate.getTime() - today.getTime();
-      const diffDays = diffTime / (1000 * 3600 * 24);
-      return diffDays >= 2;
+      return (tripDate.getTime() - today.getTime()) / (1000 * 3600 * 24) >= 2;
   };
 
   const isWithinRebookWindow = (cancelledAt) => {
@@ -64,12 +61,37 @@ const Profile = () => {
       return new Date(cancelledAt) > oneMonthAgo;
   };
 
+  // ⚡ NEW: Archive a trip instead of deleting it
+  const handleArchive = async (bookingId) => {
+    if (window.confirm("Move this trip to your Archives?")) {
+        try {
+            const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/bookings/${bookingId}/archive`);
+            setBookings(prev => prev.map(b => b._id === bookingId ? response.data.booking : b));
+            toast.success("Trip moved to Archives!");
+        } catch (error) {
+            toast.error("Failed to archive booking.");
+        }
+    }
+  };
+
+  // ⚡ NEW: Retrieve a trip from archives
+  const handleRetrieve = async (bookingId) => {
+      try {
+          const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/bookings/${bookingId}/retrieve`);
+          setBookings(prev => prev.map(b => b._id === bookingId ? response.data.booking : b));
+          toast.success("Trip retrieved successfully!");
+      } catch (error) {
+          toast.error("Failed to retrieve booking.");
+      }
+  };
+
+  // ⚡ UPDATED: Permanent delete ONLY from the archives tab
   const handleDelete = async (bookingId) => {
-      if (window.confirm("Are you sure you want to permanently delete this booking?")) {
+      if (window.confirm("PERMANENTLY delete this record? This cannot be undone.")) {
           try {
               await axios.delete(`${import.meta.env.VITE_API_URL}/api/bookings/${bookingId}`);
               setBookings(prev => prev.filter(b => b._id !== bookingId));
-              toast.success("Booking deleted!");
+              toast.success("Record permanently deleted.");
           } catch (error) {
               toast.error("Failed to delete booking.");
           }
@@ -77,24 +99,18 @@ const Profile = () => {
   };
 
   const handleCancel = async (bookingId, travelDate) => {
-      if (!canModify(travelDate)) {
-         return toast.error("Sorry, you can only cancel at least 2 days before your trip.");
-      }
+      if (!canModify(travelDate)) return toast.error("Sorry, you can only cancel at least 2 days before your trip.");
       if (window.confirm("Are you sure you want to cancel this trip?")) {
           try {
               const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/bookings/cancel/${bookingId}`);
               setBookings(prev => prev.map(b => b._id === bookingId ? response.data.booking : b));
               toast.success("Trip cancelled successfully.");
-          } catch (error) {
-              toast.error(error.response?.data?.error || "Failed to cancel.");
-          }
+          } catch (error) { toast.error(error.response?.data?.error || "Failed to cancel."); }
       }
   };
 
   const handlePostpone = async (bookingId, travelDate) => {
-      if (!canModify(travelDate)) {
-          return toast.error("Sorry, you can only postpone at least 2 days before your trip.");
-      }
+      if (!canModify(travelDate)) return toast.error("Sorry, you can only postpone at least 2 days before your trip.");
       const newDate = window.prompt("Enter your new travel date (YYYY-MM-DD):");
       if (newDate) {
           if (window.confirm(`Are you sure you want to move your trip to ${newDate}?`)) {
@@ -102,9 +118,7 @@ const Profile = () => {
                   const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/bookings/postpone/${bookingId}`, { newDate });
                   setBookings(prev => prev.map(b => b._id === bookingId ? response.data.booking : b));
                   toast.success("Trip postponed successfully.");
-              } catch (error) {
-                  toast.error(error.response?.data?.error || "Failed to postpone.");
-              }
+              } catch (error) { toast.error(error.response?.data?.error || "Failed to postpone."); }
           }
       }
   };
@@ -117,99 +131,135 @@ const Profile = () => {
                   const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/bookings/rebook/${bookingId}`, { newDate });
                   setBookings(prev => prev.map(b => b._id === bookingId ? response.data.booking : b));
                   toast.success("Trip rebooked successfully!");
-              } catch (error) {
-                  toast.error(error.response?.data?.error || "Failed to rebook.");
-              }
+              } catch (error) { toast.error(error.response?.data?.error || "Failed to rebook."); }
           }
       }
   };
 
   const handleDownloadInvoice = (booking) => {
-    let actualPaid = booking.payments?.filter(p => p.status === 'Paid').reduce((acc, curr) => acc + curr.amountDue, 0) || 0;
-    const actualDue = booking.totalPrice - actualPaid;
-    const inv = booking.invoiceDetails || {};
+      const doc = new jsPDF();
+      
+      const safeInvoice = booking.invoiceDetails || {};
 
-    let itemizedRows = `<tr><td><strong>Base Price</strong></td><td></td><td style="text-align: right;">${formatPrice(inv.basePriceTotal || booking.totalPrice)}</td></tr>`;
-    
-    if (inv.accClassTotal) itemizedRows += `<tr><td>${inv.accClassText || 'Room Upgrade'}</td><td></td><td style="text-align: right;">${formatPrice(inv.accClassTotal)}</td></tr>`;
-    if (inv.transferTotal) itemizedRows += `<tr><td>Airport Transfer</td><td></td><td style="text-align: right;">${formatPrice(inv.transferTotal)}</td></tr>`;
-    if (inv.insuranceTotal) itemizedRows += `<tr><td>Travel Insurance</td><td></td><td style="text-align: right;">${formatPrice(inv.insuranceTotal)}</td></tr>`;
-    if (inv.dinnerTotal) itemizedRows += `<tr><td>Romantic Dinner</td><td></td><td style="text-align: right;">${formatPrice(inv.dinnerTotal)}</td></tr>`;
-    if (inv.carbonTotal) itemizedRows += `<tr><td>Carbon Offset</td><td></td><td style="text-align: right;">${formatPrice(inv.carbonTotal)}</td></tr>`;
-    if (inv.vatTotal) itemizedRows += `<tr><td>VAT (12%)</td><td></td><td style="text-align: right;">${formatPrice(inv.vatTotal)}</td></tr>`;
+      doc.setFontSize(22);
+      doc.setTextColor(0, 59, 92); 
+      doc.text("PHILGOOD TRAVELS", 105, 20, { align: "center" });
+      
+      doc.setFontSize(10);
+      doc.setTextColor(100);
+      doc.text("123 Travel Street, Bonifacio Global City, Taguig", 105, 28, { align: "center" });
+      doc.text("hello@philgoodtravels.com | +63 917 123 4567", 105, 34, { align: "center" });
 
-    const invoiceWindow = window.open('', '_blank');
-    const htmlContent = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Invoice - ${booking.packageName}</title>
-        <style>
-          body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; padding: 40px; margin: 0; }
-          .header { display: flex; justify-content: space-between; border-bottom: 2px solid #111; padding-bottom: 20px; }
-          .title { font-size: 32px; font-weight: bold; letter-spacing: 2px; }
-          .company { text-align: right; font-size: 14px; line-height: 1.5; color: #555; }
-          .meta { display: flex; justify-content: space-between; margin-top: 30px; }
-          .box { width: 48%; }
-          .box h3 { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 4px;}
-          .box p { font-size: 14px; margin: 4px 0; }
-          table { width: 100%; border-collapse: collapse; margin-top: 40px; }
-          th { text-align: left; padding: 12px 8px; border-bottom: 1px solid #111; font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 1px;}
-          td { padding: 16px 8px; border-bottom: 1px solid #eee; font-size: 14px; vertical-align: top; }
-          .totals { width: 100%; display: flex; justify-content: flex-end; margin-top: 30px; }
-          .totals-table { width: 300px; border-collapse: collapse; }
-          .totals-table td { padding: 10px 8px; border-bottom: 1px solid #eee; font-size: 14px; }
-          .totals-table tr:last-child td { font-weight: bold; border-bottom: none; border-top: 2px solid #111; }
-          .footer { margin-top: 60px; text-align: center; font-size: 12px; color: #888; }
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <div class="title">INVOICE</div>
-          <div class="company"><strong>PhilGood Travels</strong><br/>Travel Street, Manila<br/>hello@philgoodtravels.com</div>
-        </div>
-        <div class="meta">
-          <div class="box"><h3>Client Details</h3><p><strong>${user?.name}</strong></p><p>${user?.email}</p></div>
-          <div class="box"><h3>Order Info</h3><p><strong>PACKAGE:</strong> ${booking.packageName}</p><p><strong>ORDER NO:</strong> #${booking._id.substring(0, 8).toUpperCase()}</p><p><strong>DATE:</strong> ${new Date(booking.createdAt || Date.now()).toLocaleDateString()}</p></div>
-        </div>
-        <table>
-          <thead><tr><th>Item</th><th>Status</th><th style="text-align: right;">Cost</th></tr></thead>
-          <tbody>${itemizedRows}</tbody>
-        </table>
-        <div class="totals">
-          <table class="totals-table">
-            <tr><td>GRAND TOTAL</td><td style="text-align: right;">${formatPrice(booking.totalPrice)}</td></tr>
-            <tr><td>PAID TO DATE</td><td style="text-align: right;">${formatPrice(actualPaid)}</td></tr>
-            <tr><td>AMOUNT DUE</td><td style="text-align: right;">${formatPrice(actualDue)}</td></tr>
-          </table>
-        </div>
-      </body>
-      </html>
-    `;
-    invoiceWindow.document.write(htmlContent);
-    invoiceWindow.document.close();
-    setTimeout(() => { invoiceWindow.print(); }, 250);
+      doc.setDrawColor(0, 180, 216);
+      doc.setLineWidth(0.5);
+      doc.line(14, 40, 196, 40);
+
+      doc.setFontSize(16);
+      doc.setTextColor(0, 0, 0);
+      doc.text("INVOICE", 14, 52);
+
+      doc.setFontSize(10);
+      doc.text(`Booking Ref: #${booking._id.substring(0, 8).toUpperCase()}`, 14, 60);
+      doc.text(`Date Issued: ${new Date().toLocaleDateString()}`, 14, 66);
+      doc.text(`Status: ${booking.bookingStatus}`, 14, 72);
+
+      doc.text("Billed To:", 130, 52);
+      doc.setFont(undefined, 'bold');
+      doc.text(`${booking.contactInfo?.name || booking.userId?.name}`, 130, 58);
+      doc.setFont(undefined, 'normal');
+      doc.text(`${booking.contactInfo?.email || booking.userId?.email}`, 130, 64);
+      if (booking.contactInfo?.phone) {
+          doc.text(`${booking.contactInfo.phone}`, 130, 70);
+      }
+
+      doc.setFontSize(12);
+      doc.setFont(undefined, 'bold');
+      doc.text("Trip Details", 14, 88);
+      doc.setFont(undefined, 'normal');
+      doc.setFontSize(10);
+      doc.text(`Destination: ${booking.packageName}`, 14, 96);
+      doc.text(`Travel Date: ${booking.travelDate}`, 14, 102);
+      doc.text(`Guests: ${booking.guests?.adults || 0} Adults, ${booking.guests?.children || 0} Children, ${booking.guests?.infants || 0} Infants`, 14, 108);
+
+      const tableData = [];
+      const split = booking.splitBetween || 1;
+      const splitText = split > 1 ? ` (Split ${split} ways)` : '';
+
+      if (safeInvoice.basePriceTotal > 0) tableData.push([`Base Price${splitText}`, formatPrice(safeInvoice.basePriceTotal / split)]);
+      if (safeInvoice.accClassTotal > 0) tableData.push([`${safeInvoice.accClassText || 'Room Upgrade'}${splitText}`, formatPrice(safeInvoice.accClassTotal / split)]);
+      if (safeInvoice.transferTotal > 0) tableData.push([`Airport Transfer${splitText}`, formatPrice(safeInvoice.transferTotal / split)]);
+      if (safeInvoice.insuranceTotal > 0) tableData.push([`Travel Insurance${splitText}`, formatPrice(safeInvoice.insuranceTotal / split)]);
+      if (safeInvoice.dinnerTotal > 0) tableData.push([`Romantic Dinner${splitText}`, formatPrice(safeInvoice.dinnerTotal / split)]);
+      if (safeInvoice.carbonTotal > 0) tableData.push([`Carbon Offset${splitText}`, formatPrice(safeInvoice.carbonTotal / split)]);
+      if (safeInvoice.vatTotal > 0) tableData.push([`VAT (12%)${splitText}`, formatPrice(safeInvoice.vatTotal / split)]);
+
+      if (tableData.length === 0) {
+          tableData.push([`Package Price`, formatPrice(booking.totalPrice / split)]);
+      }
+
+      doc.autoTable({
+          startY: 120,
+          head: [['Description', 'Amount']],
+          body: tableData,
+          theme: 'striped',
+          headStyles: { fillColor: [0, 180, 216], textColor: 255, fontStyle: 'bold' },
+          columnStyles: { 1: { halign: 'right' } },
+          margin: { top: 10, left: 14, right: 14 }
+      });
+
+      const finalY = doc.lastAutoTable.finalY + 10;
+      doc.setFontSize(12);
+      doc.setFont(undefined, 'bold');
+      doc.text("Grand Total:", 130, finalY);
+      doc.text(formatPrice(booking.totalPrice / split), 196, finalY, { align: "right" });
+
+      doc.setFontSize(10);
+      doc.setFont(undefined, 'normal');
+      doc.text("Payment Tracking:", 14, finalY + 15);
+      
+      const paymentData = booking.payments.map(p => [
+          p.payerEmail, 
+          formatPrice(p.amountDue), 
+          p.status
+      ]);
+
+      doc.autoTable({
+          startY: finalY + 20,
+          head: [['Payer Email', 'Amount Due', 'Status']],
+          body: paymentData,
+          theme: 'plain',
+          headStyles: { fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold' },
+          columnStyles: { 1: { halign: 'right' }, 2: { halign: 'center' } },
+          margin: { left: 14, right: 14 }
+      });
+
+      const footerY = doc.lastAutoTable.finalY + 20;
+      doc.setFontSize(9);
+      doc.setTextColor(150);
+      doc.text("Thank you for choosing PhilGood Travels!", 105, footerY, { align: "center" });
+      doc.text("This is a computer-generated document. No signature is required.", 105, footerY + 6, { align: "center" });
+
+      doc.save(`PhilGood_Invoice_${booking._id.substring(0, 8)}.pdf`);
   };
 
-  // ⚡ UPDATED: We wait for BOTH the Auth to load AND the bookings to load
   if (authLoading || loadingBookings) {
     return (
       <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh', backgroundColor: 'var(--bg-dark)' }}>
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading Profile...</span>
-        </div>
+        <div className="spinner-border text-primary" role="status"><span className="visually-hidden">Loading Profile...</span></div>
       </div>
     );
   }
 
   if (!user) return null;
 
+  // ⚡ NEW: Filter bookings based on the active tab
+  const displayedBookings = bookings.filter(b => activeTab === 'planned' ? !b.isArchived : b.isArchived);
+
   return (
     <div className="fade-in" style={{ paddingTop: '100px', minHeight: '80vh', backgroundColor: 'var(--bg-dark)' }}>
       <div className="container">
         <div className="row g-4">
           
-          {/* Profile Sidebar */}
           <div className="col-lg-4">
             <div className="p-4 rounded-4 shadow-lg border border-primary border-opacity-10 text-center h-100" style={{ backgroundColor: 'var(--card-bg)' }}>
               <div className="text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3 shadow" 
@@ -223,26 +273,40 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Bookings List */}
           <div className="col-lg-8">
             <div className="p-4 rounded-4 shadow-lg border border-primary border-opacity-10 h-100" style={{ backgroundColor: 'var(--card-bg)' }}>
-              <h4 className="text-navy font-montserrat fw-bold border-bottom border-primary border-opacity-10 pb-3 mb-4">
-                <i className="fa-solid fa-suitcase-rolling text-accent me-2"></i> My Planned Trips
-              </h4>
               
-              {bookings.length === 0 ? (
+              {/* ⚡ NEW: Tabs Navigation */}
+              <div className="d-flex gap-3 mb-4 border-bottom border-primary border-opacity-10 pb-3">
+                  <button 
+                      className={`btn fw-bold font-montserrat ${activeTab === 'planned' ? 'btn-proceed shadow-sm' : 'btn-outline-custom border-0'}`}
+                      onClick={() => setActiveTab('planned')}
+                  >
+                      <i className="fa-solid fa-suitcase-rolling me-2"></i> My Planned Trips
+                  </button>
+                  <button 
+                      className={`btn fw-bold font-montserrat ${activeTab === 'archives' ? 'btn-proceed shadow-sm' : 'btn-outline-custom border-0'}`}
+                      onClick={() => setActiveTab('archives')}
+                  >
+                      <i className="fa-solid fa-box-archive me-2"></i> Archives
+                  </button>
+              </div>
+              
+              {displayedBookings.length === 0 ? (
                 <div className="text-center py-5 border border-primary border-opacity-25 border-dashed rounded-3">
-                  <p className="text-grey mb-0">No bookings yet.</p>
+                  <p className="text-grey mb-0">
+                      {activeTab === 'planned' ? 'No planned trips yet.' : 'Your archives are empty.'}
+                  </p>
                 </div>
               ) : (
                 <div className="d-flex flex-column gap-4">
-                  {bookings.map((booking) => {
+                  {displayedBookings.map((booking) => {
                     const totalPaid = booking.payments?.reduce((acc, p) => p.status === 'Paid' ? acc + p.amountDue : acc, 0) || 0;
                     const progressPercent = Math.round((totalPaid / (booking.totalPrice || 1)) * 100);
                     const postponeCount = booking.postponeCount || 0;
 
                     return (
-                      <div key={booking._id} className="p-4 border border-primary border-opacity-10 rounded-4 shadow-sm" style={{ backgroundColor: '#F4FAFC' }}>
+                      <div key={booking._id} className={`p-4 border border-primary border-opacity-10 rounded-4 shadow-sm ${booking.isArchived ? 'opacity-75' : ''}`} style={{ backgroundColor: '#F4FAFC' }}>
                         
                         <div className="d-flex justify-content-between align-items-center mb-3">
                           <div className="d-flex align-items-center gap-3 flex-wrap">
@@ -259,14 +323,14 @@ const Profile = () => {
                               )}
                           </div>
                           
-                          {booking.bookingStatus !== 'Cancelled' && (
+                          {!booking.isArchived && booking.bookingStatus !== 'Cancelled' && (
                               <button className="btn btn-sm btn-outline-custom" onClick={() => handleDownloadInvoice(booking)}>
                                   Invoice
                               </button>
                           )}
                         </div>
 
-                        {booking.bookingStatus !== 'Cancelled' && (
+                        {!booking.isArchived && booking.bookingStatus !== 'Cancelled' && (
                             <div className="mb-4">
                                 <div className="d-flex justify-content-between mb-1">
                                     <span className="text-grey small">Group Payment Progress</span>
@@ -292,38 +356,67 @@ const Profile = () => {
                             </div>
                         </div>
                         
-                        {booking.bookingStatus !== 'Cancelled' && booking.payments && booking.payments.length > 0 && (
+                        {/* Hide payment links if archived */}
+                        {!booking.isArchived && booking.bookingStatus !== 'Cancelled' && booking.payments && booking.payments.length > 0 && (
                           <div className="p-3 rounded-3" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid rgba(0, 119, 182, 0.1)' }}>
-                              <h6 className="text-grey mb-3" style={{ fontSize: '0.8rem', textTransform: 'uppercase' }}>Payment Links</h6>
-                              <div className="d-flex flex-column gap-2">
-                                  {booking.payments.map((payment, index) => (
-                                      <div key={index} className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center p-3 rounded-3 border border-primary border-opacity-10 gap-3" style={{ backgroundColor: '#ffffff' }}>
-                                          <div>
-                                              <span className="text-grey small d-block mb-1">{payment.payerEmail}</span>
-                                              <span className="text-navy fw-bold fs-5">{formatPrice(payment.amountDue)}</span>
-                                          </div>
+                              <p className="text-navy fw-bold small mb-2"><i className="fa-solid fa-link text-accent me-2"></i> Payment Links:</p>
+                              {booking.payments.map((payment, idx) => (
+                                  <div key={idx} className="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom border-primary border-opacity-10 last-child-no-border">
+                                      <span className="text-grey small">{payment.payerEmail}</span>
+                                      <div className="d-flex align-items-center gap-3">
+                                          <span className="fw-bold text-navy">{formatPrice(payment.amountDue)}</span>
                                           {payment.status === 'Paid' ? (
-                                              <span className="badge bg-success py-2 px-3 fw-bold fs-6">PAID</span>
+                                              <span className="badge bg-success"><i className="fa-solid fa-check me-1"></i> Paid</span>
                                           ) : (
-                                            <button onClick={() => window.location.href = payment.paymentUrl} className="btn btn-proceed fw-bold py-2 px-4 shadow">Pay Share</button>
+                                              <button 
+                                                  className="btn btn-sm btn-proceed px-3"
+                                                  onClick={() => navigate('/checkout', { 
+                                                      state: { 
+                                                          bookingId: booking._id, 
+                                                          paymentIndex: idx, 
+                                                          amountDue: payment.amountDue,
+                                                          packageName: booking.packageName,
+                                                          invoiceDetails: booking.invoiceDetails,
+                                                          splitBetween: booking.splitBetween
+                                                      } 
+                                                  })}
+                                              >
+                                                  Pay Now
+                                              </button>
                                           )}
                                       </div>
-                                  ))}
-                              </div>
+                                  </div>
+                              ))}
                           </div>
                         )}
 
+                        {/* ⚡ NEW: Dynamic Buttons based on Archive Status */}
                         <div className="d-flex flex-wrap justify-content-end gap-2 mt-4 pt-3 border-top border-primary border-opacity-10">
-                            {booking.bookingStatus === 'Cancelled' && isWithinRebookWindow(booking.cancelledAt) && (
-                                <button className="btn btn-sm btn-outline-success" onClick={() => handleRebook(booking._id)}>Rebook</button>
+                            {booking.isArchived ? (
+                                <>
+                                    <button className="btn btn-sm btn-success fw-bold px-4" onClick={() => handleRetrieve(booking._id)}>
+                                        <i className="fa-solid fa-rotate-left me-2"></i> Retrieve
+                                    </button>
+                                    <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(booking._id)}>
+                                        <i className="fa-solid fa-trash me-2"></i> Permanent Delete
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    {booking.bookingStatus === 'Cancelled' && isWithinRebookWindow(booking.cancelledAt) && (
+                                        <button className="btn btn-sm btn-outline-success" onClick={() => handleRebook(booking._id)}>Rebook</button>
+                                    )}
+                                    {canModify(booking.travelDate) && booking.bookingStatus !== 'Cancelled' && postponeCount < 2 && (
+                                        <button className="btn btn-sm btn-outline-warning" onClick={() => handlePostpone(booking._id, booking.travelDate)}>Postpone</button>
+                                    )}
+                                    {canModify(booking.travelDate) && booking.bookingStatus !== 'Cancelled' && (
+                                        <button className="btn btn-sm btn-outline-danger" onClick={() => handleCancel(booking._id, booking.travelDate)}>Cancel Trip</button>
+                                    )}
+                                    <button className="btn btn-sm btn-danger px-3" onClick={() => handleArchive(booking._id)}>
+                                        <i className="fa-solid fa-box-archive me-1"></i> Archive
+                                    </button>
+                                </>
                             )}
-                            {canModify(booking.travelDate) && booking.bookingStatus !== 'Cancelled' && postponeCount < 2 && (
-                                <button className="btn btn-sm btn-outline-warning" onClick={() => handlePostpone(booking._id, booking.travelDate)}>Postpone</button>
-                            )}
-                            {canModify(booking.travelDate) && booking.bookingStatus !== 'Cancelled' && (
-                                <button className="btn btn-sm btn-outline-danger" onClick={() => handleCancel(booking._id, booking.travelDate)}>Cancel Trip</button>
-                            )}
-                            <button className="btn btn-sm btn-danger" onClick={() => handleDelete(booking._id)}>Delete Record</button>
                         </div>
                       </div>
                     );
