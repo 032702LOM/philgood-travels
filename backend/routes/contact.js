@@ -1,41 +1,43 @@
 const express = require('express');
 const router = express.Router();
 const { Resend } = require('resend');
+const crypto = require('crypto'); // ⚡ NEW: Import crypto to generate unique codes
 const Message = require('../models/Message');
 const Subscriber = require('../models/Subscriber');
 const User = require('../models/User');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// ⚡ UPDATED: Smart Newsletter Subscription with 10% Off Email
+// ⚡ UPDATED: Smart Newsletter Subscription with UNIQUE 10% Off Email
 router.post('/subscribe', async (req, res) => {
     try {
         const { email } = req.body;
         if (!email) return res.status(400).json({ error: "Email is required." });
 
-        // 1. Check if they are already in the Subscribers collection
         const existingSubscriber = await Subscriber.findOne({ email });
         if (existingSubscriber) return res.status(400).json({ error: "This email is already subscribed!" });
 
-        // 2. Save to the Subscribers collection
         const newSubscriber = new Subscriber({ email });
         await newSubscriber.save();
 
-        // 3. Sync with User Profile (If they have an account)
+        // ⚡ NEW: Generate a unique 6-character hex code appended to WELCOME-
+        const uniqueCode = 'WELCOME-' + crypto.randomBytes(3).toString('hex').toUpperCase();
+
         const user = await User.findOne({ email });
         if (user) {
             user.marketing = {
                 ...user.marketing,
                 email: true
             };
+            // ⚡ NEW: Log their specific unique code in the CRM so admins can verify it later!
             user.adminNotes.push({ 
-                text: 'System: User subscribed to newsletter and was sent the 10% off code.', 
+                text: `System: User subscribed to newsletter and was sent the 10% off code (${uniqueCode}).`, 
                 authorInitials: '⚙️' 
             });
             await user.save();
         }
 
-        // 4. ⚡ AUTOMATIC 10% OFF EMAIL ⚡
+        // ⚡ AUTOMATIC UNIQUE 10% OFF EMAIL ⚡
         await resend.emails.send({
             from: 'PhilGood Travels <onboarding@resend.dev>',
             to: email,
@@ -48,7 +50,7 @@ router.post('/subscribe', async (req, res) => {
                     
                     <div style="background-color: #F4FAFC; padding: 20px; margin: 30px auto; border: 2px dashed #00B4D8; border-radius: 8px; display: inline-block;">
                         <span style="font-size: 28px; font-weight: 900; letter-spacing: 2px; color: #F69928;">
-                            WELCOME10
+                            ${uniqueCode}
                         </span>
                     </div>
                     

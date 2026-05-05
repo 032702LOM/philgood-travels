@@ -32,15 +32,17 @@ router.post('/register', async (req, res) => {
         if (existingSubscription) {
             isSubscribed = true;
         } else if (optInNewsletter) {
-            // Add to subscriber list
             const newSubscriber = new Subscriber({ email });
             await newSubscriber.save();
             isSubscribed = true;
             
-            // Add CRM Note
-            adminNotes.push({ text: 'System: User subscribed to newsletter during sign-up and was sent the 10% off code.', authorInitials: '⚙️' });
+            // ⚡ NEW: Generate a unique 6-character hex code
+            const uniqueCode = 'WELCOME-' + crypto.randomBytes(3).toString('hex').toUpperCase();
+            
+            // ⚡ NEW: Log their specific unique code in the CRM
+            adminNotes.push({ text: `System: User subscribed to newsletter during sign-up and was sent the 10% off code (${uniqueCode}).`, authorInitials: '⚙️' });
 
-            // Send 10% OFF Welcome Email!
+            // Send UNIQUE 10% OFF Welcome Email!
             await resend.emails.send({
                 from: 'PhilGood Travels <onboarding@resend.dev>',
                 to: email,
@@ -53,7 +55,7 @@ router.post('/register', async (req, res) => {
                         
                         <div style="background-color: #F4FAFC; padding: 20px; margin: 30px auto; border: 2px dashed #00B4D8; border-radius: 8px; display: inline-block;">
                             <span style="font-size: 28px; font-weight: 900; letter-spacing: 2px; color: #F69928;">
-                                WELCOME10
+                                ${uniqueCode}
                             </span>
                         </div>
                         
