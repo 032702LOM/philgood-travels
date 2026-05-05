@@ -4,8 +4,10 @@ import axios from 'axios';
 import { usePreferences } from '../context/PreferencesContext';
 import { useAuth } from '../context/AuthContext'; 
 import toast from 'react-hot-toast';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+
+// ⚡ FIX: Correctly import jsPDF and autoTable for Vite
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -17,7 +19,6 @@ const Profile = () => {
   const [bookings, setBookings] = useState([]);
   const [loadingBookings, setLoadingBookings] = useState(true);
 
-  // ⚡ NEW: State to handle tabs (Planned vs Archives)
   const [activeTab, setActiveTab] = useState('planned'); 
 
   useEffect(() => {
@@ -61,7 +62,6 @@ const Profile = () => {
       return new Date(cancelledAt) > oneMonthAgo;
   };
 
-  // ⚡ NEW: Archive a trip instead of deleting it
   const handleArchive = async (bookingId) => {
     if (window.confirm("Move this trip to your Archives?")) {
         try {
@@ -74,7 +74,6 @@ const Profile = () => {
     }
   };
 
-  // ⚡ NEW: Retrieve a trip from archives
   const handleRetrieve = async (bookingId) => {
       try {
           const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/bookings/${bookingId}/retrieve`);
@@ -85,7 +84,6 @@ const Profile = () => {
       }
   };
 
-  // ⚡ UPDATED: Permanent delete ONLY from the archives tab
   const handleDelete = async (bookingId) => {
       if (window.confirm("PERMANENTLY delete this record? This cannot be undone.")) {
           try {
@@ -137,109 +135,116 @@ const Profile = () => {
   };
 
   const handleDownloadInvoice = (booking) => {
-      const doc = new jsPDF();
-      
-      const safeInvoice = booking.invoiceDetails || {};
+      try {
+          const doc = new jsPDF();
+          
+          const safeInvoice = booking.invoiceDetails || {};
 
-      doc.setFontSize(22);
-      doc.setTextColor(0, 59, 92); 
-      doc.text("PHILGOOD TRAVELS", 105, 20, { align: "center" });
-      
-      doc.setFontSize(10);
-      doc.setTextColor(100);
-      doc.text("123 Travel Street, Bonifacio Global City, Taguig", 105, 28, { align: "center" });
-      doc.text("hello@philgoodtravels.com | +63 917 123 4567", 105, 34, { align: "center" });
+          doc.setFontSize(22);
+          doc.setTextColor(0, 59, 92); 
+          doc.text("PHILGOOD TRAVELS", 105, 20, { align: "center" });
+          
+          doc.setFontSize(10);
+          doc.setTextColor(100);
+          doc.text("123 Travel Street, Bonifacio Global City, Taguig", 105, 28, { align: "center" });
+          doc.text("hello@philgoodtravels.com | +63 917 123 4567", 105, 34, { align: "center" });
 
-      doc.setDrawColor(0, 180, 216);
-      doc.setLineWidth(0.5);
-      doc.line(14, 40, 196, 40);
+          doc.setDrawColor(0, 180, 216);
+          doc.setLineWidth(0.5);
+          doc.line(14, 40, 196, 40);
 
-      doc.setFontSize(16);
-      doc.setTextColor(0, 0, 0);
-      doc.text("INVOICE", 14, 52);
+          doc.setFontSize(16);
+          doc.setTextColor(0, 0, 0);
+          doc.text("INVOICE", 14, 52);
 
-      doc.setFontSize(10);
-      doc.text(`Booking Ref: #${booking._id.substring(0, 8).toUpperCase()}`, 14, 60);
-      doc.text(`Date Issued: ${new Date().toLocaleDateString()}`, 14, 66);
-      doc.text(`Status: ${booking.bookingStatus}`, 14, 72);
+          doc.setFontSize(10);
+          doc.text(`Booking Ref: #${booking._id.substring(0, 8).toUpperCase()}`, 14, 60);
+          doc.text(`Date Issued: ${new Date().toLocaleDateString()}`, 14, 66);
+          doc.text(`Status: ${booking.bookingStatus}`, 14, 72);
 
-      doc.text("Billed To:", 130, 52);
-      doc.setFont(undefined, 'bold');
-      doc.text(`${booking.contactInfo?.name || booking.userId?.name}`, 130, 58);
-      doc.setFont(undefined, 'normal');
-      doc.text(`${booking.contactInfo?.email || booking.userId?.email}`, 130, 64);
-      if (booking.contactInfo?.phone) {
-          doc.text(`${booking.contactInfo.phone}`, 130, 70);
+          doc.text("Billed To:", 130, 52);
+          doc.setFont(undefined, 'bold');
+          doc.text(`${booking.contactInfo?.name || booking.userId?.name || 'Customer'}`, 130, 58);
+          doc.setFont(undefined, 'normal');
+          doc.text(`${booking.contactInfo?.email || booking.userId?.email || 'N/A'}`, 130, 64);
+          if (booking.contactInfo?.phone) {
+              doc.text(`${booking.contactInfo.phone}`, 130, 70);
+          }
+
+          doc.setFontSize(12);
+          doc.setFont(undefined, 'bold');
+          doc.text("Trip Details", 14, 88);
+          doc.setFont(undefined, 'normal');
+          doc.setFontSize(10);
+          doc.text(`Destination: ${booking.packageName}`, 14, 96);
+          doc.text(`Travel Date: ${booking.travelDate}`, 14, 102);
+          doc.text(`Guests: ${booking.guests?.adults || 0} Adults, ${booking.guests?.children || 0} Children, ${booking.guests?.infants || 0} Infants`, 14, 108);
+
+          const tableData = [];
+          const split = booking.splitBetween || 1;
+          const splitText = split > 1 ? ` (Split ${split} ways)` : '';
+
+          if (safeInvoice.basePriceTotal > 0) tableData.push([`Base Price${splitText}`, formatPrice(safeInvoice.basePriceTotal / split)]);
+          if (safeInvoice.accClassTotal > 0) tableData.push([`${safeInvoice.accClassText || 'Room Upgrade'}${splitText}`, formatPrice(safeInvoice.accClassTotal / split)]);
+          if (safeInvoice.transferTotal > 0) tableData.push([`Airport Transfer${splitText}`, formatPrice(safeInvoice.transferTotal / split)]);
+          if (safeInvoice.insuranceTotal > 0) tableData.push([`Travel Insurance${splitText}`, formatPrice(safeInvoice.insuranceTotal / split)]);
+          if (safeInvoice.dinnerTotal > 0) tableData.push([`Romantic Dinner${splitText}`, formatPrice(safeInvoice.dinnerTotal / split)]);
+          if (safeInvoice.carbonTotal > 0) tableData.push([`Carbon Offset${splitText}`, formatPrice(safeInvoice.carbonTotal / split)]);
+          if (safeInvoice.vatTotal > 0) tableData.push([`VAT (12%)${splitText}`, formatPrice(safeInvoice.vatTotal / split)]);
+
+          if (tableData.length === 0) {
+              tableData.push([`Package Price`, formatPrice(booking.totalPrice / split)]);
+          }
+
+          // ⚡ FIX: Use the imported autoTable function
+          autoTable(doc, {
+              startY: 120,
+              head: [['Description', 'Amount']],
+              body: tableData,
+              theme: 'striped',
+              headStyles: { fillColor: [0, 180, 216], textColor: 255, fontStyle: 'bold' },
+              columnStyles: { 1: { halign: 'right' } },
+              margin: { top: 10, left: 14, right: 14 }
+          });
+
+          const finalY = doc.lastAutoTable.finalY + 10;
+          doc.setFontSize(12);
+          doc.setFont(undefined, 'bold');
+          doc.text("Grand Total:", 130, finalY);
+          doc.text(formatPrice(booking.totalPrice / split), 196, finalY, { align: "right" });
+
+          doc.setFontSize(10);
+          doc.setFont(undefined, 'normal');
+          doc.text("Payment Tracking:", 14, finalY + 15);
+          
+          const paymentData = (booking.payments || []).map(p => [
+              p.payerEmail, 
+              formatPrice(p.amountDue), 
+              p.status
+          ]);
+
+          // ⚡ FIX: Use the imported autoTable function
+          autoTable(doc, {
+              startY: finalY + 20,
+              head: [['Payer Email', 'Amount Due', 'Status']],
+              body: paymentData,
+              theme: 'plain',
+              headStyles: { fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold' },
+              columnStyles: { 1: { halign: 'right' }, 2: { halign: 'center' } },
+              margin: { left: 14, right: 14 }
+          });
+
+          const footerY = doc.lastAutoTable.finalY + 20;
+          doc.setFontSize(9);
+          doc.setTextColor(150);
+          doc.text("Thank you for choosing PhilGood Travels!", 105, footerY, { align: "center" });
+          doc.text("This is a computer-generated document. No signature is required.", 105, footerY + 6, { align: "center" });
+
+          doc.save(`PhilGood_Invoice_${booking._id.substring(0, 8)}.pdf`);
+      } catch (error) {
+          console.error("Invoice Generation Error:", error);
+          toast.error("Failed to generate invoice. Please try again.");
       }
-
-      doc.setFontSize(12);
-      doc.setFont(undefined, 'bold');
-      doc.text("Trip Details", 14, 88);
-      doc.setFont(undefined, 'normal');
-      doc.setFontSize(10);
-      doc.text(`Destination: ${booking.packageName}`, 14, 96);
-      doc.text(`Travel Date: ${booking.travelDate}`, 14, 102);
-      doc.text(`Guests: ${booking.guests?.adults || 0} Adults, ${booking.guests?.children || 0} Children, ${booking.guests?.infants || 0} Infants`, 14, 108);
-
-      const tableData = [];
-      const split = booking.splitBetween || 1;
-      const splitText = split > 1 ? ` (Split ${split} ways)` : '';
-
-      if (safeInvoice.basePriceTotal > 0) tableData.push([`Base Price${splitText}`, formatPrice(safeInvoice.basePriceTotal / split)]);
-      if (safeInvoice.accClassTotal > 0) tableData.push([`${safeInvoice.accClassText || 'Room Upgrade'}${splitText}`, formatPrice(safeInvoice.accClassTotal / split)]);
-      if (safeInvoice.transferTotal > 0) tableData.push([`Airport Transfer${splitText}`, formatPrice(safeInvoice.transferTotal / split)]);
-      if (safeInvoice.insuranceTotal > 0) tableData.push([`Travel Insurance${splitText}`, formatPrice(safeInvoice.insuranceTotal / split)]);
-      if (safeInvoice.dinnerTotal > 0) tableData.push([`Romantic Dinner${splitText}`, formatPrice(safeInvoice.dinnerTotal / split)]);
-      if (safeInvoice.carbonTotal > 0) tableData.push([`Carbon Offset${splitText}`, formatPrice(safeInvoice.carbonTotal / split)]);
-      if (safeInvoice.vatTotal > 0) tableData.push([`VAT (12%)${splitText}`, formatPrice(safeInvoice.vatTotal / split)]);
-
-      if (tableData.length === 0) {
-          tableData.push([`Package Price`, formatPrice(booking.totalPrice / split)]);
-      }
-
-      doc.autoTable({
-          startY: 120,
-          head: [['Description', 'Amount']],
-          body: tableData,
-          theme: 'striped',
-          headStyles: { fillColor: [0, 180, 216], textColor: 255, fontStyle: 'bold' },
-          columnStyles: { 1: { halign: 'right' } },
-          margin: { top: 10, left: 14, right: 14 }
-      });
-
-      const finalY = doc.lastAutoTable.finalY + 10;
-      doc.setFontSize(12);
-      doc.setFont(undefined, 'bold');
-      doc.text("Grand Total:", 130, finalY);
-      doc.text(formatPrice(booking.totalPrice / split), 196, finalY, { align: "right" });
-
-      doc.setFontSize(10);
-      doc.setFont(undefined, 'normal');
-      doc.text("Payment Tracking:", 14, finalY + 15);
-      
-      const paymentData = booking.payments.map(p => [
-          p.payerEmail, 
-          formatPrice(p.amountDue), 
-          p.status
-      ]);
-
-      doc.autoTable({
-          startY: finalY + 20,
-          head: [['Payer Email', 'Amount Due', 'Status']],
-          body: paymentData,
-          theme: 'plain',
-          headStyles: { fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold' },
-          columnStyles: { 1: { halign: 'right' }, 2: { halign: 'center' } },
-          margin: { left: 14, right: 14 }
-      });
-
-      const footerY = doc.lastAutoTable.finalY + 20;
-      doc.setFontSize(9);
-      doc.setTextColor(150);
-      doc.text("Thank you for choosing PhilGood Travels!", 105, footerY, { align: "center" });
-      doc.text("This is a computer-generated document. No signature is required.", 105, footerY + 6, { align: "center" });
-
-      doc.save(`PhilGood_Invoice_${booking._id.substring(0, 8)}.pdf`);
   };
 
   if (authLoading || loadingBookings) {
@@ -252,7 +257,6 @@ const Profile = () => {
 
   if (!user) return null;
 
-  // ⚡ NEW: Filter bookings based on the active tab
   const displayedBookings = bookings.filter(b => activeTab === 'planned' ? !b.isArchived : b.isArchived);
 
   return (
@@ -276,7 +280,6 @@ const Profile = () => {
           <div className="col-lg-8">
             <div className="p-4 rounded-4 shadow-lg border border-primary border-opacity-10 h-100" style={{ backgroundColor: 'var(--card-bg)' }}>
               
-              {/* ⚡ NEW: Tabs Navigation */}
               <div className="d-flex gap-3 mb-4 border-bottom border-primary border-opacity-10 pb-3">
                   <button 
                       className={`btn fw-bold font-montserrat ${activeTab === 'planned' ? 'btn-proceed shadow-sm' : 'btn-outline-custom border-0'}`}
@@ -325,7 +328,7 @@ const Profile = () => {
                           
                           {!booking.isArchived && booking.bookingStatus !== 'Cancelled' && (
                               <button className="btn btn-sm btn-outline-custom" onClick={() => handleDownloadInvoice(booking)}>
-                                  Invoice
+                                  <i className="fa-solid fa-file-pdf me-1"></i> Invoice
                               </button>
                           )}
                         </div>
@@ -356,7 +359,6 @@ const Profile = () => {
                             </div>
                         </div>
                         
-                        {/* Hide payment links if archived */}
                         {!booking.isArchived && booking.bookingStatus !== 'Cancelled' && booking.payments && booking.payments.length > 0 && (
                           <div className="p-3 rounded-3" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid rgba(0, 119, 182, 0.1)' }}>
                               <p className="text-navy fw-bold small mb-2"><i className="fa-solid fa-link text-accent me-2"></i> Payment Links:</p>
@@ -390,7 +392,6 @@ const Profile = () => {
                           </div>
                         )}
 
-                        {/* ⚡ NEW: Dynamic Buttons based on Archive Status */}
                         <div className="d-flex flex-wrap justify-content-end gap-2 mt-4 pt-3 border-top border-primary border-opacity-10">
                             {booking.isArchived ? (
                                 <>

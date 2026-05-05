@@ -321,7 +321,7 @@ router.put('/:id/archive', async (req, res) => {
         const booking = await Booking.findByIdAndUpdate(
             req.params.id, 
             { isArchived: true, archivedAt: new Date() }, 
-            { new: true }
+            { returnDocument: 'after' } // ⚡ UPDATED SYNTAX
         );
         res.status(200).json({ message: "Trip archived", booking });
     } catch (error) {
@@ -337,7 +337,7 @@ router.put('/:id/retrieve', async (req, res) => {
         const booking = await Booking.findByIdAndUpdate(
             req.params.id, 
             { isArchived: false, archivedAt: null }, 
-            { new: true }
+            { returnDocument: 'after' } // ⚡ UPDATED SYNTAX
         );
         res.status(200).json({ message: "Trip retrieved", booking });
     } catch (error) {
