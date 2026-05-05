@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { tourPackages } from '../data/placesData';
 import { usePreferences } from '../context/PreferencesContext';
+import toast from 'react-hot-toast'; // Make sure toast is imported for nice alerts!
 
 const Booking = () => {
   const location = useLocation();
@@ -17,6 +18,10 @@ const Booking = () => {
   const [emails, setEmails] = useState(['']);
   
   const [leadGuest, setLeadGuest] = useState({ name: '', email: '', phone: '', specialRequests: '' });
+
+  // ⚡ NEW: Promo Code States
+  const [promoCode, setPromoCode] = useState('');
+  const [appliedDiscount, setAppliedDiscount] = useState(0); // Will hold 0.10 for 10%
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -48,6 +53,20 @@ const Booking = () => {
 
   const toggleAddon = (addon) => { setAddons(prev => ({ ...prev, [addon]: !prev[addon] })); };
 
+  // ⚡ NEW: Apply Promo Code Function
+  const handleApplyPromo = () => {
+      if (!promoCode.trim()) return;
+      
+      // Check if the code starts with our unique welcome prefix
+      if (promoCode.toUpperCase().startsWith('WELCOME-') || promoCode.toUpperCase() === 'WELCOME10') {
+          setAppliedDiscount(0.10); // 10% Off
+          toast.success("10% Welcome Discount Applied! 🎉");
+      } else {
+          setAppliedDiscount(0);
+          toast.error("Invalid promo code.");
+      }
+  };
+
   // Price Calculations
   const pkgData = tourPackages.find(p => p.name === selectedPackage) || { price: 0 };
   const basePrice = pkgData.price;
@@ -69,11 +88,15 @@ const Booking = () => {
 
   const subtotal = baseTotal + accTotal + transferTotal + insuranceTotal + dinnerTotal + carbonTotal;
   const vatTotal = subtotal * 0.12;
-  const grandTotal = subtotal + vatTotal;
+  
+  // ⚡ UPDATED: Calculate the discount before the Grand Total
+  const rawGrandTotal = subtotal + vatTotal;
+  const discountTotal = rawGrandTotal * appliedDiscount;
+  const grandTotal = rawGrandTotal - discountTotal;
 
   const handleConfirmBooking = () => {
     if (!selectedPackage || !travelDate || !leadGuest.name || !leadGuest.email) {
-        alert("Please fill in all required fields (Package, Date, Name, Email).");
+        toast.error("Please fill in all required fields (Package, Date, Name, Email).");
         return;
     }
 
@@ -96,7 +119,8 @@ const Booking = () => {
             insuranceTotal: insuranceTotal,
             dinnerTotal: dinnerTotal,
             carbonTotal: carbonTotal,
-            vatTotal: vatTotal
+            vatTotal: vatTotal,
+            discountTotal: -Math.abs(discountTotal) // ⚡ NEW: Pass discount to checkout payload
         }
     };
 
@@ -108,7 +132,6 @@ const Booking = () => {
         <section className="py-5" style={{ minHeight: '100vh', backgroundColor: 'var(--bg-dark)', paddingTop: '120px' }}>
             <div className="container">
                 
-                {/* ⚡ FIXED: Removed the empty hero block and applied global text colors */}
                 <div className="text-center mb-5 mt-4">
                     <h1 className="section-title wave-text" style={{ fontSize: '3.5rem' }}>{t('booking_title', 'Secure Your Spot')}</h1>
                     <p className="section-desc fw-bold text-grey">{t('booking_desc', 'Complete your booking and pack your bags.')}</p>
@@ -303,11 +326,11 @@ const Booking = () => {
                             
                             <label className="text-grey fw-bold small mb-3">{t('how_paying', 'How are we paying?')}</label>
                             <div className="d-flex flex-wrap gap-2 mb-4">
-                                <button className={`btn ${splitPayment === 1 ? 'btn-proceed' : 'btn-outline-custom'}`} onClick={() => setSplitPayment(1)}>
+                                <button type="button" className={`btn ${splitPayment === 1 ? 'btn-proceed' : 'btn-outline-custom'}`} onClick={() => setSplitPayment(1)}>
                                     {t('split_1', 'Just me (Pay in full)')}
                                 </button>
                                 {[2, 3, 4, 5].map(num => (
-                                    <button key={num} className={`btn ${splitPayment === num ? 'btn-proceed' : 'btn-outline-custom'}`} onClick={() => setSplitPayment(num)}>
+                                    <button type="button" key={num} className={`btn ${splitPayment === num ? 'btn-proceed' : 'btn-outline-custom'}`} onClick={() => setSplitPayment(num)}>
                                         {t('split_ways', 'Split')} {num} {t('split_ways2', 'ways')}
                                     </button>
                                 ))}
@@ -390,6 +413,42 @@ const Booking = () => {
                                         <span className="text-navy fw-bold">{formatPrice(vatTotal)}</span>
                                     </div>
                                     
+                                    {/* ⚡ NEW: Promo Code Input Field */}
+                                    <div className="mb-3 p-3 rounded-3" style={{ backgroundColor: 'rgba(0,0,0,0.02)', border: '1px dashed var(--border-color)' }}>
+                                        <label className="text-navy fw-bold small mb-2 d-block">Promo Code</label>
+                                        <div className="d-flex gap-2">
+                                            <input 
+                                                type="text" 
+                                                className="form-control-dark form-control form-control-sm text-uppercase" 
+                                                placeholder="e.g. WELCOME-A1B2" 
+                                                value={promoCode}
+                                                onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                                                disabled={appliedDiscount > 0}
+                                            />
+                                            <button 
+                                                type="button" 
+                                                className={`btn btn-sm ${appliedDiscount > 0 ? 'btn-success' : 'btn-outline-custom'}`} 
+                                                onClick={handleApplyPromo}
+                                                disabled={appliedDiscount > 0}
+                                            >
+                                                {appliedDiscount > 0 ? <i className="fa-solid fa-check"></i> : 'Apply'}
+                                            </button>
+                                        </div>
+                                        {appliedDiscount > 0 && (
+                                            <small className="text-success fw-bold mt-2 d-block fade-in">
+                                                <i className="fa-solid fa-tag me-1"></i> 10% Discount Applied!
+                                            </small>
+                                        )}
+                                    </div>
+
+                                    {/* ⚡ NEW: Discount Display Row */}
+                                    {appliedDiscount > 0 && (
+                                        <div className="d-flex justify-content-between mb-3 pb-3 border-bottom border-primary border-opacity-10 fade-in">
+                                            <span className="text-accent small fw-bold">Welcome Discount (10%)</span>
+                                            <span className="text-accent fw-bold">-{formatPrice(discountTotal)}</span>
+                                        </div>
+                                    )}
+
                                     <div className="d-flex justify-content-between align-items-center mb-2">
                                         <h5 className="text-navy fw-bold m-0">{t('total', 'Total')}</h5>
                                         <h4 className="text-accent fw-bold m-0">{formatPrice(grandTotal)}</h4>
@@ -402,7 +461,7 @@ const Booking = () => {
                                         </div>
                                     )}
                                     
-                                    <button className="btn btn-proceed w-100 mt-4 py-3 text-uppercase font-montserrat fw-bold shadow" onClick={handleConfirmBooking} disabled={!selectedPackage || !travelDate}>
+                                    <button type="button" className="btn btn-proceed w-100 mt-4 py-3 text-uppercase font-montserrat fw-bold shadow" onClick={handleConfirmBooking} disabled={!selectedPackage || !travelDate}>
                                         <i className="fa-solid fa-lock me-2"></i> {t('confirm', 'Confirm Booking')}
                                     </button>
                                     
