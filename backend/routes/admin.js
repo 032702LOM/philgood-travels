@@ -84,19 +84,24 @@ router.post('/user/:id/notes', verifyToken, isAdmin, async (req, res) => {
 // ⚡ NEW PUT: Update User Profile (Admin Action) with Auto-logging
 router.put('/user/:id', verifyToken, isAdmin, async (req, res) => {
     try {
-        // 1. Grab everything the frontend is sending
-        const { name, email, isAdmin, address, marketing, tax } = req.body;
+        // 1. Grab everything, including the new customerType
+        const { name, email, isAdmin, address, marketing, tax, customerType } = req.body;
         const user = await User.findById(req.params.id);
         
         if (!user) return res.status(404).json({ error: "User not found" });
 
-        // 2. Track exactly what changed for a highly detailed CRM log
+        // 2. Track exactly what changed
         let changes = [];
         
-        // Basic Info
         if (name && user.name !== name) { user.name = name; changes.push('Name'); }
         if (email && user.email !== email) { user.email = email; changes.push('Email'); }
         if (isAdmin !== undefined && user.isAdmin !== isAdmin) { user.isAdmin = isAdmin; changes.push('Admin Role'); }
+        
+        // ⚡ NEW: Track Customer Type changes
+        if (customerType && user.customerType !== customerType) { 
+            user.customerType = customerType; 
+            changes.push(`Customer Type (${customerType})`); 
+        }
 
         // Address Details
         if (address) {
@@ -125,10 +130,10 @@ router.put('/user/:id', verifyToken, isAdmin, async (req, res) => {
                 text: `System: Admin updated the following profile details: ${changes.join(', ')}.`,
                 authorInitials: '⚙️'
             });
-            await user.save(); // Save the new data and the note
+            await user.save(); 
         }
 
-        // 4. Return the fresh user object back to AdminDashboard.jsx
+        // 4. Return the fresh user object
         const updatedUser = await User.findById(req.params.id).select('-password');
         res.status(200).json({ message: "User updated successfully", user: updatedUser });
 

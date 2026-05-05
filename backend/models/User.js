@@ -14,6 +14,10 @@ const userSchema = new mongoose.Schema({
     resetPasswordExpires: { type: Date },
 
     bookmarks: [{ type: String }],
+    
+    // ⚡ NEW: Customer Type (B2C vs B2B)
+    customerType: { type: String, enum: ['Regular', 'Business'], default: 'Regular' },
+    
     isAdmin: { type: Boolean, default: false },
     adminNotes: [{
         text: String,
