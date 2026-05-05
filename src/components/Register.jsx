@@ -104,25 +104,25 @@ const Register = () => {
 
           <div className="mb-3 position-relative">
             <label className="text-grey fw-bold small mb-2">Password</label>
-            <div className="input-with-icon position-relative">
-                <i className="fa-solid fa-lock position-absolute text-muted" style={{ left: '15px', top: '50%', transform: 'translateY(-50%)', zIndex: 5 }}></i>
+            {/* ⚡ FIX: Removed 'input-with-icon' class completely here */}
+            <div className="position-relative">
+                <i className="fa-solid fa-lock position-absolute text-muted" style={{ left: '15px', top: '50%', transform: 'translateY(-50%)', zIndex: 5, pointerEvents: 'none' }}></i>
                 <input 
                   type={showPassword ? "text" : "password"} 
                   className={`form-control-dark form-control w-100 ${formData.password.length > 0 && !isPasswordValid ? 'border-danger' : ''}`}
                   placeholder="Create a strong password"
                   value={formData.password} 
                   onChange={handlePasswordChange} 
-                  style={{ paddingLeft: '45px', paddingRight: '45px' }}
+                  style={{ paddingLeft: '45px', paddingRight: '45px', position: 'relative', zIndex: 2 }}
                   required 
                 />
-                {/* ⚡ FIX: Added pointerEvents: 'auto' to override global CSS blocking clicks */}
                 <button 
                   type="button" 
-                  className="btn btn-link position-absolute text-muted p-0" 
-                  style={{ right: '15px', top: '50%', transform: 'translateY(-50%)', textDecoration: 'none', zIndex: 100, pointerEvents: 'auto' }}
+                  className="btn btn-link position-absolute text-muted p-0 m-0 border-0 bg-transparent" 
+                  style={{ right: '15px', top: '50%', transform: 'translateY(-50%)', textDecoration: 'none', zIndex: 10, cursor: 'pointer' }}
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  <i className={`fa-solid ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`} style={{ pointerEvents: 'none' }}></i>
+                  <i className={`fa-solid ${showPassword ? 'fa-eye-slash' : 'fa-eye'} fs-5`}></i>
                 </button>
             </div>
             
@@ -158,25 +158,25 @@ const Register = () => {
 
           <div className="mb-4 position-relative">
             <label className="text-grey fw-bold small mb-2">Confirm Password</label>
-            <div className="input-with-icon position-relative">
-                <i className="fa-solid fa-lock position-absolute text-muted" style={{ left: '15px', top: '50%', transform: 'translateY(-50%)', zIndex: 5 }}></i>
+            {/* ⚡ FIX: Removed 'input-with-icon' class completely here too */}
+            <div className="position-relative">
+                <i className="fa-solid fa-lock position-absolute text-muted" style={{ left: '15px', top: '50%', transform: 'translateY(-50%)', zIndex: 5, pointerEvents: 'none' }}></i>
                 <input 
                   type={showConfirmPassword ? "text" : "password"} 
                   className={`form-control-dark form-control w-100 ${formData.confirmPassword.length > 0 && !passwordsMatch ? 'border-danger' : formData.confirmPassword.length > 0 && passwordsMatch ? 'border-success' : ''}`}
                   placeholder="Repeat your password"
                   value={formData.confirmPassword} 
                   onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })} 
-                  style={{ paddingLeft: '45px', paddingRight: '45px' }}
+                  style={{ paddingLeft: '45px', paddingRight: '45px', position: 'relative', zIndex: 2 }}
                   required 
                 />
-                {/* ⚡ FIX: Added pointerEvents: 'auto' here as well */}
                 <button 
                   type="button" 
-                  className="btn btn-link position-absolute text-muted p-0" 
-                  style={{ right: '15px', top: '50%', transform: 'translateY(-50%)', textDecoration: 'none', zIndex: 100, pointerEvents: 'auto' }}
+                  className="btn btn-link position-absolute text-muted p-0 m-0 border-0 bg-transparent" 
+                  style={{ right: '15px', top: '50%', transform: 'translateY(-50%)', textDecoration: 'none', zIndex: 10, cursor: 'pointer' }}
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 >
-                  <i className={`fa-solid ${showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'}`} style={{ pointerEvents: 'none' }}></i>
+                  <i className={`fa-solid ${showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'} fs-5`}></i>
                 </button>
             </div>
             
@@ -197,9 +197,9 @@ const Register = () => {
                   id="optInNewsletter" 
                   checked={formData.optInNewsletter}
                   onChange={(e) => setFormData({ ...formData, optInNewsletter: e.target.checked })}
-                  style={{ cursor: 'pointer', transform: 'scale(1.2)' }}
+                  style={{ cursor: 'pointer', transform: 'scale(1.2)', zIndex: 10 }}
                 />
-                <label className="form-check-label small text-navy fw-bold" htmlFor="optInNewsletter" style={{ cursor: 'pointer' }}>
+                <label className="form-check-label small text-navy fw-bold" htmlFor="optInNewsletter" style={{ cursor: 'pointer', zIndex: 10 }}>
                   Send me exclusive travel deals, hidden gem destinations, and my <span className="text-accent">10% OFF</span> welcome code!
                 </label>
             </div>
