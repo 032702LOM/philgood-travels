@@ -3,7 +3,6 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 const Register = () => {
-  // ⚡ NEW: Added optInNewsletter to formData (Defaults to true)
   const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '', optInNewsletter: true });
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
@@ -74,7 +73,7 @@ const Register = () => {
           <div className="mb-3 position-relative">
             <label className="text-grey fw-bold small mb-2">Full Name</label>
             <div className="input-with-icon position-relative">
-                <i className="fa-regular fa-user position-absolute text-muted" style={{ left: '15px', top: '50%', transform: 'translateY(-50%)' }}></i>
+                <i className="fa-regular fa-user position-absolute text-muted" style={{ left: '15px', top: '50%', transform: 'translateY(-50%)', zIndex: 5 }}></i>
                 <input 
                   type="text" 
                   className="form-control-dark form-control w-100" 
@@ -90,7 +89,7 @@ const Register = () => {
           <div className="mb-3 position-relative">
             <label className="text-grey fw-bold small mb-2">Email Address</label>
             <div className="input-with-icon position-relative">
-                <i className="fa-regular fa-envelope position-absolute text-muted" style={{ left: '15px', top: '50%', transform: 'translateY(-50%)' }}></i>
+                <i className="fa-regular fa-envelope position-absolute text-muted" style={{ left: '15px', top: '50%', transform: 'translateY(-50%)', zIndex: 5 }}></i>
                 <input 
                   type="email" 
                   className="form-control-dark form-control w-100" 
@@ -106,7 +105,7 @@ const Register = () => {
           <div className="mb-3 position-relative">
             <label className="text-grey fw-bold small mb-2">Password</label>
             <div className="input-with-icon position-relative">
-                <i className="fa-solid fa-lock position-absolute text-muted" style={{ left: '15px', top: '50%', transform: 'translateY(-50%)' }}></i>
+                <i className="fa-solid fa-lock position-absolute text-muted" style={{ left: '15px', top: '50%', transform: 'translateY(-50%)', zIndex: 5 }}></i>
                 <input 
                   type={showPassword ? "text" : "password"} 
                   className={`form-control-dark form-control w-100 ${formData.password.length > 0 && !isPasswordValid ? 'border-danger' : ''}`}
@@ -116,10 +115,11 @@ const Register = () => {
                   style={{ paddingLeft: '45px', paddingRight: '45px' }}
                   required 
                 />
+                {/* ⚡ FIX: Added zIndex: 10 so it is never blocked by the input field */}
                 <button 
                   type="button" 
                   className="btn btn-link position-absolute text-muted p-0" 
-                  style={{ right: '15px', top: '50%', transform: 'translateY(-50%)', textDecoration: 'none' }}
+                  style={{ right: '15px', top: '50%', transform: 'translateY(-50%)', textDecoration: 'none', zIndex: 10 }}
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   <i className={`fa-solid ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
@@ -159,7 +159,7 @@ const Register = () => {
           <div className="mb-4 position-relative">
             <label className="text-grey fw-bold small mb-2">Confirm Password</label>
             <div className="input-with-icon position-relative">
-                <i className="fa-solid fa-lock position-absolute text-muted" style={{ left: '15px', top: '50%', transform: 'translateY(-50%)' }}></i>
+                <i className="fa-solid fa-lock position-absolute text-muted" style={{ left: '15px', top: '50%', transform: 'translateY(-50%)', zIndex: 5 }}></i>
                 <input 
                   type={showConfirmPassword ? "text" : "password"} 
                   className={`form-control-dark form-control w-100 ${formData.confirmPassword.length > 0 && !passwordsMatch ? 'border-danger' : formData.confirmPassword.length > 0 && passwordsMatch ? 'border-success' : ''}`}
@@ -169,10 +169,11 @@ const Register = () => {
                   style={{ paddingLeft: '45px', paddingRight: '45px' }}
                   required 
                 />
+                {/* ⚡ FIX: Added zIndex: 10 so it is never blocked by the input field */}
                 <button 
                   type="button" 
                   className="btn btn-link position-absolute text-muted p-0" 
-                  style={{ right: '15px', top: '50%', transform: 'translateY(-50%)', textDecoration: 'none' }}
+                  style={{ right: '15px', top: '50%', transform: 'translateY(-50%)', textDecoration: 'none', zIndex: 10 }}
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 >
                   <i className={`fa-solid ${showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
@@ -187,7 +188,7 @@ const Register = () => {
             )}
           </div>
 
-          {/* ⚡ NEW: Newsletter Checkbox */}
+          {/* Newsletter Checkbox */}
           <div className="mb-4 form-check border border-primary border-opacity-25 rounded-3 p-3 text-start" style={{ backgroundColor: 'rgba(0, 180, 216, 0.05)' }}>
             <div className="d-flex">
                 <input 
