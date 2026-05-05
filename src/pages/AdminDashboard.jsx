@@ -199,6 +199,7 @@ const AdminDashboard = () => {
       setEditUserData({ 
         name: user?.name || '', 
         email: user?.email || '', 
+        customerType: user?.customerType || 'Regular',
         isAdmin: user?.isAdmin || false, 
         address: user?.address || { phone: '', street: '', city: '', postalCode: '', country: '' }, 
         marketing: user?.marketing || { email: false, sms: false }, 
@@ -391,8 +392,12 @@ const AdminDashboard = () => {
                       <div className="d-flex align-items-center">
                           <button className="btn btn-sm btn-light border me-3" onClick={() => setSelectedUser(null)}><i className="fa-solid fa-arrow-left"></i></button>
                           <h4 className="modal-title fw-bold text-dark m-0 d-flex align-items-center" style={{ fontSize: '1.25rem' }}>
-                              <i className="fa-regular fa-user me-2 text-muted"></i> {activeUserToRender?.name || 'Unknown'}
-                          </h4>
+    <i className="fa-regular fa-user me-2 text-muted"></i> {activeUserToRender?.name || 'Unknown'}
+    {/* ⚡ NEW: Display Customer Type Badge */}
+    <span className={`badge ms-3 ${activeUserToRender?.customerType === 'Business' ? 'bg-primary' : 'bg-secondary'}`} style={{ fontSize: '0.75rem' }}>
+        {activeUserToRender?.customerType === 'Business' ? '🏢 Business' : '👤 Regular'}
+    </span>
+</h4>
                       </div>
                   </div>
 
@@ -558,31 +563,41 @@ const AdminDashboard = () => {
                                       </div>
                                   )}
 
-                                  {editMode === 'contact' && (
-                                      <div className="fade-in">
-                                          <h6 className="text-dark fw-bold mb-3 border-bottom pb-2">Edit Contact Info</h6>
-                                          <div className="mb-3">
-                                              <label className="text-muted fw-bold small mb-1">Full Name</label>
-                                              <input type="text" className="form-control" value={editUserData.name} onChange={(e) => setEditUserData({...editUserData, name: e.target.value})} />
-                                          </div>
-                                          <div className="mb-3">
-                                              <label className="text-muted fw-bold small mb-1">Email Address</label>
-                                              <input type="email" className="form-control" value={editUserData.email} onChange={(e) => setEditUserData({...editUserData, email: e.target.value})} />
-                                          </div>
-                                          <div className="mb-4">
-                                              <label className="text-muted fw-bold small mb-1">Phone Number</label>
-                                              <input type="text" className="form-control" value={editUserData.address.phone} onChange={(e) => setEditUserData({...editUserData, address: {...editUserData.address, phone: e.target.value}})} />
-                                          </div>
-                                          <div className="mb-4 form-check form-switch pt-2">
-                                              <input className="form-check-input" type="checkbox" role="switch" id="adminSwitch" checked={editUserData.isAdmin} onChange={(e) => setEditUserData({...editUserData, isAdmin: e.target.checked})} />
-                                              <label className="form-check-label text-dark fw-bold ms-2" htmlFor="adminSwitch">Grant Admin Privileges</label>
-                                          </div>
-                                          <div className="d-flex gap-2">
-                                              <button className="btn btn-light border flex-grow-1 fw-bold text-dark" onClick={() => setEditMode(null)}>Cancel</button>
-                                              <button className="btn btn-dark flex-grow-1 fw-bold" onClick={handleSaveUserEdit}>Save</button>
-                                          </div>
-                                      </div>
-                                  )}
+                                 {editMode === 'contact' && (
+    <div className="fade-in">
+        <h6 className="text-dark fw-bold mb-3 border-bottom pb-2">Edit Contact Info</h6>
+        <div className="mb-3">
+            <label className="text-muted fw-bold small mb-1">Full Name</label>
+            <input type="text" className="form-control" value={editUserData.name} onChange={(e) => setEditUserData({...editUserData, name: e.target.value})} />
+        </div>
+        <div className="mb-3">
+            <label className="text-muted fw-bold small mb-1">Email Address</label>
+            <input type="email" className="form-control" value={editUserData.email} onChange={(e) => setEditUserData({...editUserData, email: e.target.value})} />
+        </div>
+        <div className="mb-3">
+            <label className="text-muted fw-bold small mb-1">Phone Number</label>
+            <input type="text" className="form-control" value={editUserData.address.phone} onChange={(e) => setEditUserData({...editUserData, address: {...editUserData.address, phone: e.target.value}})} />
+        </div>
+        
+        {/* ⚡ NEW: Customer Type Dropdown */}
+        <div className="mb-4">
+            <label className="text-muted fw-bold small mb-1">Customer Type</label>
+            <select className="form-select" value={editUserData.customerType} onChange={(e) => setEditUserData({...editUserData, customerType: e.target.value})}>
+                <option value="Regular">Regular (B2C)</option>
+                <option value="Business">Business (B2B)</option>
+            </select>
+        </div>
+
+        <div className="mb-4 form-check form-switch pt-2">
+            <input className="form-check-input" type="checkbox" role="switch" id="adminSwitch" checked={editUserData.isAdmin} onChange={(e) => setEditUserData({...editUserData, isAdmin: e.target.checked})} />
+            <label className="form-check-label text-dark fw-bold ms-2" htmlFor="adminSwitch">Grant Admin Privileges</label>
+        </div>
+        <div className="d-flex gap-2">
+            <button className="btn btn-light border flex-grow-1 fw-bold text-dark" onClick={() => setEditMode(null)}>Cancel</button>
+            <button className="btn btn-dark flex-grow-1 fw-bold" onClick={handleSaveUserEdit}>Save</button>
+        </div>
+    </div>
+)}
 
                                   {editMode === 'address' && (
                                       <div className="fade-in">
