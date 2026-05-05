@@ -2,12 +2,12 @@ const express = require('express');
 const router = express.Router();
 const { Resend } = require('resend');
 const Message = require('../models/Message');
-const Subscriber = require('../models/Subscriber'); // ⚡ Imported our new model
+const Subscriber = require('../models/Subscriber');
 const User = require('../models/User');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// ⚡ UPDATED: Smart Newsletter Subscription (Syncs with User Profile)
+// ⚡ UPDATED: Smart Newsletter Subscription with 10% Off Email
 router.post('/subscribe', async (req, res) => {
     try {
         const { email } = req.body;
@@ -17,30 +17,48 @@ router.post('/subscribe', async (req, res) => {
         const existingSubscriber = await Subscriber.findOne({ email });
         if (existingSubscriber) return res.status(400).json({ error: "This email is already subscribed!" });
 
-        // 2. Save to the Subscribers collection (for your master mailing list)
+        // 2. Save to the Subscribers collection
         const newSubscriber = new Subscriber({ email });
         await newSubscriber.save();
 
-        // 3. ⚡ THE FIX: Sync with User Profile ⚡
-        // Look for a registered User with this email
+        // 3. Sync with User Profile (If they have an account)
         const user = await User.findOne({ email });
         if (user) {
-            // Update the user's marketing preference to true
             user.marketing = {
                 ...user.marketing,
                 email: true
             };
-            
-            // Add a system note to their timeline so you know how it happened
-            user.adminNotes.push({
-                text: "System: Customer subscribed to newsletter via footer.",
-                authorInitials: "⚙️"
+            user.adminNotes.push({ 
+                text: 'System: User subscribed to newsletter and was sent the 10% off code.', 
+                authorInitials: '⚙️' 
             });
-            
             await user.save();
         }
 
-        res.status(200).json({ message: "Successfully subscribed!" });
+        // 4. ⚡ AUTOMATIC 10% OFF EMAIL ⚡
+        await resend.emails.send({
+            from: 'PhilGood Travels <onboarding@resend.dev>',
+            to: email,
+            subject: 'Welcome to PhilGood Travels! Here is your 10% OFF code 🎉',
+            html: `
+                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333; text-align: center; padding: 20px;">
+                    <h2 style="color: #003B5C;">Welcome to the PhilGood Family!</h2>
+                    <p>Thank you for subscribing to our newsletter. You're now on the list for exclusive travel deals, hidden gem destinations, and island inspiration.</p>
+                    <p>As a thank you, enjoy <strong>10% OFF</strong> your first booking with us!</p>
+                    
+                    <div style="background-color: #F4FAFC; padding: 20px; margin: 30px auto; border: 2px dashed #00B4D8; border-radius: 8px; display: inline-block;">
+                        <span style="font-size: 28px; font-weight: 900; letter-spacing: 2px; color: #F69928;">
+                            WELCOME10
+                        </span>
+                    </div>
+                    
+                    <p>Simply provide this code to our team when securing your spot.</p>
+                    <a href="https://philgood-travels.vercel.app/tours" style="background-color: #00B4D8; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold; margin-top: 20px;">EXPLORE TOURS NOW</a>
+                </div>
+            `
+        });
+
+        res.status(200).json({ message: "Subscribed successfully! Check your email for your 10% discount code." });
     } catch (error) {
         console.error("Subscription Error:", error);
         res.status(500).json({ error: "Failed to process subscription." });

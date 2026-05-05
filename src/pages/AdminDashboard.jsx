@@ -199,7 +199,7 @@ const AdminDashboard = () => {
       setEditUserData({ 
         name: user?.name || '', 
         email: user?.email || '', 
-        customerType: user?.customerType || 'Regular',
+        customerType: user?.customerType || 'Regular', // ⚡ NEW
         isAdmin: user?.isAdmin || false, 
         address: user?.address || { phone: '', street: '', city: '', postalCode: '', country: '' }, 
         marketing: user?.marketing || { email: false, sms: false }, 
@@ -208,7 +208,7 @@ const AdminDashboard = () => {
       setEditMode(null); 
       setNewNote(''); 
   };
-
+  
   const handleSaveUserEdit = async () => {
       try {
          const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/user/${selectedUser._id}`, editUserData);

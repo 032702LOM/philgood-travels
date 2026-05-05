@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { useChat } from '../context/ChatContext'; // ⚡ NEW: Import the Context
+import { useChat } from '../context/ChatContext'; 
 
 const Footer = () => {
   const [email, setEmail] = useState('');
@@ -13,7 +13,6 @@ const Footer = () => {
   const [chatInput, setChatInput] = useState('');
   const chatScrollRef = useRef(null);
 
-  // ⚡ NEW: Grab all the heavy lifting from the Context!
   const { 
       chatMessages, isChatOpen, widgetView, setWidgetView, 
       toggleChat, sendMessage, endChat 
@@ -34,6 +33,11 @@ const Footer = () => {
         const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/contact/subscribe`, { email });
         setStatus({ loading: false, message: response.data.message, type: 'success' });
         setEmail(''); 
+        
+        // ⚡ CRITICAL: This tells the pop-up box to never bother them again
+        localStorage.setItem('isSubscribedToNewsletter', 'true');
+        localStorage.setItem('hasSeenNewsletterPopup', 'true');
+
         setTimeout(() => setStatus({ loading: false, message: '', type: '' }), 3000);
     } catch (error) {
         const errorMsg = error.response?.data?.error || "Failed to subscribe.";
@@ -62,7 +66,7 @@ const Footer = () => {
 
   const handleSendChat = () => {
       if (!chatInput.trim()) return;
-      sendMessage(chatInput); // Call context function
+      sendMessage(chatInput); 
       setChatInput(''); 
   };
 

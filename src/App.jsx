@@ -16,6 +16,7 @@ import Register from './components/Register';
 import Login from './components/Login';
 import Profile from './components/Profile'; 
 import VerifyEmail from './components/VerifyEmail'; 
+import NewsletterPopup from './components/NewsletterPopup';
 
 // Pages
 import Home from './pages/Home';
@@ -47,6 +48,7 @@ function App() {
           <ScrollToTop />
           <Toaster position="top-center" reverseOrder={false} />
           <Navbar />
+          <NewsletterPopup />  {/* ⚡ NEW POPUP PLACED HERE */}
           <main>
             <Routes>
               <Route path="/" element={<Home />} />
