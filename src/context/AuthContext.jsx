@@ -1,20 +1,27 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 
+// Ensure cookies are sent with every request
 axios.defaults.withCredentials = true;
 
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(true);
+  // ⚡ 1. Initialize state synchronously from localStorage so it survives the F5 refresh
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
+  
+  const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem('user'));
+  
+  // Since we have local data, we don't need to block the app from rendering
+  const [loading, setLoading] = useState(false); 
 
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        // ⚡ NEW: Ask the backend "Who is this cookie for?"
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`);
         if (response.data.user) {
           setUser(response.data.user);
@@ -22,10 +29,13 @@ export const AuthProvider = ({ children }) => {
           localStorage.setItem('user', JSON.stringify(response.data.user));
         }
       } catch (error) {
-        // If the cookie is expired or missing, clean up
-        localStorage.removeItem('user');
-        setUser(null);
-        setIsLoggedIn(false);
+        // ⚡ 2. Don't aggressively wipe local storage if the server is just slow!
+        // Only log out if the backend explicitly tells us the token is dead (401 Unauthorized)
+        if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+          localStorage.removeItem('user');
+          setUser(null);
+          setIsLoggedIn(false);
+        }
       } finally {
         setLoading(false);
       }
@@ -53,7 +63,8 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={{ user, isLoggedIn, login, logout, loading }}>
-      {!loading && children} 
+      {/* ⚡ 3. Removed the !loading block so the app renders immediately */}
+      {children} 
     </AuthContext.Provider>
   );
 };

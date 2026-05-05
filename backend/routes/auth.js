@@ -124,7 +124,7 @@ router.post('/login', async (req, res) => {
             httpOnly: true, // Invisible to frontend JavaScript
             secure: true, // Required for cross-origin cookies (Vercel -> Render)
             sameSite: 'none', // Allows the cookie to be sent across different domains
-            maxAge: 24 * 60 * 60 * 1000 // 1 day expiration
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 1 day expiration
         });
 
         res.status(200).json({
