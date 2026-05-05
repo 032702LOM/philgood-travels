@@ -111,7 +111,7 @@ export const PreferencesProvider = ({ children }) => {
       children: "Children",
       children_desc: "50% Off (2-11 yrs)",
       infants: "Infants",
-      infants_desc: "Free (Under 2)",
+      infants_desc: "Free (Under 2 years old)",
       acc_class: "Accommodation Class",
       std_class: "Standard",
       std_desc: "Included",
