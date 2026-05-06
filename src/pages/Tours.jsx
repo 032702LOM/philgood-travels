@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom'; // ⚡ FIX: Added useNavigate
 import { tourPackages, regions } from '../data/placesData';
 import { usePreferences } from '../context/PreferencesContext';
 import heroImg from '../assets/img/Tours__Packages.png';
@@ -53,6 +53,7 @@ const regionCoords = {
   'Cebu Canyoneering': [9.8130, 123.3756], // Drops near Badian/South Cebu
   'Banaue Heritage Tour': [16.9333, 121.1340] // Drops on Batad
 };
+
 // ⚡ Custom map marker function to generate blue numbered circles
 const createCustomIcon = (number) => {
   return L.divIcon({
@@ -65,6 +66,7 @@ const createCustomIcon = (number) => {
 
 const Tours = () => {
   const location = useLocation();
+  const navigate = useNavigate(); // ⚡ FIX: Initialized navigate function
   const { t, formatPrice } = usePreferences();
 
   const [searchQuery, setSearchQuery] = useState('');
