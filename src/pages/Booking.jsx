@@ -18,8 +18,6 @@ const Booking = () => {
   const [emails, setEmails] = useState(['']);
   
   const [leadGuest, setLeadGuest] = useState({ name: '', email: '', phone: '', specialRequests: '' });
-  
-  // ⚡ NEW: State for the international dialing code
   const [phoneCode, setPhoneCode] = useState('+63');
 
   const [promoCode, setPromoCode] = useState('');
@@ -108,7 +106,6 @@ const Booking = () => {
         invoiceEmails: emails,
         contactInfo: {
             ...leadGuest,
-            // ⚡ COMBINE the selected country code with the typed phone number
             phone: leadGuest.phone ? `${phoneCode} ${leadGuest.phone}` : ''
         },
         guests: guests,
@@ -142,7 +139,6 @@ const Booking = () => {
 
   return (
     <div className="fade-in">
-        {/* Custom CSS for Hover Effects */}
         <style>
         {`
             .hover-teal { transition: all 0.3s ease; outline: none; }
@@ -151,7 +147,6 @@ const Booking = () => {
                 box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.2) !important; 
             }
             
-            /* Coral Orange Buttons styles */
             .hover-coral { transition: all 0.3s ease !important; }
             .hover-coral:hover, .hover-coral:focus {
                 background-color: var(--accent-color, #F69928) !important;
@@ -165,7 +160,6 @@ const Booking = () => {
                 box-shadow: 0 0 0 3px rgba(246, 153, 40, 0.4) !important; 
             }
 
-            /* Custom Select hide arrow for cleaner look */
             .phone-select {
                 -webkit-appearance: none;
                 -moz-appearance: none;
@@ -207,7 +201,6 @@ const Booking = () => {
 
                             <label className="text-navy fw-bold small mb-3 text-uppercase letter-spacing-1">{t('num_guests', 'Number of Guests')}</label>
                             <div className="row g-3 mb-5">
-                                {/* Adults */}
                                 <div className="col-md-4">
                                     <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm hover-teal" style={{ backgroundColor: '#fff' }}>
                                         <span className="d-block text-navy fw-bold fs-5">{t('adults', 'Adults')}</span>
@@ -219,7 +212,6 @@ const Booking = () => {
                                         </div>
                                     </div>
                                 </div>
-                                {/* Children */}
                                 <div className="col-md-4">
                                     <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm hover-teal" style={{ backgroundColor: '#fff' }}>
                                         <span className="d-block text-navy fw-bold fs-5">{t('children', 'Children')}</span>
@@ -232,7 +224,6 @@ const Booking = () => {
                                         </div>
                                     </div>
                                 </div>
-                                {/* Infants */}
                                 <div className="col-md-4">
                                     <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm hover-teal" style={{ backgroundColor: '#fff' }}>
                                         <span className="d-block text-navy fw-bold fs-5">{t('infants', 'Infants')}</span>
@@ -286,7 +277,6 @@ const Booking = () => {
                                     </div>
                                 </div>
                                 
-                                {/* ⚡ ENHANCED: International Phone Number Input */}
                                 <div className="col-md-6">
                                     <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('phone', 'Phone Number')}</label>
                                     <div className="input-group input-group-lg shadow-sm hover-teal rounded-3 bg-light" style={{ border: '1px solid rgba(0, 119, 182, 0.25)', overflow: 'hidden' }}>
@@ -335,7 +325,7 @@ const Booking = () => {
                             </div>
                         </div>
 
-                        {/* 3. Add-ons & Extras */}
+                        {/* ⚡ ENHANCED 3. Add-ons & Extras */}
                         <div className="bg-card-dark p-4 p-md-5 rounded-4 shadow-sm mb-4 border border-primary border-opacity-10" style={{ backgroundColor: 'var(--card-bg)' }}>
                             <div className="d-flex justify-content-between align-items-start">
                                 <StepHeader number="3" title={t('optional_addons', 'Optional Add-ons')} icon="fa-layer-group" />
@@ -347,24 +337,29 @@ const Booking = () => {
                                     { id: 'insurance', title: t('insurance', 'Travel Insurance'), desc: t('insurance_desc', 'Full coverage per guest.'), price: addonPrices.insurance * totalHeads, icon: 'fa-shield-heart' },
                                     { id: 'romanticDinner', title: t('dinner', 'Romantic Dinner Setup'), desc: t('dinner_desc', 'Candlelit dinner by the beach.'), price: addonPrices.romanticDinner * chargeablePax, icon: 'fa-champagne-glasses' }
                                 ].map(addon => (
-                                    <div key={addon.id} className={`p-3 p-md-4 rounded-4 border shadow-sm position-relative hover-teal ${addons[addon.id] ? 'border-primary bg-primary bg-opacity-10' : 'border-primary border-opacity-25 bg-white'}`} style={{ cursor: 'pointer' }} onClick={() => toggleAddon(addon.id)}>
+                                    <div key={addon.id} className={`p-3 p-md-4 rounded-4 border hover-teal ${addons[addon.id] ? 'border-primary bg-primary bg-opacity-10 shadow-sm' : 'border-secondary border-opacity-25 bg-white shadow-none'}`} style={{ cursor: 'pointer' }} onClick={() => toggleAddon(addon.id)}>
                                         <div className="d-flex align-items-center">
-                                            <div className={`rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0 ${addons[addon.id] ? 'bg-primary text-white' : 'bg-light text-muted border'}`} style={{ width: '28px', height: '28px' }}>
-                                                {addons[addon.id] && <i className="fa-solid fa-check" style={{ fontSize: '0.8rem' }}></i>}
+                                            
+                                            {/* ⚡ NEW Checkbox Design */}
+                                            <div className="d-flex align-items-center justify-content-center me-3 flex-shrink-0" style={{ width: '24px', height: '24px', border: '2px solid', borderRadius: '6px', borderColor: addons[addon.id] ? 'var(--primary-color)' : '#adb5bd', backgroundColor: addons[addon.id] ? 'var(--primary-color)' : 'transparent', transition: 'all 0.2s ease' }}>
+                                                <i className="fa-solid fa-check text-white" style={{ fontSize: '0.8rem', opacity: addons[addon.id] ? 1 : 0 }}></i>
                                             </div>
+
                                             <div className="me-auto">
-                                                <h6 className="text-navy fw-bold m-0 d-flex align-items-center"><i className={`fa-solid ${addon.icon} me-2 text-accent opacity-75`}></i> {addon.title}</h6>
+                                                <h6 className="text-navy fw-bold m-0 d-flex align-items-center"><i className={`fa-solid ${addon.icon} me-2 text-muted opacity-75`}></i> {addon.title}</h6>
                                                 <p className="text-grey small m-0 mt-1">{addon.desc}</p>
                                             </div>
+                                            
+                                            {/* ⚡ NEW Clean Text Price */}
                                             <div className="text-end ms-3">
-                                                <span className="badge bg-white text-navy border shadow-sm px-3 py-2 fs-6">+{formatPrice(addon.price)}</span>
+                                                <span className="fw-bold fs-6" style={{ color: addons[addon.id] ? 'var(--primary-color)' : 'var(--text-grey)' }}>+{formatPrice(addon.price)}</span>
                                             </div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
 
-                            {/* CARBON OFFSET SECTION */}
+                            {/* ⚡ ENHANCED CARBON OFFSET SECTION */}
                             <div className="p-4 rounded-4 position-relative overflow-hidden" style={{ backgroundColor: 'rgba(76, 175, 80, 0.05)', border: '1px solid rgba(76, 175, 80, 0.3)' }}>
                                 <div className="position-absolute top-0 end-0 opacity-10 p-3"><i className="fa-solid fa-leaf" style={{ fontSize: '5rem', color: '#4CAF50' }}></i></div>
                                 <div className="position-relative z-1">
@@ -374,17 +369,22 @@ const Booking = () => {
                                     </div>
                                     <p className="text-grey small mb-4" style={{ maxWidth: '90%' }}>{t('carbon_desc', 'Air travel and ground transport generate emissions. The estimated footprint for')} {chargeablePax} {t('carbon_desc2', 'traveler(s) is')} <strong className="text-navy">{chargeablePax * 150}kg CO₂</strong>. {t('carbon_desc3', 'Help us offset this by contributing to local Philippine reforestation projects.')}</p>
                                     
-                                    <div className={`p-3 rounded-4 border shadow-sm hover-teal ${addons.carbonOffset ? 'border-success bg-success bg-opacity-10' : 'border-success border-opacity-25 bg-white'}`} style={{ cursor: 'pointer' }} onClick={() => toggleAddon('carbonOffset')}>
+                                    <div className={`p-3 p-md-4 rounded-4 border hover-teal ${addons.carbonOffset ? 'border-success bg-success bg-opacity-10 shadow-sm' : 'border-secondary border-opacity-25 bg-white shadow-none'}`} style={{ cursor: 'pointer' }} onClick={() => toggleAddon('carbonOffset')}>
                                         <div className="d-flex align-items-center">
-                                            <div className={`rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0 ${addons.carbonOffset ? 'bg-success text-white' : 'bg-light text-muted border'}`} style={{ width: '28px', height: '28px' }}>
-                                                {addons.carbonOffset && <i className="fa-solid fa-check" style={{ fontSize: '0.8rem' }}></i>}
+                                            
+                                            {/* ⚡ NEW Checkbox Design */}
+                                            <div className="d-flex align-items-center justify-content-center me-3 flex-shrink-0" style={{ width: '24px', height: '24px', border: '2px solid', borderRadius: '6px', borderColor: addons.carbonOffset ? '#198754' : '#adb5bd', backgroundColor: addons.carbonOffset ? '#198754' : 'transparent', transition: 'all 0.2s ease' }}>
+                                                <i className="fa-solid fa-check text-white" style={{ fontSize: '0.8rem', opacity: addons.carbonOffset ? 1 : 0 }}></i>
                                             </div>
+
                                             <div className="me-auto">
                                                 <h6 className="text-success fw-bold m-0">{t('offset_carbon', 'Offset My Carbon Footprint')}</h6>
                                                 <p className="text-grey small m-0 mt-1">{formatPrice(500)} {t('per_person', 'per person')}</p>
                                             </div>
+
+                                            {/* ⚡ NEW Clean Text Price */}
                                             <div className="text-end ms-3">
-                                                <span className="badge bg-white text-success border shadow-sm px-3 py-2 fs-6">+{formatPrice(addonPrices.carbonOffset * chargeablePax)}</span>
+                                                <span className="fw-bold fs-6" style={{ color: addons.carbonOffset ? '#198754' : 'var(--text-grey)' }}>+{formatPrice(addonPrices.carbonOffset * chargeablePax)}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -491,7 +491,6 @@ const Booking = () => {
                                         <span className="text-navy fw-bold">{formatPrice(vatTotal)}</span>
                                     </div>
                                     
-                                    {/* Promo Code Input Field */}
                                     <div className="mb-4 p-3 rounded-4" style={{ backgroundColor: '#F8F9FA', border: '1px dashed #ced4da' }}>
                                         <label className="text-navy fw-bold small mb-2 d-block"><i className="fa-solid fa-tag text-accent me-2"></i>Have a Promo Code?</label>
                                         <div className="d-flex gap-2">
@@ -519,9 +518,7 @@ const Booking = () => {
                                         )}
                                     </div>
 
-                                    {/* Total Area */}
                                     <div className="p-3 rounded-4 shadow-sm text-white position-relative overflow-hidden" style={{ backgroundColor: 'var(--primary-dark)' }}>
-                                        {/* Decorative circle */}
                                         <div className="position-absolute rounded-circle bg-white opacity-10" style={{ width: '150px', height: '150px', top: '-50px', right: '-50px' }}></div>
                                         
                                         {appliedDiscount > 0 && (
