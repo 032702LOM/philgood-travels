@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { tourPackages, allPlaces } from '../data/placesData'; // ⚡ Removed regions
+import { tourPackages, allPlaces, regions } from '../data/placesData'; 
 import { usePreferences } from '../context/PreferencesContext';
-import { useAuth } from '../context/AuthContext'; // ⚡ NEW: Needed to save the trip to the user's account
+import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast'; 
 import axios from 'axios';
 
@@ -10,7 +10,7 @@ const Booking = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { t, formatPrice } = usePreferences();
-  const { user } = useAuth(); // ⚡ NEW: Get the logged-in user
+  const { user } = useAuth(); 
 
   const [selectedPackage, setSelectedPackage] = useState('');
   const [travelDate, setTravelDate] = useState('');
@@ -26,7 +26,7 @@ const Booking = () => {
   const [promoCode, setPromoCode] = useState('');
   const [appliedDiscount, setAppliedDiscount] = useState(0); 
   const [isApplyingPromo, setIsApplyingPromo] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false); // ⚡ NEW: Loading state for the submit button
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -126,7 +126,6 @@ const Booking = () => {
   const discountTotal = rawGrandTotal * appliedDiscount;
   const grandTotal = rawGrandTotal - discountTotal;
 
-  // ⚡ UPDATED: Now saves the trip directly to the backend and goes to the Profile
   const handleConfirmBooking = async () => {
     if (!selectedPackage || !travelDate || !leadGuest.name || !leadGuest.email) {
         toast.error("Please fill in all required fields (Package, Date, Name, Email).");
@@ -163,10 +162,7 @@ const Booking = () => {
     try {
         await axios.post(`${import.meta.env.VITE_API_URL}/api/bookings/create`, payload);
         toast.success("Trip successfully added!", { id: toastId });
-        
-        // ⚡ Routes to the dashboard with a URL parameter to open the Unpaid tab
         navigate('/profile?tab=unpaid'); 
-        
     } catch (error) {
         console.error(error);
         toast.error(error.response?.data?.error || "Failed to save trip.", { id: toastId });
@@ -216,21 +212,62 @@ const Booking = () => {
                 border: none !important;
             }
 
-            .phone-select {
+            /* =========================================
+               ⚡ CUSTOM STYLES FOR DESTINATION DROPDOWN 
+               Matches the UI/UX of the Destinations Filter Bar
+               ========================================= */
+            .custom-select-wrapper { position: relative; }
+            
+            .custom-select-wrapper select,
+            .custom-select-wrapper input {
+                appearance: none;
                 -webkit-appearance: none;
                 -moz-appearance: none;
-                appearance: none;
+                padding-left: 45px !important;
+                background-color: #F8FAFC !important; /* Crisp, light background */
+                color: var(--navy-color, #003B5C) !important;
+            }
+            
+            .custom-select-wrapper select {
+                padding-right: 40px !important;
             }
 
-            optgroup {
-                font-weight: bold;
-                color: var(--primary-color);
-                font-style: normal;
-                background-color: #f8f9fa;
+            .custom-select-icon-left {
+                position: absolute;
+                left: 16px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--primary-color, #00B4D8);
+                pointer-events: none;
+                z-index: 5;
             }
+
+            .custom-select-icon-right {
+                position: absolute;
+                right: 16px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--primary-color, #00B4D8);
+                pointer-events: none;
+                z-index: 5;
+            }
+
+            /* Styling the Mother Cards and Subcards */
+            optgroup {
+                font-weight: 900;
+                color: var(--accent-color, #F69928);
+                background-color: #fff;
+            }
+
+            .disabled-region-label {
+                font-weight: bold !important;
+                color: var(--primary-color, #00B4D8) !important;
+                background-color: rgba(0, 180, 216, 0.08) !important;
+            }
+            
             option {
-                color: var(--text-navy);
-                font-weight: normal;
+                color: var(--navy-color, #003B5C);
+                font-weight: 500;
                 background-color: #fff;
             }
         `}
@@ -255,28 +292,81 @@ const Booking = () => {
                             
                             <div className="row g-4 mb-5">
                                 <div className="col-md-7">
-                                    <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('dest_pkg', 'Destination / Package')} <span className="text-danger">*</span></label>
-                                    <select className="form-select form-select-lg w-100 border-primary border-opacity-25 bg-light hover-teal text-navy" value={selectedPackage} onChange={(e) => setSelectedPackage(e.target.value)} style={{ fontSize: '1rem' }}>
-                                        <option value="">{t('select_pkg', '-- Select a Destination --')}</option>
+                                    {/* ⚡ LABEL NOW USES PRIMARY BLUE */}
+                                    <label className="text-primary fw-bold small mb-2 text-uppercase letter-spacing-1">{t('dest_pkg', 'Destination / Package')} <span className="text-danger">*</span></label>
+                                    
+                                    <div className="custom-select-wrapper">
+                                        <i className="fa-solid fa-map-location-dot custom-select-icon-left"></i>
                                         
-                                        {/* ⚡ UPDATED: Cleanly separates Tour Packages and Accommodations */}
-                                        <optgroup label="🗺️ GUIDED TOUR PACKAGES">
-                                            {tourPackages.map(pkg => (<option key={pkg.id} value={pkg.name}>{pkg.name}</option>))}
-                                        </optgroup>
-                                        
-                                        <optgroup label="🏨 ACCOMMODATIONS & RESORTS">
-                                            {allPlaces.map(place => (<option key={place.id} value={place.name}>{place.name}</option>))}
-                                        </optgroup>
+                                        {/* ⚡ DROPDOWN USES form-control TO OVERRIDE DEFAULT CHEVRON */}
+                                        <select className="form-control form-control-lg w-100 border-primary border-opacity-25 shadow-sm hover-teal" value={selectedPackage} onChange={(e) => setSelectedPackage(e.target.value)} style={{ fontSize: '1rem' }}>
+                                            <option value="">{t('select_pkg', '-- Select a Destination --')}</option>
+                                            
+                                            {/* GUIDED TOUR PACKAGES */}
+                                            <optgroup label="🗺️ GUIDED TOUR PACKAGES">
+                                                {regions.map(region => {
+                                                    const regionTours = tourPackages.filter(pkg => {
+                                                        if (region.id === 'Palawan' && pkg.id.includes('ElNido')) return true;
+                                                        if (region.id === 'Bohol' && pkg.id.includes('Bohol')) return true;
+                                                        if (region.id === 'Aklan' && pkg.id.includes('Boracay')) return true;
+                                                        if (region.id === 'Cebu' && pkg.id.includes('Cebu')) return true;
+                                                        if (region.id === 'Manila' && pkg.id.includes('Manila')) return true;
+                                                        if (region.id === 'Banaue' && pkg.id.includes('Banaue')) return true;
+                                                        return false;
+                                                    });
 
-                                    </select>
+                                                    if (regionTours.length === 0) return null;
+
+                                                    return (
+                                                        <React.Fragment key={`tour-${region.id}`}>
+                                                            {/* ⚡ MOTHER CARD (DISABLED HEADER) */}
+                                                            <option disabled className="disabled-region-label">📍 {region.name.toUpperCase()}</option>
+                                                            
+                                                            {/* ⚡ SUBCARDS (INDENTED) */}
+                                                            {regionTours.map(pkg => (
+                                                                <option key={pkg.id} value={pkg.name}>&nbsp;&nbsp;&nbsp;&nbsp;{pkg.name}</option>
+                                                            ))}
+                                                        </React.Fragment>
+                                                    );
+                                                })}
+                                            </optgroup>
+
+                                            {/* ACCOMMODATIONS & RESORTS */}
+                                            <optgroup label="🏨 ACCOMMODATIONS & RESORTS">
+                                                {regions.map(region => {
+                                                    const regionPlaces = allPlaces.filter(place => place.region === region.id);
+
+                                                    if (regionPlaces.length === 0) return null;
+
+                                                    return (
+                                                        <React.Fragment key={`acc-${region.id}`}>
+                                                            {/* ⚡ MOTHER CARD (DISABLED HEADER) */}
+                                                            <option disabled className="disabled-region-label">📍 {region.name.toUpperCase()}</option>
+                                                            
+                                                            {/* ⚡ SUBCARDS (INDENTED) */}
+                                                            {regionPlaces.map(place => (
+                                                                <option key={place.id} value={place.name}>&nbsp;&nbsp;&nbsp;&nbsp;{place.name}</option>
+                                                            ))}
+                                                        </React.Fragment>
+                                                    );
+                                                })}
+                                            </optgroup>
+
+                                        </select>
+                                        <i className="fa-solid fa-chevron-down custom-select-icon-right"></i>
+                                    </div>
                                 </div>
                                 <div className="col-md-5">
-                                    <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('travel_date', 'Travel Date')} <span className="text-danger">*</span></label>
-                                    <input type="date" className="form-control form-control-lg w-100 border-primary border-opacity-25 bg-light hover-teal text-navy" value={travelDate} onChange={(e) => setTravelDate(e.target.value)} style={{ fontSize: '1rem' }} />
+                                    {/* ⚡ LABEL NOW USES PRIMARY BLUE */}
+                                    <label className="text-primary fw-bold small mb-2 text-uppercase letter-spacing-1">{t('travel_date', 'Travel Date')} <span className="text-danger">*</span></label>
+                                    <div className="custom-select-wrapper">
+                                        <i className="fa-regular fa-calendar custom-select-icon-left"></i>
+                                        <input type="date" className="form-control form-control-lg w-100 border-primary border-opacity-25 shadow-sm hover-teal text-navy" value={travelDate} onChange={(e) => setTravelDate(e.target.value)} style={{ fontSize: '1rem' }} />
+                                    </div>
                                 </div>
                             </div>
 
-                            <label className="text-navy fw-bold small mb-3 text-uppercase letter-spacing-1">{t('num_guests', 'Number of Guests')}</label>
+                            <label className="text-primary fw-bold small mb-3 text-uppercase letter-spacing-1">{t('num_guests', 'Number of Guests')}</label>
                             <div className="row g-3 mb-5">
                                 <div className="col-md-4">
                                     <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm hover-teal" style={{ backgroundColor: '#fff' }}>
@@ -318,7 +408,7 @@ const Booking = () => {
                                 </div>
                             </div>
 
-                            <label className="text-navy fw-bold small mb-3 text-uppercase letter-spacing-1">{t('acc_class', 'Accommodation Class')}</label>
+                            <label className="text-primary fw-bold small mb-3 text-uppercase letter-spacing-1">{t('acc_class', 'Accommodation Class')}</label>
                             <div className="row g-3">
                                 {[
                                     { id: 'standard', icon: 'fa-bed', title: t('std_class', 'Standard'), desc: t('std_desc', 'Included') },
@@ -343,28 +433,28 @@ const Booking = () => {
                             <StepHeader number="2" title={t('lead_guest', 'Lead Guest Details')} icon="fa-user-check" />
                             <div className="row g-4">
                                 <div className="col-md-6">
-                                    <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('full_name', 'Full Name')} <span className="text-danger">*</span></label>
-                                    <div className="position-relative">
-                                        <i className="fa-regular fa-user position-absolute text-primary opacity-75" style={{ left: '16px', top: '50%', transform: 'translateY(-50%)', zIndex: 5, pointerEvents: 'none' }}></i>
-                                        <input type="text" className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm hover-teal text-navy" placeholder="Juan Dela Cruz" value={leadGuest.name} onChange={(e) => setLeadGuest({...leadGuest, name: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }} required />
+                                    <label className="text-primary fw-bold small mb-2 text-uppercase letter-spacing-1">{t('full_name', 'Full Name')} <span className="text-danger">*</span></label>
+                                    <div className="custom-select-wrapper">
+                                        <i className="fa-regular fa-user custom-select-icon-left opacity-75"></i>
+                                        <input type="text" className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm hover-teal text-navy" placeholder="Juan Dela Cruz" value={leadGuest.name} onChange={(e) => setLeadGuest({...leadGuest, name: e.target.value})} style={{ fontSize: '0.95rem' }} required />
                                     </div>
                                 </div>
                                 <div className="col-md-6">
-                                    <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('email_addr', 'Email Address')} <span className="text-danger">*</span></label>
-                                    <div className="position-relative">
-                                        <i className="fa-regular fa-envelope position-absolute text-primary opacity-75" style={{ left: '16px', top: '50%', transform: 'translateY(-50%)', zIndex: 5, pointerEvents: 'none' }}></i>
-                                        <input type="email" className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm hover-teal text-navy" placeholder="juan@example.com" value={leadGuest.email} onChange={(e) => setLeadGuest({...leadGuest, email: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }} required />
+                                    <label className="text-primary fw-bold small mb-2 text-uppercase letter-spacing-1">{t('email_addr', 'Email Address')} <span className="text-danger">*</span></label>
+                                    <div className="custom-select-wrapper">
+                                        <i className="fa-regular fa-envelope custom-select-icon-left opacity-75"></i>
+                                        <input type="email" className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm hover-teal text-navy" placeholder="juan@example.com" value={leadGuest.email} onChange={(e) => setLeadGuest({...leadGuest, email: e.target.value})} style={{ fontSize: '0.95rem' }} required />
                                     </div>
                                 </div>
                                 <div className="col-md-6">
-                                    <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('phone', 'Phone Number')}</label>
-                                    <div className="input-group input-group-lg shadow-sm hover-teal rounded-3 bg-light" style={{ border: '1px solid rgba(0, 119, 182, 0.25)', overflow: 'hidden' }}>
-                                        <span className="input-group-text bg-light border-0 pe-2">
+                                    <label className="text-primary fw-bold small mb-2 text-uppercase letter-spacing-1">{t('phone', 'Phone Number')}</label>
+                                    <div className="input-group input-group-lg shadow-sm hover-teal rounded-3" style={{ border: '1px solid rgba(0, 119, 182, 0.25)', overflow: 'hidden' }}>
+                                        <span className="input-group-text border-0 pe-2" style={{ backgroundColor: '#F8FAFC' }}>
                                             <i className="fa-solid fa-phone text-primary opacity-75"></i>
                                         </span>
                                         <select 
-                                            className="form-select bg-light border-0 fw-bold text-navy px-1 phone-select" 
-                                            style={{ maxWidth: '90px', cursor: 'pointer', fontSize: '0.95rem', boxShadow: 'none' }}
+                                            className="form-select border-0 fw-bold text-navy px-1 phone-select" 
+                                            style={{ maxWidth: '90px', cursor: 'pointer', fontSize: '0.95rem', boxShadow: 'none', backgroundColor: '#F8FAFC' }}
                                             value={phoneCode}
                                             onChange={(e) => setPhoneCode(e.target.value)}
                                         >
@@ -385,18 +475,18 @@ const Booking = () => {
                                         </select>
                                         <input 
                                             type="tel" 
-                                            className="form-control bg-light border-0 text-navy" 
+                                            className="form-control border-0 text-navy" 
                                             placeholder="912 345 6789" 
                                             value={leadGuest.phone} 
                                             onChange={(e) => setLeadGuest({...leadGuest, phone: e.target.value})} 
-                                            style={{ fontSize: '0.95rem', boxShadow: 'none' }} 
+                                            style={{ fontSize: '0.95rem', boxShadow: 'none', backgroundColor: '#F8FAFC' }} 
                                         />
                                     </div>
                                 </div>
                                 <div className="col-12">
-                                    <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">Special Requests</label>
-                                    <div className="position-relative">
-                                        <i className="fa-regular fa-comment-dots position-absolute text-primary opacity-75" style={{ left: '16px', top: '16px', zIndex: 5, pointerEvents: 'none' }}></i>
+                                    <label className="text-primary fw-bold small mb-2 text-uppercase letter-spacing-1">Special Requests</label>
+                                    <div className="custom-select-wrapper">
+                                        <i className="fa-regular fa-comment-dots custom-select-icon-left opacity-75" style={{ top: '24px', transform: 'none' }}></i>
                                         <textarea className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm hover-teal text-navy" rows="3" placeholder="Allergies, late check-in, special occasions, etc." value={leadGuest.specialRequests} onChange={(e) => setLeadGuest({...leadGuest, specialRequests: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }}></textarea>
                                     </div>
                                 </div>
@@ -464,7 +554,7 @@ const Booking = () => {
                         <div className="bg-card-dark p-4 p-md-5 rounded-4 shadow-sm mb-4 border border-primary border-opacity-10" style={{ backgroundColor: 'var(--card-bg)' }}>
                             <StepHeader number="4" title={t('payment_details', 'Payment Details')} icon="fa-credit-card" />
                             
-                            <label className="text-navy fw-bold small mb-3 text-uppercase letter-spacing-1">{t('how_paying', 'How are we paying?')}</label>
+                            <label className="text-primary fw-bold small mb-3 text-uppercase letter-spacing-1">{t('how_paying', 'How are we paying?')}</label>
                             
                             <div className="d-flex flex-wrap gap-2 mb-4 bg-light p-2 rounded-4 border border-primary border-opacity-10">
                                 <button type="button" className={`btn flex-grow-1 rounded-pill fw-bold hover-coral ${splitPayment === 1 ? 'active-coral shadow-sm' : 'unselected-teal'}`} onClick={() => setSplitPayment(1)}>
@@ -483,10 +573,10 @@ const Booking = () => {
                                     <div className="row g-3">
                                         {emails.map((email, index) => (
                                             <div className="col-md-6" key={index}>
-                                                <label className="text-navy fw-bold small mb-1 text-uppercase letter-spacing-1">{index === 0 ? t('lead_email', "Lead Booker's Email") : `${t('friend_email', 'Friend')} ${index}'s ${t('friend_email2', 'Email')}`}</label>
-                                                <div className="position-relative">
-                                                    <i className="fa-regular fa-envelope position-absolute text-primary opacity-75" style={{ left: '16px', top: '50%', transform: 'translateY(-50%)', zIndex: 5, pointerEvents: 'none' }}></i>
-                                                    <input type="email" className="form-control bg-light border-primary border-opacity-25 hover-teal text-navy" value={email} onChange={(e) => handleEmailChange(index, e.target.value)} style={{ paddingLeft: '45px' }} required />
+                                                <label className="text-primary fw-bold small mb-1 text-uppercase letter-spacing-1">{index === 0 ? t('lead_email', "Lead Booker's Email") : `${t('friend_email', 'Friend')} ${index}'s ${t('friend_email2', 'Email')}`}</label>
+                                                <div className="custom-select-wrapper">
+                                                    <i className="fa-regular fa-envelope custom-select-icon-left opacity-75"></i>
+                                                    <input type="email" className="form-control bg-light border-primary border-opacity-25 hover-teal text-navy" value={email} onChange={(e) => handleEmailChange(index, e.target.value)} required />
                                                 </div>
                                             </div>
                                         ))}
@@ -618,7 +708,6 @@ const Booking = () => {
                                         </div>
                                     )}
                                     
-                                    {/* ⚡ UPDATED: Changed Button Text and Loading State */}
                                     <button type="button" className="btn btn-proceed w-100 mt-4 py-3 text-uppercase font-montserrat fw-bold shadow-lg fs-6 hover-coral" onClick={handleConfirmBooking} disabled={!selectedPackage || !travelDate || isSubmitting}>
                                         {isSubmitting ? <><i className="fa-solid fa-spinner fa-spin me-2"></i> Processing...</> : <>{t('add_to_planned_trips', 'Add to My Planned Trips')} <i className="fa-solid fa-arrow-right ms-2"></i></>}
                                     </button>
