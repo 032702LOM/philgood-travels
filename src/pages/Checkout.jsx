@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { usePreferences } from '../context/PreferencesContext';
 import axios from 'axios';
 
@@ -74,9 +74,10 @@ const Checkout = () => {
     <div className="fade-in" style={{ minHeight: '80vh', paddingTop: '100px', paddingBottom: '60px', backgroundColor: 'var(--bg-dark)' }}>
       <div className="container">
         
-        <button className="btn btn-link text-navy fw-bold text-decoration-none p-0 mb-4 opacity-75" onClick={() => navigate(-1)}>
-            <i className="fa-solid fa-arrow-left me-2"></i> Back to Dashboard
-        </button>
+        {/* ⚡ UPDATED: Changed text and added routing directly to the default profile view (All tab) */}
+        <Link to="/profile" className="text-primary fw-bold text-decoration-none mb-4 d-inline-block hover-coral">
+            <i className="fa-solid fa-arrow-left me-2"></i> Back to My Planned Trips
+        </Link>
 
         <div className="row g-5">
           
