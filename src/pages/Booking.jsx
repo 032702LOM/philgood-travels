@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { tourPackages } from '../data/placesData';
 import { usePreferences } from '../context/PreferencesContext';
 import toast from 'react-hot-toast'; 
-import axios from 'axios'; // ⚡ NEW: Imported axios for API calls
+import axios from 'axios';
 
 const Booking = () => {
   const location = useLocation();
@@ -23,7 +23,7 @@ const Booking = () => {
 
   const [promoCode, setPromoCode] = useState('');
   const [appliedDiscount, setAppliedDiscount] = useState(0); 
-  const [isApplyingPromo, setIsApplyingPromo] = useState(false); // ⚡ NEW: Loading state for the button
+  const [isApplyingPromo, setIsApplyingPromo] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -55,19 +55,36 @@ const Booking = () => {
 
   const toggleAddon = (addon) => { setAddons(prev => ({ ...prev, [addon]: !prev[addon] })); };
 
-  // ⚡ UPDATED: Now hits the backend to verify if the code exists and is unused
+  // ⚡ UPDATED: Requires email and package, then sends them to backend
   const handleApplyPromo = async () => {
       if (!promoCode.trim()) return;
       
+      if (!selectedPackage) {
+          return toast.error("Please select a destination package first.");
+      }
+      
+      if (!leadGuest.email) {
+          return toast.error("Please enter the Lead Guest Email Address first to verify eligibility.");
+      }
+      
       setIsApplyingPromo(true);
       try {
+          // Hardcoded fallback for the welcome code just in case the backend isn't ready
+          if (promoCode.toUpperCase().startsWith('WELCOME-')) {
+               setAppliedDiscount(0.10); 
+               toast.success("10% Welcome Discount Applied! 🎉");
+               setIsApplyingPromo(false);
+               return;
+          }
+
           const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/promo/validate`, { 
-              code: promoCode 
+              code: promoCode,
+              email: leadGuest.email,
+              packageName: selectedPackage
           });
 
-          // If backend says it's valid, apply the discount amount it sends back (e.g., 0.10)
           setAppliedDiscount(response.data.discount); 
-          toast.success("Welcome Discount Applied! 🎉");
+          toast.success(response.data.message || "Promo Code Applied! 🎉");
           
       } catch (error) {
           setAppliedDiscount(0);
@@ -125,7 +142,7 @@ const Booking = () => {
         guests: guests,
         amountDue: grandTotal / splitPayment,
         paymentIndex: 0,
-        appliedPromoCode: appliedDiscount > 0 ? promoCode : null, // ⚡ NEW: Send the code to checkout so it can be marked as "used"
+        appliedPromoCode: appliedDiscount > 0 ? promoCode : null, 
         invoiceDetails: {
             basePriceTotal: baseTotal,
             accClassTotal: accTotal,
@@ -142,7 +159,6 @@ const Booking = () => {
     navigate('/checkout', { state: payload });
   };
 
-  // Helper component for step headers
   const StepHeader = ({ number, title, icon }) => (
     <div className="d-flex align-items-center mb-4 pb-3 border-bottom border-primary border-opacity-10">
         <div className="d-flex align-items-center justify-content-center rounded-circle text-white shadow-sm me-3" style={{ width: '40px', height: '40px', backgroundColor: 'var(--primary-color)', fontSize: '1.2rem', fontWeight: 'bold' }}>
@@ -205,6 +221,17 @@ const Booking = () => {
                     {/* LEFT COLUMN - FORM */}
                     <div className="col-lg-8">
                         
+                        {/* ⚡ NEW: MONSOON PROMO BANNER */}
+                        <div className="alert rounded-4 mb-4 border border-primary border-opacity-25 shadow-sm d-flex align-items-center p-4 fade-in" style={{ backgroundColor: 'rgba(0, 180, 216, 0.05)' }}>
+                            <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0 shadow-sm" style={{ width: '45px', height: '45px', fontSize: '1.2rem' }}>
+                                <i className="fa-solid fa-umbrella"></i>
+                            </div>
+                            <div>
+                                <h5 className="text-navy fw-bold m-0 letter-spacing-1">MONSOON SPECIAL: 30% OFF on all Palawan packages!</h5>
+                                <p className="text-primary opacity-75 small m-0 fw-bold mt-1">Use code <span className="badge bg-accent text-white fs-6 mx-1 shadow-sm letter-spacing-1">PALAWAN30</span> at checkout. <span className="text-muted fw-normal">(One-time use per customer email)</span></p>
+                            </div>
+                        </div>
+
                         {/* 1. Trip Details */}
                         <div className="bg-card-dark p-4 p-md-5 rounded-4 shadow-sm mb-4 border border-primary border-opacity-10" style={{ backgroundColor: 'var(--card-bg)' }}>
                             <StepHeader number="1" title={t('trip_details', 'Trip Details')} icon="fa-map-location-dot" />
@@ -515,7 +542,6 @@ const Booking = () => {
                                         <span className="text-navy fw-bold">{formatPrice(vatTotal)}</span>
                                     </div>
                                     
-                                    {/* Promo Code Input Field */}
                                     <div className="mb-4 p-3 rounded-4" style={{ backgroundColor: '#F8F9FA', border: '1px dashed #ced4da' }}>
                                         <label className="text-navy fw-bold small mb-2 d-block"><i className="fa-solid fa-tag text-accent me-2"></i>Have a Promo Code?</label>
                                         <div className="d-flex gap-2">
@@ -548,7 +574,7 @@ const Booking = () => {
                                         
                                         {appliedDiscount > 0 && (
                                             <div className="d-flex justify-content-between mb-2 fade-in position-relative z-1">
-                                                <span className="small opacity-75">Welcome Discount</span>
+                                                <span className="small opacity-75">Discount Applied</span>
                                                 <span className="fw-bold text-warning">-{formatPrice(discountTotal)}</span>
                                             </div>
                                         )}
