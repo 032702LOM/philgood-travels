@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { tourPackages, allPlaces } from '../data/placesData'; // ⚡ FIX: Imported allPlaces
+import { tourPackages, allPlaces } from '../data/placesData';
 import { usePreferences } from '../context/PreferencesContext';
 import toast from 'react-hot-toast'; 
 import axios from 'axios';
@@ -92,7 +92,7 @@ const Booking = () => {
       }
   };
 
-  // ⚡ FIX: Price Calculations now look through BOTH arrays
+  // Price Calculations
   const allOptions = [...tourPackages, ...allPlaces];
   const pkgData = allOptions.find(p => p.name === selectedPackage) || { price: 0 };
   const basePrice = pkgData.price;
@@ -130,7 +130,7 @@ const Booking = () => {
     const payload = {
         bookingId: 'BK' + Math.random().toString(36).substr(2, 6).toUpperCase(),
         packageName: selectedPackage,
-        packageId: pkgData.id, // Good practice to pass the ID along
+        packageId: pkgData.id, 
         travelDate: travelDate,
         totalPrice: grandTotal,
         splitBetween: splitPayment,
@@ -206,7 +206,6 @@ const Booking = () => {
                 appearance: none;
             }
 
-            /* Styles to make the optgroup labels look cleaner */
             optgroup {
                 font-weight: bold;
                 color: var(--primary-color);
@@ -244,7 +243,6 @@ const Booking = () => {
                                     <select className="form-select form-select-lg w-100 border-primary border-opacity-25 bg-light hover-teal text-navy" value={selectedPackage} onChange={(e) => setSelectedPackage(e.target.value)} style={{ fontSize: '1rem' }}>
                                         <option value="">{t('select_pkg', '-- Select a Package --')}</option>
                                         
-                                        {/* ⚡ FIX: Neatly grouped Tour Packages and Resorts! */}
                                         <optgroup label="Guided Tour Packages">
                                             {tourPackages.map(pkg => (<option key={pkg.id} value={pkg.name}>{pkg.name}</option>))}
                                         </optgroup>
@@ -305,10 +303,11 @@ const Booking = () => {
 
                             <label className="text-navy fw-bold small mb-3 text-uppercase letter-spacing-1">{t('acc_class', 'Accommodation Class')}</label>
                             <div className="row g-3">
+                                {/* ⚡ UPDATED: Shows percentage AND amount */}
                                 {[
                                     { id: 'standard', icon: 'fa-bed', title: t('std_class', 'Standard'), desc: t('std_desc', 'Included') },
-                                    { id: 'deluxe', icon: 'fa-hot-tub-person', title: t('deluxe_class', 'Deluxe'), desc: `+${formatPrice(baseTotal * 0.3)}`, highlight: true },
-                                    { id: 'luxury', icon: 'fa-crown', title: t('lux_class', 'Luxury'), desc: `+${formatPrice(baseTotal * 0.7)}`, highlight: true }
+                                    { id: 'deluxe', icon: 'fa-hot-tub-person', title: t('deluxe_class', 'Deluxe'), desc: `+30% (${formatPrice(baseTotal * 0.3)})`, highlight: true },
+                                    { id: 'luxury', icon: 'fa-crown', title: t('lux_class', 'Luxury'), desc: `+70% (${formatPrice(baseTotal * 0.7)})`, highlight: true }
                                 ].map(cls => (
                                     <div className="col-md-4" key={cls.id}>
                                         <label className={`w-100 h-100 rounded-4 p-3 border text-center position-relative shadow-sm hover-teal ${accClass === cls.id ? 'border-primary bg-primary bg-opacity-10' : 'border-primary border-opacity-25 bg-white'}`} style={{ cursor: 'pointer' }}>
