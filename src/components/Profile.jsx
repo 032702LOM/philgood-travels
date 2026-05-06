@@ -44,8 +44,17 @@ const Profile = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
+    
+    // Check for successful payment
     if (params.get('payment') === 'success') {
         setTimeout(() => { toast.success("Payment successful! Your dashboard will update shortly."); }, 500);
+        window.history.replaceState(null, '', window.location.pathname);
+    }
+
+    // ⚡ NEW: Automatically open the Unpaid tab if routed from Booking
+    if (params.get('tab') === 'unpaid') {
+        setActiveTab('planned');
+        setPaymentFilter('Unpaid');
         window.history.replaceState(null, '', window.location.pathname);
     }
   }, [location]);

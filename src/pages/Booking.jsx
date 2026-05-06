@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { tourPackages, allPlaces, regions } from '../data/placesData'; 
+import { tourPackages, allPlaces } from '../data/placesData'; // ⚡ Removed regions
 import { usePreferences } from '../context/PreferencesContext';
+import { useAuth } from '../context/AuthContext'; // ⚡ NEW: Needed to save the trip to the user's account
 import toast from 'react-hot-toast'; 
 import axios from 'axios';
 
@@ -9,6 +10,7 @@ const Booking = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { t, formatPrice } = usePreferences();
+  const { user } = useAuth(); // ⚡ NEW: Get the logged-in user
 
   const [selectedPackage, setSelectedPackage] = useState('');
   const [travelDate, setTravelDate] = useState('');
@@ -24,6 +26,7 @@ const Booking = () => {
   const [promoCode, setPromoCode] = useState('');
   const [appliedDiscount, setAppliedDiscount] = useState(0); 
   const [isApplyingPromo, setIsApplyingPromo] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); // ⚡ NEW: Loading state for the submit button
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -92,6 +95,9 @@ const Booking = () => {
       }
   };
 
+  // ==========================================
+  // STRICT PRICE CALCULATIONS
+  // ==========================================
   const allOptions = [...tourPackages, ...allPlaces];
   const pkgData = allOptions.find(p => p.name === selectedPackage) || { price: 0 };
   const basePrice = pkgData.price;
@@ -110,7 +116,6 @@ const Booking = () => {
   
   const transferTotal = addons.airportTransfer ? addonPrices.airportTransfer : 0;
   const dinnerTotal = addons.romanticDinner ? addonPrices.romanticDinner : 0;
-  
   const insuranceTotal = addons.insurance ? (addonPrices.insurance * totalHeads) : 0; 
   const carbonTotal = addons.carbonOffset ? (addonPrices.carbonOffset * chargeablePax) : 0;
 
@@ -121,42 +126,53 @@ const Booking = () => {
   const discountTotal = rawGrandTotal * appliedDiscount;
   const grandTotal = rawGrandTotal - discountTotal;
 
-  const handleConfirmBooking = () => {
+  // ⚡ UPDATED: Now saves the trip directly to the backend and goes to the Profile
+  const handleConfirmBooking = async () => {
     if (!selectedPackage || !travelDate || !leadGuest.name || !leadGuest.email) {
         toast.error("Please fill in all required fields (Package, Date, Name, Email).");
         return;
     }
 
+    if (!user) {
+        toast.error("Please log in to save your planned trip.");
+        navigate('/login');
+        return;
+    }
+
     const payload = {
-        bookingId: 'BK' + Math.random().toString(36).substr(2, 6).toUpperCase(),
+        userId: user.id || user._id,
         packageName: selectedPackage,
         packageId: pkgData.id, 
         travelDate: travelDate,
-        totalPrice: grandTotal,
         splitBetween: splitPayment,
-        invoiceEmails: emails,
+        friendEmails: emails.filter(e => e.trim() !== ''),
         contactInfo: {
             ...leadGuest,
             phone: leadGuest.phone ? `${phoneCode} ${leadGuest.phone}` : ''
         },
         guests: guests,
-        amountDue: grandTotal / splitPayment,
-        paymentIndex: 0,
+        accClass: accClass,
+        addons: addons,
+        specialRequests: leadGuest.specialRequests,
         appliedPromoCode: appliedDiscount > 0 ? promoCode : null, 
-        invoiceDetails: {
-            basePriceTotal: baseTotal,
-            accClassTotal: accTotal,
-            accClassText: accClass.charAt(0).toUpperCase() + accClass.slice(1) + " Upgrade",
-            transferTotal: transferTotal,
-            insuranceTotal: insuranceTotal,
-            dinnerTotal: dinnerTotal,
-            carbonTotal: carbonTotal,
-            vatTotal: vatTotal,
-            discountTotal: -Math.abs(discountTotal) 
-        }
     };
 
-    navigate('/checkout', { state: payload });
+    setIsSubmitting(true);
+    const toastId = toast.loading("Saving to My Planned Trips...");
+
+    try {
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/bookings/create`, payload);
+        toast.success("Trip successfully added!", { id: toastId });
+        
+        // ⚡ Routes to the dashboard with a URL parameter to open the Unpaid tab
+        navigate('/profile?tab=unpaid'); 
+        
+    } catch (error) {
+        console.error(error);
+        toast.error(error.response?.data?.error || "Failed to save trip.", { id: toastId });
+    } finally {
+        setIsSubmitting(false);
+    }
   };
 
   const StepHeader = ({ number, title, icon }) => (
@@ -206,16 +222,14 @@ const Booking = () => {
                 appearance: none;
             }
 
-            /* CLEANED UP OPTGROUP STYLES */
             optgroup {
                 font-weight: bold;
-                color: var(--navy-color, #003B5C);
+                color: var(--primary-color);
                 font-style: normal;
                 background-color: #f8f9fa;
-                letter-spacing: 1px;
             }
             option {
-                color: var(--text-navy, #333);
+                color: var(--text-navy);
                 font-weight: normal;
                 background-color: #fff;
             }
@@ -245,33 +259,14 @@ const Booking = () => {
                                     <select className="form-select form-select-lg w-100 border-primary border-opacity-25 bg-light hover-teal text-navy" value={selectedPackage} onChange={(e) => setSelectedPackage(e.target.value)} style={{ fontSize: '1rem' }}>
                                         <option value="">{t('select_pkg', '-- Select a Destination --')}</option>
                                         
-                                        {/* ⚡ CLEAN, PROFESSIONAL DROPDOWN WITHOUT EMOJIS */}
-                                        {regions.map(region => {
-                                            const regionTours = tourPackages.filter(pkg => {
-                                                if (region.id === 'Palawan' && pkg.id.includes('ElNido')) return true;
-                                                if (region.id === 'Bohol' && pkg.id.includes('Bohol')) return true;
-                                                if (region.id === 'Aklan' && pkg.id.includes('Boracay')) return true;
-                                                if (region.id === 'Cebu' && pkg.id.includes('Cebu')) return true;
-                                                if (region.id === 'Manila' && pkg.id.includes('Manila')) return true;
-                                                if (region.id === 'Banaue' && pkg.id.includes('Banaue')) return true;
-                                                return false;
-                                            });
-
-                                            const regionPlaces = allPlaces.filter(place => place.region === region.id);
-
-                                            if (regionTours.length === 0 && regionPlaces.length === 0) return null;
-
-                                            return (
-                                                <optgroup key={region.id} label={region.name.toUpperCase()}>
-                                                    {regionTours.map(pkg => (
-                                                        <option key={pkg.id} value={pkg.name}>{pkg.name} (Guided Tour)</option>
-                                                    ))}
-                                                    {regionPlaces.map(place => (
-                                                        <option key={place.id} value={place.name}>{place.name} (Accommodation)</option>
-                                                    ))}
-                                                </optgroup>
-                                            );
-                                        })}
+                                        {/* ⚡ UPDATED: Cleanly separates Tour Packages and Accommodations */}
+                                        <optgroup label="🗺️ GUIDED TOUR PACKAGES">
+                                            {tourPackages.map(pkg => (<option key={pkg.id} value={pkg.name}>{pkg.name}</option>))}
+                                        </optgroup>
+                                        
+                                        <optgroup label="🏨 ACCOMMODATIONS & RESORTS">
+                                            {allPlaces.map(place => (<option key={place.id} value={place.name}>{place.name}</option>))}
+                                        </optgroup>
 
                                     </select>
                                 </div>
@@ -623,8 +618,9 @@ const Booking = () => {
                                         </div>
                                     )}
                                     
-                                    <button type="button" className="btn btn-proceed w-100 mt-4 py-3 text-uppercase font-montserrat fw-bold shadow-lg fs-6 hover-coral" onClick={handleConfirmBooking} disabled={!selectedPackage || !travelDate}>
-                                        {t('add_to_planned_trips', 'Add to My Planned Trips')} <i className="fa-solid fa-arrow-right ms-2"></i>
+                                    {/* ⚡ UPDATED: Changed Button Text and Loading State */}
+                                    <button type="button" className="btn btn-proceed w-100 mt-4 py-3 text-uppercase font-montserrat fw-bold shadow-lg fs-6 hover-coral" onClick={handleConfirmBooking} disabled={!selectedPackage || !travelDate || isSubmitting}>
+                                        {isSubmitting ? <><i className="fa-solid fa-spinner fa-spin me-2"></i> Processing...</> : <>{t('add_to_planned_trips', 'Add to My Planned Trips')} <i className="fa-solid fa-arrow-right ms-2"></i></>}
                                     </button>
                                     
                                     <div className="text-center mt-3 opacity-75">
