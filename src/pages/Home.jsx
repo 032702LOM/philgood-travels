@@ -17,6 +17,9 @@ const Home = () => {
   const [destPositions, setDestPositions] = useState(initialPositions);
   const [pkgPositions, setPkgPositions] = useState(initialPositions);
 
+  // ⚡ NEW: State to control the visibility of the sticky promo banner
+  const [showPromoBanner, setShowPromoBanner] = useState(true);
+
   const rotateStack = (type, direction) => {
     const setFunction = type === 'dest' ? setDestPositions : setPkgPositions;
     setFunction((current) => {
@@ -120,6 +123,15 @@ const Home = () => {
                         display: none !important;
                     }
                 }
+
+                /* PROMO BANNER ANIMATION */
+                .promo-slide-up {
+                    animation: slideUp 0.5s ease-out forwards;
+                }
+                @keyframes slideUp {
+                    from { transform: translateY(100%); }
+                    to { transform: translateY(0); }
+                }
             `}
         </style>
 
@@ -146,25 +158,9 @@ const Home = () => {
                     </video>
                 </div>
             </div>
-            
-            {/* ⚡ NEW: MONSOON PROMO BANNER PLACED HERE */}
-            <div className="container scroll-reveal pb-5">
-                <div className="alert rounded-4 border border-primary border-opacity-25 shadow-sm d-flex flex-column flex-md-row align-items-center justify-content-center p-4 m-0" style={{ backgroundColor: 'rgba(0, 180, 216, 0.05)' }}>
-                    <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-4 shadow-sm" style={{ width: '60px', height: '60px', fontSize: '1.5rem', flexShrink: 0 }}>
-                        <i className="fa-solid fa-umbrella"></i>
-                    </div>
-                    <div className="text-center text-md-start">
-                        <h4 className="text-navy fw-bold m-0 letter-spacing-1">MONSOON SPECIAL: 30% OFF on all Palawan packages!</h4>
-                        <p className="text-primary opacity-75 fs-6 m-0 fw-bold mt-2">
-                            Use code <span className="badge bg-accent text-white fs-6 mx-1 shadow-sm letter-spacing-1">PALAWAN30</span> at checkout. 
-                            <span className="text-muted fw-normal ms-2 d-block d-md-inline mt-2 mt-md-0">(One-time use per customer email)</span>
-                        </p>
-                    </div>
-                </div>
-            </div>
 
             {/* STATS SECTION */}
-            <div className="container pb-5">
+            <div className="container pb-5 pt-3">
                 <div className="stats-container row text-center g-4">
                     <div className="col-md-4">
                         <div className="stat-card scroll-reveal">
@@ -368,7 +364,7 @@ const Home = () => {
         </section>
 
         {/* SCENE 3: READY FOR YOUR NEXT DIVE */}
-        <section className="scene-section dive-bg" style={{ backgroundImage: `url("${swimImg}")`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+        <section className="scene-section dive-bg" style={{ backgroundImage: `url("${swimImg}")`, backgroundSize: 'cover', backgroundPosition: 'center', paddingBottom: showPromoBanner ? '80px' : '0' }}>
             <div className="container">
                 <div className="row align-items-center scene-block scroll-reveal">
                     <div className="col-lg-6">
@@ -384,6 +380,38 @@ const Home = () => {
                 </div>
             </div>
         </section>
+
+        {/* ⚡ NEW: STICKY FLOATING PROMO BANNER */}
+        {showPromoBanner && (
+            <div className="position-fixed bottom-0 start-0 w-100 shadow-lg promo-slide-up" style={{ backgroundColor: 'var(--accent-color, #F69928)', zIndex: 1040, borderTop: '2px solid rgba(255,255,255,0.2)' }}>
+                <div className="container position-relative py-3">
+                    
+                    {/* Close Button */}
+                    <button 
+                        onClick={() => setShowPromoBanner(false)} 
+                        className="btn btn-link position-absolute top-50 end-0 translate-middle-y text-white p-0 me-2 me-md-4"
+                        style={{ textDecoration: 'none', zIndex: 2 }}
+                    >
+                        <i className="fa-solid fa-xmark fs-4 opacity-75"></i>
+                    </button>
+                    
+                    {/* Promo Content */}
+                    <div className="d-flex flex-column flex-md-row align-items-center justify-content-center pe-4 pe-md-5">
+                        <span className="fw-bold text-white text-uppercase letter-spacing-1 mb-1 mb-md-0 text-center me-md-3" style={{ fontSize: '0.95rem' }}>
+                            <i className="fa-solid fa-umbrella me-2"></i> MONSOON SPECIAL: 30% OFF on all Palawan packages!
+                        </span>
+                        <span className="text-white text-center" style={{ fontSize: '0.9rem' }}>
+                            Use code <strong className="bg-white px-2 py-1 rounded mx-1 shadow-sm" style={{ color: 'var(--accent-color)' }}>PALAWAN30</strong> at checkout. 
+                            <span className="opacity-75 ms-1 d-none d-md-inline small">(One-time use per customer email)</span>
+                        </span>
+                        {/* Mobile view subtext */}
+                        <span className="text-white text-center opacity-75 d-md-none mt-1" style={{ fontSize: '0.75rem' }}>
+                            (One-time use per customer email)
+                        </span>
+                    </div>
+                </div>
+            </div>
+        )}
 
     </div>
   );
