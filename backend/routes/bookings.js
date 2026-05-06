@@ -3,6 +3,7 @@ const router = express.Router();
 const axios = require('axios');
 const Booking = require('../models/Booking');
 const User = require('../models/User'); 
+const PromoCode = require('../models/PromoCode'); // ⚡ NEW: Imported PromoCode Model
 const { Resend } = require('resend'); 
 const crypto = require('crypto');
 
@@ -10,6 +11,14 @@ const crypto = require('crypto');
 const { tourPackages, allPlaces } = require('../data/placesData.js'); 
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+
+// ⚡ AUTO-SEEDER: Creates PALAWAN30 code if it doesn't exist yet
+PromoCode.findOne({ code: 'PALAWAN30' }).then(promo => {
+    if (!promo) {
+        new PromoCode({ code: 'PALAWAN30', discount: 0.30 }).save();
+        console.log("Seeded PALAWAN30 promo code.");
+    }
+});
 
 // ==========================================
 // 🛡️ SECURITY HELPER: Server-Side Price Calculation
@@ -64,13 +73,13 @@ const calculateBookingTotal = (bookingData) => {
 // ==========================================
 router.post('/create', async (req, res) => {
     try {
-        // 🛡️ SECURITY: Destructure ingredients. Note we IGNORE 'totalPrice' from req.body
+        // ⚡ UPDATED: Grab appliedPromoCode from the frontend payload
         const { 
             userId, packageId, travelDate, guests, accClass, addons, 
-            splitBetween = 1, friendEmails = [], contactInfo, specialRequests 
+            splitBetween = 1, friendEmails = [], contactInfo, specialRequests,
+            appliedPromoCode
         } = req.body;
 
-        // 🛡️ SECURITY: Run the math on the server
         const pricing = calculateBookingTotal({ packageId, guests, accClass, addons });
         
         const packageName = pricing.packageName;
@@ -83,7 +92,6 @@ router.post('/create', async (req, res) => {
         let paymentsArray = [];
         const paymongoAuth = Buffer.from(`${process.env.PAYMONGO_SECRET_KEY}:`).toString('base64');
 
-        // Helper to build line items using SECURE server-calculated amounts
         const buildPaymongoLineItems = () => {
             const items = [];
             const split = splitBetween || 1;
@@ -139,7 +147,6 @@ router.post('/create', async (req, res) => {
             
             const formatPrice = (num) => `₱${Number(num).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 
-            // BUILD SECURE ITEMIZED HTML
             let itemizedHtml = `<tr><td style="padding: 8px 0; color: #555;">Base Price</td><td align="right" style="padding: 8px 0; color: #333; font-weight: bold;">${formatPrice(pricing.basePriceTotal)}</td></tr>`;
             if (pricing.accClassTotal > 0) itemizedHtml += `<tr><td style="padding: 8px 0; color: #555;">${accClass} Class</td><td align="right" style="padding: 8px 0; color: #333; font-weight: bold;">${formatPrice(pricing.accClassTotal)}</td></tr>`;
             if (pricing.transferTotal > 0) itemizedHtml += `<tr><td style="padding: 8px 0; color: #555;">Airport Transfer</td><td align="right" style="padding: 8px 0; color: #333; font-weight: bold;">${formatPrice(pricing.transferTotal)}</td></tr>`;
@@ -187,10 +194,11 @@ router.post('/create', async (req, res) => {
             packageId,
             travelDate,
             guests,
-            totalPrice, // Securely calculated by server
+            totalPrice, 
             paymentMethod: 'PayMongo Checkout', 
             splitBetween,
             payments: paymentsArray,
+            appliedPromoCode, // ⚡ SAVE THIS SO WEBHOOK KNOWS IT EXISTS
             invoiceDetails: {
                 basePriceTotal: pricing.basePriceTotal,
                 accClassText: `${accClass} Class`,
@@ -296,8 +304,6 @@ router.get('/user/:userId', async (req, res) => {
     try {
         const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
-        // AUTO-CLEANUP: Find and delete any archived trips older than 30 days 
-        // WHERE no payment in the array has the status 'Paid' (Meaning it is completely UNPAID)
         await Booking.deleteMany({
             userId: req.params.userId,
             isArchived: true,
@@ -305,7 +311,6 @@ router.get('/user/:userId', async (req, res) => {
             payments: { $not: { $elemMatch: { status: 'Paid' } } }
         });
 
-        // Fetch the remaining bookings
         const bookings = await Booking.find({ userId: req.params.userId }).sort({ createdAt: -1 });
         res.status(200).json(bookings);
     } catch (error) {
@@ -321,7 +326,7 @@ router.put('/:id/archive', async (req, res) => {
         const booking = await Booking.findByIdAndUpdate(
             req.params.id, 
             { isArchived: true, archivedAt: new Date() }, 
-            { returnDocument: 'after' } // ⚡ UPDATED SYNTAX
+            { returnDocument: 'after' } 
         );
         res.status(200).json({ message: "Trip archived", booking });
     } catch (error) {
@@ -337,7 +342,7 @@ router.put('/:id/retrieve', async (req, res) => {
         const booking = await Booking.findByIdAndUpdate(
             req.params.id, 
             { isArchived: false, archivedAt: null }, 
-            { returnDocument: 'after' } // ⚡ UPDATED SYNTAX
+            { returnDocument: 'after' } 
         );
         res.status(200).json({ message: "Trip retrieved", booking });
     } catch (error) {
@@ -367,16 +372,13 @@ router.post('/paymongo/checkout', async (req, res) => {
         
         if (!booking) return res.status(404).json({ error: "Booking not found" });
 
-        // Encode Auth Header
         const paymongoAuth = Buffer.from(`${process.env.PAYMONGO_SECRET_KEY}:`).toString('base64');
 
-        // --- Build Itemized List ---
         const split = booking.splitBetween || 1;
         const splitText = split > 1 ? ` (Split ${split} ways)` : '';
         const safeInvoice = booking.invoiceDetails || {};
         const items = [];
 
-        // Push individual items if they exist in the invoice
         if (safeInvoice.basePriceTotal > 0) items.push({ name: `Base Price${splitText}`, amount: Math.round((safeInvoice.basePriceTotal / split) * 100), currency: 'PHP', quantity: 1 });
         if (safeInvoice.accClassTotal > 0) items.push({ name: `${safeInvoice.accClassText || 'Room Upgrade'}${splitText}`, amount: Math.round((safeInvoice.accClassTotal / split) * 100), currency: 'PHP', quantity: 1 });
         if (safeInvoice.transferTotal > 0) items.push({ name: `Airport Transfer${splitText}`, amount: Math.round((safeInvoice.transferTotal / split) * 100), currency: 'PHP', quantity: 1 });
@@ -385,13 +387,10 @@ router.post('/paymongo/checkout', async (req, res) => {
         if (safeInvoice.carbonTotal > 0) items.push({ name: `Carbon Offset${splitText}`, amount: Math.round((safeInvoice.carbonTotal / split) * 100), currency: 'PHP', quantity: 1 });
         if (safeInvoice.vatTotal > 0) items.push({ name: `VAT (12%)${splitText}`, amount: Math.round((safeInvoice.vatTotal / split) * 100), currency: 'PHP', quantity: 1 });
 
-        // Fallback just in case the database didn't have the itemized breakdown
         if (items.length === 0) {
             items.push({ name: `Payment for ${booking.packageName}`, amount: Math.round(amount * 100), currency: 'PHP', quantity: 1 });
         }
-        // ---------------------------
 
-       // Create Checkout Session
         const response = await axios.post('https://api.paymongo.com/v1/checkout_sessions', {
             data: {
                 attributes: {
@@ -413,7 +412,6 @@ router.post('/paymongo/checkout', async (req, res) => {
             }
         });
 
-        // ⚡ NEW CODE: Update the database with the newly generated PayMongo ID!
         booking.payments[paymentIndex].stripeSessionId = response.data.data.id;
         booking.payments[paymentIndex].paymentUrl = response.data.data.attributes.checkout_url;
         await booking.save();
@@ -434,7 +432,6 @@ router.post('/webhook', async (req, res) => {
         const signatureHeader = req.headers['paymongo-signature'];
         const webhookSecret = process.env.PAYMONGO_WEBHOOK_SECRET;
 
-        // 🔒 SECURITY CHECK: Verify the signature
         if (signatureHeader && webhookSecret && req.rawBody) {
             const parts = signatureHeader.split(',');
             let timestamp, testSignature, liveSignature;
@@ -446,16 +443,10 @@ router.post('/webhook', async (req, res) => {
                 if (key === 'li') liveSignature = value;
             });
 
-            // Use test signature for sandbox, live signature for production
             const expectedSignature = testSignature || liveSignature;
-            
-            // Combine timestamp and the raw unparsed body
             const payload = timestamp + '.' + req.rawBody;
-            
-            // Do the cryptographic math
             const hash = crypto.createHmac('sha256', webhookSecret).update(payload).digest('hex');
 
-            // If the math doesn't match, slam the door shut!
             if (hash !== expectedSignature) {
                 console.error("🛑 SEC_ERR: Invalid PayMongo Webhook Signature!");
                 return res.status(400).send("Invalid signature");
@@ -463,11 +454,9 @@ router.post('/webhook', async (req, res) => {
         } else {
              console.log("⚠️ Warning: Skipping signature verification (Secret key or rawBody missing).");
         }
-        // -------------------------------------------
 
         const event = req.body;
 
-                // 1. Check if the event is a successful payment
         if (event?.data?.attributes?.type === 'checkout_session.payment.paid') {
             
             const checkoutId = event.data.attributes.data.id;
@@ -476,7 +465,6 @@ router.post('/webhook', async (req, res) => {
             if (booking) {
                 let allPaid = true;
 
-                // Update that specific user's payment to "Paid"
                 booking.payments.forEach(payment => {
                     if (payment.stripeSessionId === checkoutId) {
                         payment.status = 'Paid';
@@ -486,20 +474,26 @@ router.post('/webhook', async (req, res) => {
                     }
                 });
 
-                // If everyone in the group has paid, automatically confirm the whole trip!
                 if (allPaid) {
                     booking.bookingStatus = 'Confirmed';
+                    
+                    // ⚡ NEW: Once fully paid, permanently log the email so they can't use the promo again
+                    if (booking.appliedPromoCode && booking.contactInfo?.email) {
+                        await PromoCode.findOneAndUpdate(
+                            { code: booking.appliedPromoCode }, 
+                            { $push: { usedBy: booking.contactInfo.email.toLowerCase() } }
+                        );
+                    }
                 }
 
                 await booking.save();
                 console.log(`✅ Success: Payment securely marked as Paid for Booking ID: ${booking._id}`);
 
-                // ⚡ NEW: Auto-generate a comment in the User's Profile
                 const user = await User.findById(booking.userId);
                 if (user) {
                     user.adminNotes.push({
                         text: `System: Customer successfully made a payment for their trip to ${booking.packageName}.`,
-                        authorInitials: '⚙️' // Gear icon represents the automated system
+                        authorInitials: '⚙️' 
                     });
                     await user.save();
                 }
@@ -509,12 +503,40 @@ router.post('/webhook', async (req, res) => {
             }
         }
 
-        // Always send a 200 OK back so PayMongo knows you received the message
         res.status(200).send('Webhook received successfully');
 
     } catch (error) {
         console.error("Webhook processing error:", error);
         res.status(500).send("Webhook processing failed");
+    }
+});
+
+// ⚡ ENHANCED VALIDATION ROUTE
+router.post('/validate', async (req, res) => {
+    try {
+        const { code, email, packageName } = req.body;
+        
+        if (!email) return res.status(400).json({ error: "Email is required to validate promo codes." });
+        
+        const promo = await PromoCode.findOne({ code: code.toUpperCase() });
+        if (!promo) return res.status(404).json({ error: "Invalid promo code." });
+
+        // 1. Check if this exact email has used it before
+        if (promo.usedBy.includes(email.toLowerCase())) {
+            return res.status(400).json({ error: "You have already used this promo code." });
+        }
+
+        // 2. Specific Logic for PALAWAN30 Code
+        if (promo.code === 'PALAWAN30') {
+            const isPalawan = ['Palawan', 'El Nido', 'Coron', 'Puerto Princesa'].some(p => packageName.includes(p));
+            if (!isPalawan) {
+                return res.status(400).json({ error: "PALAWAN30 is only valid for Palawan destinations." });
+            }
+        }
+
+        res.status(200).json({ valid: true, discount: promo.discount, message: "Promo Code Applied! 🎉" });
+    } catch (error) {
+        res.status(500).json({ error: "Server error validating code." });
     }
 });
 

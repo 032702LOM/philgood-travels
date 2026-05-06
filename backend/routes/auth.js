@@ -6,13 +6,13 @@ const crypto = require('crypto');
 const { Resend } = require('resend'); 
 const User = require('../models/User'); 
 const Subscriber = require('../models/Subscriber');
+const PromoCode = require('../models/PromoCode'); // ⚡ NEW: Imported PromoCode Model
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // POST Route to REGISTER
 router.post('/register', async (req, res) => {
     try {
-        // ⚡ UPDATED: We now look for optInNewsletter
         const { name, email, password, optInNewsletter } = req.body;
 
         const existingUser = await User.findOne({ email: email });
@@ -23,7 +23,6 @@ router.post('/register', async (req, res) => {
         const salt = await bcrypt.genSalt(10); 
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // ⚡ NEW: Handle Newsletter Subscription during Sign-Up
         let isSubscribed = false;
         let adminNotes = [{ text: `System: Customer account created for ${name}. Pending email verification.`, authorInitials: '⚙️' }];
 
@@ -36,13 +35,13 @@ router.post('/register', async (req, res) => {
             await newSubscriber.save();
             isSubscribed = true;
             
-            // ⚡ NEW: Generate a unique 6-character hex code
             const uniqueCode = 'WELCOME-' + crypto.randomBytes(3).toString('hex').toUpperCase();
             
-            // ⚡ NEW: Log their specific unique code in the CRM
+            // ⚡ NEW: Save the generated code directly to the PromoCode collection!
+            await new PromoCode({ code: uniqueCode, discount: 0.10 }).save();
+            
             adminNotes.push({ text: `System: User subscribed to newsletter during sign-up and was sent the 10% off code (${uniqueCode}).`, authorInitials: '⚙️' });
 
-            // Send UNIQUE 10% OFF Welcome Email!
             await resend.emails.send({
                 from: 'PhilGood Travels <onboarding@resend.dev>',
                 to: email,

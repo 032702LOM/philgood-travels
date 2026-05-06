@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { tourPackages } from '../data/placesData';
 import { usePreferences } from '../context/PreferencesContext';
 import toast from 'react-hot-toast'; 
+import axios from 'axios'; // ⚡ NEW: Imported axios for API calls
 
 const Booking = () => {
   const location = useLocation();
@@ -22,6 +23,7 @@ const Booking = () => {
 
   const [promoCode, setPromoCode] = useState('');
   const [appliedDiscount, setAppliedDiscount] = useState(0); 
+  const [isApplyingPromo, setIsApplyingPromo] = useState(false); // ⚡ NEW: Loading state for the button
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -53,15 +55,25 @@ const Booking = () => {
 
   const toggleAddon = (addon) => { setAddons(prev => ({ ...prev, [addon]: !prev[addon] })); };
 
-  const handleApplyPromo = () => {
+  // ⚡ UPDATED: Now hits the backend to verify if the code exists and is unused
+  const handleApplyPromo = async () => {
       if (!promoCode.trim()) return;
       
-      if (promoCode.toUpperCase().startsWith('WELCOME-') || promoCode.toUpperCase() === 'WELCOME10') {
-          setAppliedDiscount(0.10); 
-          toast.success("10% Welcome Discount Applied! 🎉");
-      } else {
+      setIsApplyingPromo(true);
+      try {
+          const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/promo/validate`, { 
+              code: promoCode 
+          });
+
+          // If backend says it's valid, apply the discount amount it sends back (e.g., 0.10)
+          setAppliedDiscount(response.data.discount); 
+          toast.success("Welcome Discount Applied! 🎉");
+          
+      } catch (error) {
           setAppliedDiscount(0);
-          toast.error("Invalid promo code.");
+          toast.error(error.response?.data?.error || "Invalid or already used promo code.");
+      } finally {
+          setIsApplyingPromo(false);
       }
   };
 
@@ -81,7 +93,6 @@ const Booking = () => {
 
   const addonPrices = { airportTransfer: 1500, insurance: 800, romanticDinner: 3500, carbonOffset: 500 };
   
-  // ⚡ UPDATED: Airport Transfer and Romantic Dinner are now fixed flat rates
   const transferTotal = addons.airportTransfer ? addonPrices.airportTransfer : 0;
   const insuranceTotal = addons.insurance ? (addonPrices.insurance * totalHeads) : 0; 
   const dinnerTotal = addons.romanticDinner ? addonPrices.romanticDinner : 0;
@@ -114,6 +125,7 @@ const Booking = () => {
         guests: guests,
         amountDue: grandTotal / splitPayment,
         paymentIndex: 0,
+        appliedPromoCode: appliedDiscount > 0 ? promoCode : null, // ⚡ NEW: Send the code to checkout so it can be marked as "used"
         invoiceDetails: {
             basePriceTotal: baseTotal,
             accClassTotal: accTotal,
@@ -150,7 +162,6 @@ const Booking = () => {
                 box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.2) !important; 
             }
             
-            /* Coral Orange Buttons styles */
             .hover-coral { transition: all 0.3s ease !important; }
             .hover-coral:hover, .hover-coral:focus {
                 background-color: var(--accent-color, #F69928) !important;
@@ -166,7 +177,6 @@ const Booking = () => {
                 opacity: 1 !important;
             }
 
-            /* Unselected Teal Button */
             .unselected-teal {
                 background-color: var(--primary-color) !important;
                 color: white !important;
@@ -259,7 +269,6 @@ const Booking = () => {
                             <div className="row g-3">
                                 {[
                                     { id: 'standard', icon: 'fa-bed', title: t('std_class', 'Standard'), desc: t('std_desc', 'Included') },
-                                    // ⚡ UPDATED: Now dynamically displays the exact peso amount added to the cart
                                     { id: 'deluxe', icon: 'fa-hot-tub-person', title: t('deluxe_class', 'Deluxe'), desc: `+${formatPrice(baseTotal * 0.3)}`, highlight: true },
                                     { id: 'luxury', icon: 'fa-crown', title: t('lux_class', 'Luxury'), desc: `+${formatPrice(baseTotal * 0.7)}`, highlight: true }
                                 ].map(cls => (
@@ -348,7 +357,6 @@ const Booking = () => {
                             </div>
                             
                             <div className="d-flex flex-column gap-3 mb-4">
-                                {/* ⚡ UPDATED: Changed the Flat Prices inside the Addon Cards */}
                                 {[
                                     { id: 'airportTransfer', title: t('transfer', 'Roundtrip Airport Transfer'), desc: t('transfer_desc', 'Hassle-free pick up and drop off.'), price: addonPrices.airportTransfer, icon: 'fa-van-shuttle' },
                                     { id: 'insurance', title: t('insurance', 'Travel Insurance'), desc: t('insurance_desc', 'Full coverage per guest.'), price: addonPrices.insurance * totalHeads, icon: 'fa-shield-heart' },
@@ -459,7 +467,6 @@ const Booking = () => {
                                         <p className="text-primary opacity-75 fw-bold small m-0"><i className="fa-regular fa-calendar text-accent me-2"></i> {travelDate || 'Select Date'}</p>
                                     </div>
                                     
-                                    {/* ⚡ UPDATED: Split Adults and Children Base Prices */}
                                     <div className="d-flex justify-content-between mb-2">
                                         <span className="text-grey small">Adults (x{guests.adults})</span>
                                         <span className="text-navy fw-bold">{formatPrice(baseTotalAdults)}</span>
@@ -508,6 +515,7 @@ const Booking = () => {
                                         <span className="text-navy fw-bold">{formatPrice(vatTotal)}</span>
                                     </div>
                                     
+                                    {/* Promo Code Input Field */}
                                     <div className="mb-4 p-3 rounded-4" style={{ backgroundColor: '#F8F9FA', border: '1px dashed #ced4da' }}>
                                         <label className="text-navy fw-bold small mb-2 d-block"><i className="fa-solid fa-tag text-accent me-2"></i>Have a Promo Code?</label>
                                         <div className="d-flex gap-2">
@@ -517,15 +525,15 @@ const Booking = () => {
                                                 placeholder="ENTER CODE" 
                                                 value={promoCode}
                                                 onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-                                                disabled={appliedDiscount > 0}
+                                                disabled={appliedDiscount > 0 || isApplyingPromo}
                                             />
                                             <button 
                                                 type="button" 
                                                 className={`btn btn-sm px-3 fw-bold hover-coral ${appliedDiscount > 0 ? 'active-coral' : 'btn-outline-primary'}`} 
                                                 onClick={handleApplyPromo}
-                                                disabled={appliedDiscount > 0 || !promoCode}
+                                                disabled={appliedDiscount > 0 || !promoCode || isApplyingPromo}
                                             >
-                                                {appliedDiscount > 0 ? <i className="fa-solid fa-check"></i> : 'APPLY'}
+                                                {isApplyingPromo ? <i className="fa-solid fa-spinner fa-spin"></i> : appliedDiscount > 0 ? <i className="fa-solid fa-check"></i> : 'APPLY'}
                                             </button>
                                         </div>
                                         {appliedDiscount > 0 && (

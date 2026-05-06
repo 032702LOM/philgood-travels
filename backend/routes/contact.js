@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const { Resend } = require('resend');
-const crypto = require('crypto'); // ⚡ NEW: Import crypto to generate unique codes
+const crypto = require('crypto'); 
 const Message = require('../models/Message');
 const Subscriber = require('../models/Subscriber');
 const User = require('../models/User');
+const PromoCode = require('../models/PromoCode'); // ⚡ NEW: Imported PromoCode Model
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// ⚡ UPDATED: Smart Newsletter Subscription with UNIQUE 10% Off Email
 router.post('/subscribe', async (req, res) => {
     try {
         const { email } = req.body;
@@ -20,8 +20,10 @@ router.post('/subscribe', async (req, res) => {
         const newSubscriber = new Subscriber({ email });
         await newSubscriber.save();
 
-        // ⚡ NEW: Generate a unique 6-character hex code appended to WELCOME-
         const uniqueCode = 'WELCOME-' + crypto.randomBytes(3).toString('hex').toUpperCase();
+
+        // ⚡ NEW: Save the generated code directly to the PromoCode collection!
+        await new PromoCode({ code: uniqueCode, discount: 0.10 }).save();
 
         const user = await User.findOne({ email });
         if (user) {
@@ -29,7 +31,6 @@ router.post('/subscribe', async (req, res) => {
                 ...user.marketing,
                 email: true
             };
-            // ⚡ NEW: Log their specific unique code in the CRM so admins can verify it later!
             user.adminNotes.push({ 
                 text: `System: User subscribed to newsletter and was sent the 10% off code (${uniqueCode}).`, 
                 authorInitials: '⚙️' 
@@ -37,7 +38,6 @@ router.post('/subscribe', async (req, res) => {
             await user.save();
         }
 
-        // ⚡ AUTOMATIC UNIQUE 10% OFF EMAIL ⚡
         await resend.emails.send({
             from: 'PhilGood Travels <onboarding@resend.dev>',
             to: email,
