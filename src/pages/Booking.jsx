@@ -135,6 +135,31 @@ const Booking = () => {
 
   return (
     <div className="fade-in">
+        {/* ⚡ NEW & UPDATED: Custom CSS for Hover Effects */}
+        <style>
+        {`
+            .hover-teal { transition: all 0.3s ease; outline: none; }
+            .hover-teal:hover, .hover-teal:focus { 
+                border-color: var(--primary-color) !important; 
+                box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.2) !important; 
+            }
+            
+            /* ⚡ Coral Orange Buttons styles */
+            .hover-coral { transition: all 0.3s ease !important; }
+            .hover-coral:hover, .hover-coral:focus {
+                background-color: var(--accent-color, #F69928) !important;
+                border-color: var(--accent-color, #F69928) !important;
+                color: white !important;
+            }
+            .hover-coral:active, .active-coral {
+                background-color: var(--accent-color, #F69928) !important;
+                border-color: var(--accent-color, #F69928) !important;
+                color: white !important;
+                box-shadow: 0 0 0 3px rgba(246, 153, 40, 0.4) !important; 
+            }
+        `}
+        </style>
+
         <section className="py-5" style={{ minHeight: '100vh', backgroundColor: 'var(--bg-dark)', paddingTop: '120px' }}>
             <div className="container">
                 
@@ -155,14 +180,14 @@ const Booking = () => {
                             <div className="row g-4 mb-5">
                                 <div className="col-md-7">
                                     <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('dest_pkg', 'Destination / Package')} <span className="text-danger">*</span></label>
-                                    <select className="form-select form-select-lg w-100 border-primary border-opacity-25 bg-light" value={selectedPackage} onChange={(e) => setSelectedPackage(e.target.value)} style={{ fontSize: '1rem' }}>
+                                    <select className="form-select form-select-lg w-100 border-primary border-opacity-25 bg-light hover-teal" value={selectedPackage} onChange={(e) => setSelectedPackage(e.target.value)} style={{ fontSize: '1rem' }}>
                                         <option value="">{t('select_pkg', '-- Select a Package --')}</option>
                                         {tourPackages.map(pkg => (<option key={pkg.id} value={pkg.name}>{pkg.name}</option>))}
                                     </select>
                                 </div>
                                 <div className="col-md-5">
                                     <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('travel_date', 'Travel Date')} <span className="text-danger">*</span></label>
-                                    <input type="date" className="form-control form-control-lg w-100 border-primary border-opacity-25 bg-light" value={travelDate} onChange={(e) => setTravelDate(e.target.value)} style={{ fontSize: '1rem' }} />
+                                    <input type="date" className="form-control form-control-lg w-100 border-primary border-opacity-25 bg-light hover-teal" value={travelDate} onChange={(e) => setTravelDate(e.target.value)} style={{ fontSize: '1rem' }} />
                                 </div>
                             </div>
 
@@ -170,39 +195,39 @@ const Booking = () => {
                             <div className="row g-3 mb-5">
                                 {/* Adults */}
                                 <div className="col-md-4">
-                                    <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm" style={{ backgroundColor: '#fff' }}>
+                                    <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm hover-teal" style={{ backgroundColor: '#fff' }}>
                                         <span className="d-block text-navy fw-bold fs-5">{t('adults', 'Adults')}</span>
                                         <small className="text-grey mb-3">{t('adults_desc', '12+ years')}</small>
                                         <div className="d-flex align-items-center justify-content-center gap-3 w-100 bg-light rounded-pill p-2">
-                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('adults', 'sub')} disabled={guests.adults <= 1}><i className="fa-solid fa-minus"></i></button>
+                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm hover-coral" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('adults', 'sub')} disabled={guests.adults <= 1}><i className="fa-solid fa-minus"></i></button>
                                             <span className="text-navy fw-bold fs-5" style={{ minWidth: '24px' }}>{guests.adults}</span>
-                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm text-primary" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('adults', 'add')}><i className="fa-solid fa-plus"></i></button>
+                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm text-primary hover-coral" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('adults', 'add')}><i className="fa-solid fa-plus"></i></button>
                                         </div>
                                     </div>
                                 </div>
                                 {/* Children */}
                                 <div className="col-md-4">
-                                    <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm" style={{ backgroundColor: '#fff' }}>
+                                    <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm hover-teal" style={{ backgroundColor: '#fff' }}>
                                         <span className="d-block text-navy fw-bold fs-5">{t('children', 'Children')}</span>
                                         <span className="text-accent fw-bold lh-1 mt-1" style={{ fontSize: '0.85rem' }}>{t('children_discount', '50% Off')}</span>
                                         <small className="text-grey mb-2" style={{ fontSize: '0.75rem' }}>{t('children_age', '2-11 years old')}</small>
                                         <div className="d-flex align-items-center justify-content-center gap-3 w-100 bg-light rounded-pill p-2">
-                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('children', 'sub')} disabled={guests.children === 0}><i className="fa-solid fa-minus"></i></button>
+                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm hover-coral" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('children', 'sub')} disabled={guests.children === 0}><i className="fa-solid fa-minus"></i></button>
                                             <span className="text-navy fw-bold fs-5" style={{ minWidth: '24px' }}>{guests.children}</span>
-                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm text-primary" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('children', 'add')}><i className="fa-solid fa-plus"></i></button>
+                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm text-primary hover-coral" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('children', 'add')}><i className="fa-solid fa-plus"></i></button>
                                         </div>
                                     </div>
                                 </div>
                                 {/* Infants */}
                                 <div className="col-md-4">
-                                    <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm" style={{ backgroundColor: '#fff' }}>
+                                    <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm hover-teal" style={{ backgroundColor: '#fff' }}>
                                         <span className="d-block text-navy fw-bold fs-5">{t('infants', 'Infants')}</span>
                                         <span className="text-success fw-bold lh-1 mt-1" style={{ fontSize: '0.85rem' }}>{t('infants_discount', 'Free')}</span>
                                         <small className="text-grey mb-2" style={{ fontSize: '0.75rem' }}>{t('infants_age', 'Under 2 years old')}</small>
                                         <div className="d-flex align-items-center justify-content-center gap-3 w-100 bg-light rounded-pill p-2">
-                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('infants', 'sub')} disabled={guests.infants === 0}><i className="fa-solid fa-minus"></i></button>
+                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm hover-coral" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('infants', 'sub')} disabled={guests.infants === 0}><i className="fa-solid fa-minus"></i></button>
                                             <span className="text-navy fw-bold fs-5" style={{ minWidth: '24px' }}>{guests.infants}</span>
-                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm text-primary" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('infants', 'add')}><i className="fa-solid fa-plus"></i></button>
+                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm text-primary hover-coral" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('infants', 'add')}><i className="fa-solid fa-plus"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -216,7 +241,7 @@ const Booking = () => {
                                     { id: 'luxury', icon: 'fa-crown', title: t('lux_class', 'Luxury'), desc: `+70% ${t('pax', '/pax')}`, highlight: true }
                                 ].map(cls => (
                                     <div className="col-md-4" key={cls.id}>
-                                        <label className={`w-100 h-100 rounded-4 p-3 border text-center position-relative shadow-sm ${accClass === cls.id ? 'border-primary bg-primary bg-opacity-10' : 'border-primary border-opacity-25 bg-white'}`} style={{ cursor: 'pointer', transition: 'all 0.3s ease' }}>
+                                        <label className={`w-100 h-100 rounded-4 p-3 border text-center position-relative shadow-sm hover-teal ${accClass === cls.id ? 'border-primary bg-primary bg-opacity-10' : 'border-primary border-opacity-25 bg-white'}`} style={{ cursor: 'pointer' }}>
                                             <input type="radio" name="accClass" value={cls.id} checked={accClass === cls.id} onChange={(e) => setAccClass(e.target.value)} className="position-absolute opacity-0" />
                                             {accClass === cls.id && <i className="fa-solid fa-circle-check text-primary position-absolute top-0 end-0 m-2 fs-5"></i>}
                                             <i className={`fa-solid ${cls.icon} fs-2 mb-2 ${accClass === cls.id ? 'text-primary' : 'text-muted'}`}></i>
@@ -228,7 +253,7 @@ const Booking = () => {
                             </div>
                         </div>
 
-                        {/* ⚡ ENHANCED 2. Lead Guest Details */}
+                        {/* 2. Lead Guest Details */}
                         <div className="bg-card-dark p-4 p-md-5 rounded-4 shadow-sm mb-4 border border-primary border-opacity-10" style={{ backgroundColor: 'var(--card-bg)' }}>
                             <StepHeader number="2" title={t('lead_guest', 'Lead Guest Details')} icon="fa-user-check" />
                             <div className="row g-4">
@@ -236,28 +261,28 @@ const Booking = () => {
                                     <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('full_name', 'Full Name')} <span className="text-danger">*</span></label>
                                     <div className="position-relative">
                                         <i className="fa-regular fa-user position-absolute text-muted opacity-75" style={{ left: '16px', top: '50%', transform: 'translateY(-50%)', zIndex: 5, pointerEvents: 'none' }}></i>
-                                        <input type="text" className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm" placeholder="Juan Dela Cruz" value={leadGuest.name} onChange={(e) => setLeadGuest({...leadGuest, name: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }} required />
+                                        <input type="text" className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm hover-teal" placeholder="Juan Dela Cruz" value={leadGuest.name} onChange={(e) => setLeadGuest({...leadGuest, name: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }} required />
                                     </div>
                                 </div>
                                 <div className="col-md-6">
                                     <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('email_addr', 'Email Address')} <span className="text-danger">*</span></label>
                                     <div className="position-relative">
                                         <i className="fa-regular fa-envelope position-absolute text-muted opacity-75" style={{ left: '16px', top: '50%', transform: 'translateY(-50%)', zIndex: 5, pointerEvents: 'none' }}></i>
-                                        <input type="email" className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm" placeholder="juan@example.com" value={leadGuest.email} onChange={(e) => setLeadGuest({...leadGuest, email: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }} required />
+                                        <input type="email" className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm hover-teal" placeholder="juan@example.com" value={leadGuest.email} onChange={(e) => setLeadGuest({...leadGuest, email: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }} required />
                                     </div>
                                 </div>
                                 <div className="col-md-6">
                                     <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('phone', 'Phone Number')}</label>
                                     <div className="position-relative">
                                         <i className="fa-solid fa-phone position-absolute text-muted opacity-75" style={{ left: '16px', top: '50%', transform: 'translateY(-50%)', zIndex: 5, pointerEvents: 'none' }}></i>
-                                        <input type="tel" className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm" placeholder="+63 912 345 6789" value={leadGuest.phone} onChange={(e) => setLeadGuest({...leadGuest, phone: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }} />
+                                        <input type="tel" className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm hover-teal" placeholder="+63 912 345 6789" value={leadGuest.phone} onChange={(e) => setLeadGuest({...leadGuest, phone: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }} />
                                     </div>
                                 </div>
                                 <div className="col-12">
                                     <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">Special Requests</label>
                                     <div className="position-relative">
                                         <i className="fa-regular fa-comment-dots position-absolute text-muted opacity-75" style={{ left: '16px', top: '16px', zIndex: 5, pointerEvents: 'none' }}></i>
-                                        <textarea className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm" rows="3" placeholder="Allergies, late check-in, special occasions, etc." value={leadGuest.specialRequests} onChange={(e) => setLeadGuest({...leadGuest, specialRequests: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }}></textarea>
+                                        <textarea className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm hover-teal" rows="3" placeholder="Allergies, late check-in, special occasions, etc." value={leadGuest.specialRequests} onChange={(e) => setLeadGuest({...leadGuest, specialRequests: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }}></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -275,7 +300,7 @@ const Booking = () => {
                                     { id: 'insurance', title: t('insurance', 'Travel Insurance'), desc: t('insurance_desc', 'Full coverage per guest.'), price: addonPrices.insurance * totalHeads, icon: 'fa-shield-heart' },
                                     { id: 'romanticDinner', title: t('dinner', 'Romantic Dinner Setup'), desc: t('dinner_desc', 'Candlelit dinner by the beach.'), price: addonPrices.romanticDinner * chargeablePax, icon: 'fa-champagne-glasses' }
                                 ].map(addon => (
-                                    <div key={addon.id} className={`p-3 p-md-4 rounded-4 border shadow-sm position-relative ${addons[addon.id] ? 'border-primary bg-primary bg-opacity-10' : 'border-primary border-opacity-25 bg-white'}`} style={{ cursor: 'pointer', transition: 'all 0.2s ease' }} onClick={() => toggleAddon(addon.id)}>
+                                    <div key={addon.id} className={`p-3 p-md-4 rounded-4 border shadow-sm position-relative hover-teal ${addons[addon.id] ? 'border-primary bg-primary bg-opacity-10' : 'border-primary border-opacity-25 bg-white'}`} style={{ cursor: 'pointer' }} onClick={() => toggleAddon(addon.id)}>
                                         <div className="d-flex align-items-center">
                                             <div className={`rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0 ${addons[addon.id] ? 'bg-primary text-white' : 'bg-light text-muted border'}`} style={{ width: '28px', height: '28px' }}>
                                                 {addons[addon.id] && <i className="fa-solid fa-check" style={{ fontSize: '0.8rem' }}></i>}
@@ -302,7 +327,7 @@ const Booking = () => {
                                     </div>
                                     <p className="text-grey small mb-4" style={{ maxWidth: '90%' }}>{t('carbon_desc', 'Air travel and ground transport generate emissions. The estimated footprint for')} {chargeablePax} {t('carbon_desc2', 'traveler(s) is')} <strong className="text-navy">{chargeablePax * 150}kg CO₂</strong>. {t('carbon_desc3', 'Help us offset this by contributing to local Philippine reforestation projects.')}</p>
                                     
-                                    <div className={`p-3 rounded-4 border shadow-sm ${addons.carbonOffset ? 'border-success bg-success bg-opacity-10' : 'border-success border-opacity-25 bg-white'}`} style={{ cursor: 'pointer', transition: 'all 0.2s ease' }} onClick={() => toggleAddon('carbonOffset')}>
+                                    <div className={`p-3 rounded-4 border shadow-sm hover-teal ${addons.carbonOffset ? 'border-success bg-success bg-opacity-10' : 'border-success border-opacity-25 bg-white'}`} style={{ cursor: 'pointer' }} onClick={() => toggleAddon('carbonOffset')}>
                                         <div className="d-flex align-items-center">
                                             <div className={`rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0 ${addons.carbonOffset ? 'bg-success text-white' : 'bg-light text-muted border'}`} style={{ width: '28px', height: '28px' }}>
                                                 {addons.carbonOffset && <i className="fa-solid fa-check" style={{ fontSize: '0.8rem' }}></i>}
@@ -327,11 +352,11 @@ const Booking = () => {
                             <label className="text-navy fw-bold small mb-3 text-uppercase letter-spacing-1">{t('how_paying', 'How are we paying?')}</label>
                             
                             <div className="d-flex flex-wrap gap-2 mb-4 bg-light p-2 rounded-4 border border-primary border-opacity-10">
-                                <button type="button" className={`btn flex-grow-1 rounded-pill fw-bold ${splitPayment === 1 ? 'btn-primary shadow-sm' : 'btn-light text-muted'}`} onClick={() => setSplitPayment(1)}>
+                                <button type="button" className={`btn flex-grow-1 rounded-pill fw-bold hover-coral ${splitPayment === 1 ? 'active-coral shadow-sm' : 'btn-light text-muted'}`} onClick={() => setSplitPayment(1)}>
                                     {t('split_1', 'Just me (Pay in full)')}
                                 </button>
                                 {[2, 3, 4, 5].map(num => (
-                                    <button type="button" key={num} className={`btn flex-grow-1 rounded-pill fw-bold ${splitPayment === num ? 'btn-primary shadow-sm' : 'btn-light text-muted'}`} onClick={() => setSplitPayment(num)}>
+                                    <button type="button" key={num} className={`btn flex-grow-1 rounded-pill fw-bold hover-coral ${splitPayment === num ? 'active-coral shadow-sm' : 'btn-light text-muted'}`} onClick={() => setSplitPayment(num)}>
                                         {t('split_ways', 'Split')} {num}
                                     </button>
                                 ))}
@@ -344,7 +369,7 @@ const Booking = () => {
                                         {emails.map((email, index) => (
                                             <div className="col-md-6" key={index}>
                                                 <label className="text-grey small fw-bold mb-1">{index === 0 ? t('lead_email', "Lead Booker's Email") : `${t('friend_email', 'Friend')} ${index}'s ${t('friend_email2', 'Email')}`}</label>
-                                                <input type="email" className="form-control bg-light border-secondary border-opacity-25" value={email} onChange={(e) => handleEmailChange(index, e.target.value)} required />
+                                                <input type="email" className="form-control bg-light border-secondary border-opacity-25 hover-teal" value={email} onChange={(e) => handleEmailChange(index, e.target.value)} required />
                                             </div>
                                         ))}
                                     </div>
@@ -425,7 +450,7 @@ const Booking = () => {
                                         <div className="d-flex gap-2">
                                             <input 
                                                 type="text" 
-                                                className="form-control form-control-sm text-uppercase fw-bold text-center letter-spacing-1" 
+                                                className="form-control form-control-sm text-uppercase fw-bold text-center letter-spacing-1 hover-teal" 
                                                 placeholder="ENTER CODE" 
                                                 value={promoCode}
                                                 onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
@@ -433,7 +458,7 @@ const Booking = () => {
                                             />
                                             <button 
                                                 type="button" 
-                                                className={`btn btn-sm px-3 fw-bold ${appliedDiscount > 0 ? 'btn-success' : 'btn-outline-primary'}`} 
+                                                className={`btn btn-sm px-3 fw-bold hover-coral ${appliedDiscount > 0 ? 'active-coral' : 'btn-outline-primary'}`} 
                                                 onClick={handleApplyPromo}
                                                 disabled={appliedDiscount > 0 || !promoCode}
                                             >
@@ -472,7 +497,7 @@ const Booking = () => {
                                         </div>
                                     )}
                                     
-                                    <button type="button" className="btn btn-proceed w-100 mt-4 py-3 text-uppercase font-montserrat fw-bold shadow-lg fs-6" onClick={handleConfirmBooking} disabled={!selectedPackage || !travelDate}>
+                                    <button type="button" className="btn btn-proceed w-100 mt-4 py-3 text-uppercase font-montserrat fw-bold shadow-lg fs-6 hover-coral" onClick={handleConfirmBooking} disabled={!selectedPackage || !travelDate}>
                                         {t('confirm', 'Confirm Booking')} <i className="fa-solid fa-arrow-right ms-2"></i>
                                     </button>
                                     
