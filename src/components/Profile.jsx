@@ -5,7 +5,6 @@ import { usePreferences } from '../context/PreferencesContext';
 import { useAuth } from '../context/AuthContext'; 
 import toast from 'react-hot-toast';
 
-// ⚡ FIX: Correctly import jsPDF and autoTable for Vite
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -20,6 +19,8 @@ const Profile = () => {
   const [loadingBookings, setLoadingBookings] = useState(true);
 
   const [activeTab, setActiveTab] = useState('planned'); 
+  // ⚡ NEW: State for the sub-tabs under 'My Planned Trips'
+  const [paymentFilter, setPaymentFilter] = useState('All');
 
   useEffect(() => {
     if (authLoading) return; 
@@ -191,12 +192,12 @@ const Profile = () => {
           if (safeInvoice.dinnerTotal > 0) tableData.push([`Romantic Dinner${splitText}`, formatPrice(safeInvoice.dinnerTotal / split)]);
           if (safeInvoice.carbonTotal > 0) tableData.push([`Carbon Offset${splitText}`, formatPrice(safeInvoice.carbonTotal / split)]);
           if (safeInvoice.vatTotal > 0) tableData.push([`VAT (12%)${splitText}`, formatPrice(safeInvoice.vatTotal / split)]);
+          if (safeInvoice.discountTotal < 0) tableData.push([`Welcome Discount (10%)${splitText}`, formatPrice(safeInvoice.discountTotal / split)]);
 
           if (tableData.length === 0) {
               tableData.push([`Package Price`, formatPrice(booking.totalPrice / split)]);
           }
 
-          // ⚡ FIX: Use the imported autoTable function
           autoTable(doc, {
               startY: 120,
               head: [['Description', 'Amount']],
@@ -223,7 +224,6 @@ const Profile = () => {
               p.status
           ]);
 
-          // ⚡ FIX: Use the imported autoTable function
           autoTable(doc, {
               startY: finalY + 20,
               head: [['Payer Email', 'Amount Due', 'Status']],
@@ -257,7 +257,30 @@ const Profile = () => {
 
   if (!user) return null;
 
-  const displayedBookings = bookings.filter(b => activeTab === 'planned' ? !b.isArchived : b.isArchived);
+  // ⚡ UPDATED: Filter logic to handle both Main Tabs and Sub Tabs
+  const displayedBookings = bookings.filter(b => {
+      // 1. If we are viewing Archives, only show archived bookings (ignore payment filters)
+      if (activeTab === 'archives') return b.isArchived;
+
+      // 2. If we are viewing Planned Trips, hide archived bookings
+      if (b.isArchived) return false;
+
+      // 3. If "All" is selected, show everything planned
+      if (paymentFilter === 'All') return true;
+
+      // 4. Calculate the specific payment status for this booking
+      const totalPaid = b.payments?.reduce((acc, p) => p.status === 'Paid' ? acc + p.amountDue : acc, 0) || 0;
+      let statusStr = 'Unpaid';
+      
+      if (totalPaid >= (b.totalPrice || 1) || b.bookingStatus === 'Confirmed') {
+          statusStr = 'Fully Paid';
+      } else if (totalPaid > 0) {
+          statusStr = 'Partially Paid';
+      }
+
+      // 5. Match against the selected sub-tab
+      return statusStr === paymentFilter;
+  });
 
   return (
     <div className="fade-in" style={{ paddingTop: '100px', minHeight: '80vh', backgroundColor: 'var(--bg-dark)' }}>
@@ -280,10 +303,11 @@ const Profile = () => {
           <div className="col-lg-8">
             <div className="p-4 rounded-4 shadow-lg border border-primary border-opacity-10 h-100" style={{ backgroundColor: 'var(--card-bg)' }}>
               
+              {/* MAIN TABS */}
               <div className="d-flex gap-3 mb-4 border-bottom border-primary border-opacity-10 pb-3">
                   <button 
                       className={`btn fw-bold font-montserrat ${activeTab === 'planned' ? 'btn-proceed shadow-sm' : 'btn-outline-custom border-0'}`}
-                      onClick={() => setActiveTab('planned')}
+                      onClick={() => { setActiveTab('planned'); setPaymentFilter('All'); }}
                   >
                       <i className="fa-solid fa-suitcase-rolling me-2"></i> My Planned Trips
                   </button>
@@ -294,11 +318,29 @@ const Profile = () => {
                       <i className="fa-solid fa-box-archive me-2"></i> Archives
                   </button>
               </div>
+
+              {/* ⚡ NEW: PAYMENT STATUS SUB-TABS (Only visible on Planned Trips) */}
+              {activeTab === 'planned' && (
+                  <div className="d-flex flex-wrap gap-2 mb-4 fade-in">
+                      {['All', 'Fully Paid', 'Partially Paid', 'Unpaid'].map(tab => (
+                          <button 
+                              key={tab}
+                              className={`btn btn-sm rounded-pill fw-bold px-3 ${paymentFilter === tab ? 'btn-primary text-white shadow-sm' : 'btn-light text-muted border border-secondary border-opacity-25'}`}
+                              onClick={() => setPaymentFilter(tab)}
+                              style={{ transition: 'all 0.2s ease' }}
+                          >
+                              {tab}
+                          </button>
+                      ))}
+                  </div>
+              )}
               
               {displayedBookings.length === 0 ? (
-                <div className="text-center py-5 border border-primary border-opacity-25 border-dashed rounded-3">
+                <div className="text-center py-5 border border-primary border-opacity-25 border-dashed rounded-3 mt-4">
                   <p className="text-grey mb-0">
-                      {activeTab === 'planned' ? 'No planned trips yet.' : 'Your archives are empty.'}
+                      {activeTab === 'planned' 
+                          ? paymentFilter === 'All' ? 'No planned trips yet.' : `You have no ${paymentFilter.toLowerCase()} trips.` 
+                          : 'Your archives are empty.'}
                   </p>
                 </div>
               ) : (
