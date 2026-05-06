@@ -74,7 +74,6 @@ const Destinations = () => {
     });
   };
 
-  // ⚡ NEW: Cached Base Search Logic
   const baseFilteredPlaces = useMemo(() => {
       return allPlaces.filter(p => {
           let match = true;
@@ -88,7 +87,6 @@ const Destinations = () => {
       });
   }, [selectedRegion, selectedHotel, searchKeyword]);
 
-  // ⚡ NEW: Cached Checkbox Filter Logic
   const filteredPlaces = useMemo(() => {
       let result = baseFilteredPlaces;
       if (activeCheckboxes.length > 0) {
@@ -146,10 +144,10 @@ const Destinations = () => {
       <div id="destination-detail-view" className="fade-in" style={{ paddingTop: '76px' }}>
         <div className="detail-hero" id="detailHeroBg" style={{ backgroundImage: `linear-gradient(rgba(2, 26, 46, 0.4), rgba(2, 26, 46, 0.4)), url('${selectedPlace.img}')`, backgroundSize: 'cover', backgroundPosition: 'center', padding: '100px 0 50px' }}>
             <div className="container pt-5 pb-5">
-                <a href="#" className="back-link mb-3 d-inline-block text-decoration-none fw-bold" style={{ color: '#FF7F50' }} onClick={(e) => { e.preventDefault(); handleCloseDetail(); }}>{t('back_places', '← Back to All Places')}</a>
+                <a href="#" className="back-link mb-3 d-inline-block text-decoration-none fw-bold" style={{ color: 'var(--accent-color)' }} onClick={(e) => { e.preventDefault(); handleCloseDetail(); }}>{t('back_places', '← Back to All Places')}</a>
                 <h1 className="hero-title mb-3" id="detailTitle">{selectedPlace.name}</h1>
                 <div className="d-flex gap-3 align-items-center">
-                    <span className="badge rounded-pill text-dark" style={{ backgroundColor: '#FF8C73' }} id="detailType">{selectedPlace.type}</span>
+                    <span className="badge rounded-pill text-dark" style={{ backgroundColor: 'var(--accent-color)' }} id="detailType">{selectedPlace.type}</span>
                     <span className="text-white font-montserrat"><i className="fa-solid fa-location-dot me-1 text-accent"></i> <span id="detailRegion">{selectedPlace.region}</span></span>
                 </div>
             </div>
@@ -158,15 +156,15 @@ const Destinations = () => {
             <div className="row g-5">
                 <div className="col-lg-8">
                     <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box shadow-sm border border-primary border-opacity-10">
-                        <h6 className="text-accent fw-bold mb-3 font-montserrat">{t('pay_offers', 'PAYMENT & OFFERS')}</h6>
-                        <ul className="row list-unstyled text-grey m-0">{[...(selectedPlace.payment || []), ...(selectedPlace.roomOffers || [])].map((item, idx) => (<li key={idx} className="col-md-6 mb-2"><i className="fa-solid fa-check text-accent me-2"></i>{item}</li>))}</ul>
+                        <h6 className="text-primary fw-bold mb-3 font-montserrat">{t('pay_offers', 'PAYMENT & OFFERS')}</h6>
+                        <ul className="row list-unstyled text-grey m-0">{[...(selectedPlace.payment || []), ...(selectedPlace.roomOffers || [])].map((item, idx) => (<li key={idx} className="col-md-6 mb-2"><i className="fa-solid fa-check text-primary me-2"></i>{item}</li>))}</ul>
                     </div>
                     <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box shadow-sm border border-primary border-opacity-10">
-                        <h6 className="text-accent fw-bold mb-3 font-montserrat">{t('facilities', 'FACILITIES')}</h6>
-                        <ul className="row list-unstyled text-grey m-0">{(selectedPlace.facilities || []).map((fac, idx) => (<li key={idx} className="col-md-6 mb-2"><i className="fa-solid fa-check text-accent me-2"></i>{fac}</li>))}</ul>
+                        <h6 className="text-primary fw-bold mb-3 font-montserrat">{t('facilities', 'FACILITIES')}</h6>
+                        <ul className="row list-unstyled text-grey m-0">{(selectedPlace.facilities || []).map((fac, idx) => (<li key={idx} className="col-md-6 mb-2"><i className="fa-solid fa-check text-primary me-2"></i>{fac}</li>))}</ul>
                     </div>
                     <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box shadow-sm border border-primary border-opacity-10">
-                        <h6 className="text-accent fw-bold mb-3 font-montserrat">{t('details', 'DETAILS')}</h6>
+                        <h6 className="text-primary fw-bold mb-3 font-montserrat">{t('details', 'DETAILS')}</h6>
                         <ul className="list-unstyled text-grey m-0">
                             {selectedPlace.bed && <li className="mb-2"><strong>{t('bed_type', 'Bed Type')}:</strong> {selectedPlace.bed.join(', ')}</li>}
                             {selectedPlace.bedrooms && <li className="mb-2"><strong>{t('num_bedrooms', 'Bedrooms')}:</strong> {selectedPlace.bedrooms.join(', ')}</li>}
@@ -179,32 +177,32 @@ const Destinations = () => {
                     
                     <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box shadow-sm border border-primary border-opacity-10">
                         <div className="d-flex justify-content-between align-items-center mb-3">
-                            <h6 className="text-accent fw-bold m-0 font-montserrat">{t('view_360', '360° VIEW')}</h6>
-                            <button className="btn btn-sm btn-outline-custom" style={{ padding: '4px 12px', fontSize: '0.8rem' }} onClick={handleFullScreen}><i className="fa-solid fa-expand me-1"></i> {t('full_screen', 'Full Screen')}</button>
+                            <h6 className="text-primary fw-bold m-0 font-montserrat">{t('view_360', '360° VIEW')}</h6>
+                            <button className="btn btn-sm btn-outline-primary" style={{ padding: '4px 12px', fontSize: '0.8rem' }} onClick={handleFullScreen}><i className="fa-solid fa-expand me-1"></i> {t('full_screen', 'Full Screen')}</button>
                         </div>
                         {selectedPlace.virtualTourUrl || (selectedPlace.name && selectedPlace.name.includes('Okada')) ? (
-                            <iframe ref={tourRef} src={selectedPlace.virtualTourUrl || 'https://tours.exsight360.com/okada/index.html'} className="rounded-3 border border-secondary border-opacity-25 shadow" style={{ width: '100%', height: '400px', border: 'none', backgroundColor: '#000' }} allow="xr-spatial-tracking; vr; gyroscope; accelerometer; fullscreen" allowFullScreen title={`${selectedPlace.name} 360 Tour`}></iframe>
-                        ) : (<div ref={tourRef} id="panorama" className="rounded-3 border border-secondary border-opacity-25 shadow" style={{ width: '100%', height: '400px', backgroundColor: '#000' }}></div>)}
+                            <iframe ref={tourRef} src={selectedPlace.virtualTourUrl || 'https://tours.exsight360.com/okada/index.html'} className="rounded-3 border border-primary border-opacity-25 shadow" style={{ width: '100%', height: '400px', border: 'none', backgroundColor: '#000' }} allow="xr-spatial-tracking; vr; gyroscope; accelerometer; fullscreen" allowFullScreen title={`${selectedPlace.name} 360 Tour`}></iframe>
+                        ) : (<div ref={tourRef} id="panorama" className="rounded-3 border border-primary border-opacity-25 shadow" style={{ width: '100%', height: '400px', backgroundColor: '#000' }}></div>)}
                     </div>
                 </div>
 
                 <div className="col-lg-4">
-                    <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box text-center shadow-sm border border-primary border-opacity-10">
-                        <h6 className="text-grey small mb-2">{t('starting_at', 'Starting at')}</h6>
-                        <h2 className="fw-bold mb-0 text-accent">{formatPrice(selectedPlace.price)}</h2>
-                        <small className="text-grey">{t('per_night', '/ night')}</small>
+                    {/* ⚡ UNIFIED COLORS: Primary Blue for price border */}
+                    <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box text-center shadow-sm border border-primary">
+                        <h6 className="text-grey small mb-2 text-uppercase letter-spacing-1">{t('starting_at', 'Starting at')}</h6>
+                        <h2 className="fw-bold mb-0 font-montserrat text-primary">{formatPrice(selectedPlace.price)}</h2>
+                        <small className="text-grey fw-bold">{t('per_night', '/ night')}</small>
                     </div>
 
                     <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box text-center shadow-sm border border-primary border-opacity-10">
                         <div className="d-flex align-items-center justify-content-center gap-2 mb-3">
-                            <i className="fa-solid fa-cloud text-grey"></i>
-                            <h6 className="text-navy font-montserrat fw-bold m-0">{t('weather', 'Weather')}</h6>
-                            <button className="btn btn-sm btn-link p-0 ms-2 text-grey" onClick={handleRefreshWeather} title="Refresh Weather"><i className={`fa-solid fa-rotate-right ${isRefreshing ? 'fa-spin' : ''}`}></i></button>
+                            <i className="fa-solid fa-cloud text-primary"></i>
+                            <h6 className="text-navy font-montserrat fw-bold m-0 text-uppercase letter-spacing-1">{t('weather', 'Weather')}</h6>
+                            <button className="btn btn-sm btn-link p-0 ms-2 text-primary hover-coral" onClick={handleRefreshWeather} title="Refresh Weather"><i className={`fa-solid fa-rotate-right ${isRefreshing ? 'fa-spin' : ''}`}></i></button>
                         </div>
-                        <h1 className="fw-bold mb-1" style={{ fontSize: '3.5rem', color: '#FF8C73' }} id="weatherTemp">{weather}</h1>
+                        <h1 className="fw-bold mb-1 font-montserrat text-accent" style={{ fontSize: '3.5rem' }} id="weatherTemp">{weather}</h1>
                     </div>
-                    {/* ⚡ FIX: Replaced <a> tag with React Router <Link> */}
-                    <Link to={`/booking?package=${encodeURIComponent(selectedPlace.name)}`} className="btn btn-proceed w-100 py-3 text-uppercase font-montserrat fw-bold mb-3 d-block text-center text-decoration-none shadow">{t('book_now', 'Book Now')}</Link>
+                    <Link to={`/booking?package=${encodeURIComponent(selectedPlace.name)}`} className="btn btn-proceed w-100 py-3 text-uppercase font-montserrat fw-bold mb-3 d-block text-center text-decoration-none shadow hover-coral">{t('book_now', 'Book Now')}</Link>
                 </div>
             </div>
         </div>
@@ -223,13 +221,14 @@ const Destinations = () => {
         <section id="destinations" className="fade-in py-5" style={{ minHeight: '500px', backgroundColor: 'var(--bg-dark)' }}>
             <div className="container">
                 
-                <div className="search-filter-bar p-4 rounded-4 mx-auto mb-5 shadow-sm scroll-reveal visible" style={{ maxWidth: '900px', zIndex: 10, position: 'relative' }}>
+                {/* ⚡ UNIFIED: Using the exact Cyan/Primary blue from the video for the search bar! */}
+                <div className="search-filter-bar p-4 rounded-4 mx-auto mb-5 shadow-sm scroll-reveal visible" style={{ maxWidth: '900px', zIndex: 10, position: 'relative', backgroundColor: 'var(--card-bg)' }}>
                     <div className="row g-3 align-items-center">
                         <div className="col-md-4">
-                            <label className="text-primary-dark fw-bold small mb-1">{t('region', 'Region')}</label>
-                            <div className="input-with-icon">
-                                <i className="fa-solid fa-map-location-dot"></i>
-                                <select className="form-control-dark form-select w-100" value={selectedRegion} onChange={(e) => { setSelectedRegion(e.target.value); setSelectedHotel(''); }}>
+                            <label className="text-primary fw-bold small mb-1 text-uppercase letter-spacing-1">{t('region', 'Region')}</label>
+                            <div className="input-with-icon position-relative">
+                                <i className="fa-solid fa-map-location-dot position-absolute text-primary" style={{ left: '16px', top: '50%', transform: 'translateY(-50%)', zIndex: 5 }}></i>
+                                <select className="form-select border-primary border-opacity-25" style={{ paddingLeft: '45px', backgroundColor: '#F8FAFC', color: 'var(--navy-color)' }} value={selectedRegion} onChange={(e) => { setSelectedRegion(e.target.value); setSelectedHotel(''); }}>
                                     <option value="All">{t('all_regions', 'All Regions')}</option>
                                     <option value="Bohol">Bohol</option>
                                     <option value="Palawan">Palawan</option>
@@ -241,20 +240,20 @@ const Destinations = () => {
                             </div>
                         </div>
                         <div className="col-md-4">
-                            <label className="text-primary-dark fw-bold small mb-1">{t('accommodation', 'Accommodation')}</label>
-                            <div className="input-with-icon">
-                                <i className="fa-solid fa-hotel"></i>
-                                <select className="form-control-dark form-select w-100" value={selectedHotel} onChange={(e) => setSelectedHotel(e.target.value)}>
+                            <label className="text-primary fw-bold small mb-1 text-uppercase letter-spacing-1">{t('accommodation', 'Accommodation')}</label>
+                            <div className="input-with-icon position-relative">
+                                <i className="fa-solid fa-hotel position-absolute text-primary" style={{ left: '16px', top: '50%', transform: 'translateY(-50%)', zIndex: 5 }}></i>
+                                <select className="form-select border-primary border-opacity-25" style={{ paddingLeft: '45px', backgroundColor: '#F8FAFC', color: 'var(--navy-color)' }} value={selectedHotel} onChange={(e) => setSelectedHotel(e.target.value)}>
                                     <option value="">{t('all_acc', 'All Accommodations')}</option>
                                     {hotelsForDropdown.map(hotel => (<option key={hotel.id} value={hotel.id}>{hotel.name}</option>))}
                                 </select>
                             </div>
                         </div>
                         <div className="col-md-4">
-                            <label className="text-primary-dark fw-bold small mb-1">{t('keyword_search', 'Keyword Search')}</label>
-                            <div className="input-with-icon">
-                                <i className="fa-solid fa-magnifying-glass"></i>
-                                <input type="text" className="form-control-dark form-control w-100" placeholder={t('search_placeholder', 'Type to search...')} value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)}/>
+                            <label className="text-primary fw-bold small mb-1 text-uppercase letter-spacing-1">{t('keyword_search', 'Keyword Search')}</label>
+                            <div className="input-with-icon position-relative">
+                                <i className="fa-solid fa-magnifying-glass position-absolute text-primary" style={{ left: '16px', top: '50%', transform: 'translateY(-50%)', zIndex: 5 }}></i>
+                                <input type="text" className="form-control border-primary border-opacity-25" style={{ paddingLeft: '45px', backgroundColor: '#F8FAFC', color: 'var(--navy-color)' }} placeholder={t('search_placeholder', 'Type to search...')} value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)}/>
                             </div>
                         </div>
                     </div>
@@ -266,20 +265,23 @@ const Destinations = () => {
                         <div className="collapse d-lg-block" id="filterSidebar">
                             <div className="sidebar-filter-container sticky-top bg-card-dark" style={{ top: '100px', maxHeight: '80vh', overflowY: 'auto' }}>
                                 <div className="d-flex justify-content-between align-items-center mb-4 border-bottom border-primary border-opacity-10 pb-3">
-                                    <h5 className="text-navy fw-bold font-montserrat m-0 d-none d-lg-block"><i className="fa-solid fa-sliders text-accent me-2"></i> {t('filters', 'Filters')}</h5>
-                                    {activeCheckboxes.length > 0 && (<button className="btn btn-sm btn-link text-grey p-0 text-decoration-none" onClick={() => setActiveCheckboxes([])}>{t('clear_all', 'Clear All')}</button>)}
+                                    <h5 className="text-navy fw-bold font-montserrat m-0 d-none d-lg-block text-uppercase letter-spacing-1"><i className="fa-solid fa-sliders me-2 text-primary"></i> {t('filters', 'Filters')}</h5>
+                                    {activeCheckboxes.length > 0 && (<button className="btn btn-sm btn-link text-primary p-0 text-decoration-none fw-bold hover-coral" onClick={() => setActiveCheckboxes([])}>{t('clear_all', 'Clear All')}</button>)}
                                 </div>
                                 {filterCategories.map(category => (
                                     <div className="filter-section mb-4" key={category.title}>
-                                        <h6 className="filter-title text-navy">{category.title}</h6>
+                                        <h6 className="filter-title text-navy fw-bold text-uppercase letter-spacing-1">{category.title}</h6>
                                         {category.options.map(option => {
                                             const count = getCount(option); 
                                             const isActive = activeCheckboxes.includes(option);
                                             if (count === 0 && !isActive) return null; 
                                             return (
                                                 <div className="form-check mb-2" key={option}>
-                                                    <input className="form-check-input filter-checkbox" type="checkbox" onChange={() => handleToggleCheckbox(option)} checked={isActive} id={`filter-${option.replace(/[^a-zA-Z0-9]/g, '-')}`} />
-                                                    <label className="form-check-label w-100 d-flex justify-content-between align-items-center text-grey" htmlFor={`filter-${option.replace(/[^a-zA-Z0-9]/g, '-')}`}><span className={isActive ? 'text-primary-dark fw-bold' : ''}>{option}</span><span className="badge" style={{ backgroundColor: 'var(--primary-dark)', color: '#FFFFFF' }}>{count}</span></label>
+                                                    <input className="form-check-input filter-checkbox border-primary" type="checkbox" onChange={() => handleToggleCheckbox(option)} checked={isActive} id={`filter-${option.replace(/[^a-zA-Z0-9]/g, '-')}`} />
+                                                    <label className="form-check-label w-100 d-flex justify-content-between align-items-center text-grey" htmlFor={`filter-${option.replace(/[^a-zA-Z0-9]/g, '-')}`}>
+                                                        <span className={isActive ? 'fw-bold text-primary' : ''}>{option}</span>
+                                                        <span className="badge" style={{ backgroundColor: isActive ? 'var(--primary-color)' : 'rgba(0, 180, 216, 0.1)', color: isActive ? '#FFFFFF' : 'var(--navy-color)' }}>{count}</span>
+                                                    </label>
                                                 </div>
                                             );
                                         })}
@@ -308,12 +310,12 @@ const Destinations = () => {
                                             } else if(regionPositions[index].includes('right')) { rotateRegionStack('next'); } else { rotateRegionStack('prev'); } 
                                         }}>
                                             <div className="card">
-                                                <div className="card-img-wrapper"><span className="card-badge">{region.typeBadge}</span><img src={region.image} className="card-img-top" alt={region.name} /></div>
+                                                <div className="card-img-wrapper"><span className="card-badge" style={{ backgroundColor: 'var(--accent-color)' }}>{region.typeBadge}</span><img src={region.image} className="card-img-top" alt={region.name} /></div>
                                                 <div className="card-body">
                                                     <div className="card-location"><i className="fa-solid fa-location-dot"></i> {region.locationLabel}</div>
-                                                    <h5 className="card-title"><span className="region-text">{region.name}</span></h5>
+                                                    <h5 className="card-title text-navy fw-bold"><span className="region-text">{region.name}</span></h5>
                                                     <p className="card-text text-grey">{region.desc}</p>
-                                                    <div className="mt-auto"><span className="btn-text-link m-0" style={{ fontSize: '0.8rem' }}>{t('view_acc', 'View Accommodations')} <i className="fa-solid fa-arrow-right text-accent ms-1"></i></span></div>
+                                                    <div className="mt-auto"><span className="btn-text-link m-0 fw-bold hover-coral" style={{ fontSize: '0.85rem' }}>{t('view_acc', 'View Accommodations')} <i className="fa-solid fa-arrow-right ms-1"></i></span></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -323,29 +325,35 @@ const Destinations = () => {
                         ) : (
                             <div className="fade-in">
                                 <div className="d-flex justify-content-between align-items-center mb-3">
-                                    <h4 className="text-navy font-montserrat fw-bold mb-0">
+                                    <h4 className="text-navy font-montserrat fw-bold mb-0 text-uppercase letter-spacing-1">
                                         {selectedRegion === 'All' ? t('search_results', 'Search Results') : (selectedRegion.toLowerCase() === 'aklan' || selectedRegion.toLowerCase() === 'boracay' ? 'Aklan (Boracay)' : (selectedRegion.toLowerCase() === 'ifugao' || selectedRegion.toLowerCase() === 'banaue' ? 'Ifugao (Banaue)' : selectedRegion))}
                                     </h4>
-                                    <span className="text-grey small fw-bold" id="destCount">{filteredPlaces.length} {t('dest_found', 'destination(s) found')}</span>
+                                    <span className="text-primary small fw-bold" id="destCount">{filteredPlaces.length} {t('dest_found', 'destination(s) found')}</span>
                                 </div>
                                 <div className="row g-4" id="cardsContainer">
                                     {filteredPlaces.length === 0 ? (
                                         <div className="col-12 text-center text-grey py-5">
-                                            <i className="fa-solid fa-filter-circle-xmark fs-1 mb-3 opacity-50"></i>
-                                            <h5 className="text-navy fw-bold">{t('no_match', 'No matching accommodations')}</h5>
-                                            <p className="small mb-0">{t('no_match_desc', 'Try removing some of your active filters from the sidebar.')}</p>
+                                            <i className="fa-solid fa-filter-circle-xmark fs-1 mb-3 opacity-50 text-primary"></i>
+                                            <h5 className="text-navy fw-bold text-uppercase letter-spacing-1">{t('no_match', 'No matching accommodations')}</h5>
+                                            <p className="small mb-0 fw-bold text-grey">{t('no_match_desc', 'Try removing some of your active filters from the sidebar.')}</p>
                                         </div>
                                     ) : (
                                         filteredPlaces.map((place) => (
                                             <div key={place.id} className="col-md-6 destination-card scroll-reveal visible">
-                                                <div className="card h-100">
-                                                    <div className="card-img-wrapper"><span className="card-badge">{place.type ? place.type.split('/')[0].trim() : 'Place'}</span><img src={place.img} className="card-img-top" alt={place.name} /></div>
+                                                <div className="card h-100 border border-primary border-opacity-10 shadow-sm">
+                                                    <div className="card-img-wrapper"><span className="card-badge" style={{ backgroundColor: 'var(--accent-color)' }}>{place.type ? place.type.split('/')[0].trim() : 'Place'}</span><img src={place.img} className="card-img-top" alt={place.name} /></div>
                                                     <div className="card-body">
-                                                        <div className="card-location"><i className="fa-solid fa-location-dot"></i> {place.region}</div>
-                                                        <h5 className="card-title">{place.name}</h5>
-                                                        <p className="card-text text-grey small mb-2">{place.type} • {place.distance || 'Various'}</p>
-                                                        <div className="d-flex flex-wrap gap-2 mb-3">{(place.facilities || []).slice(0, 3).map(fac => (<span key={fac} className="badge bg-primary bg-opacity-10 fw-bold" style={{ color: '#023E8A' }}>{fac}</span>))}</div>
-                                                        <div className="mt-auto"><a href="#" className="explore-link border-0 bg-transparent p-0 text-start w-100 d-flex justify-content-between align-items-center" onClick={(e) => { e.preventDefault(); handleOpenDetail(place); }}><span>{t('view_details', 'View Details')}</span> <i className="fa-solid fa-arrow-right text-accent"></i></a></div>
+                                                        <div className="card-location text-grey fw-bold"><i className="fa-solid fa-location-dot text-primary"></i> {place.region}</div>
+                                                        <h5 className="card-title text-navy fw-bold">{place.name}</h5>
+                                                        <p className="card-text text-grey small mb-2 fw-bold">{place.type} • {place.distance || 'Various'}</p>
+                                                        
+                                                        {/* ⚡ UNIFIED COLORS for tags */}
+                                                        <div className="d-flex flex-wrap gap-2 mb-3">{(place.facilities || []).slice(0, 3).map(fac => (<span key={fac} className="badge bg-light border border-primary border-opacity-25 text-primary fw-bold px-2 py-1">{fac}</span>))}</div>
+                                                        
+                                                        <div className="mt-auto d-flex justify-content-between align-items-center border-top border-primary border-opacity-10 pt-3">
+                                                            <span className="fw-bold fs-5 text-primary">{formatPrice(place.price)}</span>
+                                                            <a href="#" className="explore-link border-0 bg-transparent p-0 fw-bold hover-coral text-accent" onClick={(e) => { e.preventDefault(); handleOpenDetail(place); }}><span>{t('view_details', 'View Details')}</span> <i className="fa-solid fa-arrow-right ms-1"></i></a>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
