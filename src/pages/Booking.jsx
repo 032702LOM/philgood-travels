@@ -92,7 +92,9 @@ const Booking = () => {
       }
   };
 
-  // Price Calculations
+  // ==========================================
+  // ⚡ UPDATED: STRICT PRICE CALCULATIONS
+  // ==========================================
   const allOptions = [...tourPackages, ...allPlaces];
   const pkgData = allOptions.find(p => p.name === selectedPackage) || { price: 0 };
   const basePrice = pkgData.price;
@@ -100,18 +102,24 @@ const Booking = () => {
   const totalHeads = guests.adults + guests.children + guests.infants;
   const chargeablePax = guests.adults + guests.children;
   
+  // 1. Base Price
   const baseTotalAdults = guests.adults * basePrice;
-  const baseTotalChildren = guests.children * (basePrice * 0.5);
+  const baseTotalChildren = guests.children * (basePrice * 0.5); // 50% discount
   const baseTotal = baseTotalAdults + baseTotalChildren;
   
-  const accMultipliers = { standard: 0, deluxe: 0.3, luxury: 0.7 };
+  // 2. Accommodation
+  const accMultipliers = { standard: 0, deluxe: 0.30, luxury: 0.70 };
   const accTotal = baseTotal * accMultipliers[accClass];
 
+  // 3. Add-ons (Strict Rules Applied)
   const addonPrices = { airportTransfer: 1500, insurance: 800, romanticDinner: 3500, carbonOffset: 500 };
   
+  // Transfer & Dinner are Flat Rates
   const transferTotal = addons.airportTransfer ? addonPrices.airportTransfer : 0;
-  const insuranceTotal = addons.insurance ? (addonPrices.insurance * totalHeads) : 0; 
   const dinnerTotal = addons.romanticDinner ? addonPrices.romanticDinner : 0;
+  
+  // Insurance includes Infants. Carbon does not.
+  const insuranceTotal = addons.insurance ? (addonPrices.insurance * totalHeads) : 0; 
   const carbonTotal = addons.carbonOffset ? (addonPrices.carbonOffset * chargeablePax) : 0;
 
   const subtotal = baseTotal + accTotal + transferTotal + insuranceTotal + dinnerTotal + carbonTotal;
@@ -303,11 +311,10 @@ const Booking = () => {
 
                             <label className="text-navy fw-bold small mb-3 text-uppercase letter-spacing-1">{t('acc_class', 'Accommodation Class')}</label>
                             <div className="row g-3">
-                                {/* ⚡ UPDATED: Shows percentage AND amount */}
                                 {[
                                     { id: 'standard', icon: 'fa-bed', title: t('std_class', 'Standard'), desc: t('std_desc', 'Included') },
-                                    { id: 'deluxe', icon: 'fa-hot-tub-person', title: t('deluxe_class', 'Deluxe'), desc: `+30% (${formatPrice(baseTotal * 0.3)})`, highlight: true },
-                                    { id: 'luxury', icon: 'fa-crown', title: t('lux_class', 'Luxury'), desc: `+70% (${formatPrice(baseTotal * 0.7)})`, highlight: true }
+                                    { id: 'deluxe', icon: 'fa-hot-tub-person', title: t('deluxe_class', 'Deluxe'), desc: `+30% (${formatPrice(baseTotal * 0.30)})`, highlight: true },
+                                    { id: 'luxury', icon: 'fa-crown', title: t('lux_class', 'Luxury'), desc: `+70% (${formatPrice(baseTotal * 0.70)})`, highlight: true }
                                 ].map(cls => (
                                     <div className="col-md-4" key={cls.id}>
                                         <label className={`w-100 h-100 rounded-4 p-3 border text-center position-relative shadow-sm hover-teal ${accClass === cls.id ? 'border-primary bg-primary bg-opacity-10' : 'border-primary border-opacity-25 bg-white'}`} style={{ cursor: 'pointer' }}>
@@ -602,8 +609,9 @@ const Booking = () => {
                                         </div>
                                     )}
                                     
+                                    {/* ⚡ UPDATED: Changed Button Text */}
                                     <button type="button" className="btn btn-proceed w-100 mt-4 py-3 text-uppercase font-montserrat fw-bold shadow-lg fs-6 hover-coral" onClick={handleConfirmBooking} disabled={!selectedPackage || !travelDate}>
-                                        {t('confirm', 'Confirm Booking')} <i className="fa-solid fa-arrow-right ms-2"></i>
+                                        {t('add_to_planned_trips', 'Add to My Planned Trips')} <i className="fa-solid fa-arrow-right ms-2"></i>
                                     </button>
                                     
                                     <div className="text-center mt-3 opacity-75">
