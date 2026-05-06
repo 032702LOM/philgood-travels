@@ -147,17 +147,28 @@ const Booking = () => {
                 box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.2) !important; 
             }
             
+            /* Coral Orange Buttons styles */
             .hover-coral { transition: all 0.3s ease !important; }
             .hover-coral:hover, .hover-coral:focus {
                 background-color: var(--accent-color, #F69928) !important;
                 border-color: var(--accent-color, #F69928) !important;
                 color: white !important;
+                opacity: 1 !important;
             }
             .hover-coral:active, .active-coral {
                 background-color: var(--accent-color, #F69928) !important;
                 border-color: var(--accent-color, #F69928) !important;
                 color: white !important;
                 box-shadow: 0 0 0 3px rgba(246, 153, 40, 0.4) !important; 
+                opacity: 1 !important;
+            }
+
+            /* Unselected Teal Button */
+            .unselected-teal {
+                background-color: var(--primary-color) !important;
+                color: white !important;
+                opacity: 0.45;
+                border: none !important;
             }
 
             .phone-select {
@@ -276,7 +287,6 @@ const Booking = () => {
                                         <input type="email" className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm hover-teal" placeholder="juan@example.com" value={leadGuest.email} onChange={(e) => setLeadGuest({...leadGuest, email: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }} required />
                                     </div>
                                 </div>
-                                
                                 <div className="col-md-6">
                                     <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('phone', 'Phone Number')}</label>
                                     <div className="input-group input-group-lg shadow-sm hover-teal rounded-3 bg-light" style={{ border: '1px solid rgba(0, 119, 182, 0.25)', overflow: 'hidden' }}>
@@ -314,7 +324,6 @@ const Booking = () => {
                                         />
                                     </div>
                                 </div>
-
                                 <div className="col-12">
                                     <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">Special Requests</label>
                                     <div className="position-relative">
@@ -325,7 +334,7 @@ const Booking = () => {
                             </div>
                         </div>
 
-                        {/* ⚡ ENHANCED 3. Add-ons & Extras */}
+                        {/* 3. Add-ons & Extras */}
                         <div className="bg-card-dark p-4 p-md-5 rounded-4 shadow-sm mb-4 border border-primary border-opacity-10" style={{ backgroundColor: 'var(--card-bg)' }}>
                             <div className="d-flex justify-content-between align-items-start">
                                 <StepHeader number="3" title={t('optional_addons', 'Optional Add-ons')} icon="fa-layer-group" />
@@ -339,18 +348,13 @@ const Booking = () => {
                                 ].map(addon => (
                                     <div key={addon.id} className={`p-3 p-md-4 rounded-4 border hover-teal ${addons[addon.id] ? 'border-primary bg-primary bg-opacity-10 shadow-sm' : 'border-secondary border-opacity-25 bg-white shadow-none'}`} style={{ cursor: 'pointer' }} onClick={() => toggleAddon(addon.id)}>
                                         <div className="d-flex align-items-center">
-                                            
-                                            {/* ⚡ NEW Checkbox Design */}
                                             <div className="d-flex align-items-center justify-content-center me-3 flex-shrink-0" style={{ width: '24px', height: '24px', border: '2px solid', borderRadius: '6px', borderColor: addons[addon.id] ? 'var(--primary-color)' : '#adb5bd', backgroundColor: addons[addon.id] ? 'var(--primary-color)' : 'transparent', transition: 'all 0.2s ease' }}>
                                                 <i className="fa-solid fa-check text-white" style={{ fontSize: '0.8rem', opacity: addons[addon.id] ? 1 : 0 }}></i>
                                             </div>
-
                                             <div className="me-auto">
                                                 <h6 className="text-navy fw-bold m-0 d-flex align-items-center"><i className={`fa-solid ${addon.icon} me-2 text-muted opacity-75`}></i> {addon.title}</h6>
                                                 <p className="text-grey small m-0 mt-1">{addon.desc}</p>
                                             </div>
-                                            
-                                            {/* ⚡ NEW Clean Text Price */}
                                             <div className="text-end ms-3">
                                                 <span className="fw-bold fs-6" style={{ color: addons[addon.id] ? 'var(--primary-color)' : 'var(--text-grey)' }}>+{formatPrice(addon.price)}</span>
                                             </div>
@@ -359,7 +363,7 @@ const Booking = () => {
                                 ))}
                             </div>
 
-                            {/* ⚡ ENHANCED CARBON OFFSET SECTION */}
+                            {/* CARBON OFFSET SECTION */}
                             <div className="p-4 rounded-4 position-relative overflow-hidden" style={{ backgroundColor: 'rgba(76, 175, 80, 0.05)', border: '1px solid rgba(76, 175, 80, 0.3)' }}>
                                 <div className="position-absolute top-0 end-0 opacity-10 p-3"><i className="fa-solid fa-leaf" style={{ fontSize: '5rem', color: '#4CAF50' }}></i></div>
                                 <div className="position-relative z-1">
@@ -371,18 +375,13 @@ const Booking = () => {
                                     
                                     <div className={`p-3 p-md-4 rounded-4 border hover-teal ${addons.carbonOffset ? 'border-success bg-success bg-opacity-10 shadow-sm' : 'border-secondary border-opacity-25 bg-white shadow-none'}`} style={{ cursor: 'pointer' }} onClick={() => toggleAddon('carbonOffset')}>
                                         <div className="d-flex align-items-center">
-                                            
-                                            {/* ⚡ NEW Checkbox Design */}
                                             <div className="d-flex align-items-center justify-content-center me-3 flex-shrink-0" style={{ width: '24px', height: '24px', border: '2px solid', borderRadius: '6px', borderColor: addons.carbonOffset ? '#198754' : '#adb5bd', backgroundColor: addons.carbonOffset ? '#198754' : 'transparent', transition: 'all 0.2s ease' }}>
                                                 <i className="fa-solid fa-check text-white" style={{ fontSize: '0.8rem', opacity: addons.carbonOffset ? 1 : 0 }}></i>
                                             </div>
-
                                             <div className="me-auto">
                                                 <h6 className="text-success fw-bold m-0">{t('offset_carbon', 'Offset My Carbon Footprint')}</h6>
                                                 <p className="text-grey small m-0 mt-1">{formatPrice(500)} {t('per_person', 'per person')}</p>
                                             </div>
-
-                                            {/* ⚡ NEW Clean Text Price */}
                                             <div className="text-end ms-3">
                                                 <span className="fw-bold fs-6" style={{ color: addons.carbonOffset ? '#198754' : 'var(--text-grey)' }}>+{formatPrice(addonPrices.carbonOffset * chargeablePax)}</span>
                                             </div>
@@ -399,11 +398,12 @@ const Booking = () => {
                             <label className="text-navy fw-bold small mb-3 text-uppercase letter-spacing-1">{t('how_paying', 'How are we paying?')}</label>
                             
                             <div className="d-flex flex-wrap gap-2 mb-4 bg-light p-2 rounded-4 border border-primary border-opacity-10">
-                                <button type="button" className={`btn flex-grow-1 rounded-pill fw-bold hover-coral ${splitPayment === 1 ? 'active-coral shadow-sm' : 'btn-light text-muted'}`} onClick={() => setSplitPayment(1)}>
+                                {/* ⚡ UPDATED: Changed inactive classes to use our unselected-teal styling */}
+                                <button type="button" className={`btn flex-grow-1 rounded-pill fw-bold hover-coral ${splitPayment === 1 ? 'active-coral shadow-sm' : 'unselected-teal'}`} onClick={() => setSplitPayment(1)}>
                                     {t('split_1', 'Just me (Pay in full)')}
                                 </button>
                                 {[2, 3, 4, 5].map(num => (
-                                    <button type="button" key={num} className={`btn flex-grow-1 rounded-pill fw-bold hover-coral ${splitPayment === num ? 'active-coral shadow-sm' : 'btn-light text-muted'}`} onClick={() => setSplitPayment(num)}>
+                                    <button type="button" key={num} className={`btn flex-grow-1 rounded-pill fw-bold hover-coral ${splitPayment === num ? 'active-coral shadow-sm' : 'unselected-teal'}`} onClick={() => setSplitPayment(num)}>
                                         {t('split_ways', 'Split')} {num}
                                     </button>
                                 ))}
@@ -491,6 +491,7 @@ const Booking = () => {
                                         <span className="text-navy fw-bold">{formatPrice(vatTotal)}</span>
                                     </div>
                                     
+                                    {/* Promo Code Input Field */}
                                     <div className="mb-4 p-3 rounded-4" style={{ backgroundColor: '#F8F9FA', border: '1px dashed #ced4da' }}>
                                         <label className="text-navy fw-bold small mb-2 d-block"><i className="fa-solid fa-tag text-accent me-2"></i>Have a Promo Code?</label>
                                         <div className="d-flex gap-2">
@@ -518,6 +519,7 @@ const Booking = () => {
                                         )}
                                     </div>
 
+                                    {/* Total Area */}
                                     <div className="p-3 rounded-4 shadow-sm text-white position-relative overflow-hidden" style={{ backgroundColor: 'var(--primary-dark)' }}>
                                         <div className="position-absolute rounded-circle bg-white opacity-10" style={{ width: '150px', height: '150px', top: '-50px', right: '-50px' }}></div>
                                         
