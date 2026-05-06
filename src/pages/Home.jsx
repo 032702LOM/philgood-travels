@@ -4,7 +4,6 @@ import { regions, tourPackages } from '../data/placesData';
 import { usePreferences } from '../context/PreferencesContext';
 
 import islandParadiseImg from '../assets/img/island_paradise.png'; 
-// Tip: You can change this image file later to match the new Island Hopping theme!
 import manOnCliffImg from '../assets/img/island_hopping.png'; 
 import sunbathingImg from '../assets/img/sunbathing.png'; 
 import swimImg from '../assets/img/swim.png';
@@ -17,8 +16,6 @@ const Home = () => {
   const initialPositions = ['pos-hidden', 'pos-far-left', 'pos-left', 'pos-center', 'pos-right', 'pos-far-right'];
   const [destPositions, setDestPositions] = useState(initialPositions);
   const [pkgPositions, setPkgPositions] = useState(initialPositions);
-
-  const [showPromo, setShowPromo] = useState(true);
 
   const rotateStack = (type, direction) => {
     const setFunction = type === 'dest' ? setDestPositions : setPkgPositions;
@@ -92,27 +89,25 @@ const Home = () => {
         
         <style>
             {`
-                /* ⚡ UPDATED MOBILE STYLES FOR SCENE SECTIONS ⚡ */
+                /* MOBILE STYLES FOR SCENE SECTIONS */
                 @media (max-width: 991px) {
                     .scene-section {
-                        /* Remove background image on mobile */
                         background-image: none !important;
                         background-color: var(--bg-dark); 
                         padding: 2rem 0 !important;
                         min-height: auto;
                     }
                     
-                    /* The container for the transparent PNG images on mobile */
                     .mobile-scene-img {
                         display: block !important;
                         width: 100%;
                         height: 300px;
-                        background-size: contain; /* Changed from cover so the full image fits */
+                        background-size: contain; 
                         background-position: center;
-                        background-repeat: no-repeat; /* Prevents the image from repeating */
-                        background-color: transparent; /* Makes the box completely clear */
+                        background-repeat: no-repeat; 
+                        background-color: transparent; 
                         margin-top: 2rem;
-                        box-shadow: none; /* Removed the harsh shadow */
+                        box-shadow: none; 
                     }
 
                     .scene-content {
@@ -120,7 +115,6 @@ const Home = () => {
                     }
                 }
 
-                /* Hide the mobile image containers on desktop */
                 @media (min-width: 992px) {
                     .mobile-scene-img {
                         display: none !important;
@@ -129,13 +123,6 @@ const Home = () => {
             `}
         </style>
 
-        {showPromo && (
-            <div className="top-alert" id="specialOfferBanner">
-                <span><i className="fa-solid fa-sun me-2"></i> {t('promo_banner', 'MONSOON SPECIAL: 30% OFF on all Palawan packages!')}</span>
-                <i className="fa-solid fa-xmark close-alert" onClick={() => setShowPromo(false)}></i>
-            </div>
-        )}
-
         {/* --- STATIC HERO SECTION --- */}
         <section id="home" className="fade-in" style={{ marginTop: 0 }}>
             <div className="home-hero w-100 position-relative" style={{ backgroundImage: `url(${islandParadiseImg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
@@ -143,7 +130,7 @@ const Home = () => {
             </div>
 
             {/* PROMO VIDEO OVERLAP */}
-            <div className="container position-relative text-center scroll-reveal" style={{ zIndex: 10, marginTop: '-150px', marginBottom: '80px' }}>
+            <div className="container position-relative text-center scroll-reveal" style={{ zIndex: 10, marginTop: '-150px', marginBottom: '40px' }}>
                 <div className="shadow-lg rounded-4 overflow-hidden mx-auto" style={{ maxWidth: '800px', border: '6px solid white', backgroundColor: '#000' }}>
                     <video 
                         autoPlay 
@@ -157,6 +144,22 @@ const Home = () => {
                         <source src={promoVideo} type="video/mp4" />
                         Your browser does not support the video tag.
                     </video>
+                </div>
+            </div>
+            
+            {/* ⚡ NEW: MONSOON PROMO BANNER PLACED HERE */}
+            <div className="container scroll-reveal pb-5">
+                <div className="alert rounded-4 border border-primary border-opacity-25 shadow-sm d-flex flex-column flex-md-row align-items-center justify-content-center p-4 m-0" style={{ backgroundColor: 'rgba(0, 180, 216, 0.05)' }}>
+                    <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-4 shadow-sm" style={{ width: '60px', height: '60px', fontSize: '1.5rem', flexShrink: 0 }}>
+                        <i className="fa-solid fa-umbrella"></i>
+                    </div>
+                    <div className="text-center text-md-start">
+                        <h4 className="text-navy fw-bold m-0 letter-spacing-1">MONSOON SPECIAL: 30% OFF on all Palawan packages!</h4>
+                        <p className="text-primary opacity-75 fs-6 m-0 fw-bold mt-2">
+                            Use code <span className="badge bg-accent text-white fs-6 mx-1 shadow-sm letter-spacing-1">PALAWAN30</span> at checkout. 
+                            <span className="text-muted fw-normal ms-2 d-block d-md-inline mt-2 mt-md-0">(One-time use per customer email)</span>
+                        </p>
+                    </div>
                 </div>
             </div>
 
@@ -194,7 +197,6 @@ const Home = () => {
                 <div className="row align-items-center scene-block scroll-reveal">
                     <div className="col-lg-6 trail-makers-text-col">
                         <div className="scene-content pe-lg-5">
-                            {/* ⚡ NEW KEYS: Bypasses the old Mountain dictionary completely! ⚡ */}
                             <span className="section-subtitle">{t('island_subtitle', 'DISCOVERY')}</span>
                             <h2 className="scene-title wave-text">{t('island_title', 'The Island Hoppers')}</h2>
                             <p className="scene-text">{t('island_desc1', 'Sometimes the best adventures begin where the ocean meets the shore. Step aboard a traditional bangka, feel the sea breeze, and hop between pristine islands waiting to be discovered.')}</p>     

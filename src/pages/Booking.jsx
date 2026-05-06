@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { tourPackages } from '../data/placesData';
+import { tourPackages, allPlaces } from '../data/placesData'; // ⚡ FIX: Imported allPlaces
 import { usePreferences } from '../context/PreferencesContext';
 import toast from 'react-hot-toast'; 
 import axios from 'axios';
@@ -55,7 +55,6 @@ const Booking = () => {
 
   const toggleAddon = (addon) => { setAddons(prev => ({ ...prev, [addon]: !prev[addon] })); };
 
-  // ⚡ UPDATED: Requires email and package, then sends them to backend
   const handleApplyPromo = async () => {
       if (!promoCode.trim()) return;
       
@@ -69,7 +68,6 @@ const Booking = () => {
       
       setIsApplyingPromo(true);
       try {
-          // Hardcoded fallback for the welcome code just in case the backend isn't ready
           if (promoCode.toUpperCase().startsWith('WELCOME-')) {
                setAppliedDiscount(0.10); 
                toast.success("10% Welcome Discount Applied! 🎉");
@@ -94,8 +92,9 @@ const Booking = () => {
       }
   };
 
-  // Price Calculations
-  const pkgData = tourPackages.find(p => p.name === selectedPackage) || { price: 0 };
+  // ⚡ FIX: Price Calculations now look through BOTH arrays
+  const allOptions = [...tourPackages, ...allPlaces];
+  const pkgData = allOptions.find(p => p.name === selectedPackage) || { price: 0 };
   const basePrice = pkgData.price;
   
   const totalHeads = guests.adults + guests.children + guests.infants;
@@ -131,6 +130,7 @@ const Booking = () => {
     const payload = {
         bookingId: 'BK' + Math.random().toString(36).substr(2, 6).toUpperCase(),
         packageName: selectedPackage,
+        packageId: pkgData.id, // Good practice to pass the ID along
         travelDate: travelDate,
         totalPrice: grandTotal,
         splitBetween: splitPayment,
@@ -205,6 +205,19 @@ const Booking = () => {
                 -moz-appearance: none;
                 appearance: none;
             }
+
+            /* Styles to make the optgroup labels look cleaner */
+            optgroup {
+                font-weight: bold;
+                color: var(--primary-color);
+                font-style: normal;
+                background-color: #f8f9fa;
+            }
+            option {
+                color: var(--text-navy);
+                font-weight: normal;
+                background-color: #fff;
+            }
         `}
         </style>
 
@@ -221,17 +234,6 @@ const Booking = () => {
                     {/* LEFT COLUMN - FORM */}
                     <div className="col-lg-8">
                         
-                        {/* ⚡ NEW: MONSOON PROMO BANNER */}
-                        <div className="alert rounded-4 mb-4 border border-primary border-opacity-25 shadow-sm d-flex align-items-center p-4 fade-in" style={{ backgroundColor: 'rgba(0, 180, 216, 0.05)' }}>
-                            <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0 shadow-sm" style={{ width: '45px', height: '45px', fontSize: '1.2rem' }}>
-                                <i className="fa-solid fa-umbrella"></i>
-                            </div>
-                            <div>
-                                <h5 className="text-navy fw-bold m-0 letter-spacing-1">MONSOON SPECIAL: 30% OFF on all Palawan packages!</h5>
-                                <p className="text-primary opacity-75 small m-0 fw-bold mt-1">Use code <span className="badge bg-accent text-white fs-6 mx-1 shadow-sm letter-spacing-1">PALAWAN30</span> at checkout. <span className="text-muted fw-normal">(One-time use per customer email)</span></p>
-                            </div>
-                        </div>
-
                         {/* 1. Trip Details */}
                         <div className="bg-card-dark p-4 p-md-5 rounded-4 shadow-sm mb-4 border border-primary border-opacity-10" style={{ backgroundColor: 'var(--card-bg)' }}>
                             <StepHeader number="1" title={t('trip_details', 'Trip Details')} icon="fa-map-location-dot" />
@@ -241,7 +243,16 @@ const Booking = () => {
                                     <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('dest_pkg', 'Destination / Package')} <span className="text-danger">*</span></label>
                                     <select className="form-select form-select-lg w-100 border-primary border-opacity-25 bg-light hover-teal text-navy" value={selectedPackage} onChange={(e) => setSelectedPackage(e.target.value)} style={{ fontSize: '1rem' }}>
                                         <option value="">{t('select_pkg', '-- Select a Package --')}</option>
-                                        {tourPackages.map(pkg => (<option key={pkg.id} value={pkg.name}>{pkg.name}</option>))}
+                                        
+                                        {/* ⚡ FIX: Neatly grouped Tour Packages and Resorts! */}
+                                        <optgroup label="Guided Tour Packages">
+                                            {tourPackages.map(pkg => (<option key={pkg.id} value={pkg.name}>{pkg.name}</option>))}
+                                        </optgroup>
+                                        
+                                        <optgroup label="Hotels & Resorts">
+                                            {allPlaces.map(place => (<option key={place.id} value={place.name}>{place.name}</option>))}
+                                        </optgroup>
+
                                     </select>
                                 </div>
                                 <div className="col-md-5">
@@ -574,7 +585,7 @@ const Booking = () => {
                                         
                                         {appliedDiscount > 0 && (
                                             <div className="d-flex justify-content-between mb-2 fade-in position-relative z-1">
-                                                <span className="small opacity-75">Discount Applied</span>
+                                                <span className="small opacity-75">Welcome Discount</span>
                                                 <span className="fw-bold text-warning">-{formatPrice(discountTotal)}</span>
                                             </div>
                                         )}
