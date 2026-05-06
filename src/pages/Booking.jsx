@@ -72,16 +72,19 @@ const Booking = () => {
   const totalHeads = guests.adults + guests.children + guests.infants;
   const chargeablePax = guests.adults + guests.children;
   
-  const baseTotal = (guests.adults * basePrice) + (guests.children * (basePrice * 0.5));
+  const baseTotalAdults = guests.adults * basePrice;
+  const baseTotalChildren = guests.children * (basePrice * 0.5);
+  const baseTotal = baseTotalAdults + baseTotalChildren;
   
   const accMultipliers = { standard: 0, deluxe: 0.3, luxury: 0.7 };
   const accTotal = baseTotal * accMultipliers[accClass];
 
   const addonPrices = { airportTransfer: 1500, insurance: 800, romanticDinner: 3500, carbonOffset: 500 };
   
-  const transferTotal = addons.airportTransfer ? (addonPrices.airportTransfer * chargeablePax) : 0;
+  // ⚡ UPDATED: Airport Transfer and Romantic Dinner are now fixed flat rates
+  const transferTotal = addons.airportTransfer ? addonPrices.airportTransfer : 0;
   const insuranceTotal = addons.insurance ? (addonPrices.insurance * totalHeads) : 0; 
-  const dinnerTotal = addons.romanticDinner ? (addonPrices.romanticDinner * chargeablePax) : 0;
+  const dinnerTotal = addons.romanticDinner ? addonPrices.romanticDinner : 0;
   const carbonTotal = addons.carbonOffset ? (addonPrices.carbonOffset * chargeablePax) : 0;
 
   const subtotal = baseTotal + accTotal + transferTotal + insuranceTotal + dinnerTotal + carbonTotal;
@@ -212,7 +215,6 @@ const Booking = () => {
 
                             <label className="text-navy fw-bold small mb-3 text-uppercase letter-spacing-1">{t('num_guests', 'Number of Guests')}</label>
                             <div className="row g-3 mb-5">
-                                {/* Adults */}
                                 <div className="col-md-4">
                                     <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm hover-teal" style={{ backgroundColor: '#fff' }}>
                                         <i className="fa-solid fa-user text-accent fs-2 mb-2"></i>
@@ -225,7 +227,6 @@ const Booking = () => {
                                         </div>
                                     </div>
                                 </div>
-                                {/* Children */}
                                 <div className="col-md-4">
                                     <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm hover-teal" style={{ backgroundColor: '#fff' }}>
                                         <i className="fa-solid fa-child-reaching text-accent fs-2 mb-2"></i>
@@ -239,7 +240,6 @@ const Booking = () => {
                                         </div>
                                     </div>
                                 </div>
-                                {/* Infants */}
                                 <div className="col-md-4">
                                     <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm hover-teal" style={{ backgroundColor: '#fff' }}>
                                         <i className="fa-solid fa-baby text-accent fs-2 mb-2"></i>
@@ -259,14 +259,14 @@ const Booking = () => {
                             <div className="row g-3">
                                 {[
                                     { id: 'standard', icon: 'fa-bed', title: t('std_class', 'Standard'), desc: t('std_desc', 'Included') },
-                                    { id: 'deluxe', icon: 'fa-hot-tub-person', title: t('deluxe_class', 'Deluxe'), desc: `+30% ${t('pax', '/pax')}`, highlight: true },
-                                    { id: 'luxury', icon: 'fa-crown', title: t('lux_class', 'Luxury'), desc: `+70% ${t('pax', '/pax')}`, highlight: true }
+                                    // ⚡ UPDATED: Now dynamically displays the exact peso amount added to the cart
+                                    { id: 'deluxe', icon: 'fa-hot-tub-person', title: t('deluxe_class', 'Deluxe'), desc: `+${formatPrice(baseTotal * 0.3)}`, highlight: true },
+                                    { id: 'luxury', icon: 'fa-crown', title: t('lux_class', 'Luxury'), desc: `+${formatPrice(baseTotal * 0.7)}`, highlight: true }
                                 ].map(cls => (
                                     <div className="col-md-4" key={cls.id}>
                                         <label className={`w-100 h-100 rounded-4 p-3 border text-center position-relative shadow-sm hover-teal ${accClass === cls.id ? 'border-primary bg-primary bg-opacity-10' : 'border-primary border-opacity-25 bg-white'}`} style={{ cursor: 'pointer' }}>
                                             <input type="radio" name="accClass" value={cls.id} checked={accClass === cls.id} onChange={(e) => setAccClass(e.target.value)} className="position-absolute opacity-0" />
                                             {accClass === cls.id && <i className="fa-solid fa-circle-check text-primary position-absolute top-0 end-0 m-2 fs-5"></i>}
-                                            {/* Changed icon colors to global text-primary for active, and text-primary opacity-50 for inactive */}
                                             <i className={`fa-solid ${cls.icon} fs-2 mb-2 ${accClass === cls.id ? 'text-primary' : 'text-primary opacity-50'}`}></i>
                                             <h6 className="fw-bold text-navy m-0">{cls.title}</h6>
                                             <small className={cls.highlight ? 'text-accent fw-bold' : 'text-primary opacity-75 fw-bold'}>{cls.desc}</small>
@@ -348,10 +348,11 @@ const Booking = () => {
                             </div>
                             
                             <div className="d-flex flex-column gap-3 mb-4">
+                                {/* ⚡ UPDATED: Changed the Flat Prices inside the Addon Cards */}
                                 {[
-                                    { id: 'airportTransfer', title: t('transfer', 'Roundtrip Airport Transfer'), desc: t('transfer_desc', 'Hassle-free pick up and drop off.'), price: addonPrices.airportTransfer * chargeablePax, icon: 'fa-van-shuttle' },
+                                    { id: 'airportTransfer', title: t('transfer', 'Roundtrip Airport Transfer'), desc: t('transfer_desc', 'Hassle-free pick up and drop off.'), price: addonPrices.airportTransfer, icon: 'fa-van-shuttle' },
                                     { id: 'insurance', title: t('insurance', 'Travel Insurance'), desc: t('insurance_desc', 'Full coverage per guest.'), price: addonPrices.insurance * totalHeads, icon: 'fa-shield-heart' },
-                                    { id: 'romanticDinner', title: t('dinner', 'Romantic Dinner Setup'), desc: t('dinner_desc', 'Candlelit dinner by the beach.'), price: addonPrices.romanticDinner * chargeablePax, icon: 'fa-champagne-glasses' }
+                                    { id: 'romanticDinner', title: t('dinner', 'Romantic Dinner Setup'), desc: t('dinner_desc', 'Candlelit dinner by the beach.'), price: addonPrices.romanticDinner, icon: 'fa-champagne-glasses' }
                                 ].map(addon => (
                                     <div key={addon.id} className={`p-3 p-md-4 rounded-4 border hover-teal ${addons[addon.id] ? 'border-primary bg-primary bg-opacity-10 shadow-sm' : 'border-secondary border-opacity-25 bg-white shadow-none'}`} style={{ cursor: 'pointer' }} onClick={() => toggleAddon(addon.id)}>
                                         <div className="d-flex align-items-center">
@@ -458,10 +459,17 @@ const Booking = () => {
                                         <p className="text-primary opacity-75 fw-bold small m-0"><i className="fa-regular fa-calendar text-accent me-2"></i> {travelDate || 'Select Date'}</p>
                                     </div>
                                     
+                                    {/* ⚡ UPDATED: Split Adults and Children Base Prices */}
                                     <div className="d-flex justify-content-between mb-2">
-                                        <span className="text-grey small">Base Price (x{totalHeads})</span>
-                                        <span className="text-navy fw-bold">{formatPrice(baseTotal)}</span>
+                                        <span className="text-grey small">Adults (x{guests.adults})</span>
+                                        <span className="text-navy fw-bold">{formatPrice(baseTotalAdults)}</span>
                                     </div>
+                                    {guests.children > 0 && (
+                                        <div className="d-flex justify-content-between mb-2 fade-in">
+                                            <span className="text-grey small">Children (x{guests.children})</span>
+                                            <span className="text-navy fw-bold">{formatPrice(baseTotalChildren)}</span>
+                                        </div>
+                                    )}
                                     
                                     {accTotal > 0 && (
                                         <div className="d-flex justify-content-between mb-2 fade-in">
@@ -495,12 +503,11 @@ const Booking = () => {
                                         </div>
                                     )}
                                     
-                                    <div className="d-flex justify-content-between mb-4 pb-3 border-bottom border-primary border-opacity-10">
+                                    <div className="d-flex justify-content-between mb-4 pb-3 border-bottom border-primary border-opacity-10 mt-2">
                                         <span className="text-grey small">VAT (12%)</span>
                                         <span className="text-navy fw-bold">{formatPrice(vatTotal)}</span>
                                     </div>
                                     
-                                    {/* Promo Code Input Field */}
                                     <div className="mb-4 p-3 rounded-4" style={{ backgroundColor: '#F8F9FA', border: '1px dashed #ced4da' }}>
                                         <label className="text-navy fw-bold small mb-2 d-block"><i className="fa-solid fa-tag text-accent me-2"></i>Have a Promo Code?</label>
                                         <div className="d-flex gap-2">
@@ -528,7 +535,6 @@ const Booking = () => {
                                         )}
                                     </div>
 
-                                    {/* Total Area */}
                                     <div className="p-3 rounded-4 shadow-sm text-white position-relative overflow-hidden" style={{ backgroundColor: 'var(--primary-dark)' }}>
                                         <div className="position-absolute rounded-circle bg-white opacity-10" style={{ width: '150px', height: '150px', top: '-50px', right: '-50px' }}></div>
                                         
