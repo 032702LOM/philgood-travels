@@ -175,7 +175,8 @@ const Booking = () => {
                                 <div className="d-flex align-items-center rounded-3 px-3 py-2 border border-primary border-opacity-25 flex-grow-1" style={{ backgroundColor: '#F4FAFC' }}>
                                     <div className="me-auto">
                                         <span className="d-block text-navy fw-bold">{t('children', 'Children')}</span>
-                                        <small className="text-accent fw-bold" style={{ fontSize: '0.75rem' }}>{t('children_desc', '50% Off (2-11 yrs)')}</small>
+                                        <small className="text-accent fw-bold" style={{ fontSize: '0.75rem' }}>{t('children_desc', '50% Off')}</small>
+                                        <small className="text-accent fw-bold" style={{ fontSize: '0.75rem' }}>{t('children_desc', '2-11 years old')}</small>
                                     </div>
                                     <div className="d-flex align-items-center gap-3">
                                         <button type="button" className="btn btn-sm btn-outline-primary rounded-circle" style={{ width: '30px', height: '30px', padding: 0 }} onClick={() => handleGuestChange('children', 'sub')} disabled={guests.children === 0}><i className="fa-solid fa-minus"></i></button>
@@ -186,7 +187,8 @@ const Booking = () => {
                                 <div className="d-flex align-items-center rounded-3 px-3 py-2 border border-primary border-opacity-25 flex-grow-1" style={{ backgroundColor: '#F4FAFC' }}>
                                     <div className="me-auto">
                                         <span className="d-block text-navy fw-bold">{t('infants', 'Infants')}</span>
-                                        <small className="text-success fw-bold" style={{ fontSize: '0.75rem' }}>{t('infants_desc', 'Free (Under 2 years old)')}</small>
+                                        <small className="text-success fw-bold" style={{ fontSize: '0.75rem' }}>{t('infants_desc', 'Free')}</small>
+                                        <small className="text-success fw-bold" style={{ fontSize: '0.75rem' }}>{t('infants_desc', 'Under 2 years old')}</small>
                                     </div>
                                     <div className="d-flex align-items-center gap-3">
                                         <button type="button" className="btn btn-sm btn-outline-primary rounded-circle" style={{ width: '30px', height: '30px', padding: 0 }} onClick={() => handleGuestChange('infants', 'sub')} disabled={guests.infants === 0}><i className="fa-solid fa-minus"></i></button>
