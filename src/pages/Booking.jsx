@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { tourPackages } from '../data/placesData';
 import { usePreferences } from '../context/PreferencesContext';
-import toast from 'react-hot-toast'; // Make sure toast is imported for nice alerts!
+import toast from 'react-hot-toast'; 
 
 const Booking = () => {
   const location = useLocation();
@@ -19,9 +19,8 @@ const Booking = () => {
   
   const [leadGuest, setLeadGuest] = useState({ name: '', email: '', phone: '', specialRequests: '' });
 
-  // ⚡ NEW: Promo Code States
   const [promoCode, setPromoCode] = useState('');
-  const [appliedDiscount, setAppliedDiscount] = useState(0); // Will hold 0.10 for 10%
+  const [appliedDiscount, setAppliedDiscount] = useState(0); 
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -53,13 +52,11 @@ const Booking = () => {
 
   const toggleAddon = (addon) => { setAddons(prev => ({ ...prev, [addon]: !prev[addon] })); };
 
-  // ⚡ NEW: Apply Promo Code Function
   const handleApplyPromo = () => {
       if (!promoCode.trim()) return;
       
-      // Check if the code starts with our unique welcome prefix
       if (promoCode.toUpperCase().startsWith('WELCOME-') || promoCode.toUpperCase() === 'WELCOME10') {
-          setAppliedDiscount(0.10); // 10% Off
+          setAppliedDiscount(0.10); 
           toast.success("10% Welcome Discount Applied! 🎉");
       } else {
           setAppliedDiscount(0);
@@ -89,7 +86,6 @@ const Booking = () => {
   const subtotal = baseTotal + accTotal + transferTotal + insuranceTotal + dinnerTotal + carbonTotal;
   const vatTotal = subtotal * 0.12;
   
-  // ⚡ UPDATED: Calculate the discount before the Grand Total
   const rawGrandTotal = subtotal + vatTotal;
   const discountTotal = rawGrandTotal * appliedDiscount;
   const grandTotal = rawGrandTotal - discountTotal;
@@ -120,12 +116,22 @@ const Booking = () => {
             dinnerTotal: dinnerTotal,
             carbonTotal: carbonTotal,
             vatTotal: vatTotal,
-            discountTotal: -Math.abs(discountTotal) // ⚡ NEW: Pass discount to checkout payload
+            discountTotal: -Math.abs(discountTotal) 
         }
     };
 
     navigate('/checkout', { state: payload });
   };
+
+  // Helper component for step headers
+  const StepHeader = ({ number, title, icon }) => (
+    <div className="d-flex align-items-center mb-4 pb-3 border-bottom border-primary border-opacity-10">
+        <div className="d-flex align-items-center justify-content-center rounded-circle text-white shadow-sm me-3" style={{ width: '40px', height: '40px', backgroundColor: 'var(--primary-color)', fontSize: '1.2rem', fontWeight: 'bold' }}>
+            {number}
+        </div>
+        <h4 className="text-navy font-montserrat fw-bold m-0"><i className={`fa-solid ${icon} text-accent me-2 opacity-75`}></i> {title}</h4>
+    </div>
+  );
 
   return (
     <div className="fade-in">
@@ -133,223 +139,206 @@ const Booking = () => {
             <div className="container">
                 
                 <div className="text-center mb-5 mt-4">
-                    <h1 className="section-title wave-text" style={{ fontSize: '3.5rem' }}>{t('booking_title', 'Secure Your Spot')}</h1>
-                    <p className="section-desc fw-bold text-grey">{t('booking_desc', 'Complete your booking and pack your bags.')}</p>
+                    <h1 className="section-title wave-text mb-2" style={{ fontSize: '3.5rem' }}>{t('booking_title', 'Secure Your Spot')}</h1>
+                    <p className="text-grey fw-bold fs-5">{t('booking_desc', 'Complete your details and get ready to pack your bags.')}</p>
                 </div>
 
                 <div className="row g-5">
                     
+                    {/* LEFT COLUMN - FORM */}
                     <div className="col-lg-8">
                         
                         {/* 1. Trip Details */}
-                        <div className="bg-card-dark p-4 p-md-5 rounded-4 shadow-sm mb-5 border border-primary border-opacity-10" style={{ backgroundColor: 'var(--card-bg)' }}>
-                            <h4 className="text-navy font-montserrat fw-bold mb-4 border-bottom border-primary border-opacity-10 pb-3"><i className="fa-solid fa-map-location-dot text-accent me-2"></i> 1. {t('trip_details', 'Trip Details')}</h4>
+                        <div className="bg-card-dark p-4 p-md-5 rounded-4 shadow-sm mb-4 border border-primary border-opacity-10" style={{ backgroundColor: 'var(--card-bg)' }}>
+                            <StepHeader number="1" title={t('trip_details', 'Trip Details')} icon="fa-map-location-dot" />
                             
-                            <div className="row g-4 mb-4">
-                                <div className="col-md-6">
-                                    <label className="text-grey fw-bold small mb-2">{t('dest_pkg', 'Destination / Package')} <span className="text-danger">*</span></label>
-                                    <select className="form-control-dark form-select w-100" value={selectedPackage} onChange={(e) => setSelectedPackage(e.target.value)}>
+                            <div className="row g-4 mb-5">
+                                <div className="col-md-7">
+                                    <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('dest_pkg', 'Destination / Package')} <span className="text-danger">*</span></label>
+                                    <select className="form-select form-select-lg w-100 border-primary border-opacity-25 bg-light" value={selectedPackage} onChange={(e) => setSelectedPackage(e.target.value)} style={{ fontSize: '1rem' }}>
                                         <option value="">{t('select_pkg', '-- Select a Package --')}</option>
                                         {tourPackages.map(pkg => (<option key={pkg.id} value={pkg.name}>{pkg.name}</option>))}
                                     </select>
                                 </div>
-                                <div className="col-md-6">
-                                    <label className="text-grey fw-bold small mb-2">{t('travel_date', 'Travel Date')} <span className="text-danger">*</span></label>
-                                    <input type="date" className="form-control-dark form-control w-100" value={travelDate} onChange={(e) => setTravelDate(e.target.value)} />
+                                <div className="col-md-5">
+                                    <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('travel_date', 'Travel Date')} <span className="text-danger">*</span></label>
+                                    <input type="date" className="form-control form-control-lg w-100 border-primary border-opacity-25 bg-light" value={travelDate} onChange={(e) => setTravelDate(e.target.value)} style={{ fontSize: '1rem' }} />
                                 </div>
                             </div>
 
-                            <label className="text-grey fw-bold small mb-3">{t('num_guests', 'Number of Guests')}</label>
-                            <div className="d-flex flex-column flex-md-row gap-3 mb-4">
-                                <div className="d-flex align-items-center rounded-3 px-3 py-2 border border-primary border-opacity-25 flex-grow-1" style={{ backgroundColor: '#F4FAFC' }}>
-                                    <div className="me-auto">
-                                        <span className="d-block text-navy fw-bold">{t('adults', 'Adults')}</span>
-                                        <small className="text-grey" style={{ fontSize: '0.75rem' }}>{t('adults_desc', '12+ years')}</small>
-                                    </div>
-                                    <div className="d-flex align-items-center gap-3">
-                                        <button type="button" className="btn btn-sm btn-outline-primary rounded-circle" style={{ width: '30px', height: '30px', padding: 0 }} onClick={() => handleGuestChange('adults', 'sub')} disabled={guests.adults <= 1}><i className="fa-solid fa-minus"></i></button>
-                                        <span className="text-navy fw-bold fs-5" style={{ minWidth: '20px', textAlign: 'center' }}>{guests.adults}</span>
-                                        <button type="button" className="btn btn-sm btn-outline-primary rounded-circle" style={{ width: '30px', height: '30px', padding: 0 }} onClick={() => handleGuestChange('adults', 'add')}><i className="fa-solid fa-plus"></i></button>
-                                    </div>
-                                </div>
-                                <div className="d-flex align-items-center rounded-3 px-3 py-2 border border-primary border-opacity-25 flex-grow-1" style={{ backgroundColor: '#F4FAFC' }}>
-                                    <div className="me-auto">
-                                        <span className="d-block text-navy fw-bold">{t('children', 'Children')}</span>
-                                        <small className="text-accent fw-bold" style={{ fontSize: '0.75rem' }}>{t('children_desc', '50% Off (2-11 yrs)')}</small>
-                                    </div>
-                                    <div className="d-flex align-items-center gap-3">
-                                        <button type="button" className="btn btn-sm btn-outline-primary rounded-circle" style={{ width: '30px', height: '30px', padding: 0 }} onClick={() => handleGuestChange('children', 'sub')} disabled={guests.children === 0}><i className="fa-solid fa-minus"></i></button>
-                                        <span className="text-navy fw-bold fs-5" style={{ minWidth: '20px', textAlign: 'center' }}>{guests.children}</span>
-                                        <button type="button" className="btn btn-sm btn-outline-primary rounded-circle" style={{ width: '30px', height: '30px', padding: 0 }} onClick={() => handleGuestChange('children', 'add')}><i className="fa-solid fa-plus"></i></button>
+                            <label className="text-navy fw-bold small mb-3 text-uppercase letter-spacing-1">{t('num_guests', 'Number of Guests')}</label>
+                            <div className="row g-3 mb-5">
+                                {/* Adults */}
+                                <div className="col-md-4">
+                                    <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm" style={{ backgroundColor: '#fff' }}>
+                                        <span className="d-block text-navy fw-bold fs-5">{t('adults', 'Adults')}</span>
+                                        <small className="text-grey mb-3">{t('adults_desc', '12+ years')}</small>
+                                        <div className="d-flex align-items-center justify-content-center gap-3 w-100 bg-light rounded-pill p-2">
+                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('adults', 'sub')} disabled={guests.adults <= 1}><i className="fa-solid fa-minus"></i></button>
+                                            <span className="text-navy fw-bold fs-5" style={{ minWidth: '24px' }}>{guests.adults}</span>
+                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm text-primary" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('adults', 'add')}><i className="fa-solid fa-plus"></i></button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="d-flex align-items-center rounded-3 px-3 py-2 border border-primary border-opacity-25 flex-grow-1" style={{ backgroundColor: '#F4FAFC' }}>
-                                    <div className="me-auto">
-                                        <span className="d-block text-navy fw-bold">{t('infants', 'Infants')}</span>
-                                        <small className="text-success fw-bold" style={{ fontSize: '0.75rem' }}>{t('infants_desc', 'Free (Under 2 years old)')}</small>
+                                {/* Children */}
+                                <div className="col-md-4">
+                                    <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm" style={{ backgroundColor: '#fff' }}>
+                                        <span className="d-block text-navy fw-bold fs-5">{t('children', 'Children')}</span>
+                                        <span className="text-accent fw-bold lh-1 mt-1" style={{ fontSize: '0.85rem' }}>{t('children_discount', '50% Off')}</span>
+                                        <small className="text-grey mb-2" style={{ fontSize: '0.75rem' }}>{t('children_age', '2-11 years old')}</small>
+                                        <div className="d-flex align-items-center justify-content-center gap-3 w-100 bg-light rounded-pill p-2">
+                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('children', 'sub')} disabled={guests.children === 0}><i className="fa-solid fa-minus"></i></button>
+                                            <span className="text-navy fw-bold fs-5" style={{ minWidth: '24px' }}>{guests.children}</span>
+                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm text-primary" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('children', 'add')}><i className="fa-solid fa-plus"></i></button>
+                                        </div>
                                     </div>
-                                    <div className="d-flex align-items-center gap-3">
-                                        <button type="button" className="btn btn-sm btn-outline-primary rounded-circle" style={{ width: '30px', height: '30px', padding: 0 }} onClick={() => handleGuestChange('infants', 'sub')} disabled={guests.infants === 0}><i className="fa-solid fa-minus"></i></button>
-                                        <span className="text-navy fw-bold fs-5" style={{ minWidth: '20px', textAlign: 'center' }}>{guests.infants}</span>
-                                        <button type="button" className="btn btn-sm btn-outline-primary rounded-circle" style={{ width: '30px', height: '30px', padding: 0 }} onClick={() => handleGuestChange('infants', 'add')}><i className="fa-solid fa-plus"></i></button>
+                                </div>
+                                {/* Infants */}
+                                <div className="col-md-4">
+                                    <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm" style={{ backgroundColor: '#fff' }}>
+                                        <span className="d-block text-navy fw-bold fs-5">{t('infants', 'Infants')}</span>
+                                        <span className="text-success fw-bold lh-1 mt-1" style={{ fontSize: '0.85rem' }}>{t('infants_discount', 'Free')}</span>
+                                        <small className="text-grey mb-2" style={{ fontSize: '0.75rem' }}>{t('infants_age', 'Under 2 years old')}</small>
+                                        <div className="d-flex align-items-center justify-content-center gap-3 w-100 bg-light rounded-pill p-2">
+                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('infants', 'sub')} disabled={guests.infants === 0}><i className="fa-solid fa-minus"></i></button>
+                                            <span className="text-navy fw-bold fs-5" style={{ minWidth: '24px' }}>{guests.infants}</span>
+                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm text-primary" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('infants', 'add')}><i className="fa-solid fa-plus"></i></button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <label className="text-grey fw-bold small mb-3">{t('acc_class', 'Accommodation Class')}</label>
+                            <label className="text-navy fw-bold small mb-3 text-uppercase letter-spacing-1">{t('acc_class', 'Accommodation Class')}</label>
                             <div className="row g-3">
-                                <div className="col-md-4">
-                                    <label className="hotel-card">
-                                        <input type="radio" name="accClass" value="standard" checked={accClass === 'standard'} onChange={(e) => setAccClass(e.target.value)} />
-                                        <div className="hotel-content">
-                                            <i className="fa-solid fa-bed"></i>
-                                            <h6>{t('std_class', 'Standard')}</h6>
-                                            <small>{t('std_desc', 'Included')}</small>
-                                        </div>
-                                    </label>
-                                </div>
-                                <div className="col-md-4">
-                                    <label className="hotel-card">
-                                        <input type="radio" name="accClass" value="deluxe" checked={accClass === 'deluxe'} onChange={(e) => setAccClass(e.target.value)} />
-                                        <div className="hotel-content">
-                                            <i className="fa-solid fa-hot-tub-person"></i>
-                                            <h6>{t('deluxe_class', 'Deluxe')}</h6>
-                                            <small className="text-accent fw-bold">+30% {t('pax', '/pax')}</small>
-                                        </div>
-                                    </label>
-                                </div>
-                                <div className="col-md-4">
-                                    <label className="hotel-card">
-                                        <input type="radio" name="accClass" value="luxury" checked={accClass === 'luxury'} onChange={(e) => setAccClass(e.target.value)} />
-                                        <div className="hotel-content">
-                                            <i className="fa-solid fa-crown"></i>
-                                            <h6>{t('lux_class', 'Luxury')}</h6>
-                                            <small className="text-accent fw-bold">+70% {t('pax', '/pax')}</small>
-                                        </div>
-                                    </label>
-                                </div>
+                                {[
+                                    { id: 'standard', icon: 'fa-bed', title: t('std_class', 'Standard'), desc: t('std_desc', 'Included') },
+                                    { id: 'deluxe', icon: 'fa-hot-tub-person', title: t('deluxe_class', 'Deluxe'), desc: `+30% ${t('pax', '/pax')}`, highlight: true },
+                                    { id: 'luxury', icon: 'fa-crown', title: t('lux_class', 'Luxury'), desc: `+70% ${t('pax', '/pax')}`, highlight: true }
+                                ].map(cls => (
+                                    <div className="col-md-4" key={cls.id}>
+                                        <label className={`w-100 h-100 rounded-4 p-3 border text-center position-relative shadow-sm ${accClass === cls.id ? 'border-primary bg-primary bg-opacity-10' : 'border-primary border-opacity-25 bg-white'}`} style={{ cursor: 'pointer', transition: 'all 0.3s ease' }}>
+                                            <input type="radio" name="accClass" value={cls.id} checked={accClass === cls.id} onChange={(e) => setAccClass(e.target.value)} className="position-absolute opacity-0" />
+                                            {accClass === cls.id && <i className="fa-solid fa-circle-check text-primary position-absolute top-0 end-0 m-2 fs-5"></i>}
+                                            <i className={`fa-solid ${cls.icon} fs-2 mb-2 ${accClass === cls.id ? 'text-primary' : 'text-muted'}`}></i>
+                                            <h6 className="fw-bold text-navy m-0">{cls.title}</h6>
+                                            <small className={cls.highlight ? 'text-accent fw-bold' : 'text-grey'}>{cls.desc}</small>
+                                        </label>
+                                    </div>
+                                ))}
                             </div>
                         </div>
 
                         {/* 2. Lead Guest Details */}
-                        <div className="bg-card-dark p-4 p-md-5 rounded-4 shadow-sm mb-5 border border-primary border-opacity-10" style={{ backgroundColor: 'var(--card-bg)' }}>
-                            <h4 className="text-navy font-montserrat fw-bold mb-4 border-bottom border-primary border-opacity-10 pb-3"><i className="fa-solid fa-user-check text-accent me-2"></i> 2. {t('lead_guest', 'Lead Guest Details')}</h4>
+                        <div className="bg-card-dark p-4 p-md-5 rounded-4 shadow-sm mb-4 border border-primary border-opacity-10" style={{ backgroundColor: 'var(--card-bg)' }}>
+                            <StepHeader number="2" title={t('lead_guest', 'Lead Guest Details')} icon="fa-user-check" />
                             <div className="row g-4">
                                 <div className="col-md-6">
-                                    <label className="text-grey fw-bold small mb-2">{t('full_name', 'Full Name')} <span className="text-danger">*</span></label>
-                                    <input type="text" className="form-control-dark form-control w-100" placeholder="Juan Dela Cruz" value={leadGuest.name} onChange={(e) => setLeadGuest({...leadGuest, name: e.target.value})} required />
+                                    <label className="text-navy fw-bold small mb-2">{t('full_name', 'Full Name')} <span className="text-danger">*</span></label>
+                                    <input type="text" className="form-control form-control-lg bg-light border-primary border-opacity-25" placeholder="Juan Dela Cruz" value={leadGuest.name} onChange={(e) => setLeadGuest({...leadGuest, name: e.target.value})} required />
                                 </div>
                                 <div className="col-md-6">
-                                    <label className="text-grey fw-bold small mb-2">{t('email_addr', 'Email Address')} <span className="text-danger">*</span></label>
-                                    <input type="email" className="form-control-dark form-control w-100" placeholder="juan@example.com" value={leadGuest.email} onChange={(e) => setLeadGuest({...leadGuest, email: e.target.value})} required />
+                                    <label className="text-navy fw-bold small mb-2">{t('email_addr', 'Email Address')} <span className="text-danger">*</span></label>
+                                    <input type="email" className="form-control form-control-lg bg-light border-primary border-opacity-25" placeholder="juan@example.com" value={leadGuest.email} onChange={(e) => setLeadGuest({...leadGuest, email: e.target.value})} required />
                                 </div>
                                 <div className="col-md-6">
-                                    <label className="text-grey fw-bold small mb-2">{t('phone', 'Phone Number')}</label>
-                                    <input type="tel" className="form-control-dark form-control w-100" placeholder="+63 912 345 6789" value={leadGuest.phone} onChange={(e) => setLeadGuest({...leadGuest, phone: e.target.value})} />
+                                    <label className="text-navy fw-bold small mb-2">{t('phone', 'Phone Number')}</label>
+                                    <input type="tel" className="form-control form-control-lg bg-light border-primary border-opacity-25" placeholder="+63 912 345 6789" value={leadGuest.phone} onChange={(e) => setLeadGuest({...leadGuest, phone: e.target.value})} />
                                 </div>
                                 <div className="col-12">
-                                    <label className="text-grey fw-bold small mb-2">Special Requests</label>
-                                    <textarea className="form-control-dark form-control w-100" rows="3" placeholder="Allergies, late check-in, etc." value={leadGuest.specialRequests} onChange={(e) => setLeadGuest({...leadGuest, specialRequests: e.target.value})}></textarea>
+                                    <label className="text-navy fw-bold small mb-2">Special Requests</label>
+                                    <textarea className="form-control form-control-lg bg-light border-primary border-opacity-25" rows="3" placeholder="Allergies, late check-in, etc." value={leadGuest.specialRequests} onChange={(e) => setLeadGuest({...leadGuest, specialRequests: e.target.value})}></textarea>
                                 </div>
                             </div>
                         </div>
 
                         {/* 3. Add-ons & Extras */}
-                        <div className="bg-card-dark p-4 p-md-5 rounded-4 shadow-sm mb-5 border border-primary border-opacity-10" style={{ backgroundColor: 'var(--card-bg)' }}>
-                            <div className="d-flex justify-content-between align-items-center border-bottom border-primary border-opacity-10 pb-3 mb-4">
-                                <h4 className="text-navy font-montserrat fw-bold m-0"><i className="fa-solid fa-layer-group text-accent me-2"></i> 3. {t('optional_addons', 'Optional Add-ons')}</h4>
-                                <span className="badge bg-primary bg-opacity-10 text-primary-dark">Enhance your trip</span>
+                        <div className="bg-card-dark p-4 p-md-5 rounded-4 shadow-sm mb-4 border border-primary border-opacity-10" style={{ backgroundColor: 'var(--card-bg)' }}>
+                            <div className="d-flex justify-content-between align-items-start">
+                                <StepHeader number="3" title={t('optional_addons', 'Optional Add-ons')} icon="fa-layer-group" />
                             </div>
                             
                             <div className="d-flex flex-column gap-3 mb-4">
-                                <div className={`p-3 rounded-3 border addon-item ${addons.airportTransfer ? 'border-primary shadow-sm' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: addons.airportTransfer ? 'rgba(0, 180, 216, 0.05)' : '#F4FAFC', cursor: 'pointer', transition: 'all 0.3s' }} onClick={() => toggleAddon('airportTransfer')}>
-                                    <div className="form-check d-flex justify-content-between align-items-center m-0 p-0">
-                                        <div>
-                                            <input className="form-check-input me-3 ms-0 mt-0" type="checkbox" checked={addons.airportTransfer} readOnly style={{ cursor: 'pointer' }} />
-                                            <label className="form-check-label text-navy fw-bold d-inline" style={{ cursor: 'pointer' }}>{t('transfer', 'Roundtrip Airport Transfer')}</label>
-                                            <p className="text-grey small m-0 ms-4 ps-2">{t('transfer_desc', 'Hassle-free pick up and drop off.')}</p>
+                                {[
+                                    { id: 'airportTransfer', title: t('transfer', 'Roundtrip Airport Transfer'), desc: t('transfer_desc', 'Hassle-free pick up and drop off.'), price: addonPrices.airportTransfer * chargeablePax, icon: 'fa-van-shuttle' },
+                                    { id: 'insurance', title: t('insurance', 'Travel Insurance'), desc: t('insurance_desc', 'Full coverage per guest.'), price: addonPrices.insurance * totalHeads, icon: 'fa-shield-heart' },
+                                    { id: 'romanticDinner', title: t('dinner', 'Romantic Dinner Setup'), desc: t('dinner_desc', 'Candlelit dinner by the beach.'), price: addonPrices.romanticDinner * chargeablePax, icon: 'fa-champagne-glasses' }
+                                ].map(addon => (
+                                    <div key={addon.id} className={`p-3 p-md-4 rounded-4 border shadow-sm position-relative ${addons[addon.id] ? 'border-primary bg-primary bg-opacity-10' : 'border-primary border-opacity-25 bg-white'}`} style={{ cursor: 'pointer', transition: 'all 0.2s ease' }} onClick={() => toggleAddon(addon.id)}>
+                                        <div className="d-flex align-items-center">
+                                            <div className={`rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0 ${addons[addon.id] ? 'bg-primary text-white' : 'bg-light text-muted border'}`} style={{ width: '28px', height: '28px' }}>
+                                                {addons[addon.id] && <i className="fa-solid fa-check" style={{ fontSize: '0.8rem' }}></i>}
+                                            </div>
+                                            <div className="me-auto">
+                                                <h6 className="text-navy fw-bold m-0 d-flex align-items-center"><i className={`fa-solid ${addon.icon} me-2 text-accent opacity-75`}></i> {addon.title}</h6>
+                                                <p className="text-grey small m-0 mt-1">{addon.desc}</p>
+                                            </div>
+                                            <div className="text-end ms-3">
+                                                <span className="badge bg-white text-navy border shadow-sm px-3 py-2 fs-6">+{formatPrice(addon.price)}</span>
+                                            </div>
                                         </div>
-                                        <span className="text-navy fw-bold">+{formatPrice(addonPrices.airportTransfer * chargeablePax)}</span>
                                     </div>
-                                </div>
-
-                                <div className={`p-3 rounded-3 border addon-item ${addons.insurance ? 'border-primary shadow-sm' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: addons.insurance ? 'rgba(0, 180, 216, 0.05)' : '#F4FAFC', cursor: 'pointer', transition: 'all 0.3s' }} onClick={() => toggleAddon('insurance')}>
-                                    <div className="form-check d-flex justify-content-between align-items-center m-0 p-0">
-                                        <div>
-                                            <input className="form-check-input me-3 ms-0 mt-0" type="checkbox" checked={addons.insurance} readOnly style={{ cursor: 'pointer' }} />
-                                            <label className="form-check-label text-navy fw-bold d-inline" style={{ cursor: 'pointer' }}>{t('insurance', 'Travel Insurance')}</label>
-                                            <p className="text-grey small m-0 ms-4 ps-2">{t('insurance_desc', 'Full coverage per guest.')}</p>
-                                        </div>
-                                        <span className="text-navy fw-bold">+{formatPrice(addonPrices.insurance * totalHeads)}</span>
-                                    </div>
-                                </div>
-
-                                <div className={`p-3 rounded-3 border addon-item ${addons.romanticDinner ? 'border-primary shadow-sm' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: addons.romanticDinner ? 'rgba(0, 180, 216, 0.05)' : '#F4FAFC', cursor: 'pointer', transition: 'all 0.3s' }} onClick={() => toggleAddon('romanticDinner')}>
-                                    <div className="form-check d-flex justify-content-between align-items-center m-0 p-0">
-                                        <div>
-                                            <input className="form-check-input me-3 ms-0 mt-0" type="checkbox" checked={addons.romanticDinner} readOnly style={{ cursor: 'pointer' }} />
-                                            <label className="form-check-label text-navy fw-bold d-inline" style={{ cursor: 'pointer' }}>{t('dinner', 'Romantic Dinner Setup')}</label>
-                                            <p className="text-grey small m-0 ms-4 ps-2">{t('dinner_desc', 'Candlelit dinner by the beach.')}</p>
-                                        </div>
-                                        <span className="text-navy fw-bold">+{formatPrice(addonPrices.romanticDinner * chargeablePax)}</span>
-                                    </div>
-                                </div>
+                                ))}
                             </div>
 
                             {/* CARBON OFFSET SECTION */}
-                            <div className="p-4 rounded-4" style={{ backgroundColor: 'rgba(76, 175, 80, 0.05)', border: '1px solid rgba(76, 175, 80, 0.3)' }}>
-                                <div className="d-flex align-items-center mb-2">
-                                    <i className="fa-solid fa-leaf text-success fs-4 me-2"></i>
-                                    <h6 className="text-navy font-montserrat fw-bold m-0">{t('carbon_footprint', 'Carbon Footprint - Forest Foundation Philippines')}</h6>
-                                </div>
-                                <p className="text-grey small mb-3">{t('carbon_desc', 'Air travel and ground transport generate emissions. The estimated footprint for')} {chargeablePax} {t('carbon_desc2', 'traveler(s) is')} <strong className="text-navy">{chargeablePax * 150}kg CO₂</strong>. {t('carbon_desc3', 'Help us offset this by contributing to local Philippine reforestation projects.')}</p>
-                                
-                                <div className={`p-3 rounded-3 border ${addons.carbonOffset ? 'border-success' : 'border-primary border-opacity-25'}`} style={{ backgroundColor: addons.carbonOffset ? 'rgba(76, 175, 80, 0.1)' : '#F4FAFC', cursor: 'pointer', transition: 'all 0.3s' }} onClick={() => toggleAddon('carbonOffset')}>
-                                    <div className="form-check d-flex justify-content-between align-items-center m-0 p-0">
-                                        <div>
-                                            <input className="form-check-input me-3 ms-0 mt-0" type="checkbox" checked={addons.carbonOffset} readOnly style={{ cursor: 'pointer', accentColor: '#4CAF50' }} />
-                                            <label className="form-check-label text-navy fw-bold d-inline" style={{ cursor: 'pointer' }}>{t('offset_carbon', 'Offset My Carbon Footprint')}</label>
-                                            <p className="text-grey small m-0 ms-4 ps-2">{formatPrice(500)} {t('per_person', 'per person')}</p>
+                            <div className="p-4 rounded-4 position-relative overflow-hidden" style={{ backgroundColor: 'rgba(76, 175, 80, 0.05)', border: '1px solid rgba(76, 175, 80, 0.3)' }}>
+                                <div className="position-absolute top-0 end-0 opacity-10 p-3"><i className="fa-solid fa-leaf" style={{ fontSize: '5rem', color: '#4CAF50' }}></i></div>
+                                <div className="position-relative z-1">
+                                    <div className="d-flex align-items-center mb-2">
+                                        <i className="fa-solid fa-leaf text-success fs-4 me-2"></i>
+                                        <h5 className="text-navy font-montserrat fw-bold m-0">{t('carbon_footprint', 'Carbon Footprint - Forest Foundation Philippines')}</h5>
+                                    </div>
+                                    <p className="text-grey small mb-4" style={{ maxWidth: '90%' }}>{t('carbon_desc', 'Air travel and ground transport generate emissions. The estimated footprint for')} {chargeablePax} {t('carbon_desc2', 'traveler(s) is')} <strong className="text-navy">{chargeablePax * 150}kg CO₂</strong>. {t('carbon_desc3', 'Help us offset this by contributing to local Philippine reforestation projects.')}</p>
+                                    
+                                    <div className={`p-3 rounded-4 border shadow-sm ${addons.carbonOffset ? 'border-success bg-success bg-opacity-10' : 'border-success border-opacity-25 bg-white'}`} style={{ cursor: 'pointer', transition: 'all 0.2s ease' }} onClick={() => toggleAddon('carbonOffset')}>
+                                        <div className="d-flex align-items-center">
+                                            <div className={`rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0 ${addons.carbonOffset ? 'bg-success text-white' : 'bg-light text-muted border'}`} style={{ width: '28px', height: '28px' }}>
+                                                {addons.carbonOffset && <i className="fa-solid fa-check" style={{ fontSize: '0.8rem' }}></i>}
+                                            </div>
+                                            <div className="me-auto">
+                                                <h6 className="text-success fw-bold m-0">{t('offset_carbon', 'Offset My Carbon Footprint')}</h6>
+                                                <p className="text-grey small m-0 mt-1">{formatPrice(500)} {t('per_person', 'per person')}</p>
+                                            </div>
+                                            <div className="text-end ms-3">
+                                                <span className="badge bg-white text-success border shadow-sm px-3 py-2 fs-6">+{formatPrice(addonPrices.carbonOffset * chargeablePax)}</span>
+                                            </div>
                                         </div>
-                                        <span className="text-success fw-bold">+{formatPrice(addonPrices.carbonOffset * chargeablePax)}</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         {/* 4. Payment Details */}
-                        <div className="bg-card-dark p-4 p-md-5 rounded-4 shadow-sm mb-5 border border-primary border-opacity-10" style={{ backgroundColor: 'var(--card-bg)' }}>
-                            <div className="d-flex justify-content-between align-items-center border-bottom border-primary border-opacity-10 pb-3 mb-4">
-                                <h4 className="text-navy font-montserrat fw-bold m-0"><i className="fa-solid fa-credit-card text-accent me-2"></i> 4. {t('payment_details', 'Payment Details')}</h4>
-                                <i className="fa-brands fa-cc-visa fs-3 text-muted"></i>
-                            </div>
+                        <div className="bg-card-dark p-4 p-md-5 rounded-4 shadow-sm mb-4 border border-primary border-opacity-10" style={{ backgroundColor: 'var(--card-bg)' }}>
+                            <StepHeader number="4" title={t('payment_details', 'Payment Details')} icon="fa-credit-card" />
                             
-                            <label className="text-grey fw-bold small mb-3">{t('how_paying', 'How are we paying?')}</label>
-                            <div className="d-flex flex-wrap gap-2 mb-4">
-                                <button type="button" className={`btn ${splitPayment === 1 ? 'btn-proceed' : 'btn-outline-custom'}`} onClick={() => setSplitPayment(1)}>
+                            <label className="text-navy fw-bold small mb-3 text-uppercase letter-spacing-1">{t('how_paying', 'How are we paying?')}</label>
+                            
+                            <div className="d-flex flex-wrap gap-2 mb-4 bg-light p-2 rounded-4 border border-primary border-opacity-10">
+                                <button type="button" className={`btn flex-grow-1 rounded-pill fw-bold ${splitPayment === 1 ? 'btn-primary shadow-sm' : 'btn-light text-muted'}`} onClick={() => setSplitPayment(1)}>
                                     {t('split_1', 'Just me (Pay in full)')}
                                 </button>
                                 {[2, 3, 4, 5].map(num => (
-                                    <button type="button" key={num} className={`btn ${splitPayment === num ? 'btn-proceed' : 'btn-outline-custom'}`} onClick={() => setSplitPayment(num)}>
-                                        {t('split_ways', 'Split')} {num} {t('split_ways2', 'ways')}
+                                    <button type="button" key={num} className={`btn flex-grow-1 rounded-pill fw-bold ${splitPayment === num ? 'btn-primary shadow-sm' : 'btn-light text-muted'}`} onClick={() => setSplitPayment(num)}>
+                                        {t('split_ways', 'Split')} {num}
                                     </button>
                                 ))}
                             </div>
 
                             {splitPayment > 1 && (
-                                <div className="p-4 rounded-3 border border-primary border-opacity-25 fade-in" style={{ backgroundColor: '#F4FAFC' }}>
-                                    <h6 className="text-navy fw-bold mb-3"><i className="fa-solid fa-users text-accent me-2"></i> {t('invoice_emails', 'Email Addresses for Invoices:')}</h6>
+                                <div className="p-4 rounded-4 shadow-sm border border-primary border-opacity-25 fade-in bg-white">
+                                    <h6 className="text-navy fw-bold mb-3"><i className="fa-solid fa-envelope-open-text text-accent me-2"></i> {t('invoice_emails', 'Email Addresses for Invoices:')}</h6>
                                     <div className="row g-3">
                                         {emails.map((email, index) => (
                                             <div className="col-md-6" key={index}>
                                                 <label className="text-grey small fw-bold mb-1">{index === 0 ? t('lead_email', "Lead Booker's Email") : `${t('friend_email', 'Friend')} ${index}'s ${t('friend_email2', 'Email')}`}</label>
-                                                <input type="email" className="form-control-dark form-control w-100" value={email} onChange={(e) => handleEmailChange(index, e.target.value)} required />
+                                                <input type="email" className="form-control bg-light border-secondary border-opacity-25" value={email} onChange={(e) => handleEmailChange(index, e.target.value)} required />
                                             </div>
                                         ))}
                                     </div>
-                                    <div className="mt-3 text-center p-3 rounded-3" style={{ backgroundColor: 'rgba(0, 119, 182, 0.1)' }}>
-                                        <p className="text-navy fw-bold m-0">{t('each_pays', 'Each person will pay')} <span className="text-accent fs-5 mx-1">{formatPrice(grandTotal / splitPayment)}</span></p>
-                                        <small className="text-grey">{t('invoices_tied', 'Invoices will be tied to the emails above.')}</small>
+                                    <div className="mt-4 text-center p-3 rounded-3 border border-primary border-opacity-10" style={{ backgroundColor: 'rgba(0, 119, 182, 0.05)' }}>
+                                        <p className="text-navy fw-bold m-0">{t('each_pays', 'Each person will pay')} <span className="text-accent fs-4 mx-1">{formatPrice(grandTotal / splitPayment)}</span></p>
+                                        <small className="text-grey">{t('invoices_tied', 'Secure payment links will be generated for each email.')}</small>
                                     </div>
                                 </div>
                             )}
@@ -357,19 +346,24 @@ const Booking = () => {
 
                     </div>
 
+                    {/* RIGHT COLUMN - SUMMARY */}
                     <div className="col-lg-4">
-                        <div className="bg-card-dark p-4 rounded-4 shadow-sm border border-primary border-opacity-10 sticky-top" style={{ backgroundColor: 'var(--card-bg)', top: '100px' }}>
-                            <h4 className="text-navy font-montserrat fw-bold mb-4">{t('price_summary', 'Price Summary')}</h4>
+                        <div className="bg-card-dark p-4 rounded-4 shadow-lg border border-primary border-opacity-10 sticky-top" style={{ backgroundColor: 'var(--card-bg)', top: '100px' }}>
+                            <h4 className="text-navy font-montserrat fw-bold mb-4 pb-2 border-bottom border-primary border-opacity-10">{t('price_summary', 'Price Summary')}</h4>
                             
                             {!selectedPackage ? (
-                                <div className="text-center py-4 opacity-50">
-                                    <i className="fa-solid fa-file-invoice-dollar fs-1 text-grey mb-3"></i>
+                                <div className="text-center py-5 opacity-50">
+                                    <div className="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style={{ width: '80px', height: '80px' }}>
+                                        <i className="fa-solid fa-file-invoice-dollar fs-1 text-muted"></i>
+                                    </div>
                                     <p className="text-grey fw-bold">{t('select_summary', 'Select a package to see summary')}</p>
                                 </div>
                             ) : (
                                 <div className="fade-in">
-                                    <h6 className="text-primary-dark fw-bold mb-1">{selectedPackage}</h6>
-                                    <p className="text-grey small mb-4"><i className="fa-regular fa-calendar text-accent me-2"></i> {travelDate || 'Date Not Selected'}</p>
+                                    <div className="mb-4 bg-light p-3 rounded-3 border border-secondary border-opacity-25">
+                                        <h6 className="text-primary-dark fw-bold mb-1 fs-5">{selectedPackage}</h6>
+                                        <p className="text-grey small m-0"><i className="fa-regular fa-calendar text-accent me-2"></i> {travelDate || 'Select Date'}</p>
+                                    </div>
                                     
                                     <div className="d-flex justify-content-between mb-2">
                                         <span className="text-grey small">Base Price (x{totalHeads})</span>
@@ -385,88 +379,93 @@ const Booking = () => {
                                     
                                     {addons.airportTransfer && (
                                         <div className="d-flex justify-content-between mb-2 fade-in">
-                                            <span className="text-grey small">Airport Transfer (x{chargeablePax})</span>
+                                            <span className="text-grey small">Airport Transfer</span>
                                             <span className="text-navy fw-bold">{formatPrice(transferTotal)}</span>
                                         </div>
                                     )}
                                     {addons.insurance && (
                                         <div className="d-flex justify-content-between mb-2 fade-in">
-                                            <span className="text-grey small">Travel Insurance (x{totalHeads})</span>
+                                            <span className="text-grey small">Travel Insurance</span>
                                             <span className="text-navy fw-bold">{formatPrice(insuranceTotal)}</span>
                                         </div>
                                     )}
                                     {addons.romanticDinner && (
                                         <div className="d-flex justify-content-between mb-2 fade-in">
-                                            <span className="text-grey small">Romantic Dinner (x{chargeablePax})</span>
+                                            <span className="text-grey small">Romantic Dinner</span>
                                             <span className="text-navy fw-bold">{formatPrice(dinnerTotal)}</span>
                                     </div>
                                     )}
                                     {addons.carbonOffset && (
                                         <div className="d-flex justify-content-between mb-2 fade-in">
-                                            <span className="text-success small">Carbon Offset (x{chargeablePax})</span>
+                                            <span className="text-success small">Carbon Offset</span>
                                             <span className="text-success fw-bold">{formatPrice(carbonTotal)}</span>
                                         </div>
                                     )}
                                     
-                                    <div className="d-flex justify-content-between mb-3 pb-3 border-bottom border-primary border-opacity-10">
+                                    <div className="d-flex justify-content-between mb-4 pb-3 border-bottom border-primary border-opacity-10">
                                         <span className="text-grey small">VAT (12%)</span>
                                         <span className="text-navy fw-bold">{formatPrice(vatTotal)}</span>
                                     </div>
                                     
-                                    {/* ⚡ NEW: Promo Code Input Field */}
-                                    <div className="mb-3 p-3 rounded-3" style={{ backgroundColor: 'rgba(0,0,0,0.02)', border: '1px dashed var(--border-color)' }}>
-                                        <label className="text-navy fw-bold small mb-2 d-block">Promo Code</label>
+                                    {/* Promo Code Input Field */}
+                                    <div className="mb-4 p-3 rounded-4" style={{ backgroundColor: '#F8F9FA', border: '1px dashed #ced4da' }}>
+                                        <label className="text-navy fw-bold small mb-2 d-block"><i className="fa-solid fa-tag text-accent me-2"></i>Have a Promo Code?</label>
                                         <div className="d-flex gap-2">
                                             <input 
                                                 type="text" 
-                                                className="form-control-dark form-control form-control-sm text-uppercase" 
-                                                placeholder="e.g. WELCOME-A1B2" 
+                                                className="form-control form-control-sm text-uppercase fw-bold text-center letter-spacing-1" 
+                                                placeholder="ENTER CODE" 
                                                 value={promoCode}
                                                 onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
                                                 disabled={appliedDiscount > 0}
                                             />
                                             <button 
                                                 type="button" 
-                                                className={`btn btn-sm ${appliedDiscount > 0 ? 'btn-success' : 'btn-outline-custom'}`} 
+                                                className={`btn btn-sm px-3 fw-bold ${appliedDiscount > 0 ? 'btn-success' : 'btn-outline-primary'}`} 
                                                 onClick={handleApplyPromo}
-                                                disabled={appliedDiscount > 0}
+                                                disabled={appliedDiscount > 0 || !promoCode}
                                             >
-                                                {appliedDiscount > 0 ? <i className="fa-solid fa-check"></i> : 'Apply'}
+                                                {appliedDiscount > 0 ? <i className="fa-solid fa-check"></i> : 'APPLY'}
                                             </button>
                                         </div>
                                         {appliedDiscount > 0 && (
-                                            <small className="text-success fw-bold mt-2 d-block fade-in">
-                                                <i className="fa-solid fa-tag me-1"></i> 10% Discount Applied!
+                                            <small className="text-success fw-bold mt-2 d-block fade-in text-center">
+                                                Code Applied!
                                             </small>
                                         )}
                                     </div>
 
-                                    {/* ⚡ NEW: Discount Display Row */}
-                                    {appliedDiscount > 0 && (
-                                        <div className="d-flex justify-content-between mb-3 pb-3 border-bottom border-primary border-opacity-10 fade-in">
-                                            <span className="text-accent small fw-bold">Welcome Discount (10%)</span>
-                                            <span className="text-accent fw-bold">-{formatPrice(discountTotal)}</span>
-                                        </div>
-                                    )}
+                                    {/* Total Area */}
+                                    <div className="p-3 rounded-4 shadow-sm text-white position-relative overflow-hidden" style={{ backgroundColor: 'var(--primary-dark)' }}>
+                                        {/* Decorative circle */}
+                                        <div className="position-absolute rounded-circle bg-white opacity-10" style={{ width: '150px', height: '150px', top: '-50px', right: '-50px' }}></div>
+                                        
+                                        {appliedDiscount > 0 && (
+                                            <div className="d-flex justify-content-between mb-2 fade-in position-relative z-1">
+                                                <span className="small opacity-75">Welcome Discount</span>
+                                                <span className="fw-bold text-warning">-{formatPrice(discountTotal)}</span>
+                                            </div>
+                                        )}
 
-                                    <div className="d-flex justify-content-between align-items-center mb-2">
-                                        <h5 className="text-navy fw-bold m-0">{t('total', 'Total')}</h5>
-                                        <h4 className="text-accent fw-bold m-0">{formatPrice(grandTotal)}</h4>
+                                        <div className="d-flex justify-content-between align-items-center position-relative z-1">
+                                            <h6 className="fw-bold m-0 opacity-75">{t('total', 'Total Due')}</h6>
+                                            <h3 className="text-warning fw-bold m-0 font-montserrat">{formatPrice(grandTotal)}</h3>
+                                        </div>
                                     </div>
                                     
                                     {splitPayment > 1 && (
-                                        <div className="d-flex justify-content-between align-items-center mt-2 p-2 rounded bg-primary bg-opacity-10 fade-in">
-                                            <span className="text-navy small fw-bold"><i className="fa-solid fa-users me-1 text-accent"></i> {t('split', 'Split')} {splitPayment} {t('ways', 'ways')}</span>
-                                            <span className="text-navy fw-bold">{formatPrice(grandTotal / splitPayment)} <span className="small text-grey fw-normal">{t('per_person2', '/person')}</span></span>
+                                        <div className="text-center mt-3 p-2 rounded-pill border border-primary border-opacity-25 fade-in bg-light">
+                                            <span className="text-navy small fw-bold"><i className="fa-solid fa-users me-1 text-accent"></i> Split {splitPayment} ways:</span>
+                                            <span className="text-primary fw-bold ms-2">{formatPrice(grandTotal / splitPayment)} <span className="small text-muted fw-normal">/ea</span></span>
                                         </div>
                                     )}
                                     
-                                    <button type="button" className="btn btn-proceed w-100 mt-4 py-3 text-uppercase font-montserrat fw-bold shadow" onClick={handleConfirmBooking} disabled={!selectedPackage || !travelDate}>
-                                        <i className="fa-solid fa-lock me-2"></i> {t('confirm', 'Confirm Booking')}
+                                    <button type="button" className="btn btn-proceed w-100 mt-4 py-3 text-uppercase font-montserrat fw-bold shadow-lg fs-6" onClick={handleConfirmBooking} disabled={!selectedPackage || !travelDate}>
+                                        {t('confirm', 'Confirm Booking')} <i className="fa-solid fa-arrow-right ms-2"></i>
                                     </button>
                                     
-                                    <div className="text-center mt-3">
-                                        <small className="text-grey"><i className="fa-solid fa-shield-halved text-success me-1"></i> {t('secure_payment', 'Secure Encrypted Payment')}</small>
+                                    <div className="text-center mt-3 opacity-75">
+                                        <small className="text-grey"><i className="fa-solid fa-lock text-success me-1"></i> Secure Encrypted Payment</small>
                                     </div>
                                 </div>
                             )}
