@@ -228,25 +228,37 @@ const Booking = () => {
                             </div>
                         </div>
 
-                        {/* 2. Lead Guest Details */}
+                        {/* ⚡ ENHANCED 2. Lead Guest Details */}
                         <div className="bg-card-dark p-4 p-md-5 rounded-4 shadow-sm mb-4 border border-primary border-opacity-10" style={{ backgroundColor: 'var(--card-bg)' }}>
                             <StepHeader number="2" title={t('lead_guest', 'Lead Guest Details')} icon="fa-user-check" />
                             <div className="row g-4">
                                 <div className="col-md-6">
-                                    <label className="text-navy fw-bold small mb-2">{t('full_name', 'Full Name')} <span className="text-danger">*</span></label>
-                                    <input type="text" className="form-control form-control-lg bg-light border-primary border-opacity-25" placeholder="Juan Dela Cruz" value={leadGuest.name} onChange={(e) => setLeadGuest({...leadGuest, name: e.target.value})} required />
+                                    <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('full_name', 'Full Name')} <span className="text-danger">*</span></label>
+                                    <div className="position-relative">
+                                        <i className="fa-regular fa-user position-absolute text-muted opacity-75" style={{ left: '16px', top: '50%', transform: 'translateY(-50%)', zIndex: 5, pointerEvents: 'none' }}></i>
+                                        <input type="text" className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm" placeholder="Juan Dela Cruz" value={leadGuest.name} onChange={(e) => setLeadGuest({...leadGuest, name: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }} required />
+                                    </div>
                                 </div>
                                 <div className="col-md-6">
-                                    <label className="text-navy fw-bold small mb-2">{t('email_addr', 'Email Address')} <span className="text-danger">*</span></label>
-                                    <input type="email" className="form-control form-control-lg bg-light border-primary border-opacity-25" placeholder="juan@example.com" value={leadGuest.email} onChange={(e) => setLeadGuest({...leadGuest, email: e.target.value})} required />
+                                    <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('email_addr', 'Email Address')} <span className="text-danger">*</span></label>
+                                    <div className="position-relative">
+                                        <i className="fa-regular fa-envelope position-absolute text-muted opacity-75" style={{ left: '16px', top: '50%', transform: 'translateY(-50%)', zIndex: 5, pointerEvents: 'none' }}></i>
+                                        <input type="email" className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm" placeholder="juan@example.com" value={leadGuest.email} onChange={(e) => setLeadGuest({...leadGuest, email: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }} required />
+                                    </div>
                                 </div>
                                 <div className="col-md-6">
-                                    <label className="text-navy fw-bold small mb-2">{t('phone', 'Phone Number')}</label>
-                                    <input type="tel" className="form-control form-control-lg bg-light border-primary border-opacity-25" placeholder="+63 912 345 6789" value={leadGuest.phone} onChange={(e) => setLeadGuest({...leadGuest, phone: e.target.value})} />
+                                    <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('phone', 'Phone Number')}</label>
+                                    <div className="position-relative">
+                                        <i className="fa-solid fa-phone position-absolute text-muted opacity-75" style={{ left: '16px', top: '50%', transform: 'translateY(-50%)', zIndex: 5, pointerEvents: 'none' }}></i>
+                                        <input type="tel" className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm" placeholder="+63 912 345 6789" value={leadGuest.phone} onChange={(e) => setLeadGuest({...leadGuest, phone: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }} />
+                                    </div>
                                 </div>
                                 <div className="col-12">
-                                    <label className="text-navy fw-bold small mb-2">Special Requests</label>
-                                    <textarea className="form-control form-control-lg bg-light border-primary border-opacity-25" rows="3" placeholder="Allergies, late check-in, etc." value={leadGuest.specialRequests} onChange={(e) => setLeadGuest({...leadGuest, specialRequests: e.target.value})}></textarea>
+                                    <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">Special Requests</label>
+                                    <div className="position-relative">
+                                        <i className="fa-regular fa-comment-dots position-absolute text-muted opacity-75" style={{ left: '16px', top: '16px', zIndex: 5, pointerEvents: 'none' }}></i>
+                                        <textarea className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm" rows="3" placeholder="Allergies, late check-in, special occasions, etc." value={leadGuest.specialRequests} onChange={(e) => setLeadGuest({...leadGuest, specialRequests: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }}></textarea>
+                                    </div>
                                 </div>
                             </div>
                         </div>
