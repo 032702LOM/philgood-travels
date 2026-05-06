@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { tourPackages, allPlaces } from '../data/placesData';
+import { tourPackages, allPlaces, regions } from '../data/placesData'; // ⚡ IMPORTED regions
 import { usePreferences } from '../context/PreferencesContext';
 import toast from 'react-hot-toast'; 
 import axios from 'axios';
@@ -93,7 +93,7 @@ const Booking = () => {
   };
 
   // ==========================================
-  // ⚡ UPDATED: STRICT PRICE CALCULATIONS
+  // STRICT PRICE CALCULATIONS
   // ==========================================
   const allOptions = [...tourPackages, ...allPlaces];
   const pkgData = allOptions.find(p => p.name === selectedPackage) || { price: 0 };
@@ -111,14 +111,12 @@ const Booking = () => {
   const accMultipliers = { standard: 0, deluxe: 0.30, luxury: 0.70 };
   const accTotal = baseTotal * accMultipliers[accClass];
 
-  // 3. Add-ons (Strict Rules Applied)
+  // 3. Add-ons
   const addonPrices = { airportTransfer: 1500, insurance: 800, romanticDinner: 3500, carbonOffset: 500 };
   
-  // Transfer & Dinner are Flat Rates
   const transferTotal = addons.airportTransfer ? addonPrices.airportTransfer : 0;
   const dinnerTotal = addons.romanticDinner ? addonPrices.romanticDinner : 0;
   
-  // Insurance includes Infants. Carbon does not.
   const insuranceTotal = addons.insurance ? (addonPrices.insurance * totalHeads) : 0; 
   const carbonTotal = addons.carbonOffset ? (addonPrices.carbonOffset * chargeablePax) : 0;
 
@@ -249,15 +247,35 @@ const Booking = () => {
                                 <div className="col-md-7">
                                     <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('dest_pkg', 'Destination / Package')} <span className="text-danger">*</span></label>
                                     <select className="form-select form-select-lg w-100 border-primary border-opacity-25 bg-light hover-teal text-navy" value={selectedPackage} onChange={(e) => setSelectedPackage(e.target.value)} style={{ fontSize: '1rem' }}>
-                                        <option value="">{t('select_pkg', '-- Select a Package --')}</option>
+                                        <option value="">{t('select_pkg', '-- Select a Destination --')}</option>
                                         
-                                        <optgroup label="Guided Tour Packages">
-                                            {tourPackages.map(pkg => (<option key={pkg.id} value={pkg.name}>{pkg.name}</option>))}
-                                        </optgroup>
-                                        
-                                        <optgroup label="Hotels & Resorts">
-                                            {allPlaces.map(place => (<option key={place.id} value={place.name}>{place.name}</option>))}
-                                        </optgroup>
+                                        {/* ⚡ RESTORED: Groups by Mother Card (Region) and shows Subcards! */}
+                                        {regions.map(region => {
+                                            const regionTours = tourPackages.filter(pkg => {
+                                                if (region.id === 'Palawan' && pkg.id.includes('ElNido')) return true;
+                                                if (region.id === 'Bohol' && pkg.id.includes('Bohol')) return true;
+                                                if (region.id === 'Aklan' && pkg.id.includes('Boracay')) return true;
+                                                if (region.id === 'Cebu' && pkg.id.includes('Cebu')) return true;
+                                                if (region.id === 'Manila' && pkg.id.includes('Manila')) return true;
+                                                if (region.id === 'Banaue' && pkg.id.includes('Banaue')) return true;
+                                                return false;
+                                            });
+
+                                            const regionPlaces = allPlaces.filter(place => place.region === region.id);
+
+                                            if (regionTours.length === 0 && regionPlaces.length === 0) return null;
+
+                                            return (
+                                                <optgroup key={region.id} label={`📍 ${region.name}`}>
+                                                    {regionTours.map(pkg => (
+                                                        <option key={pkg.id} value={pkg.name}>🗺️ Tour: {pkg.name}</option>
+                                                    ))}
+                                                    {regionPlaces.map(place => (
+                                                        <option key={place.id} value={place.name}>🏨 Hotel: {place.name}</option>
+                                                    ))}
+                                                </optgroup>
+                                            );
+                                        })}
 
                                     </select>
                                 </div>
@@ -609,7 +627,6 @@ const Booking = () => {
                                         </div>
                                     )}
                                     
-                                    {/* ⚡ UPDATED: Changed Button Text */}
                                     <button type="button" className="btn btn-proceed w-100 mt-4 py-3 text-uppercase font-montserrat fw-bold shadow-lg fs-6 hover-coral" onClick={handleConfirmBooking} disabled={!selectedPackage || !travelDate}>
                                         {t('add_to_planned_trips', 'Add to My Planned Trips')} <i className="fa-solid fa-arrow-right ms-2"></i>
                                     </button>
