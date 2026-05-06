@@ -18,6 +18,9 @@ const Booking = () => {
   const [emails, setEmails] = useState(['']);
   
   const [leadGuest, setLeadGuest] = useState({ name: '', email: '', phone: '', specialRequests: '' });
+  
+  // ⚡ NEW: State for the international dialing code
+  const [phoneCode, setPhoneCode] = useState('+63');
 
   const [promoCode, setPromoCode] = useState('');
   const [appliedDiscount, setAppliedDiscount] = useState(0); 
@@ -103,7 +106,11 @@ const Booking = () => {
         totalPrice: grandTotal,
         splitBetween: splitPayment,
         invoiceEmails: emails,
-        contactInfo: leadGuest,
+        contactInfo: {
+            ...leadGuest,
+            // ⚡ COMBINE the selected country code with the typed phone number
+            phone: leadGuest.phone ? `${phoneCode} ${leadGuest.phone}` : ''
+        },
         guests: guests,
         amountDue: grandTotal / splitPayment,
         paymentIndex: 0,
@@ -135,16 +142,16 @@ const Booking = () => {
 
   return (
     <div className="fade-in">
-        {/* ⚡ NEW & UPDATED: Custom CSS for Hover Effects */}
+        {/* Custom CSS for Hover Effects */}
         <style>
         {`
             .hover-teal { transition: all 0.3s ease; outline: none; }
-            .hover-teal:hover, .hover-teal:focus { 
+            .hover-teal:hover, .hover-teal:focus-within { 
                 border-color: var(--primary-color) !important; 
                 box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.2) !important; 
             }
             
-            /* ⚡ Coral Orange Buttons styles */
+            /* Coral Orange Buttons styles */
             .hover-coral { transition: all 0.3s ease !important; }
             .hover-coral:hover, .hover-coral:focus {
                 background-color: var(--accent-color, #F69928) !important;
@@ -156,6 +163,13 @@ const Booking = () => {
                 border-color: var(--accent-color, #F69928) !important;
                 color: white !important;
                 box-shadow: 0 0 0 3px rgba(246, 153, 40, 0.4) !important; 
+            }
+
+            /* Custom Select hide arrow for cleaner look */
+            .phone-select {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
             }
         `}
         </style>
@@ -271,13 +285,46 @@ const Booking = () => {
                                         <input type="email" className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm hover-teal" placeholder="juan@example.com" value={leadGuest.email} onChange={(e) => setLeadGuest({...leadGuest, email: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }} required />
                                     </div>
                                 </div>
+                                
+                                {/* ⚡ ENHANCED: International Phone Number Input */}
                                 <div className="col-md-6">
                                     <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('phone', 'Phone Number')}</label>
-                                    <div className="position-relative">
-                                        <i className="fa-solid fa-phone position-absolute text-muted opacity-75" style={{ left: '16px', top: '50%', transform: 'translateY(-50%)', zIndex: 5, pointerEvents: 'none' }}></i>
-                                        <input type="tel" className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm hover-teal" placeholder="+63 912 345 6789" value={leadGuest.phone} onChange={(e) => setLeadGuest({...leadGuest, phone: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }} />
+                                    <div className="input-group input-group-lg shadow-sm hover-teal rounded-3 bg-light" style={{ border: '1px solid rgba(0, 119, 182, 0.25)', overflow: 'hidden' }}>
+                                        <span className="input-group-text bg-light border-0 pe-2">
+                                            <i className="fa-solid fa-phone text-muted opacity-75"></i>
+                                        </span>
+                                        <select 
+                                            className="form-select bg-light border-0 fw-bold text-navy px-1 phone-select" 
+                                            style={{ maxWidth: '90px', cursor: 'pointer', fontSize: '0.95rem', boxShadow: 'none' }}
+                                            value={phoneCode}
+                                            onChange={(e) => setPhoneCode(e.target.value)}
+                                        >
+                                            <option value="+63">🇵🇭 +63</option>
+                                            <option value="+1">🇺🇸 +1</option>
+                                            <option value="+44">🇬🇧 +44</option>
+                                            <option value="+61">🇦🇺 +61</option>
+                                            <option value="+65">🇸🇬 +65</option>
+                                            <option value="+971">🇦🇪 +971</option>
+                                            <option value="+81">🇯🇵 +81</option>
+                                            <option value="+82">🇰🇷 +82</option>
+                                            <option value="+86">🇨🇳 +86</option>
+                                            <option value="+91">🇮🇳 +91</option>
+                                            <option value="+33">🇫🇷 +33</option>
+                                            <option value="+49">🇩🇪 +49</option>
+                                            <option value="+34">🇪🇸 +34</option>
+                                            <option value="+39">🇮🇹 +39</option>
+                                        </select>
+                                        <input 
+                                            type="tel" 
+                                            className="form-control bg-light border-0" 
+                                            placeholder="912 345 6789" 
+                                            value={leadGuest.phone} 
+                                            onChange={(e) => setLeadGuest({...leadGuest, phone: e.target.value})} 
+                                            style={{ fontSize: '0.95rem', boxShadow: 'none' }} 
+                                        />
                                     </div>
                                 </div>
+
                                 <div className="col-12">
                                     <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">Special Requests</label>
                                     <div className="position-relative">
@@ -493,7 +540,7 @@ const Booking = () => {
                                     {splitPayment > 1 && (
                                         <div className="text-center mt-3 p-2 rounded-pill border border-primary border-opacity-25 fade-in bg-light">
                                             <span className="text-navy small fw-bold"><i className="fa-solid fa-users me-1 text-accent"></i> Split {splitPayment} ways:</span>
-                                            <span className="text-primary fw-bold ms-2">{formatPrice(grandTotal / splitPayment)} <span className="small text-muted fw-normal">/ea</span></span>
+                                            <span className="text-primary fw-bold ms-2">{formatPrice(grandTotal / splitPayment)} <span className="small text-muted fw-normal">/ each person</span></span>
                                         </div>
                                     )}
                                     
