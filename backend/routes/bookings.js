@@ -3,7 +3,7 @@ const router = express.Router();
 const axios = require('axios');
 const Booking = require('../models/Booking');
 const User = require('../models/User'); 
-const PromoCode = require('../models/PromoCode'); // ⚡ NEW: Imported PromoCode Model
+const PromoCode = require('../models/PromoCode');
 const { Resend } = require('resend'); 
 const crypto = require('crypto');
 
@@ -73,7 +73,6 @@ const calculateBookingTotal = (bookingData) => {
 // ==========================================
 router.post('/create', async (req, res) => {
     try {
-        // ⚡ UPDATED: Grab appliedPromoCode from the frontend payload
         const { 
             userId, packageId, travelDate, guests, accClass, addons, 
             splitBetween = 1, friendEmails = [], contactInfo, specialRequests,
@@ -119,7 +118,8 @@ router.post('/create', async (req, res) => {
                         send_email_receipt: true,
                         show_description: true,
                         show_line_items: true,
-                        payment_method_types: ['card', 'gcash', 'paymaya'],
+                        // ⚡ FIX: Allow multiple payment methods so the customer has choices on the PayMongo screen!
+                        payment_method_types: ['card', 'gcash', 'paymaya', 'grab_pay'],
                         line_items: paymongoItems,
                         success_url: `https://philgood-travels.vercel.app/profile?payment=success`,
                         cancel_url: `https://philgood-travels.vercel.app/profile`,
@@ -198,7 +198,7 @@ router.post('/create', async (req, res) => {
             paymentMethod: 'PayMongo Checkout', 
             splitBetween,
             payments: paymentsArray,
-            appliedPromoCode, // ⚡ SAVE THIS SO WEBHOOK KNOWS IT EXISTS
+            appliedPromoCode, 
             invoiceDetails: {
                 basePriceTotal: pricing.basePriceTotal,
                 accClassText: `${accClass} Class`,
@@ -367,7 +367,7 @@ router.delete('/:id', async (req, res) => {
 // ==========================================
 router.post('/paymongo/checkout', async (req, res) => {
     try {
-        const { bookingId, paymentIndex, method, amount } = req.body;
+        const { bookingId, paymentIndex, amount } = req.body; // Removed 'method' as it's no longer restrictive
         const booking = await Booking.findById(bookingId);
         
         if (!booking) return res.status(404).json({ error: "Booking not found" });
@@ -397,7 +397,8 @@ router.post('/paymongo/checkout', async (req, res) => {
                     send_email_receipt: true,
                     show_description: true,
                     show_line_items: true,
-                    payment_method_types: [method === 'maya' ? 'paymaya' : method], 
+                    // ⚡ FIX: Allow multiple payment methods so the customer has choices on the PayMongo screen!
+                    payment_method_types: ['card', 'gcash', 'paymaya', 'grab_pay'], 
                     line_items: items, 
                     success_url: `https://philgood-travels.vercel.app/profile?payment=success`,
                     cancel_url: `https://philgood-travels.vercel.app/checkout`,
@@ -477,7 +478,6 @@ router.post('/webhook', async (req, res) => {
                 if (allPaid) {
                     booking.bookingStatus = 'Confirmed';
                     
-                    // ⚡ NEW: Once fully paid, permanently log the email so they can't use the promo again
                     if (booking.appliedPromoCode && booking.contactInfo?.email) {
                         await PromoCode.findOneAndUpdate(
                             { code: booking.appliedPromoCode }, 
