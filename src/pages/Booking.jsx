@@ -212,10 +212,12 @@ const Booking = () => {
                 border: none !important;
             }
 
-            /* =========================================
-               ⚡ CUSTOM STYLES FOR DESTINATION DROPDOWN 
-               Matches the UI/UX of the Destinations Filter Bar
-               ========================================= */
+            .phone-select {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+            }
+
             .custom-select-wrapper { position: relative; }
             
             .custom-select-wrapper select,
@@ -224,7 +226,7 @@ const Booking = () => {
                 -webkit-appearance: none;
                 -moz-appearance: none;
                 padding-left: 45px !important;
-                background-color: #F8FAFC !important; /* Crisp, light background */
+                background-color: #F8FAFC !important; 
                 color: var(--navy-color, #003B5C) !important;
             }
             
@@ -252,7 +254,6 @@ const Booking = () => {
                 z-index: 5;
             }
 
-            /* Styling the Mother Cards and Subcards */
             optgroup {
                 font-weight: 900;
                 color: var(--accent-color, #F69928);
@@ -292,13 +293,11 @@ const Booking = () => {
                             
                             <div className="row g-4 mb-5">
                                 <div className="col-md-7">
-                                    {/* ⚡ LABEL NOW USES PRIMARY BLUE */}
                                     <label className="text-primary fw-bold small mb-2 text-uppercase letter-spacing-1">{t('dest_pkg', 'Destination / Package')} <span className="text-danger">*</span></label>
                                     
                                     <div className="custom-select-wrapper">
                                         <i className="fa-solid fa-map-location-dot custom-select-icon-left"></i>
                                         
-                                        {/* ⚡ DROPDOWN USES form-control TO OVERRIDE DEFAULT CHEVRON */}
                                         <select className="form-control form-control-lg w-100 border-primary border-opacity-25 shadow-sm hover-teal" value={selectedPackage} onChange={(e) => setSelectedPackage(e.target.value)} style={{ fontSize: '1rem' }}>
                                             <option value="">{t('select_pkg', '-- Select a Destination --')}</option>
                                             
@@ -319,10 +318,9 @@ const Booking = () => {
 
                                                     return (
                                                         <React.Fragment key={`tour-${region.id}`}>
-                                                            {/* ⚡ MOTHER CARD (DISABLED HEADER) */}
-                                                            <option disabled className="disabled-region-label">📍 {region.name.toUpperCase()}</option>
+                                                            {/* ⚡ UPDATED: Removed the pin icon */}
+                                                            <option disabled className="disabled-region-label">{region.name.toUpperCase()}</option>
                                                             
-                                                            {/* ⚡ SUBCARDS (INDENTED) */}
                                                             {regionTours.map(pkg => (
                                                                 <option key={pkg.id} value={pkg.name}>&nbsp;&nbsp;&nbsp;&nbsp;{pkg.name}</option>
                                                             ))}
@@ -334,16 +332,16 @@ const Booking = () => {
                                             {/* ACCOMMODATIONS & RESORTS */}
                                             <optgroup label="🏨 ACCOMMODATIONS & RESORTS">
                                                 {regions.map(region => {
-                                                    const regionPlaces = allPlaces.filter(place => place.region === region.id);
+                                                    // ⚡ FIX: Now correctly links 'Ifugao' hotels to the 'Banaue' region mother card
+                                                    const regionPlaces = allPlaces.filter(place => place.region === region.id || (region.id === 'Banaue' && place.region === 'Ifugao'));
 
                                                     if (regionPlaces.length === 0) return null;
 
                                                     return (
                                                         <React.Fragment key={`acc-${region.id}`}>
-                                                            {/* ⚡ MOTHER CARD (DISABLED HEADER) */}
-                                                            <option disabled className="disabled-region-label">📍 {region.name.toUpperCase()}</option>
+                                                            {/* ⚡ UPDATED: Removed the pin icon */}
+                                                            <option disabled className="disabled-region-label">{region.name.toUpperCase()}</option>
                                                             
-                                                            {/* ⚡ SUBCARDS (INDENTED) */}
                                                             {regionPlaces.map(place => (
                                                                 <option key={place.id} value={place.name}>&nbsp;&nbsp;&nbsp;&nbsp;{place.name}</option>
                                                             ))}
@@ -357,7 +355,6 @@ const Booking = () => {
                                     </div>
                                 </div>
                                 <div className="col-md-5">
-                                    {/* ⚡ LABEL NOW USES PRIMARY BLUE */}
                                     <label className="text-primary fw-bold small mb-2 text-uppercase letter-spacing-1">{t('travel_date', 'Travel Date')} <span className="text-danger">*</span></label>
                                     <div className="custom-select-wrapper">
                                         <i className="fa-regular fa-calendar custom-select-icon-left"></i>
