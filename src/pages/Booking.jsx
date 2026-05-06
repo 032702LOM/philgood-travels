@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { tourPackages, allPlaces, regions } from '../data/placesData'; // ⚡ IMPORTED regions
+import { tourPackages, allPlaces, regions } from '../data/placesData'; 
 import { usePreferences } from '../context/PreferencesContext';
 import toast from 'react-hot-toast'; 
 import axios from 'axios';
@@ -92,9 +92,6 @@ const Booking = () => {
       }
   };
 
-  // ==========================================
-  // STRICT PRICE CALCULATIONS
-  // ==========================================
   const allOptions = [...tourPackages, ...allPlaces];
   const pkgData = allOptions.find(p => p.name === selectedPackage) || { price: 0 };
   const basePrice = pkgData.price;
@@ -102,16 +99,13 @@ const Booking = () => {
   const totalHeads = guests.adults + guests.children + guests.infants;
   const chargeablePax = guests.adults + guests.children;
   
-  // 1. Base Price
   const baseTotalAdults = guests.adults * basePrice;
-  const baseTotalChildren = guests.children * (basePrice * 0.5); // 50% discount
+  const baseTotalChildren = guests.children * (basePrice * 0.5); 
   const baseTotal = baseTotalAdults + baseTotalChildren;
   
-  // 2. Accommodation
   const accMultipliers = { standard: 0, deluxe: 0.30, luxury: 0.70 };
   const accTotal = baseTotal * accMultipliers[accClass];
 
-  // 3. Add-ons
   const addonPrices = { airportTransfer: 1500, insurance: 800, romanticDinner: 3500, carbonOffset: 500 };
   
   const transferTotal = addons.airportTransfer ? addonPrices.airportTransfer : 0;
@@ -212,14 +206,16 @@ const Booking = () => {
                 appearance: none;
             }
 
+            /* CLEANED UP OPTGROUP STYLES */
             optgroup {
                 font-weight: bold;
-                color: var(--primary-color);
+                color: var(--navy-color, #003B5C);
                 font-style: normal;
                 background-color: #f8f9fa;
+                letter-spacing: 1px;
             }
             option {
-                color: var(--text-navy);
+                color: var(--text-navy, #333);
                 font-weight: normal;
                 background-color: #fff;
             }
@@ -249,7 +245,7 @@ const Booking = () => {
                                     <select className="form-select form-select-lg w-100 border-primary border-opacity-25 bg-light hover-teal text-navy" value={selectedPackage} onChange={(e) => setSelectedPackage(e.target.value)} style={{ fontSize: '1rem' }}>
                                         <option value="">{t('select_pkg', '-- Select a Destination --')}</option>
                                         
-                                        {/* ⚡ RESTORED: Groups by Mother Card (Region) and shows Subcards! */}
+                                        {/* ⚡ CLEAN, PROFESSIONAL DROPDOWN WITHOUT EMOJIS */}
                                         {regions.map(region => {
                                             const regionTours = tourPackages.filter(pkg => {
                                                 if (region.id === 'Palawan' && pkg.id.includes('ElNido')) return true;
@@ -266,12 +262,12 @@ const Booking = () => {
                                             if (regionTours.length === 0 && regionPlaces.length === 0) return null;
 
                                             return (
-                                                <optgroup key={region.id} label={`📍 ${region.name}`}>
+                                                <optgroup key={region.id} label={region.name.toUpperCase()}>
                                                     {regionTours.map(pkg => (
-                                                        <option key={pkg.id} value={pkg.name}>🗺️ Tour: {pkg.name}</option>
+                                                        <option key={pkg.id} value={pkg.name}>{pkg.name} (Guided Tour)</option>
                                                     ))}
                                                     {regionPlaces.map(place => (
-                                                        <option key={place.id} value={place.name}>🏨 Hotel: {place.name}</option>
+                                                        <option key={place.id} value={place.name}>{place.name} (Accommodation)</option>
                                                     ))}
                                                 </optgroup>
                                             );
