@@ -199,23 +199,25 @@ const Booking = () => {
                             <div className="row g-4 mb-5">
                                 <div className="col-md-7">
                                     <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('dest_pkg', 'Destination / Package')} <span className="text-danger">*</span></label>
-                                    <select className="form-select form-select-lg w-100 border-primary border-opacity-25 bg-light hover-teal" value={selectedPackage} onChange={(e) => setSelectedPackage(e.target.value)} style={{ fontSize: '1rem' }}>
+                                    <select className="form-select form-select-lg w-100 border-primary border-opacity-25 bg-light hover-teal text-navy" value={selectedPackage} onChange={(e) => setSelectedPackage(e.target.value)} style={{ fontSize: '1rem' }}>
                                         <option value="">{t('select_pkg', '-- Select a Package --')}</option>
                                         {tourPackages.map(pkg => (<option key={pkg.id} value={pkg.name}>{pkg.name}</option>))}
                                     </select>
                                 </div>
                                 <div className="col-md-5">
                                     <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('travel_date', 'Travel Date')} <span className="text-danger">*</span></label>
-                                    <input type="date" className="form-control form-control-lg w-100 border-primary border-opacity-25 bg-light hover-teal" value={travelDate} onChange={(e) => setTravelDate(e.target.value)} style={{ fontSize: '1rem' }} />
+                                    <input type="date" className="form-control form-control-lg w-100 border-primary border-opacity-25 bg-light hover-teal text-navy" value={travelDate} onChange={(e) => setTravelDate(e.target.value)} style={{ fontSize: '1rem' }} />
                                 </div>
                             </div>
 
                             <label className="text-navy fw-bold small mb-3 text-uppercase letter-spacing-1">{t('num_guests', 'Number of Guests')}</label>
                             <div className="row g-3 mb-5">
+                                {/* Adults */}
                                 <div className="col-md-4">
                                     <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm hover-teal" style={{ backgroundColor: '#fff' }}>
+                                        <i className="fa-solid fa-user text-accent fs-2 mb-2"></i>
                                         <span className="d-block text-navy fw-bold fs-5">{t('adults', 'Adults')}</span>
-                                        <small className="text-grey mb-3">{t('adults_desc', '12+ years')}</small>
+                                        <small className="text-primary opacity-75 fw-bold mb-3">{t('adults_desc', '12+ years')}</small>
                                         <div className="d-flex align-items-center justify-content-center gap-3 w-100 bg-light rounded-pill p-2">
                                             <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm hover-coral" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('adults', 'sub')} disabled={guests.adults <= 1}><i className="fa-solid fa-minus"></i></button>
                                             <span className="text-navy fw-bold fs-5" style={{ minWidth: '24px' }}>{guests.adults}</span>
@@ -223,11 +225,13 @@ const Booking = () => {
                                         </div>
                                     </div>
                                 </div>
+                                {/* Children */}
                                 <div className="col-md-4">
                                     <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm hover-teal" style={{ backgroundColor: '#fff' }}>
+                                        <i className="fa-solid fa-child-reaching text-accent fs-2 mb-2"></i>
                                         <span className="d-block text-navy fw-bold fs-5">{t('children', 'Children')}</span>
                                         <span className="text-accent fw-bold lh-1 mt-1" style={{ fontSize: '0.85rem' }}>{t('children_discount', '50% Off')}</span>
-                                        <small className="text-grey mb-2" style={{ fontSize: '0.75rem' }}>{t('children_age', '2-11 years old')}</small>
+                                        <small className="text-primary opacity-75 fw-bold mb-2" style={{ fontSize: '0.75rem' }}>{t('children_age', '2-11 years old')}</small>
                                         <div className="d-flex align-items-center justify-content-center gap-3 w-100 bg-light rounded-pill p-2">
                                             <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm hover-coral" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('children', 'sub')} disabled={guests.children === 0}><i className="fa-solid fa-minus"></i></button>
                                             <span className="text-navy fw-bold fs-5" style={{ minWidth: '24px' }}>{guests.children}</span>
@@ -235,11 +239,13 @@ const Booking = () => {
                                         </div>
                                     </div>
                                 </div>
+                                {/* Infants */}
                                 <div className="col-md-4">
                                     <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm hover-teal" style={{ backgroundColor: '#fff' }}>
+                                        <i className="fa-solid fa-baby text-accent fs-2 mb-2"></i>
                                         <span className="d-block text-navy fw-bold fs-5">{t('infants', 'Infants')}</span>
                                         <span className="text-success fw-bold lh-1 mt-1" style={{ fontSize: '0.85rem' }}>{t('infants_discount', 'Free')}</span>
-                                        <small className="text-grey mb-2" style={{ fontSize: '0.75rem' }}>{t('infants_age', 'Under 2 years old')}</small>
+                                        <small className="text-primary opacity-75 fw-bold mb-2" style={{ fontSize: '0.75rem' }}>{t('infants_age', 'Under 2 years old')}</small>
                                         <div className="d-flex align-items-center justify-content-center gap-3 w-100 bg-light rounded-pill p-2">
                                             <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm hover-coral" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('infants', 'sub')} disabled={guests.infants === 0}><i className="fa-solid fa-minus"></i></button>
                                             <span className="text-navy fw-bold fs-5" style={{ minWidth: '24px' }}>{guests.infants}</span>
@@ -260,9 +266,10 @@ const Booking = () => {
                                         <label className={`w-100 h-100 rounded-4 p-3 border text-center position-relative shadow-sm hover-teal ${accClass === cls.id ? 'border-primary bg-primary bg-opacity-10' : 'border-primary border-opacity-25 bg-white'}`} style={{ cursor: 'pointer' }}>
                                             <input type="radio" name="accClass" value={cls.id} checked={accClass === cls.id} onChange={(e) => setAccClass(e.target.value)} className="position-absolute opacity-0" />
                                             {accClass === cls.id && <i className="fa-solid fa-circle-check text-primary position-absolute top-0 end-0 m-2 fs-5"></i>}
-                                            <i className={`fa-solid ${cls.icon} fs-2 mb-2 ${accClass === cls.id ? 'text-primary' : 'text-muted'}`}></i>
+                                            {/* Changed icon colors to global text-primary for active, and text-primary opacity-50 for inactive */}
+                                            <i className={`fa-solid ${cls.icon} fs-2 mb-2 ${accClass === cls.id ? 'text-primary' : 'text-primary opacity-50'}`}></i>
                                             <h6 className="fw-bold text-navy m-0">{cls.title}</h6>
-                                            <small className={cls.highlight ? 'text-accent fw-bold' : 'text-grey'}>{cls.desc}</small>
+                                            <small className={cls.highlight ? 'text-accent fw-bold' : 'text-primary opacity-75 fw-bold'}>{cls.desc}</small>
                                         </label>
                                     </div>
                                 ))}
@@ -276,22 +283,22 @@ const Booking = () => {
                                 <div className="col-md-6">
                                     <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('full_name', 'Full Name')} <span className="text-danger">*</span></label>
                                     <div className="position-relative">
-                                        <i className="fa-regular fa-user position-absolute text-muted opacity-75" style={{ left: '16px', top: '50%', transform: 'translateY(-50%)', zIndex: 5, pointerEvents: 'none' }}></i>
-                                        <input type="text" className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm hover-teal" placeholder="Juan Dela Cruz" value={leadGuest.name} onChange={(e) => setLeadGuest({...leadGuest, name: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }} required />
+                                        <i className="fa-regular fa-user position-absolute text-primary opacity-75" style={{ left: '16px', top: '50%', transform: 'translateY(-50%)', zIndex: 5, pointerEvents: 'none' }}></i>
+                                        <input type="text" className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm hover-teal text-navy" placeholder="Juan Dela Cruz" value={leadGuest.name} onChange={(e) => setLeadGuest({...leadGuest, name: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }} required />
                                     </div>
                                 </div>
                                 <div className="col-md-6">
                                     <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('email_addr', 'Email Address')} <span className="text-danger">*</span></label>
                                     <div className="position-relative">
-                                        <i className="fa-regular fa-envelope position-absolute text-muted opacity-75" style={{ left: '16px', top: '50%', transform: 'translateY(-50%)', zIndex: 5, pointerEvents: 'none' }}></i>
-                                        <input type="email" className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm hover-teal" placeholder="juan@example.com" value={leadGuest.email} onChange={(e) => setLeadGuest({...leadGuest, email: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }} required />
+                                        <i className="fa-regular fa-envelope position-absolute text-primary opacity-75" style={{ left: '16px', top: '50%', transform: 'translateY(-50%)', zIndex: 5, pointerEvents: 'none' }}></i>
+                                        <input type="email" className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm hover-teal text-navy" placeholder="juan@example.com" value={leadGuest.email} onChange={(e) => setLeadGuest({...leadGuest, email: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }} required />
                                     </div>
                                 </div>
                                 <div className="col-md-6">
                                     <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">{t('phone', 'Phone Number')}</label>
                                     <div className="input-group input-group-lg shadow-sm hover-teal rounded-3 bg-light" style={{ border: '1px solid rgba(0, 119, 182, 0.25)', overflow: 'hidden' }}>
                                         <span className="input-group-text bg-light border-0 pe-2">
-                                            <i className="fa-solid fa-phone text-muted opacity-75"></i>
+                                            <i className="fa-solid fa-phone text-primary opacity-75"></i>
                                         </span>
                                         <select 
                                             className="form-select bg-light border-0 fw-bold text-navy px-1 phone-select" 
@@ -316,7 +323,7 @@ const Booking = () => {
                                         </select>
                                         <input 
                                             type="tel" 
-                                            className="form-control bg-light border-0" 
+                                            className="form-control bg-light border-0 text-navy" 
                                             placeholder="912 345 6789" 
                                             value={leadGuest.phone} 
                                             onChange={(e) => setLeadGuest({...leadGuest, phone: e.target.value})} 
@@ -327,8 +334,8 @@ const Booking = () => {
                                 <div className="col-12">
                                     <label className="text-navy fw-bold small mb-2 text-uppercase letter-spacing-1">Special Requests</label>
                                     <div className="position-relative">
-                                        <i className="fa-regular fa-comment-dots position-absolute text-muted opacity-75" style={{ left: '16px', top: '16px', zIndex: 5, pointerEvents: 'none' }}></i>
-                                        <textarea className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm hover-teal" rows="3" placeholder="Allergies, late check-in, special occasions, etc." value={leadGuest.specialRequests} onChange={(e) => setLeadGuest({...leadGuest, specialRequests: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }}></textarea>
+                                        <i className="fa-regular fa-comment-dots position-absolute text-primary opacity-75" style={{ left: '16px', top: '16px', zIndex: 5, pointerEvents: 'none' }}></i>
+                                        <textarea className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm hover-teal text-navy" rows="3" placeholder="Allergies, late check-in, special occasions, etc." value={leadGuest.specialRequests} onChange={(e) => setLeadGuest({...leadGuest, specialRequests: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }}></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -348,15 +355,15 @@ const Booking = () => {
                                 ].map(addon => (
                                     <div key={addon.id} className={`p-3 p-md-4 rounded-4 border hover-teal ${addons[addon.id] ? 'border-primary bg-primary bg-opacity-10 shadow-sm' : 'border-secondary border-opacity-25 bg-white shadow-none'}`} style={{ cursor: 'pointer' }} onClick={() => toggleAddon(addon.id)}>
                                         <div className="d-flex align-items-center">
-                                            <div className="d-flex align-items-center justify-content-center me-3 flex-shrink-0" style={{ width: '24px', height: '24px', border: '2px solid', borderRadius: '6px', borderColor: addons[addon.id] ? 'var(--primary-color)' : '#adb5bd', backgroundColor: addons[addon.id] ? 'var(--primary-color)' : 'transparent', transition: 'all 0.2s ease' }}>
+                                            <div className="d-flex align-items-center justify-content-center me-3 flex-shrink-0" style={{ width: '24px', height: '24px', border: '2px solid', borderRadius: '6px', borderColor: addons[addon.id] ? 'var(--primary-color)' : 'var(--primary-color)', opacity: addons[addon.id] ? 1 : 0.5, backgroundColor: addons[addon.id] ? 'var(--primary-color)' : 'transparent', transition: 'all 0.2s ease' }}>
                                                 <i className="fa-solid fa-check text-white" style={{ fontSize: '0.8rem', opacity: addons[addon.id] ? 1 : 0 }}></i>
                                             </div>
                                             <div className="me-auto">
-                                                <h6 className="text-navy fw-bold m-0 d-flex align-items-center"><i className={`fa-solid ${addon.icon} me-2 text-muted opacity-75`}></i> {addon.title}</h6>
+                                                <h6 className="text-navy fw-bold m-0 d-flex align-items-center"><i className={`fa-solid ${addon.icon} me-2 ${addons[addon.id] ? 'text-primary' : 'text-primary opacity-50'}`}></i> {addon.title}</h6>
                                                 <p className="text-grey small m-0 mt-1">{addon.desc}</p>
                                             </div>
                                             <div className="text-end ms-3">
-                                                <span className="fw-bold fs-6" style={{ color: addons[addon.id] ? 'var(--primary-color)' : 'var(--text-grey)' }}>+{formatPrice(addon.price)}</span>
+                                                <span className="fw-bold fs-6" style={{ color: addons[addon.id] ? 'var(--primary-color)' : 'var(--primary-color)', opacity: addons[addon.id] ? 1 : 0.6 }}>+{formatPrice(addon.price)}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -365,7 +372,7 @@ const Booking = () => {
 
                             {/* CARBON OFFSET SECTION */}
                             <div className="p-4 rounded-4 position-relative overflow-hidden" style={{ backgroundColor: 'rgba(76, 175, 80, 0.05)', border: '1px solid rgba(76, 175, 80, 0.3)' }}>
-                                <div className="position-absolute top-0 end-0 opacity-10 p-3"><i className="fa-solid fa-leaf" style={{ fontSize: '5rem', color: '#4CAF50' }}></i></div>
+                                <div className="position-absolute top-0 end-0 opacity-10 p-3"><i className="fa-solid fa-leaf text-success" style={{ fontSize: '5rem' }}></i></div>
                                 <div className="position-relative z-1">
                                     <div className="d-flex align-items-center mb-2">
                                         <i className="fa-solid fa-leaf text-success fs-4 me-2"></i>
@@ -373,9 +380,9 @@ const Booking = () => {
                                     </div>
                                     <p className="text-grey small mb-4" style={{ maxWidth: '90%' }}>{t('carbon_desc', 'Air travel and ground transport generate emissions. The estimated footprint for')} {chargeablePax} {t('carbon_desc2', 'traveler(s) is')} <strong className="text-navy">{chargeablePax * 150}kg CO₂</strong>. {t('carbon_desc3', 'Help us offset this by contributing to local Philippine reforestation projects.')}</p>
                                     
-                                    <div className={`p-3 p-md-4 rounded-4 border hover-teal ${addons.carbonOffset ? 'border-success bg-success bg-opacity-10 shadow-sm' : 'border-secondary border-opacity-25 bg-white shadow-none'}`} style={{ cursor: 'pointer' }} onClick={() => toggleAddon('carbonOffset')}>
+                                    <div className={`p-3 p-md-4 rounded-4 border hover-teal ${addons.carbonOffset ? 'border-success bg-success bg-opacity-10 shadow-sm' : 'border-success border-opacity-25 bg-white shadow-none'}`} style={{ cursor: 'pointer' }} onClick={() => toggleAddon('carbonOffset')}>
                                         <div className="d-flex align-items-center">
-                                            <div className="d-flex align-items-center justify-content-center me-3 flex-shrink-0" style={{ width: '24px', height: '24px', border: '2px solid', borderRadius: '6px', borderColor: addons.carbonOffset ? '#198754' : '#adb5bd', backgroundColor: addons.carbonOffset ? '#198754' : 'transparent', transition: 'all 0.2s ease' }}>
+                                            <div className="d-flex align-items-center justify-content-center me-3 flex-shrink-0" style={{ width: '24px', height: '24px', border: '2px solid', borderRadius: '6px', borderColor: addons.carbonOffset ? 'var(--success-color)' : 'var(--success-color)', opacity: addons.carbonOffset ? 1 : 0.5, backgroundColor: addons.carbonOffset ? 'var(--success-color)' : 'transparent', transition: 'all 0.2s ease' }}>
                                                 <i className="fa-solid fa-check text-white" style={{ fontSize: '0.8rem', opacity: addons.carbonOffset ? 1 : 0 }}></i>
                                             </div>
                                             <div className="me-auto">
@@ -383,7 +390,7 @@ const Booking = () => {
                                                 <p className="text-grey small m-0 mt-1">{formatPrice(500)} {t('per_person', 'per person')}</p>
                                             </div>
                                             <div className="text-end ms-3">
-                                                <span className="fw-bold fs-6" style={{ color: addons.carbonOffset ? '#198754' : 'var(--text-grey)' }}>+{formatPrice(addonPrices.carbonOffset * chargeablePax)}</span>
+                                                <span className="fw-bold fs-6 text-success" style={{ opacity: addons.carbonOffset ? 1 : 0.6 }}>+{formatPrice(addonPrices.carbonOffset * chargeablePax)}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -398,7 +405,6 @@ const Booking = () => {
                             <label className="text-navy fw-bold small mb-3 text-uppercase letter-spacing-1">{t('how_paying', 'How are we paying?')}</label>
                             
                             <div className="d-flex flex-wrap gap-2 mb-4 bg-light p-2 rounded-4 border border-primary border-opacity-10">
-                                {/* ⚡ UPDATED: Changed inactive classes to use our unselected-teal styling */}
                                 <button type="button" className={`btn flex-grow-1 rounded-pill fw-bold hover-coral ${splitPayment === 1 ? 'active-coral shadow-sm' : 'unselected-teal'}`} onClick={() => setSplitPayment(1)}>
                                     {t('split_1', 'Just me (Pay in full)')}
                                 </button>
@@ -415,14 +421,17 @@ const Booking = () => {
                                     <div className="row g-3">
                                         {emails.map((email, index) => (
                                             <div className="col-md-6" key={index}>
-                                                <label className="text-grey small fw-bold mb-1">{index === 0 ? t('lead_email', "Lead Booker's Email") : `${t('friend_email', 'Friend')} ${index}'s ${t('friend_email2', 'Email')}`}</label>
-                                                <input type="email" className="form-control bg-light border-secondary border-opacity-25 hover-teal" value={email} onChange={(e) => handleEmailChange(index, e.target.value)} required />
+                                                <label className="text-navy fw-bold small mb-1 text-uppercase letter-spacing-1">{index === 0 ? t('lead_email', "Lead Booker's Email") : `${t('friend_email', 'Friend')} ${index}'s ${t('friend_email2', 'Email')}`}</label>
+                                                <div className="position-relative">
+                                                    <i className="fa-regular fa-envelope position-absolute text-primary opacity-75" style={{ left: '16px', top: '50%', transform: 'translateY(-50%)', zIndex: 5, pointerEvents: 'none' }}></i>
+                                                    <input type="email" className="form-control bg-light border-primary border-opacity-25 hover-teal text-navy" value={email} onChange={(e) => handleEmailChange(index, e.target.value)} style={{ paddingLeft: '45px' }} required />
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
                                     <div className="mt-4 text-center p-3 rounded-3 border border-primary border-opacity-10" style={{ backgroundColor: 'rgba(0, 119, 182, 0.05)' }}>
                                         <p className="text-navy fw-bold m-0">{t('each_pays', 'Each person will pay')} <span className="text-accent fs-4 mx-1">{formatPrice(grandTotal / splitPayment)}</span></p>
-                                        <small className="text-grey">{t('invoices_tied', 'Secure payment links will be generated for each email.')}</small>
+                                        <small className="text-primary opacity-75 fw-bold">{t('invoices_tied', 'Secure payment links will be generated for each email.')}</small>
                                     </div>
                                 </div>
                             )}
@@ -437,16 +446,16 @@ const Booking = () => {
                             
                             {!selectedPackage ? (
                                 <div className="text-center py-5 opacity-50">
-                                    <div className="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style={{ width: '80px', height: '80px' }}>
-                                        <i className="fa-solid fa-file-invoice-dollar fs-1 text-muted"></i>
+                                    <div className="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3 border border-primary border-opacity-25" style={{ width: '80px', height: '80px' }}>
+                                        <i className="fa-solid fa-file-invoice-dollar fs-1 text-primary opacity-50"></i>
                                     </div>
-                                    <p className="text-grey fw-bold">{t('select_summary', 'Select a package to see summary')}</p>
+                                    <p className="text-primary opacity-75 fw-bold">{t('select_summary', 'Select a package to see summary')}</p>
                                 </div>
                             ) : (
                                 <div className="fade-in">
-                                    <div className="mb-4 bg-light p-3 rounded-3 border border-secondary border-opacity-25">
+                                    <div className="mb-4 bg-light p-3 rounded-3 border border-primary border-opacity-25">
                                         <h6 className="text-primary-dark fw-bold mb-1 fs-5">{selectedPackage}</h6>
-                                        <p className="text-grey small m-0"><i className="fa-regular fa-calendar text-accent me-2"></i> {travelDate || 'Select Date'}</p>
+                                        <p className="text-primary opacity-75 fw-bold small m-0"><i className="fa-regular fa-calendar text-accent me-2"></i> {travelDate || 'Select Date'}</p>
                                     </div>
                                     
                                     <div className="d-flex justify-content-between mb-2">
@@ -548,7 +557,7 @@ const Booking = () => {
                                     </button>
                                     
                                     <div className="text-center mt-3 opacity-75">
-                                        <small className="text-grey"><i className="fa-solid fa-lock text-success me-1"></i> Secure Encrypted Payment</small>
+                                        <small className="text-primary opacity-75 fw-bold"><i className="fa-solid fa-lock text-success me-1"></i> Secure Encrypted Payment</small>
                                     </div>
                                 </div>
                             )}
