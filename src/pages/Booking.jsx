@@ -269,6 +269,18 @@ const Booking = () => {
                 font-weight: 500;
                 background-color: #fff;
             }
+
+            /* ⚡ NEW: Custom classes for the Special Requests Box */
+            .special-textarea {
+                background: linear-gradient(145deg, #ffffff, #F8FAFC) !important;
+                border: 2px dashed rgba(0, 180, 216, 0.4) !important;
+                transition: all 0.3s ease;
+            }
+            .special-textarea:focus {
+                border: 2px solid var(--primary-color) !important;
+                background: #fff !important;
+                box-shadow: 0 0 15px rgba(0, 180, 216, 0.15) !important;
+            }
         `}
         </style>
 
@@ -482,13 +494,33 @@ const Booking = () => {
                                         />
                                     </div>
                                 </div>
-                                <div className="col-12">
-                                    <label className="fw-bold small mb-2 text-uppercase letter-spacing-1" style={{ color: '#083870' }}>Special Requests</label>
-                                    <div className="custom-select-wrapper">
-                                        <i className="fa-regular fa-comment-dots custom-select-icon-left opacity-75" style={{ top: '24px', transform: 'none' }}></i>
-                                        <textarea className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm hover-teal text-navy" rows="3" placeholder="Allergies, late check-in, special occasions, etc." value={leadGuest.specialRequests} onChange={(e) => setLeadGuest({...leadGuest, specialRequests: e.target.value})} style={{ paddingLeft: '45px', fontSize: '0.95rem' }}></textarea>
+                                
+                                {/* ⚡ NEW: SPECIAL REQUESTS FIELD STYLING */}
+                                <div className="col-12 mt-4">
+                                    <div className="p-4 rounded-4 position-relative overflow-hidden" style={{ backgroundColor: '#F8FAFC', border: '1px solid rgba(0, 180, 216, 0.2)' }}>
+                                        <div className="position-absolute top-0 end-0 opacity-10 p-3">
+                                            <i className="fa-solid fa-wand-magic-sparkles text-primary" style={{ fontSize: '6rem' }}></i>
+                                        </div>
+                                        <div className="position-relative z-1">
+                                            <label className="fw-bold small mb-2 text-uppercase letter-spacing-1 d-flex align-items-center" style={{ color: '#083870' }}>
+                                                <i className="fa-solid fa-star text-primary me-2"></i> Special Requests
+                                            </label>
+                                            <p className="text-grey small mb-3">Celebrating a milestone, have dietary restrictions, or need a late check-in? Let us know so we can make your trip perfect!</p>
+                                            <div className="custom-select-wrapper">
+                                                <i className="fa-regular fa-comment-dots custom-select-icon-left text-primary" style={{ top: '24px', transform: 'none' }}></i>
+                                                <textarea 
+                                                    className="form-control form-control-lg shadow-sm text-navy special-textarea" 
+                                                    rows="3" 
+                                                    placeholder="Type your special requests here..." 
+                                                    value={leadGuest.specialRequests} 
+                                                    onChange={(e) => setLeadGuest({...leadGuest, specialRequests: e.target.value})} 
+                                                    style={{ paddingLeft: '45px', fontSize: '0.95rem', borderRadius: '12px' }}
+                                                ></textarea>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
 
@@ -521,7 +553,6 @@ const Booking = () => {
                                 ))}
                             </div>
 
-                            {/* CARBON OFFSET SECTION */}
                             <div className="p-4 rounded-4 position-relative overflow-hidden" style={{ backgroundColor: 'rgba(40, 167, 69, 0.05)', border: '1px solid rgba(40, 167, 69, 0.3)' }}>
                                 <div className="position-absolute top-0 end-0 opacity-10 p-3"><i className="fa-solid fa-leaf text-success" style={{ fontSize: '5rem' }}></i></div>
                                 <div className="position-relative z-1">
@@ -572,7 +603,6 @@ const Booking = () => {
                                     <div className="row g-3">
                                         {emails.map((email, index) => (
                                             <div className="col-md-6" key={index}>
-                                                {/* ⚡ FIX: Spelling explicitly changed to FRIEND X EMAIL ADDRESS */}
                                                 <label className="fw-bold small mb-1 text-uppercase letter-spacing-1" style={{ color: '#083870' }}>
                                                     {index === 0 ? t('lead_email', "Lead Booker's Email Address") : `Friend ${index} Email Address`}
                                                 </label>
@@ -687,7 +717,7 @@ const Booking = () => {
                                         )}
                                     </div>
 
-                                    <div className="p-4 rounded-4 shadow-sm position-relative overflow-hidden bg-white border border-primary">
+                                    <div className="p-4 rounded-4 shadow-sm position-relative overflow-hidden bg-white border border-primary border-2">
                                         
                                         {appliedDiscount > 0 && (
                                             <div className="d-flex justify-content-between mb-2 fade-in position-relative z-1 border-bottom pb-2 mb-3">
