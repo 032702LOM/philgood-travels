@@ -187,7 +187,6 @@ const Destinations = () => {
                 </div>
 
                 <div className="col-lg-4">
-                    {/* ⚡ UNIFIED COLORS: Primary Blue for price border */}
                     <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box text-center shadow-sm border border-primary">
                         <h6 className="text-grey small mb-2 text-uppercase letter-spacing-1">{t('starting_at', 'Starting at')}</h6>
                         <h2 className="fw-bold mb-0 font-montserrat text-primary">{formatPrice(selectedPlace.price)}</h2>
@@ -221,11 +220,10 @@ const Destinations = () => {
         <section id="destinations" className="fade-in py-5" style={{ minHeight: '500px', backgroundColor: 'var(--bg-dark)' }}>
             <div className="container">
                 
-                {/* ⚡ UNIFIED: Using the exact Cyan/Primary blue from the video for the search bar! */}
                 <div className="search-filter-bar p-4 rounded-4 mx-auto mb-5 shadow-sm scroll-reveal visible" style={{ maxWidth: '900px', zIndex: 10, position: 'relative', backgroundColor: 'var(--card-bg)' }}>
                     <div className="row g-3 align-items-center">
                         <div className="col-md-4">
-                            <label className="text-primary fw-bold small mb-1 text-uppercase letter-spacing-1">{t('region', 'Region')}</label>
+                            <label className="fw-bold small mb-1 text-uppercase letter-spacing-1" style={{ color: '#083870' }}>{t('region', 'Region')}</label>
                             <div className="input-with-icon position-relative">
                                 <i className="fa-solid fa-map-location-dot position-absolute text-primary" style={{ left: '16px', top: '50%', transform: 'translateY(-50%)', zIndex: 5 }}></i>
                                 <select className="form-select border-primary border-opacity-25" style={{ paddingLeft: '45px', backgroundColor: '#F8FAFC', color: 'var(--navy-color)' }} value={selectedRegion} onChange={(e) => { setSelectedRegion(e.target.value); setSelectedHotel(''); }}>
@@ -240,7 +238,7 @@ const Destinations = () => {
                             </div>
                         </div>
                         <div className="col-md-4">
-                            <label className="text-primary fw-bold small mb-1 text-uppercase letter-spacing-1">{t('accommodation', 'Accommodation')}</label>
+                            <label className="fw-bold small mb-1 text-uppercase letter-spacing-1" style={{ color: '#083870' }}>{t('accommodation', 'Accommodation')}</label>
                             <div className="input-with-icon position-relative">
                                 <i className="fa-solid fa-hotel position-absolute text-primary" style={{ left: '16px', top: '50%', transform: 'translateY(-50%)', zIndex: 5 }}></i>
                                 <select className="form-select border-primary border-opacity-25" style={{ paddingLeft: '45px', backgroundColor: '#F8FAFC', color: 'var(--navy-color)' }} value={selectedHotel} onChange={(e) => setSelectedHotel(e.target.value)}>
@@ -250,7 +248,7 @@ const Destinations = () => {
                             </div>
                         </div>
                         <div className="col-md-4">
-                            <label className="text-primary fw-bold small mb-1 text-uppercase letter-spacing-1">{t('keyword_search', 'Keyword Search')}</label>
+                            <label className="fw-bold small mb-1 text-uppercase letter-spacing-1" style={{ color: '#083870' }}>{t('keyword_search', 'Keyword Search')}</label>
                             <div className="input-with-icon position-relative">
                                 <i className="fa-solid fa-magnifying-glass position-absolute text-primary" style={{ left: '16px', top: '50%', transform: 'translateY(-50%)', zIndex: 5 }}></i>
                                 <input type="text" className="form-control border-primary border-opacity-25" style={{ paddingLeft: '45px', backgroundColor: '#F8FAFC', color: 'var(--navy-color)' }} placeholder={t('search_placeholder', 'Type to search...')} value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)}/>
@@ -347,7 +345,6 @@ const Destinations = () => {
                                                         <h5 className="card-title text-navy fw-bold">{place.name}</h5>
                                                         <p className="card-text text-grey small mb-2 fw-bold">{place.type} • {place.distance || 'Various'}</p>
                                                         
-                                                        {/* ⚡ UNIFIED COLORS for tags */}
                                                         <div className="d-flex flex-wrap gap-2 mb-3">{(place.facilities || []).slice(0, 3).map(fac => (<span key={fac} className="badge bg-light border border-primary border-opacity-25 text-primary fw-bold px-2 py-1">{fac}</span>))}</div>
                                                         
                                                         <div className="mt-auto d-flex justify-content-between align-items-center border-top border-primary border-opacity-10 pt-3">
