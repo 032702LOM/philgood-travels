@@ -498,16 +498,16 @@ const Booking = () => {
                                 <div className="col-12 mt-4">
                                     <div className="p-4 rounded-4 position-relative overflow-hidden" style={{ backgroundColor: '#F8FAFC', border: '1px solid rgba(0, 180, 216, 0.2)' }}>
                                         <div className="position-absolute top-0 end-0 opacity-10 p-3">
-                                            <i className="fa-solid fa-wand-magic-sparkles text-primary" style={{ fontSize: '6rem' }}></i>
+                                        
                                         </div>
                                         <div className="position-relative z-1">
                                             <label className="fw-bold small mb-2 text-uppercase letter-spacing-1 d-flex align-items-center" style={{ color: '#083870' }}>
-                                                {/* ⚡ Cyan Blue Star Icon */}
+                                               
                                                 <i className="fa-solid fa-star text-primary me-2"></i> Special Requests
                                             </label>
                                             <p className="text-grey small mb-3">Celebrating a milestone, have dietary restrictions, or need a late check-in? Let us know so we can make your trip perfect!</p>
                                             <div className="custom-select-wrapper">
-                                                {/* ⚡ Cyan Blue Chat/Comment Icon */}
+                                             
                                                 <i className="fa-regular fa-comment-dots custom-select-icon-left text-primary" style={{ top: '24px', transform: 'none' }}></i>
                                                 <textarea 
                                                     className="form-control form-control-lg shadow-sm text-navy special-textarea" 
