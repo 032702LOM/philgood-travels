@@ -184,7 +184,6 @@ const Booking = () => {
         {`
             .hover-teal { transition: all 0.3s ease; outline: none; }
             .hover-teal:hover, .hover-teal:focus-within { 
-                /* ⚡ FIX: Cyan Blue Focus Ring */
                 border-color: var(--primary-color) !important; 
                 box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.15) !important; 
             }
@@ -358,7 +357,6 @@ const Booking = () => {
                             <div className="row g-3 mb-5">
                                 <div className="col-md-4">
                                     <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm hover-teal" style={{ backgroundColor: '#fff' }}>
-                                        {/* ⚡ Cyan Blue Guest Icons */}
                                         <i className="fa-solid fa-user text-primary fs-2 mb-2"></i>
                                         <span className="d-block text-navy fw-bold fs-5">{t('adults', 'Adults')}</span>
                                         <small className="text-grey opacity-75 fw-bold mb-3">{t('adults_desc', '12+ years')}</small>
@@ -375,7 +373,6 @@ const Booking = () => {
                                 </div>
                                 <div className="col-md-4">
                                     <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm hover-teal" style={{ backgroundColor: '#fff' }}>
-                                        {/* ⚡ Cyan Blue Child Icon */}
                                         <i className="fa-solid fa-child-reaching text-primary fs-2 mb-2"></i>
                                         <span className="d-block text-navy fw-bold fs-5">{t('children', 'Children')}</span>
                                         <span className="fw-bold lh-1 mt-1 text-primary" style={{ fontSize: '0.85rem' }}>{t('children_discount', '50% Off')}</span>
@@ -393,7 +390,6 @@ const Booking = () => {
                                 </div>
                                 <div className="col-md-4">
                                     <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm hover-teal" style={{ backgroundColor: '#fff' }}>
-                                        {/* ⚡ Cyan Blue Baby Icon */}
                                         <i className="fa-solid fa-baby text-primary fs-2 mb-2"></i>
                                         <span className="d-block text-navy fw-bold fs-5">{t('infants', 'Infants')}</span>
                                         <span className="fw-bold lh-1 mt-1 text-primary" style={{ fontSize: '0.85rem' }}>{t('infants_discount', 'Free')}</span>
@@ -525,7 +521,7 @@ const Booking = () => {
                                 ))}
                             </div>
 
-                            {/* ⚡ GREEN: CARBON OFFSET SECTION */}
+                            {/* CARBON OFFSET SECTION */}
                             <div className="p-4 rounded-4 position-relative overflow-hidden" style={{ backgroundColor: 'rgba(40, 167, 69, 0.05)', border: '1px solid rgba(40, 167, 69, 0.3)' }}>
                                 <div className="position-absolute top-0 end-0 opacity-10 p-3"><i className="fa-solid fa-leaf text-success" style={{ fontSize: '5rem' }}></i></div>
                                 <div className="position-relative z-1">
@@ -576,7 +572,10 @@ const Booking = () => {
                                     <div className="row g-3">
                                         {emails.map((email, index) => (
                                             <div className="col-md-6" key={index}>
-                                                <label className="fw-bold small mb-1 text-uppercase letter-spacing-1" style={{ color: '#083870' }}>{index === 0 ? t('lead_email', "Lead Booker's Email") : `${t('friend_email', 'Friend')} ${index}'s ${t('friend_email2', 'Email')}`}</label>
+                                                {/* ⚡ FIX: Spelling explicitly changed to FRIEND X EMAIL ADDRESS */}
+                                                <label className="fw-bold small mb-1 text-uppercase letter-spacing-1" style={{ color: '#083870' }}>
+                                                    {index === 0 ? t('lead_email', "Lead Booker's Email Address") : `Friend ${index} Email Address`}
+                                                </label>
                                                 <div className="custom-select-wrapper">
                                                     <i className="fa-regular fa-envelope custom-select-icon-left opacity-75"></i>
                                                     <input type="email" className="form-control bg-light border-primary border-opacity-25 hover-teal text-navy" value={email} onChange={(e) => handleEmailChange(index, e.target.value)} required />
@@ -688,8 +687,7 @@ const Booking = () => {
                                         )}
                                     </div>
 
-                                    {/* ⚡ UNIFIED: Clean box to make the Primary Blue price pop */}
-                                    <div className="p-4 rounded-4 shadow-sm position-relative overflow-hidden bg-white border border-primary border-2">
+                                    <div className="p-4 rounded-4 shadow-sm position-relative overflow-hidden bg-white border border-primary">
                                         
                                         {appliedDiscount > 0 && (
                                             <div className="d-flex justify-content-between mb-2 fade-in position-relative z-1 border-bottom pb-2 mb-3">
