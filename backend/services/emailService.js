@@ -1,4 +1,8 @@
 const nodemailer = require('nodemailer');
+const dns = require('dns'); 
+
+// ⚡ THE FIX: Force Node.js to use IPv4 instead of IPv6 to bypass Render's network issue
+dns.setDefaultResultOrder('ipv4first');
 
 const sendEmail = async (options) => {
     try {
@@ -6,10 +10,10 @@ const sendEmail = async (options) => {
             service: 'gmail',
             auth: {
                 type: 'OAuth2',
-                user: process.env.GOOGLE_SENDER_EMAIL,       // ⚡ FIXED PREFIX
-                clientId: process.env.GOOGLE_CLIENT_ID,      // ⚡ FIXED PREFIX
-                clientSecret: process.env.GOOGLE_CLIENT_SECRET, // ⚡ FIXED PREFIX
-                refreshToken: process.env.GOOGLE_REFRESH_TOKEN  // ⚡ FIXED PREFIX
+                user: process.env.GOOGLE_SENDER_EMAIL,
+                clientId: process.env.GOOGLE_CLIENT_ID,
+                clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+                refreshToken: process.env.GOOGLE_REFRESH_TOKEN
             }
         });
 
