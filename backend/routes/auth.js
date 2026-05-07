@@ -1,3 +1,4 @@
+const express = require('express'); 
 const router = express.Router();
 const bcrypt = require('bcryptjs'); 
 const jwt = require('jsonwebtoken'); 
@@ -5,6 +6,7 @@ const crypto = require('crypto');
 const User = require('../models/User'); 
 const Subscriber = require('../models/Subscriber');
 const PromoCode = require('../models/PromoCode');
+
 const sendEmail = require('../services/emailService');
 
 // POST Route to REGISTER
