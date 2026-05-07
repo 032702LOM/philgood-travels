@@ -4,13 +4,13 @@ const axios = require('axios');
 const Booking = require('../models/Booking');
 const User = require('../models/User'); 
 const PromoCode = require('../models/PromoCode');
-const { Resend } = require('resend'); 
 const crypto = require('crypto');
+const sendEmail = require('../services/emailService');
 
 // 🛡️ SECURITY: Import the source-of-truth for pricing
 const { tourPackages, allPlaces } = require('../data/placesData.js'); 
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+
 
 // ⚡ AUTO-SEEDER: Creates PALAWAN30 code if it doesn't exist yet
 PromoCode.findOne({ code: 'PALAWAN30' }).then(promo => {
@@ -182,11 +182,15 @@ router.post('/create', async (req, res) => {
                 </div>`;
             
             try {
-                await resend.emails.send({ from: 'PhilGood Travels <onboarding@resend.dev>', to: payerEmail, subject: subject, html: htmlContent });
+               
+                await sendEmail({ 
+                    to: payerEmail, 
+                    subject: subject, 
+                    html: htmlContent 
+                });
             } catch (emailErr) {
-                console.error("Email Error:", emailErr);
+                console.error("Booking Confirmation Email Error:", emailErr);
             }
-        }
 
         const newBooking = new Booking({
             userId,

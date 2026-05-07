@@ -4,8 +4,7 @@ const Booking = require('../models/Booking');
 const User = require('../models/User');
 const Message = require('../models/Message');
 const ChatSession = require('../models/ChatSession');
-const { Resend } = require('resend');
-const resend = new Resend(process.env.RESEND_API_KEY);
+const sendEmail = require('../services/emailService');
 
 // ⚡ IMPORT THE NEW BOUNCERS ⚡
 const { verifyToken, isAdmin } = require('../middleware/authMiddleware');
@@ -210,14 +209,14 @@ router.post('/broadcast', verifyToken, isAdmin, async (req, res) => {
             return res.status(400).json({ error: "Subject and HTML content are required." });
         }
 
-        await resend.emails.send({
-            from: 'PhilGood Travels <onboarding@resend.dev>', 
-            to: 'techtacoder@gmail.com', 
+        // ⚡ NOW USING GMAIL API VIA OUR SERVICE
+        await sendEmail({
+            to: process.env.GMAIL_USER, // Sending to your admin hub
             subject: subject,
             html: htmlContent
         });
 
-        console.log("✅ Newsletter sent successfully to Resend!");
+        console.log("✅ Admin broadcast sent successfully via Gmail API!");
         res.status(200).json({ message: "Success!" });
     } catch (error) {
         console.error("Broadcast Error:", error);

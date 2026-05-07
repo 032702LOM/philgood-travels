@@ -6,8 +6,8 @@ const Message = require('../models/Message');
 const Subscriber = require('../models/Subscriber');
 const User = require('../models/User');
 const PromoCode = require('../models/PromoCode'); // ⚡ NEW: Imported PromoCode Model
+const sendEmail = require('../services/emailService');
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 router.post('/subscribe', async (req, res) => {
     try {
@@ -38,11 +38,10 @@ router.post('/subscribe', async (req, res) => {
             await user.save();
         }
 
-        await resend.emails.send({
-            from: 'PhilGood Travels <onboarding@resend.dev>',
+        await sendEmail({
             to: email,
             subject: 'Welcome to PhilGood Travels! Here is your 10% OFF code 🎉',
-            html: `
+            html:`
                 <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333; text-align: center; padding: 20px;">
                     <h2 style="color: #003B5C;">Welcome to the PhilGood Family!</h2>
                     <p>Thank you for subscribing to our newsletter. You're now on the list for exclusive travel deals, hidden gem destinations, and island inspiration.</p>
@@ -75,10 +74,9 @@ router.post('/send', async (req, res) => {
         const newMessage = new Message({ name, email, subject, message });
         await newMessage.save();
 
-        await resend.emails.send({
-            from: 'Contact Form <onboarding@resend.dev>', 
-            to: 'techtacoder@gmail.com', 
-            reply_to: email, 
+       await sendEmail({
+            to: 'techtacoder@gmail.com', // Your main contact hub
+            replyTo: email, // This lets you click "Reply" in Gmail to email the user directly
             subject: `New Message: ${subject}`,
             html: `
                 <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">

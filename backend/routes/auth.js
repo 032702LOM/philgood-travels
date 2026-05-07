@@ -1,14 +1,11 @@
-const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs'); 
 const jwt = require('jsonwebtoken'); 
 const crypto = require('crypto'); 
-const { Resend } = require('resend'); 
 const User = require('../models/User'); 
 const Subscriber = require('../models/Subscriber');
-const PromoCode = require('../models/PromoCode'); // ⚡ NEW: Imported PromoCode Model
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+const PromoCode = require('../models/PromoCode');
+const sendEmail = require('../services/emailService');
 
 // POST Route to REGISTER
 router.post('/register', async (req, res) => {
@@ -42,28 +39,23 @@ router.post('/register', async (req, res) => {
             
             adminNotes.push({ text: `System: User subscribed to newsletter during sign-up and was sent the 10% off code (${uniqueCode}).`, authorInitials: '⚙️' });
 
-            await resend.emails.send({
-                from: 'PhilGood Travels <onboarding@resend.dev>',
-                to: email,
-                subject: 'Welcome to PhilGood Travels! Here is your 10% OFF code 🎉',
-                html: `
-                    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333; text-align: center; padding: 20px;">
-                        <h2 style="color: #003B5C;">Welcome to the PhilGood Family!</h2>
-                        <p>Thank you for subscribing to our newsletter. You're now on the list for exclusive travel deals, hidden gem destinations, and island inspiration.</p>
-                        <p>As a thank you, enjoy <strong>10% OFF</strong> your first booking with us!</p>
-                        
-                        <div style="background-color: #F4FAFC; padding: 20px; margin: 30px auto; border: 2px dashed #00B4D8; border-radius: 8px; display: inline-block;">
-                            <span style="font-size: 28px; font-weight: 900; letter-spacing: 2px; color: #F69928;">
-                                ${uniqueCode}
-                            </span>
-                        </div>
-                        
-                        <p>Simply provide this code to our team when securing your spot.</p>
-                        <a href="https://philgood-travels.vercel.app/tours" style="background-color: #00B4D8; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold; margin-top: 20px;">EXPLORE TOURS NOW</a>
-                    </div>
-                `
-            });
-        }
+            await sendEmail({
+        to: email,
+        subject: 'Welcome to PhilGood Travels! Here is your 10% OFF code 🎉',
+        html: `
+            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333; text-align: center; padding: 20px;">
+                <h2 style="color: #003B5C;">Welcome to the PhilGood Family!</h2>
+                <p>As a thank you, enjoy <strong>10% OFF</strong> your first booking with us!</p>
+                <div style="background-color: #F4FAFC; padding: 20px; margin: 30px auto; border: 2px dashed #00B4D8; border-radius: 8px; display: inline-block;">
+                    <span style="font-size: 28px; font-weight: 900; letter-spacing: 2px; color: #F69928;">
+                        ${uniqueCode}
+                    </span>
+                </div>
+                <p>Simply provide this code to our team when securing your spot.</p>
+            </div>
+        `
+    });
+}
 
         const verificationToken = crypto.randomBytes(32).toString('hex');
 
@@ -84,19 +76,17 @@ router.post('/register', async (req, res) => {
 
         const verificationLink = `https://philgood-travels.vercel.app/verify-email?token=${verificationToken}`;
 
-        await resend.emails.send({
-            from: 'PhilGood Travels <onboarding@resend.dev>', 
-            to: email, 
-            subject: 'Verify your email - PhilGood Travels',
-            html: `
-                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-                    <h2 style="color: #003B5C;">Welcome to PhilGood Travels, ${name}!</h2>
-                    <p>We are thrilled to have you onboard. Please verify your email address to activate your account and start booking your next adventure.</p>
-                    <a href="${verificationLink}" style="background-color: #00B4D8; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold; margin-top: 20px;">VERIFY MY EMAIL</a>
-                    <p style="margin-top: 30px; font-size: 12px; color: #777;">If you did not create this account, you can safely ignore this email.</p>
-                </div>
-            `
-        });
+        await sendEmail({
+    to: email, 
+    subject: 'Verify your email - PhilGood Travels',
+    html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #003B5C;">Welcome to PhilGood Travels, ${name}!</h2>
+            <p>Please verify your email address to activate your account.</p>
+            <a href="${verificationLink}" style="background-color: #00B4D8; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold;">VERIFY MY EMAIL</a>
+        </div>
+    `
+});
 
         res.status(201).json({ message: "Registration successful! Please check your email to verify your account." });
 
@@ -204,20 +194,17 @@ router.post('/forgot-password', async (req, res) => {
 
         const resetLink = `https://philgood-travels.vercel.app/reset-password?token=${resetToken}`;
 
-        await resend.emails.send({
-            from: 'PhilGood Travels <onboarding@resend.dev>',
-            to: email,
-            subject: 'Password Reset Request - PhilGood Travels',
-            html: `
-                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-                    <h2 style="color: #003B5C;">Password Reset Request</h2>
-                    <p>You requested a password reset for your PhilGood Travels account.</p>
-                    <p>Click the button below to set a new password. This link expires in 1 hour.</p>
-                    <a href="${resetLink}" style="background-color: #F69928; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold; margin-top: 20px;">RESET PASSWORD</a>
-                    <p style="margin-top: 30px; font-size: 12px; color: #777;">If you did not request this, please ignore this email.</p>
-                </div>
-            `
-        });
+        await sendEmail({
+    to: email,
+    subject: 'Password Reset Request - PhilGood Travels',
+    html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #003B5C;">Password Reset Request</h2>
+            <p>Click the button below to set a new password. This link expires in 1 hour.</p>
+            <a href="${resetLink}" style="background-color: #F69928; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold; margin-top: 20px;">RESET PASSWORD</a>
+        </div>
+    `
+});
 
         res.status(200).json({ message: "If that email exists, a reset link has been sent." });
 
