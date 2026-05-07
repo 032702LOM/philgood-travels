@@ -270,7 +270,6 @@ const Booking = () => {
                 background-color: #fff;
             }
 
-            /* ⚡ NEW: Custom classes for the Special Requests Box */
             .special-textarea {
                 background: linear-gradient(145deg, #ffffff, #F8FAFC) !important;
                 border: 2px dashed rgba(0, 180, 216, 0.4) !important;
@@ -461,7 +460,8 @@ const Booking = () => {
                                     <label className="fw-bold small mb-2 text-uppercase letter-spacing-1" style={{ color: '#083870' }}>{t('phone', 'Phone Number')}</label>
                                     <div className="input-group input-group-lg shadow-sm hover-teal rounded-3" style={{ border: '1px solid rgba(0, 119, 182, 0.25)', overflow: 'hidden' }}>
                                         <span className="input-group-text border-0 pe-2" style={{ backgroundColor: '#F8FAFC' }}>
-                                            <i className="fa-solid fa-phone opacity-75 text-primary"></i>
+                                            {/* ⚡ Cyan Blue Phone Icon */}
+                                            <i className="fa-solid fa-phone text-primary"></i>
                                         </span>
                                         <select 
                                             className="form-select border-0 fw-bold text-navy px-1 phone-select" 
@@ -495,18 +495,19 @@ const Booking = () => {
                                     </div>
                                 </div>
                                 
-                                {/* ⚡ NEW: SPECIAL REQUESTS FIELD STYLING */}
                                 <div className="col-12 mt-4">
                                     <div className="p-4 rounded-4 position-relative overflow-hidden" style={{ backgroundColor: '#F8FAFC', border: '1px solid rgba(0, 180, 216, 0.2)' }}>
                                         <div className="position-absolute top-0 end-0 opacity-10 p-3">
-                                
+                                            <i className="fa-solid fa-wand-magic-sparkles text-primary" style={{ fontSize: '6rem' }}></i>
                                         </div>
                                         <div className="position-relative z-1">
                                             <label className="fw-bold small mb-2 text-uppercase letter-spacing-1 d-flex align-items-center" style={{ color: '#083870' }}>
+                                                {/* ⚡ Cyan Blue Star Icon */}
                                                 <i className="fa-solid fa-star text-primary me-2"></i> Special Requests
                                             </label>
                                             <p className="text-grey small mb-3">Celebrating a milestone, have dietary restrictions, or need a late check-in? Let us know so we can make your trip perfect!</p>
                                             <div className="custom-select-wrapper">
+                                                {/* ⚡ Cyan Blue Chat/Comment Icon */}
                                                 <i className="fa-regular fa-comment-dots custom-select-icon-left text-primary" style={{ top: '24px', transform: 'none' }}></i>
                                                 <textarea 
                                                     className="form-control form-control-lg shadow-sm text-navy special-textarea" 
@@ -604,7 +605,7 @@ const Booking = () => {
                                         {emails.map((email, index) => (
                                             <div className="col-md-6" key={index}>
                                                 <label className="fw-bold small mb-1 text-uppercase letter-spacing-1" style={{ color: '#083870' }}>
-                                                    {index === 0 ? t('lead_email', "Lead Booker's Email Address") : `Friend ${index} Email Address`}
+                                                    {index === 0 ? t('lead_email', "Lead Booker's Email Address") : `FRIEND ${index} EMAIL ADDRESS`}
                                                 </label>
                                                 <div className="custom-select-wrapper">
                                                     <i className="fa-regular fa-envelope custom-select-icon-left opacity-75"></i>
