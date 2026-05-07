@@ -181,8 +181,8 @@ router.post('/create', async (req, res) => {
                     </div>
                 </div>`;
             
-            try {
-               
+           try {
+                // ⚡ SWAP: Now using Gmail API via sendEmail
                 await sendEmail({ 
                     to: payerEmail, 
                     subject: subject, 
@@ -191,6 +191,7 @@ router.post('/create', async (req, res) => {
             } catch (emailErr) {
                 console.error("Booking Confirmation Email Error:", emailErr);
             }
+        }
 
         const newBooking = new Booking({
             userId,
@@ -216,12 +217,12 @@ router.post('/create', async (req, res) => {
             contactInfo,
             specialRequests,
             bookingStatus: 'Pending'
-        });
+       });
 
         await newBooking.save();
         res.status(201).json({ message: "Booking created securely!", booking: newBooking });
 
-    } catch (error) {
+    } catch (error) { // 🚨 THIS IS LIKELY LINE 224!
         console.error("Booking Error:", error.message);
         res.status(500).json({ error: "Failed to create secure booking." });
     }
