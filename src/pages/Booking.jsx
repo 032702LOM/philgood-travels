@@ -184,8 +184,9 @@ const Booking = () => {
         {`
             .hover-teal { transition: all 0.3s ease; outline: none; }
             .hover-teal:hover, .hover-teal:focus-within { 
-                border-color: #2A9D8F !important; 
-                box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.15) !important; 
+                /* ⚡ FIX: Cyan Blue Focus Ring */
+                border-color: var(--primary-color) !important; 
+                box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.15) !important; 
             }
             
             .hover-coral { transition: all 0.3s ease !important; }
@@ -357,39 +358,54 @@ const Booking = () => {
                             <div className="row g-3 mb-5">
                                 <div className="col-md-4">
                                     <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm hover-teal" style={{ backgroundColor: '#fff' }}>
+                                        {/* ⚡ Cyan Blue Guest Icons */}
                                         <i className="fa-solid fa-user text-primary fs-2 mb-2"></i>
                                         <span className="d-block text-navy fw-bold fs-5">{t('adults', 'Adults')}</span>
                                         <small className="text-grey opacity-75 fw-bold mb-3">{t('adults_desc', '12+ years')}</small>
                                         <div className="d-flex align-items-center justify-content-center gap-3 w-100 bg-light rounded-pill p-2">
-                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm hover-coral" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('adults', 'sub')} disabled={guests.adults <= 1}><i className="fa-solid fa-minus"></i></button>
+                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm hover-coral" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('adults', 'sub')} disabled={guests.adults <= 1}>
+                                                <i className="fa-solid fa-minus text-primary"></i>
+                                            </button>
                                             <span className="text-navy fw-bold fs-5" style={{ minWidth: '24px' }}>{guests.adults}</span>
-                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm hover-coral text-primary" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('adults', 'add')}><i className="fa-solid fa-plus"></i></button>
+                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm hover-coral" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('adults', 'add')}>
+                                                <i className="fa-solid fa-plus text-primary"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="col-md-4">
                                     <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm hover-teal" style={{ backgroundColor: '#fff' }}>
+                                        {/* ⚡ Cyan Blue Child Icon */}
                                         <i className="fa-solid fa-child-reaching text-primary fs-2 mb-2"></i>
                                         <span className="d-block text-navy fw-bold fs-5">{t('children', 'Children')}</span>
                                         <span className="fw-bold lh-1 mt-1 text-primary" style={{ fontSize: '0.85rem' }}>{t('children_discount', '50% Off')}</span>
                                         <small className="text-grey opacity-75 fw-bold mb-2" style={{ fontSize: '0.75rem' }}>{t('children_age', '2-11 years old')}</small>
                                         <div className="d-flex align-items-center justify-content-center gap-3 w-100 bg-light rounded-pill p-2">
-                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm hover-coral" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('children', 'sub')} disabled={guests.children === 0}><i className="fa-solid fa-minus"></i></button>
+                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm hover-coral" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('children', 'sub')} disabled={guests.children === 0}>
+                                                <i className="fa-solid fa-minus text-primary"></i>
+                                            </button>
                                             <span className="text-navy fw-bold fs-5" style={{ minWidth: '24px' }}>{guests.children}</span>
-                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm hover-coral text-primary" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('children', 'add')}><i className="fa-solid fa-plus"></i></button>
+                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm hover-coral" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('children', 'add')}>
+                                                <i className="fa-solid fa-plus text-primary"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="col-md-4">
                                     <div className="d-flex flex-column align-items-center rounded-4 p-3 border border-primary border-opacity-25 text-center shadow-sm hover-teal" style={{ backgroundColor: '#fff' }}>
+                                        {/* ⚡ Cyan Blue Baby Icon */}
                                         <i className="fa-solid fa-baby text-primary fs-2 mb-2"></i>
                                         <span className="d-block text-navy fw-bold fs-5">{t('infants', 'Infants')}</span>
                                         <span className="fw-bold lh-1 mt-1 text-primary" style={{ fontSize: '0.85rem' }}>{t('infants_discount', 'Free')}</span>
                                         <small className="text-grey opacity-75 fw-bold mb-2" style={{ fontSize: '0.75rem' }}>{t('infants_age', 'Under 2 years old')}</small>
                                         <div className="d-flex align-items-center justify-content-center gap-3 w-100 bg-light rounded-pill p-2">
-                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm hover-coral" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('infants', 'sub')} disabled={guests.infants === 0}><i className="fa-solid fa-minus"></i></button>
+                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm hover-coral" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('infants', 'sub')} disabled={guests.infants === 0}>
+                                                <i className="fa-solid fa-minus text-primary"></i>
+                                            </button>
                                             <span className="text-navy fw-bold fs-5" style={{ minWidth: '24px' }}>{guests.infants}</span>
-                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm hover-coral text-primary" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('infants', 'add')}><i className="fa-solid fa-plus"></i></button>
+                                            <button type="button" className="btn btn-sm btn-white rounded-circle shadow-sm hover-coral" style={{ width: '32px', height: '32px', padding: 0 }} onClick={() => handleGuestChange('infants', 'add')}>
+                                                <i className="fa-solid fa-plus text-primary"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -509,27 +525,27 @@ const Booking = () => {
                                 ))}
                             </div>
 
-                            {/* CARBON OFFSET SECTION */}
-                            <div className="p-4 rounded-4 position-relative overflow-hidden" style={{ backgroundColor: 'rgba(0, 180, 216, 0.05)', border: '1px solid rgba(0, 180, 216, 0.3)' }}>
-                                <div className="position-absolute top-0 end-0 opacity-10 p-3"><i className="fa-solid fa-leaf text-primary" style={{ fontSize: '5rem' }}></i></div>
+                            {/* ⚡ GREEN: CARBON OFFSET SECTION */}
+                            <div className="p-4 rounded-4 position-relative overflow-hidden" style={{ backgroundColor: 'rgba(40, 167, 69, 0.05)', border: '1px solid rgba(40, 167, 69, 0.3)' }}>
+                                <div className="position-absolute top-0 end-0 opacity-10 p-3"><i className="fa-solid fa-leaf text-success" style={{ fontSize: '5rem' }}></i></div>
                                 <div className="position-relative z-1">
                                     <div className="d-flex align-items-center mb-2">
-                                        <i className="fa-solid fa-leaf fs-4 me-2 text-primary"></i>
+                                        <i className="fa-solid fa-leaf fs-4 me-2 text-success"></i>
                                         <h5 className="text-navy font-montserrat fw-bold m-0">{t('carbon_footprint', 'Carbon Footprint - Forest Foundation Philippines')}</h5>
                                     </div>
                                     <p className="text-grey small mb-4" style={{ maxWidth: '90%' }}>{t('carbon_desc', 'Air travel and ground transport generate emissions. The estimated footprint for')} {chargeablePax} {t('carbon_desc2', 'traveler(s) is')} <strong className="text-navy">{chargeablePax * 150}kg CO₂</strong>. {t('carbon_desc3', 'Help us offset this by contributing to local Philippine reforestation projects.')}</p>
                                     
-                                    <div className={`p-3 p-md-4 rounded-4 border hover-teal ${addons.carbonOffset ? 'bg-white shadow-sm border-primary' : 'border-secondary border-opacity-25 bg-white shadow-none'}`} style={{ cursor: 'pointer' }} onClick={() => toggleAddon('carbonOffset')}>
+                                    <div className={`p-3 p-md-4 rounded-4 border hover-teal ${addons.carbonOffset ? 'bg-white shadow-sm border-success' : 'border-secondary border-opacity-25 bg-white shadow-none'}`} style={{ cursor: 'pointer' }} onClick={() => toggleAddon('carbonOffset')}>
                                         <div className="d-flex align-items-center">
-                                            <div className="d-flex align-items-center justify-content-center me-3 flex-shrink-0" style={{ width: '24px', height: '24px', border: '2px solid', borderRadius: '6px', borderColor: 'var(--primary-color)', opacity: addons.carbonOffset ? 1 : 0.5, backgroundColor: addons.carbonOffset ? 'var(--primary-color)' : 'transparent', transition: 'all 0.2s ease' }}>
+                                            <div className="d-flex align-items-center justify-content-center me-3 flex-shrink-0" style={{ width: '24px', height: '24px', border: '2px solid', borderRadius: '6px', borderColor: 'var(--bs-success, #198754)', opacity: addons.carbonOffset ? 1 : 0.5, backgroundColor: addons.carbonOffset ? 'var(--bs-success, #198754)' : 'transparent', transition: 'all 0.2s ease' }}>
                                                 <i className="fa-solid fa-check text-white" style={{ fontSize: '0.8rem', opacity: addons.carbonOffset ? 1 : 0 }}></i>
                                             </div>
                                             <div className="me-auto">
-                                                <h6 className="fw-bold m-0 text-primary">{t('offset_carbon', 'Offset My Carbon Footprint')}</h6>
+                                                <h6 className="fw-bold m-0 text-success">{t('offset_carbon', 'Offset My Carbon Footprint')}</h6>
                                                 <p className="text-grey small m-0 mt-1">{formatPrice(500)} {t('per_person', 'per person')}</p>
                                             </div>
                                             <div className="text-end ms-3">
-                                                <span className="fw-bold fs-6 text-primary" style={{ opacity: addons.carbonOffset ? 1 : 0.6 }}>+{formatPrice(addonPrices.carbonOffset * chargeablePax)}</span>
+                                                <span className="fw-bold fs-6 text-success" style={{ opacity: addons.carbonOffset ? 1 : 0.6 }}>+{formatPrice(addonPrices.carbonOffset * chargeablePax)}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -558,12 +574,9 @@ const Booking = () => {
                                 <div className="p-4 rounded-4 shadow-sm border border-primary border-opacity-25 fade-in bg-white">
                                     <h6 className="text-navy fw-bold mb-3"><i className="fa-solid fa-envelope-open-text text-accent me-2"></i> {t('invoice_emails', 'Email Addresses for Invoices:')}</h6>
                                     <div className="row g-3">
-                                        {/* ⚡ FIX: Adjusted the friend's email label format to ensure it displays correctly */}
                                         {emails.map((email, index) => (
                                             <div className="col-md-6" key={index}>
-                                                <label className="fw-bold small mb-1 text-uppercase letter-spacing-1" style={{ color: '#083870' }}>
-                                                    {index === 0 ? t('lead_email', "Lead Booker's Email Address") : `Friend ${index}'s Email Address`}
-                                                </label>
+                                                <label className="fw-bold small mb-1 text-uppercase letter-spacing-1" style={{ color: '#083870' }}>{index === 0 ? t('lead_email', "Lead Booker's Email") : `${t('friend_email', 'Friend')} ${index}'s ${t('friend_email2', 'Email')}`}</label>
                                                 <div className="custom-select-wrapper">
                                                     <i className="fa-regular fa-envelope custom-select-icon-left opacity-75"></i>
                                                     <input type="email" className="form-control bg-light border-primary border-opacity-25 hover-teal text-navy" value={email} onChange={(e) => handleEmailChange(index, e.target.value)} required />
@@ -638,8 +651,8 @@ const Booking = () => {
                                     )}
                                     {addons.carbonOffset && (
                                         <div className="d-flex justify-content-between mb-2 fade-in">
-                                            <span className="small fw-bold text-primary">Carbon Offset</span>
-                                            <span className="fw-bold text-primary">{formatPrice(carbonTotal)}</span>
+                                            <span className="small fw-bold text-success">Carbon Offset</span>
+                                            <span className="fw-bold text-success">{formatPrice(carbonTotal)}</span>
                                         </div>
                                     )}
                                     
@@ -675,7 +688,8 @@ const Booking = () => {
                                         )}
                                     </div>
 
-                                    <div className="p-4 rounded-4 shadow-sm position-relative overflow-hidden bg-white border border-primary">
+                                    {/* ⚡ UNIFIED: Clean box to make the Primary Blue price pop */}
+                                    <div className="p-4 rounded-4 shadow-sm position-relative overflow-hidden bg-white border border-primary border-2">
                                         
                                         {appliedDiscount > 0 && (
                                             <div className="d-flex justify-content-between mb-2 fade-in position-relative z-1 border-bottom pb-2 mb-3">
