@@ -44,7 +44,6 @@ const Connect = () => {
                 <h3 className="text-navy font-montserrat fw-bold mb-4 text-uppercase letter-spacing-1">{t('contact_info', 'Contact Information')}</h3>
                 <p className="text-grey mb-5 fw-bold">{t('contact_desc', 'Our travel experts are ready to assist you. Reach out to us via email, phone, or visit our office.')}</p>
                 
-                {/* ⚡ UNIFIED: Primary Blue Icons */}
                 <div className="d-flex align-items-center mb-4 pb-2">
                   <div className="bg-light p-3 rounded-circle me-4 border border-primary border-opacity-10 shadow-sm">
                     <i className="fa-solid fa-location-dot fs-4 text-primary"></i>
@@ -82,7 +81,6 @@ const Connect = () => {
                 <h3 className="text-navy font-montserrat fw-bold mb-4 text-uppercase letter-spacing-1">{t('send_msg', 'Send Us a Message')}</h3>
                 <form onSubmit={handleSubmit}>
                   <div className="row g-4">
-                    {/* ⚡ UNIFIED: Muted Grey Labels, Primary Blue text for input */}
                     <div className="col-md-6">
                         <label className="text-grey fw-bold small mb-2 text-uppercase letter-spacing-1">{t('your_name', 'Your Name')}</label>
                         <input type="text" name="name" value={formData.name} onChange={handleChange} className="form-control form-control-lg bg-light border-primary border-opacity-25 shadow-sm text-primary fw-bold" style={{ fontSize: '0.95rem' }} placeholder="Juan Dela Cruz" required />

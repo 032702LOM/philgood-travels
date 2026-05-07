@@ -148,7 +148,7 @@ const Destinations = () => {
                 <h1 className="hero-title mb-3" id="detailTitle">{selectedPlace.name}</h1>
                 <div className="d-flex gap-3 align-items-center">
                     <span className="badge rounded-pill text-dark" style={{ backgroundColor: 'var(--accent-color)' }} id="detailType">{selectedPlace.type}</span>
-                    <span className="text-white font-montserrat"><i className="fa-solid fa-location-dot me-1 text-accent"></i> <span id="detailRegion">{selectedPlace.region}</span></span>
+                    <span className="text-white font-montserrat"><i className="fa-solid fa-location-dot me-1 text-primary"></i> <span id="detailRegion">{selectedPlace.region}</span></span>
                 </div>
             </div>
         </div>
@@ -178,7 +178,7 @@ const Destinations = () => {
                     <div className="bg-card-dark p-4 rounded-4 mb-4 detail-box shadow-sm border border-primary border-opacity-10">
                         <div className="d-flex justify-content-between align-items-center mb-3">
                             <h6 className="text-primary fw-bold m-0 font-montserrat">{t('view_360', '360° VIEW')}</h6>
-                            <button className="btn btn-sm btn-outline-primary" style={{ padding: '4px 12px', fontSize: '0.8rem' }} onClick={handleFullScreen}><i className="fa-solid fa-expand me-1"></i> {t('full_screen', 'Full Screen')}</button>
+                            <button className="btn btn-sm btn-outline-primary" style={{ padding: '4px 12px', fontSize: '0.8rem' }} onClick={handleFullScreen}><i className="fa-solid fa-expand me-1 text-primary"></i> {t('full_screen', 'Full Screen')}</button>
                         </div>
                         {selectedPlace.virtualTourUrl || (selectedPlace.name && selectedPlace.name.includes('Okada')) ? (
                             <iframe ref={tourRef} src={selectedPlace.virtualTourUrl || 'https://tours.exsight360.com/okada/index.html'} className="rounded-3 border border-primary border-opacity-25 shadow" style={{ width: '100%', height: '400px', border: 'none', backgroundColor: '#000' }} allow="xr-spatial-tracking; vr; gyroscope; accelerometer; fullscreen" allowFullScreen title={`${selectedPlace.name} 360 Tour`}></iframe>
@@ -259,7 +259,7 @@ const Destinations = () => {
 
                 <div className="row">
                     <div className="col-lg-4 col-xl-3 mb-4 scroll-reveal visible">
-                        <div className="d-lg-none mb-3"><button className="btn w-100 d-flex justify-content-between align-items-center p-3 rounded-3 shadow-sm text-navy" type="button" data-bs-toggle="collapse" data-bs-target="#filterSidebar" style={{ backgroundColor: 'var(--card-bg)' }}><span className="font-montserrat fw-bold"><i className="fa-solid fa-sliders text-accent me-2"></i> {t('filters', 'Filters')} {activeCheckboxes.length > 0 ? `(${activeCheckboxes.length})` : ''}</span><i className="fa-solid fa-chevron-down"></i></button></div>
+                        <div className="d-lg-none mb-3"><button className="btn w-100 d-flex justify-content-between align-items-center p-3 rounded-3 shadow-sm text-navy" type="button" data-bs-toggle="collapse" data-bs-target="#filterSidebar" style={{ backgroundColor: 'var(--card-bg)' }}><span className="font-montserrat fw-bold"><i className="fa-solid fa-sliders text-primary me-2"></i> {t('filters', 'Filters')} {activeCheckboxes.length > 0 ? `(${activeCheckboxes.length})` : ''}</span><i className="fa-solid fa-chevron-down text-primary"></i></button></div>
                         <div className="collapse d-lg-block" id="filterSidebar">
                             <div className="sidebar-filter-container sticky-top bg-card-dark" style={{ top: '100px', maxHeight: '80vh', overflowY: 'auto' }}>
                                 <div className="d-flex justify-content-between align-items-center mb-4 border-bottom border-primary border-opacity-10 pb-3">
@@ -310,10 +310,10 @@ const Destinations = () => {
                                             <div className="card">
                                                 <div className="card-img-wrapper"><span className="card-badge" style={{ backgroundColor: 'var(--accent-color)' }}>{region.typeBadge}</span><img src={region.image} className="card-img-top" alt={region.name} /></div>
                                                 <div className="card-body">
-                                                    <div className="card-location"><i className="fa-solid fa-location-dot"></i> {region.locationLabel}</div>
+                                                    <div className="card-location"><i className="fa-solid fa-location-dot text-primary"></i> {region.locationLabel}</div>
                                                     <h5 className="card-title text-navy fw-bold"><span className="region-text">{region.name}</span></h5>
                                                     <p className="card-text text-grey">{region.desc}</p>
-                                                    <div className="mt-auto"><span className="btn-text-link m-0 fw-bold hover-coral" style={{ fontSize: '0.85rem' }}>{t('view_acc', 'View Accommodations')} <i className="fa-solid fa-arrow-right ms-1"></i></span></div>
+                                                    <div className="mt-auto"><span className="btn-text-link m-0 fw-bold hover-coral text-primary" style={{ fontSize: '0.85rem' }}>{t('view_acc', 'View Accommodations')} <i className="fa-solid fa-arrow-right ms-1 text-primary"></i></span></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -349,7 +349,7 @@ const Destinations = () => {
                                                         
                                                         <div className="mt-auto d-flex justify-content-between align-items-center border-top border-primary border-opacity-10 pt-3">
                                                             <span className="fw-bold fs-5 text-primary">{formatPrice(place.price)}</span>
-                                                            <a href="#" className="explore-link border-0 bg-transparent p-0 fw-bold hover-coral text-accent" onClick={(e) => { e.preventDefault(); handleOpenDetail(place); }}><span>{t('view_details', 'View Details')}</span> <i className="fa-solid fa-arrow-right ms-1"></i></a>
+                                                            <a href="#" className="explore-link border-0 bg-transparent p-0 fw-bold hover-coral text-accent" onClick={(e) => { e.preventDefault(); handleOpenDetail(place); }}><span>{t('view_details', 'View Details')}</span> <i className="fa-solid fa-arrow-right ms-1 text-primary"></i></a>
                                                         </div>
                                                     </div>
                                                 </div>
